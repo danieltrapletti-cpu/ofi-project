@@ -14,11 +14,7 @@
 # --- FUNCTIONS ---
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["firebase-admin", "ffmpeg-static", "ffprobe-static"]
-  included_files = [
-    "node_modules/ffmpeg-static/**",
-    "node_modules/ffprobe-static/**"
-  ]
+  external_node_modules = ["firebase-admin"]
 
 # --- REDIRECT: Pensiero del Giorno dinamico ---
 [[redirects]]
