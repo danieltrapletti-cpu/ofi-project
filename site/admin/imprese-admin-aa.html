@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>OFI · Registri – Imprese</title>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0f1420">
+  <link rel="apple-touch-icon" href="/images/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Stili ADMIN -->
+  <link rel="stylesheet" href="ofi-admin.css">
+  <link rel="stylesheet" href="ofi-admin-fix.css">
+
+  <style>
+    .wrap{max-width:1100px;margin:0 auto;padding:1.25rem}
+    .section-title{font-weight:900;letter-spacing:.2px;font-size:clamp(1.6rem,2.4vw,2.2rem);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .count-badge{display:inline-block;min-width:22px;padding:0 .45rem;line-height:22px;border-radius:999px;background:var(--gold);color:#111;font-size:.75rem;font-weight:900}
+    .section-sub{opacity:.9;margin:.2rem 0 1rem}
+
+    .toolbar{
+      position:sticky; top:var(--headerH); z-index:1500;
+      display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
+      margin:.6rem 0 1rem; background:var(--surface);
+      padding:.5rem .2rem; border-bottom:1px solid var(--border)
+    }
+    .filter{display:flex;gap:.4rem;flex-wrap:wrap}
+    .chip{border:1px solid var(--border);padding:.45rem .7rem;border-radius:999px;background:var(--surface);color:var(--text);font-weight:800;cursor:pointer}
+    .chip.active{border-color:var(--gold);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+    .search{flex:1;min-width:220px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:.55rem .8rem}
+    .kpi{display:flex;gap:.45rem;flex-wrap:wrap;margin-left:auto}
+    .kpi .pill{border:1px solid rgba(202,168,90,.35);border-radius:999px;padding:.22rem .6rem;font-weight:800;background:var(--surface);color:var(--text);font-size:.8rem}
+
+    .list{display:grid;gap:1rem}
+    .card{border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--text);border-radius:16px;padding:1rem;box-shadow:0 12px 32px rgba(0,0,0,.06);outline:0}
+    .card:focus-visible{box-shadow:0 0 0 3px rgba(202,168,90,.55), 0 12px 32px rgba(0,0,0,.08)}
+    .row{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center}
+    .title{font-weight:900;font-size:1.05rem}
+    .meta{font-size:.92rem;color:var(--muted)}
+    .meta-row{margin-top:.45rem;display:flex;gap:.4rem;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:.3rem;border:1px solid rgba(202,168,90,.35);border-radius:999px;padding:.14rem .6rem;font-size:.8rem;background:var(--surface);color:var(--text)}
+    .pill.bad{border-color:rgba(220,38,38,.45)}
+    .pill.ok{border-color:rgba(22,163,74,.45)}
+    .grid-spec{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.6rem;font-size:.93rem}
+    .grid-spec .kv strong{font-weight:900;margin-right:.25rem}
+
+    :root{--green:#16a34a;--green-2:#15803d;--amber:#d97706;--red:#dc2626}
+    .actions{display:flex;gap:.45rem;flex-wrap:wrap}
+    .btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:.55rem .8rem;font-weight:900;cursor:pointer}
+    .btn.primary{background:var(--gold);border:none;color:#0d1b2a}
+    .btn.pause{border-color:rgba(217,119,6,.45)}
+    .btn.wait{border-color:rgba(59,130,246,.45)} /* riporta in attesa */
+    .btn.danger{border-color:rgba(220,38,38,.45)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    .empty{padding:1rem;border:1px dashed var(--border);border-radius:12px;text-align:center;color:var(--muted)}
+    .skeleton{border-radius:14px;position:relative;overflow:hidden;height:120px;border:1px solid var(--border)}
+    .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1.2s infinite}
+    @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+    @media (max-width:860px){
+      .wrap{padding:1rem .9rem}
+      .row{grid-template-columns:1fr;gap:.8rem}
+    }
+
+    .card{
+      border:1px solid rgba(202,168,90,.35);
+      background:var(--surface);
+      color:var(--text);
+      border-radius:16px;
+      padding:1rem;
+      box-shadow:0 12px 32px rgba(0,0,0,.06);
+      outline:0;
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    .card:hover{
+      transform:translateY(-1px);
+      box-shadow:0 16px 40px rgba(0,0,0,.09);
+      border-color:var(--gold);
+    }
+    .card:focus-visible{
+      box-shadow:0 0 0 3px rgba(202,168,90,.55), 0 12px 32px rgba(0,0,0,.08);
+    }
+
+    .row{display:grid;grid-template-columns:1fr auto;gap:.9rem;align-items:center}
+
+    .actions{display:flex;gap:.45rem;flex-wrap:wrap;justify-content:flex-end}
+    .btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px;padding:.55rem .8rem;font-weight:900;cursor:pointer}
+    .btn.primary{background:var(--gold);border:none;color:#0d1b2a}
+    .btn.pause{border-color:rgba(217,119,6,.45)}
+    .btn.wait{border-color:rgba(59,130,246,.45)}
+    .btn.danger{border-color:rgba(220,38,38,.45)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* --- MODALE SCHEDA IMPRESA --- */
+    body.modal-open{
+      overflow:hidden;
+    }
+    .modal-shell{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:flex-start;
+      justify-content:center;
+      z-index:4000;
+    }
+    .modal-shell.open{
+      display:flex;
+    }
+    .modal-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(15,20,32,.55);
+      backdrop-filter:blur(4px);
+    }
+    .modal-panel{
+      position:relative;
+      margin:4rem 1rem 2rem;
+      max-width:980px;
+      width:100%;
+      background:var(--surface);
+      color:var(--text);
+      border-radius:20px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      padding:1.4rem 1.6rem 1.3rem;
+      z-index:1;
+      max-height:calc(100vh - 6rem);
+      overflow:auto;
+    }
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:.8rem;
+      border-bottom:1px solid var(--border);
+      padding-bottom:.6rem;
+      margin-bottom:.8rem;
+    }
+    .modal-sub{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-top:.1rem;
+    }
+    .modal-close{
+      border:none;
+      background:transparent;
+      font-size:1.2rem;
+      cursor:pointer;
+      padding:.2rem .4rem;
+      border-radius:999px;
+    }
+    .modal-close:hover{
+      background:rgba(0,0,0,.06);
+    }
+    .modal-body{
+      font-size:.94rem;
+      line-height:1.5;
+      display:grid;
+      grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+      gap:1.5rem;
+    }
+    .modal-col h3{
+      font-size:.98rem;
+      font-weight:900;
+      margin:.3rem 0 .2rem;
+    }
+    .modal-col p.small{
+      margin:.1rem 0 .4rem;
+    }
+    .badge-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.35rem;
+      margin-bottom:.35rem;
+    }
+    .pill-sm{
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      border-radius:999px;
+      border:1px solid rgba(202,168,90,.35);
+      padding:.15rem .6rem;
+      font-size:.8rem;
+      background:var(--surface);
+    }
+    .pill-sm.bad{border-color:rgba(220,38,38,.55);}
+    .pill-sm.ok{border-color:rgba(22,163,74,.55);}
+
+    .thumb-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+      gap:.5rem;
+      margin-top:.25rem;
+    }
+    .thumb{
+      position:relative;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:#000;
+    }
+    .thumb img{
+      display:block;
+      width:100%;
+      height:90px;
+      object-fit:cover;
+    }
+    .thumb-del{
+      position:absolute;
+      top:4px;right:4px;
+      border:none;
+      background:rgba(0,0,0,.55);
+      color:#fff;
+      font-size:.78rem;
+      border-radius:999px;
+      padding:.1rem .4rem;
+      cursor:pointer;
+    }
+    .thumb-del:hover{
+      background:rgba(0,0,0,.8);
+    }
+
+    @media (max-width:860px){
+      .modal-panel{
+        margin:3.2rem .4rem 1.4rem;
+        padding:1rem 1rem .9rem;
+      }
+      .modal-body{
+        grid-template-columns:1fr;
+        gap:1rem;
+      }
+    }
+
+  </style>
+</head>
+
+<body class="is-admin">
+
+  <!-- HEADER identico -->
+  <header class="site-header" role="banner">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home">
+        <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu" aria-hidden="true">
+        <li class="menu-mobile-head"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/admin/dashboard-admin.html">Area Admin</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" title="Tema">
+        <span class="mode mode-auto" aria-hidden="true">A</span>
+        <span class="mode mode-light" aria-hidden="true">☀</span>
+        <span class="mode mode-dark" aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- APP + SIDEBAR identica -->
+  <div class="app" id="appRoot">
+    <aside class="sidebar" id="sidebar" aria-label="Navigazione amministrazione">
+      <div class="sb-head">
+        <img alt="Badge OFI" src="../images/logo-ofi.png" style="height:28px">
+        <strong>Amministrazione OFI</strong>
+        <button class="sb-close" id="sbClose" aria-label="Chiudi pannello">✕</button>
+      </div>
+
+      <nav class="sb-menu" id="sbMenu">
+        <a class="sb-link" href="/admin/dashboard-admin.html">🏠 Dashboard</a>
+
+        <div class="sb-cat">📝 Approvazioni</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Approvazioni ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/approvazioni-registrazioni.html">✅ Registrazioni <span class="pill" id="cntRegTot">0</span></a></li>
+            <li><a class="sb-link" href="/admin/approvazioni-preventivi.html">📬 Preventivi <span class="pill" id="cntPrev">0</span></a></li>
+            <li><a class="sb-link" href="/admin/approvazioni-necrologi.html">🕯 Necrologi <span class="pill" id="cntNecro">0</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">📚 Registri</div>
+        <div class="has-sub open">
+          <a href="#" class="sub-toggle" aria-expanded="true">Anagrafiche ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/utenti-admin.html">👤 Cittadini <span class="pill" id="cntCitt">0</span></a></li>
+            <li><a class="sb-link active" href="/admin/imprese-admin.html">🏢 Imprese <span class="pill" id="cntImprese">0</span></a></li>
+            <li><a class="sb-link" href="/admin/fornitori-admin.html">📦 Fornitori <span class="pill" id="cntForn">0</span></a></li>
+            <li><a class="sb-link" href="/admin/supporto-admin.html">🧑‍💼 Figure di supporto <span class="pill" id="cntSupp">0</span></a></li>
+            <li><a class="sb-link" href="/admin/segnalazioni-admin.html">🧠 Segnalazioni</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">✍️ Contenuti</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Articoli e altro ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/articoli-pubblicati-admin.html">📝 Articoli pubblicati</a></li>
+            <li><a class="sb-link" href="/admin/articoli-gestione-admin.html">🗂 Gestione articoli</a></li>
+            <li><a class="sb-link" href="/admin/necrologi-admin.html">🕯 Necrologi (storico)</a></li>
+            <li><a class="sb-link" href="/admin/presentazioni-imprese-admin.html">📣 Presentazioni imprese</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">💳 Economico</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Amministrazione ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/pagamenti-admin.html">💰 Pagamenti</a></li>
+            <li><a class="sb-link" href="/admin/fatture-admin.html">📄 Fatture</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">🛡 Sistema</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Strumenti ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/statistiche-admin.html">📈 Statistiche</a></li>
+            <li><a class="sb-link" href="/admin/log-attivita-admin.html">📊 Log attività</a></li>
+            <li><a class="sb-link" href="/admin/supporto-admin.html">🆘 Supporto admin</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <div id="sbOverlay" class="overlay" hidden></div>
+    <button id="sbFab" class="sb-fab" aria-label="Apri Sidebar">☰</button>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="ident">
+          <div class="hint">Sei autenticato come</div>
+          <div id="adminEmail">—</div>
+        </div>
+        <div class="actions">
+          <img id="adminAvatar" class="avatar" src="../images/logo-ofi.png" alt="Admin"/>
+          <a class="btn-ghost account" href="/admin/login.html"><span>Cambia account</span></a>
+          <button class="btn-ghost" id="btnLogout">Logout</button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <h1 class="section-title">
+          Registri · Imprese
+          <span class="count-badge" id="count">0</span>
+        </h1>
+        <p class="section-sub">Tutte le imprese registrate. Filtra per stato e cerca per nome, email o luogo.</p>
+
+        <div class="toolbar" role="region" aria-label="Filtri">
+          <div class="filter" role="tablist">
+            <button class="chip active" data-f="tutte"     onclick="setFilter('tutte')">Tutte</button>
+            <button class="chip"        data-f="approvata" onclick="setFilter('approvata')">Approvate</button>
+            <button class="chip"        data-f="in_attesa" onclick="setFilter('in_attesa')">In attesa</button>
+            <button class="chip"        data-f="rifiutata" onclick="setFilter('rifiutata')">Rifiutate</button>
+            <button class="chip"        data-f="scaduta"   onclick="setFilter('scaduta')">Abbon. scaduto</button>
+          </div>
+          <input id="search" class="search" type="search" placeholder="Cerca per nome, email o comune/indirizzo…" oninput="onSearch()" />
+          <div class="kpi">
+            <span class="pill" id="kTot">Tot: 0</span>
+            <span class="pill" id="kApp">Approvate: 0</span>
+            <span class="pill" id="kAtt">In attesa: 0</span>
+            <span class="pill" id="kRif">Rifiutate: 0</span>
+            <span class="pill" id="kSca">Scadute: 0</span>
+          </div>
+        </div>
+
+        <div id="list" class="list" aria-live="polite"></div>
+        <!-- Modale scheda impresa -->
+        <div id="impresaModal" class="modal-shell" aria-hidden="true">
+          <div class="modal-backdrop"></div>
+          <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="impresaModalTitle">
+            <header class="modal-head">
+              <div>
+                <h2 id="impresaModalTitle" class="section-title" style="font-size:1.2rem;margin:0;"></h2>
+                <p id="impresaModalSubtitle" class="modal-sub"></p>
+              </div>
+              <button type="button" class="modal-close" id="impresaModalClose" aria-label="Chiudi scheda">✕</button>
+            </header>
+            <div class="modal-body" id="impresaModalBody">
+              <!-- riempita via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="sr-only">OFI © 2025</footer>
+
+  <!-- Menu + tema + sidebar -->
+  <script type="module">
+    const $id=(x)=>document.getElementById(x);
+    const html=document.documentElement;
+
+    const menuToggle=$id('menuToggle'); const menuPanel=$id('menuPanel'); const menuClose=$id('menuClose'); const menuOverlay=$id('menuOverlay');
+    function openMenu(on){ menuPanel.classList.toggle('open',on); menuPanel.setAttribute('aria-hidden', on?'false':'true'); menuOverlay.hidden=!on; html.classList.toggle('menu-open',on); }
+    menuToggle?.addEventListener('click',()=>openMenu(true)); menuClose?.addEventListener('click',()=>openMenu(false)); menuOverlay?.addEventListener('click',()=>openMenu(false));
+    menuPanel?.querySelectorAll('.has-sub > a').forEach(a=>{ a.addEventListener('click',e=>{ e.preventDefault(); const li=a.parentElement; const open=!li.classList.contains('open'); li.classList.toggle('open',open); a.setAttribute('aria-expanded',open?'true':'false'); });});
+    menuPanel?.querySelectorAll('a[href]').forEach(a=>{ const here=location.pathname.replace(/\/+$/,''); const href=a.getAttribute('href').replace(/\/+$/,''); if(href&&(here.endsWith(href)||here===href)) a.setAttribute('aria-current','page'); });
+
+    const themeBtn=$id('themeToggle'); const KEY='ofi-theme';
+    function applyTheme(v){ html.setAttribute('data-theme',v); localStorage.setItem(KEY,v); themeBtn.dataset.mode=v; }
+    function nextTheme(cur){ if(cur==='auto') return 'light'; if(cur==='light') return 'dark'; return 'auto'; }
+    applyTheme(localStorage.getItem(KEY)||'auto'); themeBtn?.addEventListener('click',()=>applyTheme(nextTheme(html.getAttribute('data-theme')||'auto')));
+
+    // Sidebar
+    const sidebar=$id('sidebar'); const sbOverlay=$id('sbOverlay'); const sbFab=$id('sbFab');
+    function openSidebar(on){ sidebar.classList.toggle('open',on); sbOverlay.hidden=!on; html.classList.toggle('sidebar-open',on); document.body.classList.toggle('sidebar-open',on); }
+    $id('sbClose')?.addEventListener('click',()=>openSidebar(false)); sbOverlay?.addEventListener('click',()=>openSidebar(false)); sbFab?.addEventListener('click',()=>openSidebar(!sidebar.classList.contains('open')));
+    document.querySelectorAll('.sb-menu .has-sub > .sub-toggle').forEach(btn=>{ btn.addEventListener('click',e=>{ e.preventDefault(); const me=btn.closest('.has-sub'); const already=me.classList.contains('open'); document.querySelectorAll('.sb-menu .has-sub.open').forEach(x=>x.classList.remove('open')); me.classList.toggle('open',!already); btn.setAttribute('aria-expanded',(!already)?'true':'false'); });});
+    (function highlightSidebar(){ const here=location.pathname.replace(/\/+$/,''); document.querySelectorAll('.sb-link[href]').forEach(a=>{ const href=a.getAttribute('href').replace(/\/+$/,''); if(href&&(here.endsWith(href)||here===href)) a.classList.add('active'); });})();
+  </script>
+
+  <!-- Firebase + logica pagina -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onIdTokenChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, doc, updateDoc, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    const $ = (s)=>document.querySelector(s);
+    const $$ = (s)=>document.querySelectorAll(s);
+
+    // Riferimenti modale scheda impresa
+    const modalShell   = document.getElementById('impresaModal');
+    const modalBody    = document.getElementById('impresaModalBody');
+    const modalTitle   = document.getElementById('impresaModalTitle');
+    const modalSub     = document.getElementById('impresaModalSubtitle');
+    const modalClose   = document.getElementById('impresaModalClose');
+
+    function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+    function fmtDate(val){
+      try{
+        if(!val) return "—";
+        if(typeof val.toDate==='function') return val.toDate().toLocaleString('it-IT');
+        if(val && typeof val==='object' && 'seconds' in val) return new Date(val.seconds*1000).toLocaleString('it-IT');
+        if(typeof val==='number') return new Date(val).toLocaleString('it-IT');
+        const t=Date.parse(val); if(!Number.isNaN(t)) return new Date(t).toLocaleString('it-IT');
+        return String(val);
+      }catch{return "—";}
+    }
+
+    function closeModal(){
+      if(!modalShell) return;
+      modalShell.classList.remove('open');
+      modalShell.setAttribute('aria-hidden','true');
+      document.body.classList.remove('modal-open');
+    }
+
+    function buildDettagliHTML(d){
+      const sede = sedeToStrings(d.sede_principale);
+      const baseP   = Number(d.profilo_score ?? 0);
+      const saldoP  = Number(d.punti_saldo ?? 0);
+      const totP    = Math.max(0, baseP + saldoP);
+      const repF    = Number(d.fattore_reputazione ?? 1);
+      const stelleN = Number(d.stelle_correnti ?? d.stelle_profilo ?? d.stelle ?? 0);
+      const stelleClamped = Math.max(0, Math.min(5, isFinite(stelleN) ? stelleN : 0));
+      const stelleTxt = stelleClamped ? '★'.repeat(stelleClamped) : '—';
+      const stato   = d.stato || 'in_attesa';
+
+      const trialEnds = d.trialEndsAt ? fmtDate(d.trialEndsAt) : null;
+      const periodEnd = d.periodEndAt || d.abbonamento_end;
+      const periodEndTxt = periodEnd ? fmtDate(periodEnd) : null;
+      const abStato = d.abbonamento?.stato || d.abbonamento_stato || 'trial';
+
+      // blocchi testo
+      let col1 = '';
+      if(d.descrizione){
+        col1 += `
+          <h3>Descrizione</h3>
+          <p class="small">${escapeHtml(d.descrizione)}</p>
+        `;
+      }
+
+      if(Array.isArray(d.servizi) && d.servizi.length){
+        col1 += `
+          <h3>Servizi principali</h3>
+          <p class="small">${d.servizi.map(s=>escapeHtml(s)).join(', ')}</p>
+        `;
+      }
+
+      if(Array.isArray(d.sedi_distaccate) && d.sedi_distaccate.length){
+        const elencoSedi = d.sedi_distaccate.map((s,idx)=>{
+          const lbl  = s.label || s.tipo || `Sede ${idx+1}`;
+          const city = s.comune || s.citta || '';
+          const ind  = s.indirizzo || '';
+          return `<li>${escapeHtml(lbl)} — ${escapeHtml(ind)} ${city ? '· '+escapeHtml(city) : ''}</li>`;
+        }).join('');
+        col1 += `
+          <h3>Sedi distaccate</h3>
+          <ul class="small" style="margin:.1rem 0 .6rem .9rem;padding:0;">
+            ${elencoSedi}
+          </ul>
+        `;
+      }
+
+      let col2 = `
+        <h3>Stato & abbonamento</h3>
+        <div class="badge-row">
+          <span class="pill-sm ${stato==='approvata'?'ok':(stato==='rifiutata'?'bad':'')}">stato: ${stato}</span>
+          <span class="pill-sm">abbonamento: ${escapeHtml(abStato)}</span>
+          ${trialEnds ? `<span class="pill-sm">trial fino a ${trialEnds}</span>` : ''}
+          ${periodEndTxt ? `<span class="pill-sm">periodo fino a ${periodEndTxt}</span>` : ''}
+        </div>
+        <div class="badge-row" style="margin-top:.2rem;">
+          <span class="pill-sm">⭐ ${stelleTxt} (${stelleClamped || 0}/5)</span>
+          <span class="pill-sm">Punti totali: ${totP}</span>
+          <span class="pill-sm">Reputazione x${repF || 1}</span>
+        </div>
+
+        <h3 style="margin-top:.7rem;">Dettagli sede</h3>
+        <p class="small"><strong>Sede principale</strong><br>${sede.luogoDett || '—'}</p>
+        <p class="small"><strong>Lat/Lng</strong><br>${sede.hasGeo ? `${sede.lat}, ${sede.lng}` : '—'}</p>
+        <p class="small"><strong>P.IVA</strong><br>${escapeHtml(d.partita_iva||d.piva||'—')}</p>
+        <p class="small"><strong>Settore</strong><br>${escapeHtml((d.settore||'—').replaceAll('_',' '))}</p>
+      `;
+
+      if(Array.isArray(d.siti) && d.siti.length){
+        col2 += `
+          <h3>Siti web</h3>
+          <p class="small">
+            ${d.siti.map(u=>`<a href="${u}" target="_blank" rel="noopener">${escapeHtml(u)}</a>`).join(' · ')}
+          </p>
+        `;
+      }
+
+      if(d.social && typeof d.social==='object'){
+        const soc = [];
+        if (d.social.facebook) soc.push(`Facebook: ${escapeHtml(d.social.facebook)}`);
+        if (d.social.instagram) soc.push(`Instagram: ${escapeHtml(d.social.instagram)}`);
+        if (d.social.youtube) soc.push(`YouTube: ${escapeHtml(d.social.youtube)}`);
+        if (soc.length){
+          col2 += `
+            <h3>Social</h3>
+            <p class="small">${soc.join('<br>')}</p>
+          `;
+        }
+      }
+
+      const gallery = Array.isArray(d.gallery_urls) ? d.gallery_urls : [];
+      const hasVideo = !!(d.video_url || d.video_yt);
+
+      let mediaBlock = '<h3>Media</h3>';
+      if (gallery.length){
+        mediaBlock += `
+          <div class="thumb-grid">
+            ${gallery.map((url,idx)=>`
+              <figure class="thumb">
+                <img src="${url}" alt="Foto ${idx+1} di ${escapeHtml(d.nome || '')}">
+                <button type="button" class="thumb-del" data-img-index="${idx}">✕</button>
+              </figure>
+            `).join('')}
+          </div>
+          <p class="small" style="margin-top:.3rem;">Clicca sulla ❌ per eliminare una singola foto dalla gallery.</p>
+        `;
+      }else{
+        mediaBlock += `<p class="small muted">Nessuna foto caricata.</p>`;
+      }
+
+      if(hasVideo){
+        mediaBlock += `
+          <p class="small" style="margin-top:.4rem;">
+            <strong>Video</strong><br>
+            ${d.video_url ? `<a href="${d.video_url}" target="_blank" rel="noopener">Video MP4 su OFI</a><br>` : ''}
+            ${d.video_yt ? `<a href="${d.video_yt}" target="_blank" rel="noopener">Video YouTube</a>` : ''}
+          </p>
+        `;
+      }
+
+      col2 += mediaBlock;
+
+      return `
+        <div class="modal-col">
+          ${col1 || '<p class="small muted">Nessuna descrizione o servizi inseriti.</p>'}
+        </div>
+        <div class="modal-col">
+          ${col2}
+        </div>
+      `;
+    }
+
+    function openModal(d){
+      if(!modalShell || !modalBody) return;
+      const sede = sedeToStrings(d.sede_principale);
+      const email = d.email || d.contatto_email || d.id;
+      const nome  = d.nome_impresa || d.nome || d.ragione_sociale || "—";
+      const registrataTxt = fmtDate(d.registrata_il || d.created_at || d.createdAt);
+
+      modalTitle.textContent = nome;
+      modalSub.textContent   = `${email} · ${sede.luogoBreve || (d.comune||d.citta||d.localita||"—")} · registrata: ${registrataTxt}`;
+
+      modalBody.innerHTML = buildDettagliHTML(d);
+
+      modalShell.classList.add('open');
+      modalShell.setAttribute('aria-hidden','false');
+      document.body.classList.add('modal-open');
+
+      // elimina singola foto
+      modalBody.querySelectorAll('.thumb-del').forEach(btn=>{
+        btn.addEventListener('click', async (ev)=>{
+          ev.stopPropagation();
+          const idx = Number(btn.dataset.imgIndex);
+          const gallery = Array.isArray(d.gallery_urls) ? [...d.gallery_urls] : [];
+          const toRemove = gallery[idx];
+          if(toRemove == null) return;
+          if(!confirm('Eliminare definitivamente questa foto dalla gallery dell\'impresa?')) return;
+
+          try{
+            const ref = doc(db, COL, d.id);
+            gallery.splice(idx,1);
+            await updateDoc(ref, { gallery_urls: gallery });
+            toast('Foto eliminata.');
+            d.gallery_urls = gallery;
+
+            const i = ALL_ROWS.findIndex(x=>x.id===d.id);
+            if(i!==-1) ALL_ROWS[i] = d;
+
+            render();        // aggiorna lista
+            openModal(d);    // rinfresca contenuto modale
+          }catch(e){
+            alert('Errore: '+e.message);
+          }
+        });
+      });
+    }
+
+    // chiusura con overlay, X, ESC
+    modalShell?.addEventListener('click',(e)=>{
+      if(e.target===modalShell || e.target.classList.contains('modal-backdrop')){
+        closeModal();
+      }
+    });
+    modalClose?.addEventListener('click',closeModal);
+    window.addEventListener('keydown',e=>{
+      if(e.key==='Escape') closeModal();
+    });
+
+    const COL = "imprese_registrate"; // alias unico per ora
+    let ALL_ROWS = [];
+    let FILTER   = "tutte";
+    let TERM     = "";
+
+    window.setFilter = (f)=>{
+      FILTER=f;
+      document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c.dataset.f===f));
+      render();
+    };
+    window.onSearch = ()=>{
+      TERM = $('#search').value.trim().toLowerCase();
+      render();
+    };
+
+    function escapeHtml(str){
+      return String(str || '').replace(/[&<>"']/g, c => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+      ));
+    }
+
+    function setKPI(rows){
+      const kTot=rows.length;
+      const kApp=rows.filter(r=>r.stato==='approvata').length;
+      const kAtt=rows.filter(r=>r.stato==='in_attesa').length;
+      const kRif=rows.filter(r=>r.stato==='rifiutata').length;
+      const kSca=rows.filter(r=>r.abbonamento_end && new Date(r.abbonamento_end) < new Date()).length;
+
+      $('#kTot').textContent = `Tot: ${kTot}`;
+      $('#kApp').textContent = `Approvate: ${kApp}`;
+      $('#kAtt').textContent = `In attesa: ${kAtt}`;
+      $('#kRif').textContent = `Rifiutate: ${kRif}`;
+      $('#kSca').textContent = `Scadute: ${kSca}`;
+      $('#count').textContent = String(rows.length);
+    }
+
+    function sedeToStrings(sede){
+      const s=sede||{};
+      const indirizzo=s.indirizzo||"";
+      const citta=s.citta||s.comune||"";
+      const prov=s.provincia||"";
+      const cap=s.cap||"";
+      const lat=(s.lat ?? null);
+      const lng=(s.lng ?? null);
+      const luogoBreve=[citta,prov].filter(Boolean).join(" ");
+      const luogoDett=[indirizzo,[citta,prov].filter(Boolean).join(" "),cap].filter(Boolean).join(" · ");
+      const hasGeo=(lat!==null && lng!==null);
+      return {indirizzo,citta,prov,cap,lat,lng,luogoBreve,luogoDett,hasGeo};
+    }
+
+    function applyFilter(rows){
+      let r = rows;
+      if(FILTER!=='tutte'){
+        if(FILTER==='scaduta'){
+          r = r.filter(x => x.abbonamento_end && new Date(x.abbonamento_end) < new Date());
+        }else{
+          r = r.filter(x => (x.stato||'in_attesa')===FILTER);
+        }
+      }
+      if(TERM){
+        r = r.filter(x=>{
+          const nome=(x.nome_impresa||x.nome||x.ragione_sociale||"").toLowerCase();
+          const email=(x.email||x.contatto_email||"").toLowerCase();
+          const comune=(x.comune||x.citta||x.localita||"").toLowerCase();
+          const sede=x.sede_principale||{};
+          const s1=(sede.indirizzo||"").toLowerCase();
+          const s2=(sede.citta||sede.comune||"").toLowerCase();
+          const s3=(sede.provincia||"").toLowerCase();
+          const s4=(sede.cap||"").toLowerCase();
+          return nome.includes(TERM)||email.includes(TERM)||comune.includes(TERM)||s1.includes(TERM)||s2.includes(TERM)||s3.includes(TERM)||s4.includes(TERM);
+        });
+      }
+      return r.sort((a,b)=>{
+        const ta=(a.registrata_il?.seconds||Date.parse(a.registrata_il)||0);
+        const tb=(b.registrata_il?.seconds||Date.parse(b.registrata_il)||0);
+        return (tb - ta);
+      });
+    }
+
+            function render(){
+      const list = $('#list');
+      list.innerHTML = "";
+      const rows = applyFilter(ALL_ROWS);
+      setKPI(ALL_ROWS);
+
+      if(rows.length===0){
+        list.innerHTML = `<div class="empty">Nessun risultato.</div>`;
+        return;
+      }
+
+      rows.forEach(d=>{
+        const id      = d.id;
+        const email   = d.email || d.contatto_email || id;
+        const nome    = d.nome_impresa || d.nome || d.ragione_sociale || "—";
+        const stato   = d.stato || 'in_attesa';
+        const registrataTxt = fmtDate(d.registrata_il || d.created_at || d.createdAt);
+
+        const sede    = sedeToStrings(d.sede_principale);
+
+        // Punti & stelle (sintetici)
+        const baseP   = Number(d.profilo_score ?? 0);
+        const saldoP  = Number(d.punti_saldo ?? 0);
+        const totP    = Math.max(0, baseP + saldoP);
+        const repF    = Number(d.fattore_reputazione ?? 1);
+        const stelleN = Number(d.stelle_correnti ?? d.stelle_profilo ?? d.stelle ?? 0);
+        const stelleClamped = Math.max(0, Math.min(5, isFinite(stelleN) ? stelleN : 0));
+        const stelleTxt = stelleClamped ? '★'.repeat(stelleClamped) : '—';
+
+        const card = document.createElement('div');
+        card.className = "card";
+        card.innerHTML = `
+          <div class="row">
+            <div>
+              <div class="title">${nome}</div>
+              <div class="meta">${email} · ${sede.luogoBreve || (d.comune||d.citta||d.localita||"—")}</div>
+
+              <div class="meta-row" style="margin-top:.35rem;">
+                <span class="pill ${stato==='rifiutata'?'bad':(stato==='approvata'?'ok':'')}">
+                  stato: ${stato}
+                </span>
+                ${d.codice_ofi ? `<span class="pill">codice: ${d.codice_ofi}</span>` : ""}
+                <span class="pill">registrata: ${registrataTxt}</span>
+              </div>
+
+              <div class="meta-row" style="margin-top:.25rem;">
+                <span class="pill">⭐ ${stelleTxt} (${stelleClamped || 0}/5)</span>
+                <span class="pill">Punti totali: ${totP}</span>
+                <span class="pill">Reputazione x${repF || 1}</span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" data-act="open-modal">Scheda completa</button>
+
+              ${stato!=='in_attesa'
+                ? `<button class="btn wait" data-act="to-wait">Riporta in attesa</button>` : ``}
+              ${stato==='approvata'
+                ? `<button class="btn pause" data-act="pause">Sospendi abbonamento</button>` : ``}
+              ${stato!=='rifiutata'
+                ? `<button class="btn danger" data-act="reject">Segna rifiutata</button>` : ``}
+            </div>
+          </div>
+        `;
+
+        // click sulla card → apre la modale (tranne quando clicchi sui bottoni a destra)
+        card.addEventListener('click',(e)=>{
+          if(e.target.closest('.actions')) return;
+          openModal(d);
+        });
+
+        async function patch(upd, toastMsg){
+          try{
+            const ref = doc(db, COL, id);
+            await updateDoc(ref, upd);
+            toast(toastMsg);
+
+            // aggiorno l'oggetto in memoria
+            Object.assign(d, upd);
+            const i = ALL_ROWS.findIndex(x=>x.id===id);
+            if(i!==-1) ALL_ROWS[i] = d;
+
+            render();
+          }catch(e){
+            alert("Errore: "+e.message);
+          }
+        }
+
+        card.querySelectorAll('[data-act]').forEach(btn=>{
+          btn.addEventListener('click', async (ev)=>{
+            ev.stopPropagation(); // non far scattare il click della card
+
+            const act = btn.dataset.act;
+
+            if(act==='open-modal'){
+              openModal(d);
+            }
+
+            if(act==='to-wait'){
+              if(!confirm(`Riportare “${nome}” allo stato IN ATTESA?\n(La vedrai nella pagina Approvazioni → Registrazioni)`)) return;
+              await patch({
+                stato: 'in_attesa',
+                abbonamento_stato: 'paused'
+              }, 'Impresa riportata in attesa.');
+            }
+
+            if(act==='pause'){
+              if(!confirm(`Sospendere l’abbonamento di “${nome}”?`)) return;
+              await patch({ abbonamento_stato: 'paused' }, 'Abbonamento sospeso.');
+            }
+
+            if(act==='reject'){
+              if(!confirm(`Impostare “${nome}” come RIFIUTATA?`)) return;
+              await patch({ stato: 'rifiutata' }, 'Impresa segnata come rifiutata.');
+            }
+          });
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+
+
+        async function loadAll(){
+      const list = $('#list');
+      list.innerHTML = "";
+      for(let i=0; i<4; i++){
+        const d = document.createElement('div');
+        d.className = 'skeleton';
+        list.appendChild(d);
+      }
+
+      const qy   = query(
+        collection(db, COL),
+        orderBy('registrata_il','desc'),
+        limit(200)
+      );
+      const snap = await getDocs(qy);
+      const rows = [];
+      snap.forEach(docu => {
+        rows.push({ id: docu.id, ...docu.data() });
+      });
+      ALL_ROWS = rows;
+      render();
+    }
+
+
+    async function requireAdmin(user){
+      const token=await user.getIdTokenResult(true);
+      if(!token?.claims?.admin){ await signOut(auth); location.replace("/admin/login.html"); return false; }
+      return true;
+    }
+
+    onIdTokenChanged(auth, async (user)=>{
+      if(!user){ location.replace("/admin/login.html"); return; }
+      const ok=await requireAdmin(user); if(!ok) return;
+
+      const mail=user.email||"—";
+      const mailEl=document.getElementById('adminEmail'); if(mailEl) mailEl.textContent=mail;
+      if(user.photoURL){ const av=document.getElementById('adminAvatar'); if(av){ av.src=user.photoURL; av.alt=mail; } }
+
+      await loadAll();
+    });
+  </script>
+</body>
+</html>

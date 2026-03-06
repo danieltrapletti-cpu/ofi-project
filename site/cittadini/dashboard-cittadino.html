@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard Cittadino — OFI</title>
+  <meta name="description" content="Benvenuto in OFI: saluto, crediti, Pensiero del Giorno, card principali e mappa.">
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Stili globali -->
+  <link rel="stylesheet" href="/ofi.css">
+  <!-- Stili dashboard (riuso quelli imprese per struttura / grafica) -->
+  <link rel="stylesheet" href="../imprese/imprese-dashboard.css?v=1.1">
+
+    <!-- Fix specifico per la sidebar cittadino (link leggibili e coerenti) -->
+  <style>
+    .sidebar nav a {
+      color: var(--ofi-text-on-dark, #f9fafb);
+      text-decoration: none;
+    }
+    .sidebar nav a:visited {
+      color: var(--ofi-text-on-dark, #f9fafb);
+    }
+    .sidebar nav a:hover {
+      color: var(--ofi-gold, #caa85a);
+    }
+
+    /* ===== PANNELLO SERVIZI OFI DELUXE ===== */
+    .sidepanel .sp-servizi-deluxe{
+      padding:1.1rem 1.2rem 1.4rem;
+      border-radius:20px;
+      border:1px solid rgba(202,168,90,.85);
+      background:
+        radial-gradient(420px 260px at 0 -80px, rgba(202,168,90,.32), transparent 60%),
+        linear-gradient(135deg,#061426,#0d223e);
+      box-shadow:0 16px 40px rgba(0,0,0,.55);
+      color:#f9fafb;
+    }
+
+    .sp-servizi-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:.75rem;
+      margin-bottom:1rem;
+    }
+
+    .sp-servizi-title{
+      font-size:1.02rem;
+      line-height:1.5;
+    }
+
+    .sp-servizi-pill{
+      font-size:.75rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      padding:.25rem .7rem;
+      border-radius:999px;
+      border:1px solid rgba(202,168,90,.9);
+      color:var(--ofi-gold,#caa85a);
+      background:rgba(0,0,0,.28);
+      white-space:nowrap;
+    }
+
+    .sp-servizi-rows{
+      display:flex;
+      flex-direction:column;
+      gap:1.15rem;
+      margin-top:.6rem;
+    }
+
+    .sp-servizi-row{
+      display:flex;
+      gap:.9rem;
+      align-items:flex-start;
+    }
+
+    .sp-servizi-thumb{
+      flex:0 0 auto;
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      background:rgba(7,19,35,.9);
+      border:1px solid rgba(202,168,90,.65);
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    .sp-servizi-thumb img{
+      width:86%;
+      height:86%;
+      object-fit:contain;
+      display:block;
+    }
+
+    .sp-servizi-row h3{
+      margin:0;
+      font-size:1rem;
+      font-weight:700;
+    }
+
+    .sp-servizi-row p{
+      margin:.18rem 0 .45rem;
+      font-size:.86rem;
+      opacity:.93;
+    }
+
+    .sp-servizi-row .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.45rem;
+    }
+
+    .sp-servizi-row .actions .btn{
+      padding:.45rem .9rem;
+      font-size:.82rem;
+    }
+
+    .sp-servizi-note{
+      margin-top:1.1rem;
+      font-size:.8rem;
+      opacity:.82;
+    }
+
+    .sp-servizi-footer{
+      margin-top:1.2rem;
+    }
+
+    @media (max-width:640px){
+      .sp-servizi-row{
+        align-items:center;
+      }
+    }
+  </style>
+
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+  <!-- JS menu / globale -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+</head>
+<body>
+
+<!-- HEADER SIMILE A DASHBOARD IMPRESE -->
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="dashToggle" class="hamburger" aria-label="Apri menu dashboard" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu"></ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<div class="dash">
+  <!-- SIDEBAR CITTADINO -->
+  <aside id="sidebar" class="sidebar" aria-label="Menu dashboard cittadino">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <img id="sbAvatar" src="../images/avatar-uomo.png" alt="Avatar utente">
+        <span class="sb-name" id="sbName">Utente OFI</span>
+      </div>
+    </div>
+
+    <div class="sb-profile">
+      <div class="sb-meta">
+        <div><strong>Crediti:</strong> <span id="sbCrediti">0</span></div>
+        <div><strong>Profilo:</strong> <span id="sbProfilo">0% completo</span></div>
+      </div>
+      <div class="sb-actions">
+        <a class="btn-ghost" href="profilo-cittadino.html">Vedi profilo</a>
+        <a class="btn" href="portafoglio-crediti.html">Portafoglio</a>
+      </div>
+    </div>
+
+    <div class="group">
+      <h4>Area personale</h4>
+      <nav>
+        <a href="./dashboard-cittadino.html">Dashboard</a>
+        <a href="profilo-cittadino.html">Profilo</a>
+        <a href="pensieri-miei.html">I miei Pensieri</a>
+        <a href="portafoglio-crediti.html">Crediti</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Ricordi &amp; Servizi</h4>
+      <nav>
+        <a href="#pensieri" data-panel="pensieri">Scrivi un Pensiero</a>
+        <a href="#luogo" data-panel="luogo">Luogo della Memoria</a>
+        <a href="#servizi" data-panel="servizi">Servizi OFI</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Supporto &amp; Guida</h4>
+      <nav>
+        <a href="#supporto" data-panel="supporto">Figure di supporto</a>
+        <a href="#articoli" data-panel="articoli">Articoli</a>
+        <a href="#invita" data-panel="invita">Invita un amico</a>
+        <a href="#sec-guida" data-panel="guida">Come funziona OFI</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Impostazioni</h4>
+      <nav>
+        <a href="#" id="logoutBtn">Esci</a>
+      </nav>
+    </div>
+  </aside>
+
+  <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+  <!-- PANNELLO DESTRO (SEMPLIFICATO PER IL CITTADINO) -->
+  <aside id="sidepanel" class="sidepanel" aria-live="polite" aria-hidden="true">
+    <header class="sp-head">
+      <div class="sp-title">
+        <span class="ico" id="spIcon">📄</span>
+        <span id="spTitle">Dettagli sezione</span>
+      </div>
+      <button class="sp-close" id="spClose" type="button">✕ Chiudi</button>
+    </header>
+    <div class="sp-body" id="spBody"></div>
+  </aside>
+
+  <!-- CONTENUTO CENTRALE -->
+  <main class="container">
+    <h2 class="page-title">Dashboard Cittadino</h2>
+
+    <!-- HERO SIMILE A IMPRESE, MA ADATTATA AL CITTADINO -->
+    <section class="hero-dashboard">
+      <figure class="logo-wrap">
+        <img id="dbAvatar" src="../images/avatar-uomo.png" alt="Avatar utente">
+      </figure>
+
+      <h1 id="dbName">Nome Cognome</h1>
+
+      <div class="hero-meta">
+        <!-- Riutilizziamo dbTitle per non rompere lo script -->
+        <span id="dbTitle" class="badge badge-blue">Profilo</span>
+      </div>
+
+      <div class="hero-kpi">
+        <!-- Chip gold con percentuale profilo -->
+        <span id="dbProgText" class="badge badge-gold">Completamento profilo: 0%</span>
+      </div>
+
+      <div class="progress" aria-hidden="true">
+        <span id="dbProg" style="width:0%"></span>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn-ghost" href="profilo-cittadino.html" id="dbEditBtn">Modifica profilo</a>
+      </div>
+    </section>
+
+    <!-- CARDS PRINCIPALI -->
+    <section class="cards">
+
+      <!-- PENSIERO DEL GIORNO IN STILE THOUGHT-CARD -->
+      <article class="card thought-card" id="dbPDG">
+        <div class="thought-head">
+          <div class="thought-left">
+            <h2 class="thought-title">Pensiero del giorno</h2>
+          </div>
+        </div>
+
+        <p id="dbPDGtext" class="thought-quote serif">
+          «Ogni ricordo custodito è un filo d’oro che non si spezza.»
+        </p>
+        <p class="small">
+          Condividilo: può fare bene a chi lo legge, magari proprio oggi.
+        </p>
+
+        <div class="thought-cta">
+          <button class="btn-primary" id="dbSavePDG" type="button">📥 Salva nei tuoi Pensieri</button>
+          <button class="btn-ghost-w" id="dbSharePDG" type="button">↗ Condividi</button>
+          <a class="btn-ghost-w" href="pensieri-miei.html">Apri Pensieri</a>
+        </div>
+
+        <p class="thought-status small" id="dbPDGstatus">
+          <span id="dbPDGshares">0</span> condivisioni oggi
+        </p>
+
+        <img class="wm" src="../images/OFI-Social.png" alt="">
+      </article>
+
+      <!-- MAPPA IN STILE DASH IMPRESE -->
+      <article class="card">
+        <h2>La mappa dei tuoi ricordi</h2>
+        <p class="small muted">
+          La mappa ti aiuta a visualizzare il tuo luogo principale. In futuro potrai creare anche il tuo Luogo della Memoria.
+        </p>
+        <div id="mapDash" class="mapbox-stage"></div>
+        <button id="geoBtn" class="btn" type="button" style="margin-top:.6rem;">
+          📍 Vai alla mia posizione
+        </button>
+      </article>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- AGENTE OFI -->
+<section class="agent" id="sec-agente">
+<button class="agent-fab" id="agentFab" aria-label="Apri Agente OFI">
+  <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+</button>
+  <div class="agent-panel" id="agentPanel" hidden>
+    <header class="agent-top">
+  <div class="agent-id">
+    <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+    <div>
+      <strong>Agente OFI</strong><br/>
+      <small>Sono qui per aiutarti</small>
+    </div>
+  </div>
+  <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+</header>
+    <div class="agent-body">
+      <p class="small">Hai dubbi su come usare la dashboard, i Pensieri o il Luogo della Memoria?
+        Posso guidarti passo passo.</p>
+      <div class="suggest">
+        <button class="chip" data-q="Come completo il profilo?">Come completo il profilo?</button>
+        <button class="chip" data-q="Dove cambio la Frase di copertina?">Dove cambio la Frase di copertina?</button>
+        <button class="chip" data-q="Come invito un amico?">Come invito un amico?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+  </div>
+</section>
+
+<button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+<!-- MAPBOX JS -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+if (window.mapboxgl) {
+  mapboxgl.accessToken = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+  const map = new mapboxgl.Map({
+    container: 'mapDash',
+    style: 'mapbox://styles/mapbox/navigation-night-v1',
+    center: [12.4964, 41.9028],
+    zoom: 4.7
+  });
+  map.addControl(new mapboxgl.NavigationControl({visualizePitch:true}), 'top-right');
+  document.getElementById('geoBtn').addEventListener('click', () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const c = [pos.coords.longitude, pos.coords.latitude];
+        map.flyTo({ center:c, zoom: 12, essential:true });
+        new mapboxgl.Marker({ color:'#caa85a' }).setLngLat(c).addTo(map);
+      });
+    }
+  });
+}
+</script>
+
+<!-- FIREBASE + LOGICA DASHBOARD CITTADINO -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+  getAuth,
+  onAuthStateChanged,
+  signOut,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain:"ofi2025-51ba9.firebaseapp.com",
+    projectId:"ofi2025-51ba9",
+    storageBucket:"ofi2025-51ba9.firebasestorage.app",
+    messagingSenderId:"345581339212",
+    appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  try{
+  await setPersistence(auth, browserLocalPersistence);
+}catch(e){
+  console.warn('Auth persistence non impostata (ok se browser blocca):', e);
+}
+
+  const db = getFirestore(app);
+
+  const $ = id => document.getElementById(id);
+
+  /* ===== SIDEBAR & SIDEpanel (struttura simile imprese) ===== */
+  const sidebar      = document.getElementById('sidebar');
+  const dashOverlay  = document.getElementById('dashOverlay');
+  const dashToggle   = document.getElementById('dashToggle');
+  const sidepanel    = document.getElementById('sidepanel');
+  const spClose      = document.getElementById('spClose');
+  const spBody       = document.getElementById('spBody');
+  const spTitle      = document.getElementById('spTitle');
+  const spIcon       = document.getElementById('spIcon');
+
+  function openSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.add('open');
+    dashOverlay.hidden = false;
+  }
+  function closeSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.remove('open');
+    dashOverlay.hidden = true;
+  }
+
+  dashToggle?.addEventListener('click', () => {
+    if (sidebar.classList.contains('open')) closeSidebar(); else openSidebar();
+  });
+  dashOverlay?.addEventListener('click', closeSidebar);
+
+  function openPanel({ key, title, icon, html }) {
+    if (!sidepanel) return;
+    spTitle.textContent = title;
+    spIcon.textContent  = icon || '📄';
+    spBody.innerHTML    = html || '';
+    sidepanel.classList.add('open');
+    sidepanel.setAttribute('aria-hidden','false');
+  }
+  function closePanel() {
+    if (!sidepanel) return;
+    sidepanel.classList.remove('open');
+    sidepanel.setAttribute('aria-hidden','true');
+  }
+  spClose?.addEventListener('click', closePanel);
+
+  document.querySelectorAll('.sidebar a[data-panel]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const key = a.getAttribute('data-panel');
+      if (!key) return;
+
+      if (key === 'pensieri') {
+        openPanel({
+          key,
+          icon: '🕊️',
+          title: 'Pensieri',
+          html: `
+            <p>
+              Nel tuo spazio <strong>Pensieri</strong> puoi scrivere emozioni, ricordi,
+              parole che senti importanti in questo momento.
+            </p>
+            <p class="small muted">
+              Puoi salvarli solo per te oppure, se lo desideri, condividerli.
+            </p>
+            <p style="margin-top:1rem;">
+              <a class="btn" href="pensieri.html">Vai ai Pensieri</a>
+            </p>
+          `
+        });
+     } else if (key === 'luogo') {
+  openPanel({
+    key,
+    icon: '🕯️',
+    title: 'Luogo della Memoria',
+    html: `
+      <div class="panelBlock" style="
+        padding:1.05rem 1.05rem 1.2rem;
+        border-radius:18px;
+        border:1px solid rgba(202,168,90,.55);
+        background:
+          radial-gradient(560px 240px at 10% -120px, rgba(202,168,90,.22), transparent 60%),
+          linear-gradient(135deg, #071a33, #0b2a4d);
+        box-shadow:0 14px 34px rgba(0,0,0,.42);
+      ">
+
+        <p style="margin:.1rem 0 .65rem; line-height:1.55;">
+          Il <strong>Luogo della Memoria</strong> è uno spazio sobrio e personale dedicato a una persona cara.
+        </p>
+
+        <p class="small" style="margin:0 0 .75rem; opacity:.92; line-height:1.55;">
+          Qui puoi custodire il ricordo, ricevere eventuali consegne
+          e, nel tempo, <span style="color:var(--ofi-gold,#caa85a); font-weight:700;">ricordare una data importante</span>
+          con un gesto delicato.
+        </p>
+
+        <div style="
+          margin:.9rem 0 .75rem;
+          padding:.8rem .85rem;
+          border-radius:14px;
+          background:rgba(0,0,0,.22);
+          border:1px solid rgba(255,255,255,.10);
+        ">
+          <p class="small" style="margin:0; opacity:.9;">
+            Non è un semplice spazio digitale.<br>
+            <strong>È un luogo che resta.</strong>
+          </p>
+        </div>
+
+        <div class="actions" style="margin-top:.6rem;">
+          <a class="btn btn-primary" href="./luogo-memoria.html" style="width:100%; justify-content:center;">
+            Apri il Luogo della Memoria
+          </a>
+        </div>
+
+        <p class="small muted" style="margin:.7rem 0 0; opacity:.75;">
+          Dentro troverai anche le tue ricorrenze e le attività legate ai tuoi Luoghi.
+        </p>
+      </div>
+    `
+  });
+
+           } else if (key === 'servizi') {
+  openPanel({
+    key,
+    icon: '🧭',
+    title: 'Servizi OFI',
+    html: `
+      <div class="panelBlock" style="
+        padding:1.05rem 1.05rem 1.2rem;
+        border-radius:18px;
+        border:1px solid rgba(202,168,90,.55);
+        background:
+          radial-gradient(560px 240px at 10% -120px, rgba(202,168,90,.22), transparent 60%),
+          linear-gradient(135deg, #071a33, #0b2a4d);
+        box-shadow:0 14px 34px rgba(0,0,0,.42);
+      ">
+        <p style="margin:.1rem 0 .65rem; line-height:1.55;">
+          Qui trovi ciò che serve <strong>quando serve</strong>: con discrezione, ordine e chiarezza.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:.9rem; margin-top:.8rem;">
+
+          <!-- PREVENTIVI -->
+          <div style="
+            display:flex; gap:.75rem; align-items:flex-start;
+            padding:.85rem .85rem;
+            border-radius:14px;
+            background:rgba(0,0,0,.22);
+            border:1px solid rgba(255,255,255,.10);
+          ">
+            <div style="
+              width:46px; height:46px; border-radius:14px;
+              display:grid; place-items:center;
+              background:rgba(7,19,35,.9);
+              border:1px solid rgba(202,168,90,.45);
+              flex:0 0 auto;
+            ">🧾</div>
+            <div style="flex:1;">
+              <strong>Preventivi</strong>
+              <p class="small" style="margin:.18rem 0 0; opacity:.9; line-height:1.45;">
+                Se hai un’urgenza pratica, invia una richiesta alle imprese vicino a te e segui lo stato dalla dashboard.
+              </p>
+              <div style="margin-top:.55rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+  <a class="btn btn-primary" href="../preventivo/scelta-preventivo.html">Richiedi un preventivo</a>
+  <a class="btn btn-ghost-w" href="./preventivi.html">I miei preventivi</a>
+</div>
+            </div>
+          </div>
+
+          <!-- NECROLOGI -->
+          <div style="
+            display:flex; gap:.75rem; align-items:flex-start;
+            padding:.85rem .85rem;
+            border-radius:14px;
+            background:rgba(0,0,0,.22);
+            border:1px solid rgba(255,255,255,.10);
+          ">
+            <div style="
+              width:46px; height:46px; border-radius:14px;
+              display:grid; place-items:center;
+              background:rgba(7,19,35,.9);
+              border:1px solid rgba(202,168,90,.45);
+              flex:0 0 auto;
+            ">🕯️</div>
+            <div style="flex:1;">
+              <strong>Necrologi</strong>
+              <p class="small" style="margin:.18rem 0 0; opacity:.9; line-height:1.45;">
+                Pubblica un necrologio in modo semplice e rispettoso. Puoi anche consultare i necrologi pubblici.
+              </p>
+              <div style="margin-top:.55rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+  <a class="btn btn-primary" href="./scelta-necrologi.html">Pubblica un necrologio</a>
+  <a class="btn btn-ghost-w" href="../necrologi.html">Vedi necrologi</a>
+  <a class="btn btn-ghost-w" href="./necrologi-miei.html">I tuoi necrologi</a>
+</div>
+            </div>
+          </div>
+
+        </div>
+
+        <p class="small muted" style="margin:.85rem 0 0; opacity:.75; line-height:1.45;">
+          Il resto vive nei suoi spazi dedicati: <strong>Pensieri</strong> per la tua voce,
+          <strong>Luogo della Memoria</strong> per custodire nel tempo.
+        </p>
+      </div>
+    `
+  });
+
+      } else if (key === 'supporto') {
+        openPanel({
+          key,
+          icon: '🤝',
+          title: 'Figure di supporto',
+          html: `
+            <p>
+              Troverai qui indicazioni su <strong>psicologi, gruppi di ascolto,
+              avvocati e mediatori</strong> che possono affiancarti nel tempo del lutto.
+            </p>
+            <p class="small muted">
+              Lavoriamo per proporti contatti selezionati, con serietà e delicatezza.
+            </p>
+          `
+        });
+      } else if (key === 'articoli') {
+        openPanel({
+          key,
+          icon: '📖',
+          title: 'Articoli OFI',
+          html: `
+            <p>
+              Nella sezione <strong>Articoli</strong> trovi storie, riflessioni e
+              contenuti di conforto dedicati a chi sta vivendo un lutto.
+            </p>
+            <p class="small muted">
+              Alcuni contenuti richiedono l'accesso con il tuo profilo cittadino.
+            </p>
+            <p style="margin-top:1rem;">
+              <a class="btn" href="./articoli/articoli.html">Apri gli articoli</a>
+            </p>
+          `
+        });
+      } else if (key === 'invita') {
+        openPanel({
+          key,
+          icon: '💌',
+          title: 'Invita un amico',
+          html: `
+            <p>
+              In futuro potrai <strong>invitare persone care</strong> a entrare in OFI
+              e condividere i propri ricordi e pensieri.
+            </p>
+            <p class="small muted">
+              Questa funzione non è ancora attiva: la stiamo progettando con attenzione
+              perché sia semplice e rispettosa.
+            </p>
+          `
+        });
+      } else if (key === 'guida') {
+        openPanel({
+          key,
+          icon: '📘',
+          title: 'Guida OFI',
+          html: `
+            <p><strong>Come funziona OFI per i cittadini?</strong></p>
+            <ul class="small">
+              <li><strong>Pensieri:</strong> scrivi e, se vuoi, condividi ciò che senti.</li>
+              <li><strong>Dashboard:</strong> da qui hai sempre a portata di mano crediti, pensieri e servizi.</li>
+              <li><strong>Servizi OFI:</strong> richiesta preventivi, necrologi, anniversari.</li>
+              <li><strong>In futuro:</strong> Luogo della Memoria, figure di supporto e altre funzioni delicate.</li>
+            </ul>
+          `
+        });
+      }
+    });
+  });
+
+  /* ===== LOGOUT CITTADINO ===== */
+$('logoutBtn')?.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.warn('Errore durante il logout cittadino:', err);
+  } finally {
+    // dopo il logout, torna alla pagina di login cittadini
+    window.location.href = 'login-cittadino.html';
+  }
+});
+  /* ===== CARICAMENTO DATI UTENTE ===== */
+  // Auth gate stabile (anti “buttate fuori”)
+  let __AUTH_READY__ = false;
+
+  async function waitForUser(maxMs = 5000) {
+    const start = Date.now();
+    while (Date.now() - start < maxMs) {
+      const u = auth.currentUser;
+      if (u) return u;
+      await new Promise(r => setTimeout(r, 250));
+    }
+    return null;
+  }
+
+  onAuthStateChanged(auth, async (user)=>{
+
+    // Se abbiamo già confermato l'utente, ignora null transitori
+    if (__AUTH_READY__) {
+      if (!user) {
+        console.warn('Auth transient null ignored (dashboard cittadino)');
+        return;
+      }
+    }
+
+    // Primo ingresso: se null, aspetta stabilizzazione
+    if (!user) {
+      user = await waitForUser(5000);
+    }
+
+    if (!user) {
+      window.location.replace('login-cittadino.html');
+      return;
+    }
+
+    __AUTH_READY__ = true;
+
+    const snap = await getDoc(doc(db,'utenti_cittadini', user.uid));
+    if(!snap.exists()) return;
+    const x = snap.data();
+
+    // Avatar + nome
+    if (x.foto) {
+      $('dbAvatar').src = x.foto;
+      $('sbAvatar').src = x.foto;
+    }
+    const nome = x.nome ? x.nome : (x.nome_utente || 'Utente OFI');
+    $('dbName').textContent = nome;
+    $('sbName').textContent = nome;
+
+    // Calcolo completamento profilo
+    let pct = x.progress;
+    if (typeof pct !== 'number') {
+      let score=20;
+      if (x.nome) score+=15;
+      if (x.cognome) score+=15;
+      if (x.luogo && x.lat && x.lng) score+=30;
+      if (x.frase) score+=20;
+      pct = Math.min(100, score);
+    }
+
+    $('dbProg').style.width       = pct + '%';
+    $('dbProgText').textContent   = 'Completamento profilo: ' + pct + '%';
+    $('sbProfilo').textContent    = pct + '% completo';
+
+    if (pct === 100) {
+      $('dbEditBtn').textContent = 'Vedi profilo';
+      $('dbTitle').textContent   = 'Profilo completo ✓';
+    }
+
+    // Crediti (se presenti in futuro)
+    const crediti = Number(x.crediti || x.crediti_saldo || 0);
+    $('sbCrediti').textContent = String(crediti);
+  });
+</script>
+
+</body>
+</html>

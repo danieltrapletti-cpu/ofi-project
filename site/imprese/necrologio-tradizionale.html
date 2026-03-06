@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Necrologio Tradizionale – OFI</title>
+
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="necrologio-nuovo.css">
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <script defer src="/ofi.js"></script>
+<!-- Google Places Autocomplete (solo per Comune riga finale) -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&language=it&region=IT"
+  async
+  defer>
+</script>
+
+  <style>
+  .step-file-current{margin:10px 0 12px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(0,0,0,.12)}
+  .step-file-current-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .step-file-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.35);color:#f3d67b;font-weight:700;font-size:.9rem}
+  .step-file-remove{background:transparent;border:1px solid rgba(255,255,255,.18);color:#fff;padding:6px 10px;border-radius:12px;cursor:pointer}
+  .step-file-remove:hover{border-color:rgba(212,175,55,.55);color:#f3d67b}
+  .step-file-thumb{width:120px;height:160px;object-fit:cover;border-radius:14px;border:2px solid rgba(212,175,55,.45);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .step-file-hint{margin-top:8px;opacity:.85;font-size:.92rem}
+  </style>
+
+</head>
+
+<body>
+
+<!-- ========================================= -->
+<!-- HEADER COERENTE CON LOGIN IMPRESE        -->
+<!-- ========================================= -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/imprese/imprese-dashboard.html">DASHBOARD</a></li>
+      <li><a class="menu-callout" href="/imprese/necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/imprese/preventivi.html">PREVENTIVI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><button class="btn btn-primary" id="logoutBtn" type="button">ESCI</button></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- =============================== -->
+<!-- HERO                           -->
+<!-- =============================== -->
+<section class="necro-hero">
+  <div class="necro-hero-inner">
+    <div class="necro-hero-content">
+      <div class="necro-hero-text">
+        <div class="necro-hero-eyebrow">Creazione Necrologio</div>
+        <h1>Necrologio tradizionale.</h1>
+        <p>
+          In questo formato il testo è <strong>scritto da te</strong>.
+          OFI esegue solo <strong>correzioni leggere</strong> (refusi, grammatica, maiuscole) e una
+          <strong>verifica di idoneità</strong> (es. linguaggio offensivo, spam) prima della pubblicazione.
+        </p>
+
+        <div class="necro-hero-tricolore">
+          <div class="necro-hero-flag"></div>
+          <span class="necro-hero-tricolore-label">Standard Nazionale OFI</span>
+        </div>
+      </div>
+
+      <div class="necro-hero-agent">
+        <div class="necro-hero-agent-photo">
+          <img 
+  src="/images/immagine-tradizionale.png" 
+  alt="Formato tradizionale – Scrittura classica"
+  loading="eager"
+/>
+        </div>
+        <div class="necro-hero-agent-label">OFI</div>
+        <div class="necro-hero-agent-phrase">Formato tradizionale, chiaro e rispettoso.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- WIZARD                         -->
+<!-- =============================== -->
+<main class="ofi-main">
+
+<div class="wizard-shell">
+
+  <div class="wizard-card" id="wizardCard">
+
+    <div class="wizard-header">
+      <div class="wizard-eyebrow">
+        Passo <span id="stepNumber">1</span> di <span id="totalSteps">0</span>
+      </div>
+      <h2 class="wizard-title" id="wizardTitle">Compilazione</h2>
+
+      <div class="step-progress">
+        <div class="step-progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div class="wizard-layout">
+      <div class="agente-chat-container">
+
+        <div id="agentMessage" class="agent-message">
+          👩‍💼 <strong>Agente OFI:</strong> <span id="agentText">Ti guiderò in ogni passo.</span>
+        </div>
+
+        <div class="step-field-wrapper"></div>
+
+        <div id="stepHelper" class="step-helper"></div>
+        <div id="stepError" class="step-error"></div>
+
+        <div class="step-buttons">
+          <button class="btn-soft" id="btnBack" disabled>
+            <i class="fa-solid fa-arrow-left"></i> Indietro
+          </button>
+
+          <button class="btn-primary" id="btnNext">
+            Avanti <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Anteprima generata (solo informativa) -->
+  <section class="preview-shell" id="previewShell">
+    <div class="preview-card" id="previewCard">
+      <div class="preview-header">Anteprima Necrologio</div>
+
+      <div class="preview-photo">
+        <div class="preview-photo-frame">
+          <img id="previewPhoto" src="/images/rosa.png" alt="Foto" />
+        </div>
+      </div>
+
+      <div class="preview-text">
+        <p class="preview-hint">L’anteprima si aggiorna automaticamente durante la compilazione.</p>
+        <div id="previewBody" class="preview-body"></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- =============================== -->
+<!-- SEZIONE FINALE: INFO E BADGE    -->
+<!-- =============================== -->
+<section class="wizard-footer">
+  <div class="wizard-footer-left">
+    Al termine, OFI impagina il necrologio nel formato tradizionale ed esegue una
+    <strong>verifica automatica di idoneità</strong>.
+    Se abilitata, OFI applica anche una <strong>correzione leggera</strong> del testo (senza cambiarne il contenuto).
+  </div>
+  <div class="wizard-footer-right">
+    <div class="agente-ofi-badge">
+      <i class="fa-solid fa-shield-heart"></i>
+      Impaginazione OFI inclusa nel tuo abbonamento
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- MODALE RISULTATO                -->
+<!-- =============================== -->
+<div class="result-modal" id="resultModal">
+  <div class="result-modal-content">
+
+    <button class="modal-close" id="closeResultModal" aria-label="Chiudi anteprima">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <section class="final-preview-shell">
+      <header class="final-preview-header">
+        <h2>Necrologio generato</h2>
+        <p>
+          Questo è l’aspetto con cui il necrologio verrà mostrato nella pagina pubblica OFI.
+          Puoi modificare manualmente il testo prima di salvare.
+        </p>
+      </header>
+
+      <div class="final-preview-card">
+        <div class="final-preview-photo">
+          <div class="final-photo-frame">
+            <img id="finalPhoto" src="/images/rosa.png" alt="Fotografia della persona cara">
+          </div>
+        </div>
+
+        <div class="final-preview-body">
+          <div class="final-ornament" id="finalOrnamentSlot"></div>
+
+          <article id="finalPreviewText" class="final-preview-text">
+            <!-- ...qui viene inserito il testo generato -->
+          </article>
+        </div>
+
+        <!-- FOOTER CARD: impresa (opzionale) a sinistra + sigillo (sempre) a destra -->
+        <div class="final-card-footer">
+
+          <!-- BLOCCO IMPRESA (OPZIONALE) -->
+          <a class="final-impresa-badge hidden" id="finalImpresaBadge"
+             href="#"
+             target="_blank" rel="noopener">
+            <img id="finalImpresaLogo" class="final-impresa-logo"
+                 src="/images/logo-ofi.png" alt="Logo impresa">
+            <div class="final-impresa-meta">
+              <div class="final-impresa-label">A cura di</div>
+              <div class="final-impresa-name" id="finalImpresaName">Impresa</div>
+            </div>
+          </a>
+
+          <!-- SIGILLO (SEMPRE) -->
+          <div class="ofi-editorial-seal ofi-editorial-seal--corner">
+            <img
+              src="/images/sigillo-editoriale.png"
+              alt="Sigillo editoriale OFI"
+              class="ofi-editorial-seal-img"
+            />
+            <div class="ofi-editorial-seal-text">
+              <strong>Sigillo editoriale OFI</strong><br>
+              Testo verificato (idoneità) e corretto nei soli aspetti formali.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <section class="final-preview-controls">
+
+        <div class="final-ornament-block">
+          <span class="final-ornament-label">Elemento grafico:</span>
+          <div class="final-ornament-buttons">
+            <button type="button" class="ornament-btn active" data-ornamento="none">Nessuno</button>
+            <button type="button" class="ornament-btn" data-ornamento="croce">Crocefisso</button>
+            <button type="button" class="ornament-btn" data-ornamento="gesu">Gesù Cristo</button>
+            <button type="button" class="ornament-btn" data-ornamento="madonna">Madonna</button>
+            <button type="button" class="ornament-btn" data-ornamento="angelo">Angioletto</button>
+            <button type="button" class="ornament-btn" data-ornamento="fiore">Fiore</button>
+          </div>
+        </div>
+
+        <div class="final-edit-block">
+          <button type="button" class="final-edit-toggle" id="toggleEditBtn">
+            Vuoi modificare qualcosa?
+          </button>
+
+          <div class="final-edit-container hidden" id="finalEditContainer">
+            <label for="finalEditArea" class="final-edit-label">
+              Modifica liberamente il testo del necrologio.<br>
+              Le modifiche verranno applicate all’anteprima e salvate in OFI.
+            </label>
+            <div class="final-edit-top-preview" id="finalEditTopEditor">
+  <div class="top-edit-row">
+    <label class="mini-label" for="editCitazione">Citazione (facoltativa)</label>
+    <textarea id="editCitazione" class="mini-textarea" rows="2" placeholder="Es. «Ci ricorderemo di te con amore»"></textarea>
+  </div>
+
+  <div class="top-edit-row">
+    <label class="mini-label" for="editFraseApertura">Frase d’apertura (facoltativa)</label>
+    <textarea id="editFraseApertura" class="mini-textarea" rows="2" placeholder="Es. Ci ha lasciato…"></textarea>
+  </div>
+
+  <div class="top-edit-grid">
+    <div class="top-edit-row">
+      <label class="mini-label" for="editNome">Nome</label>
+      <input id="editNome" class="mini-input" type="text" />
+    </div>
+
+    <div class="top-edit-row">
+      <label class="mini-label" for="editCognome">Cognome</label>
+      <input id="editCognome" class="mini-input" type="text" />
+    </div>
+
+    <div class="top-edit-row">
+      <label class="mini-label" for="editVedIn">Dicitura (in/ved.)</label>
+      <input id="editVedIn" class="mini-input" type="text" placeholder="Es. in Bianchi" />
+    </div>
+
+    <div class="top-edit-row">
+      <label class="mini-label" for="editSoprannome">Soprannome</label>
+      <input id="editSoprannome" class="mini-input" type="text" placeholder="Es. (Margì)" />
+    </div>
+
+    <div class="top-edit-row">
+      <label class="mini-label" for="editEta">Età</label>
+      <input id="editEta" class="mini-input" type="text" placeholder="Es. 80" />
+    </div>
+  </div>
+
+  <div class="top-lock-hint">
+    Ordine della parte superiore bloccato (OFI mantiene l’impaginazione).
+  </div>
+</div>
+
+<textarea id="finalEditArea" class="final-edit-area" rows="7"></textarea>
+
+            <button type="button" class="final-edit-apply" id="applyEditBtn">
+              Applica modifiche al testo
+            </button>
+          </div>
+        </div>
+
+        <div class="final-actions">
+          <button type="button" class="final-action-btn soft" id="resetWizardBtn">
+            <i class="fa-solid fa-rotate"></i>
+            Nuovo necrologio
+          </button>
+          <button type="button" class="final-action-btn soft" id="backToWizardBtn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Torna alla compilazione
+          </button>
+          <button type="button" class="final-action-btn primary" id="saveFinalBtn">
+            <i class="fa-regular fa-bookmark"></i>
+            Conferma e salva su OFI
+          </button>
+        </div>
+      </section>
+
+      <!-- Contenitore interno -->
+      <div class="final-hidden-variants" aria-hidden="true">
+        <div class="result-text hidden" id="var1"></div>
+      </div>
+
+    </section>
+
+  </div>
+</div>
+
+</main>
+
+<!-- Footer legale -->
+<footer class="necro-footer">
+  <p>
+    Il presente necrologio è impaginato in formato tradizionale e sottoposto a verifica automatica di idoneità prima della pubblicazione.
+    L’impresa è responsabile della veridicità dei contenuti e delle autorizzazioni dei familiari.
+  </p>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, getDoc,
+  GeoPoint
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+import * as geofire from "https://cdn.jsdelivr.net/npm/geofire-common@6.0.0/dist/geofire-common/index.esm.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9",
+  storageBucket: "ofi2025-51ba9.firebasestorage.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+let currentUser = null;
+let __authReadyResolve = null;
+const authReady = new Promise((res)=>{ __authReadyResolve = res; });
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user || null;
+  if (__authReadyResolve){ __authReadyResolve(); __authReadyResolve = null; }
+  console.log("Utente autenticato in necrologio-tradizionale:", currentUser?.email || "nessuno");
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // DOM
+  const wizardTitle = document.getElementById("wizardTitle");
+  const progressBar = document.getElementById("progressBar");
+  const stepHelper  = document.getElementById("stepHelper");
+  const stepError   = document.getElementById("stepError");
+  const fieldWrapper = document.querySelector(".step-field-wrapper");
+  const agentTextEl = document.getElementById("agentText");
+  const btnBack = document.getElementById("btnBack");
+  const btnNext = document.getElementById("btnNext");
+
+  const previewPhoto = document.getElementById("previewPhoto");
+  const previewBody  = document.getElementById("previewBody");
+
+  const resultModal = document.getElementById("resultModal");
+  const closeResultModal = document.getElementById("closeResultModal");
+  const finalPhoto = document.getElementById("finalPhoto");
+  const finalOrnamentSlot = document.getElementById("finalOrnamentSlot");
+  const finalPreviewText = document.getElementById("finalPreviewText");
+  const finalImpresaBadge = document.getElementById("finalImpresaBadge");
+  const finalImpresaName  = document.getElementById("finalImpresaName");
+  const finalImpresaLogo  = document.getElementById("finalImpresaLogo");
+
+  const toggleEditBtn = document.getElementById("toggleEditBtn");
+  const finalEditContainer = document.getElementById("finalEditContainer");
+  const finalEditArea = document.getElementById("finalEditArea");
+  const applyEditBtn = document.getElementById("applyEditBtn");
+  const editCitazione = document.getElementById("editCitazione");
+  const editFraseApertura = document.getElementById("editFraseApertura");
+  const editNome = document.getElementById("editNome");
+  const editCognome = document.getElementById("editCognome");
+  const editVedIn = document.getElementById("editVedIn");
+  const editSoprannome = document.getElementById("editSoprannome");
+  const editEta = document.getElementById("editEta");
+
+  const resetWizardBtn = document.getElementById("resetWizardBtn");
+  const backToWizardBtn = document.getElementById("backToWizardBtn");
+  const saveFinalBtn = document.getElementById("saveFinalBtn");
+
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const aiLoadingOverlay = document.getElementById("aiLoadingOverlay");
+  const aiLoadingText = document.getElementById("aiLoadingText");
+  const aiLoadingBar = document.getElementById("aiLoadingBar");
+  const aiLoadingPct = document.getElementById("aiLoadingPct");
+
+  const stepNumberEl = document.getElementById("stepNumber");
+  const totalStepsEl = document.getElementById("totalSteps");
+
+  const ornamentButtons = Array.from(document.querySelectorAll(".ornament-btn"));
+  const var1 = document.getElementById("var1");
+
+  // Stato
+  let answers = {};
+    // ----------------------------------
+  // PREFILL CAMPi se sei in MODIFICA
+  // ----------------------------------
+  async function prefillWizardIfEditingLocal(){
+    const editingId = getEditingNecrologioIdFromUrl();
+    if (!IS_EDIT_MODE || !editingId) return false;
+    await authReady;
+    if (!currentUser){
+      alert("Per modificare devi essere loggato come impresa.");
+      window.location.href = "/imprese/login-imprese.html";
+      return false;
+    }
+    const snap = await getDoc(doc(db, "necrologi_pubblicati", editingId));
+    if (!snap.exists()){
+      alert("Necrologio non trovato (ID: " + editingId + ")");
+      window.location.href = "/imprese/necrologi.html";
+      return false;
+    }
+    const data = snap.data() || {};
+    if (data.uidImpresa && data.uidImpresa !== currentUser.uid){
+      alert("Questo necrologio non appartiene alla tua impresa.");
+      window.location.href = "/imprese/necrologi.html";
+      return false;
+    }
+    answers = (data.answersSnapshot && typeof data.answersSnapshot === "object") ? { ...data.answersSnapshot } : {};
+    photoDataUrl = (data.photoURL || data.photoDataUrl || data.foto || (answers && answers.foto) || null);
+    // normalizza: foto vive sempre in answers.foto
+    try { answers.foto = photoDataUrl ? String(photoDataUrl) : ""; } catch {}
+currentOrnamentKey = (data.ornamentKey || currentOrnamentKey || "none");
+    geoFinale = (data.geoFinale || geoFinale || null);
+
+    // aggiorna foto anteprima (se disponibili)
+    try{ if (previewPhoto) previewPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png"; }catch{}
+    try{ if (finalPhoto) finalPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png"; }catch{}
+
+    // aggiorna ornamento UI
+    try{
+      ornamentButtons.forEach(b=>b.classList.remove("active"));
+      const ob = ornamentButtons.find(b => (b.dataset.ornamento||"") === currentOrnamentKey);
+      if (ob) ob.classList.add("active");
+      if (typeof renderOrnament === "function") renderOrnament(currentOrnamentKey);
+    }catch{}
+    return true;
+  }
+
+let currentStepIndex = 0;
+  let photoDataUrl = null;
+  let currentOrnamentKey = "none";
+  async function uploadNecroPhoto(file) {
+  if (!currentUser) throw new Error("Devi essere loggato per caricare la foto.");
+
+  // Allineato alle rules: max 2MB
+  const MAX_MB = 2;
+  if (file.size > MAX_MB * 1024 * 1024) {
+    throw new Error(`Foto troppo grande. Max ${MAX_MB}MB.`);
+  }
+
+  const safeName = (file.name || "foto.jpg").replace(/[^\w.\-]+/g, "_");
+
+  // ✅ Questo percorso è quello consentito dalle tue storage.rules:
+  // match /necrologi_media/{uid}/{necrologioId}/{fileName}
+  // Usiamo "temp" come necrologioId (va benissimo) finché non pubblichi.
+  const path = `necrologi_media/${currentUser.uid}/temp/${Date.now()}_${safeName}`;
+
+  const storageRef = sRef(storage, path);
+
+  await uploadBytes(storageRef, file, {
+    contentType: file.type || "image/jpeg"
+  });
+
+  return await getDownloadURL(storageRef);
+}
+
+  // Geo per Mappa dei Ricordi (solo comune riga finale)
+let geoFinale = null;  // { placeId, label, comune, provincia, lat, lng, source }
+
+ // Wizard essenziale (tradizionale) — pochi step, testo libero
+const steps = [
+  { id:"nome", title:"Nome della persona cara.", required:true, type:"text", placeholder:"Es. Maria",
+    agent:"Inserisci il nome.", helper:"" },
+
+  { id:"cognome", title:"Cognome.", required:true, type:"text", placeholder:"Es. Rossi",
+    agent:"Inserisci il cognome.", helper:"" },
+
+  { id:"dataMorte", title:"Data di morte.", required:true, type:"date",
+    placeholder:"", agent:"Seleziona la data di morte.", helper:"" },
+
+
+  { id:"vedIn", title:"Dicitura (facoltativa).", required:false, type:"text", placeholder:"Es. in Bianchi / ved. …",
+    agent:"Se vuoi, inserisci “in …” oppure “ved. …”.", helper:"" },
+
+  {
+  id: "soprannome",
+  title: "Soprannome (facoltativo).",
+  required: false,
+  type: "text",
+  placeholder: "Es. Nonna Rina, Zio Gigi",
+  agent: "Se la persona era conosciuta con un soprannome affettuoso, puoi inserirlo qui.",
+  helper: "Il soprannome verrà mostrato sotto il nome, tra parentesi."
+},
+
+  { id:"eta", title:"Età (facoltativo).", required:false, type:"text", placeholder:"Es. 80",
+    agent:"Se vuoi, indica l’età (solo numero).", helper:"" },
+
+  { id:"citazione", title:"Citazione iniziale (facoltativa).", required:false, type:"textarea",
+    placeholder:"Es. «Sarai sempre nei nostri cuori.»",
+    agent:"Se desideri, aggiungi una citazione breve. Altrimenti lascia vuoto.",
+    helper:"" },
+
+{ 
+  id: "fraseApertura",
+  title: "Frase d’apertura (facoltativa).",
+  required: false,
+  type: "textarea",
+  placeholder: "Es. È mancata all’affetto dei suoi cari.\nCi ha lasciato serenamente.\nÈ tornata alla Casa del Padre.",
+  agent: "Qui puoi inserire la frase che introduce il necrologio (es. «È mancata all’affetto dei suoi cari»).",
+  helper: "Questa frase viene mostrata sotto la citazione e prima del nome del defunto."
+},
+
+  { id:"testoCompleto", title:"Testo del necrologio (libero).", required:true, type:"textarea",
+    placeholder:"Incolla qui il testo completo così come lo vuoi pubblicare…",
+    agent:"Qui puoi scrivere o incollare il testo completo. OFI non lo riscrive: effettua solo verifica idoneità e piccole correzioni formali (se richieste).",
+    helper:`Suggerimento (facoltativo):
+- Chi annuncia…
+- Ringraziamenti…
+- Salma / visite / veglia…
+- Funerali (data, ora, luogo)…
+- Cremazione / cimitero…
+- Frase finale…
+
+Consiglio: separa i paragrafi lasciando una riga vuota.` },
+
+  { id:"comuneRigaFinale", title:"Comune (riga finale).", required:true, type:"text",
+    placeholder:"Es. BRUSAPORTO",
+    agent:"Scrivi il comune della riga finale.", helper:"" },
+
+  { id:"dataNecrologio", title:"Data (riga finale).", required:true, type:"date",
+    placeholder:"", agent:"Seleziona la data della riga finale.", helper:"" },
+
+  { id:"foto", title:"Foto (facoltativa).", required:false, type:"file", placeholder:"",
+    agent:"Se vuoi aggiungere una foto, caricala qui (facoltativo).", helper:"" },
+
+  {
+  id: "consensi",
+  title: "Conferma consensi.",
+  required: true,
+  type: "select",
+  agent: "Confermi di avere le autorizzazioni e che i dati inseriti sono corretti?",
+  helper: "La conferma è obbligatoria per procedere.",
+  options: [
+    { value: "", label: "Seleziona un'opzione" },
+    { value: "si", label: "Sì, confermo" }
+  ]
+}
+];
+
+  const TOTAL_STEPS = steps.length;
+  if (totalStepsEl) totalStepsEl.textContent = String(TOTAL_STEPS);
+
+  // Loader
+  function setLoading(on, pct = 0, msg = "Preparazione…") {
+    if (!aiLoadingOverlay) return;
+    aiLoadingOverlay.hidden = !on;
+    if (aiLoadingText) aiLoadingText.textContent = msg;
+    if (aiLoadingPct) aiLoadingPct.textContent = `${Math.max(0, Math.min(100, Number(pct)||0))}%`;
+    if (aiLoadingBar) aiLoadingBar.style.width = `${Math.max(0, Math.min(100, Number(pct)||0))}%`;
+    document.body.style.overflow = on ? "hidden" : "";
+  }
+
+  // Utils
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  
+  function textToParagraphsHtml(text) {
+  const raw = (text || "").replace(/\r\n/g, "\n").trim();
+  if (!raw) return "";
+
+  // Se l'utente mette righe vuote => paragrafi
+  // Se mette solo a-capo singoli => li trattiamo comunque come paragrafi (tradizionale è meglio così)
+  const hasBlankLines = /\n{2,}/.test(raw);
+
+  const chunks = hasBlankLines
+    ? raw.split(/\n{2,}/)
+    : raw.split(/\n+/);
+
+  return chunks
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(p => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
+    .join("\n");
+}
+
+function ensureSentenceEnd(str) {
+    const trimmed = (str || "").trim();
+    if (!trimmed) return "";
+    const last = trimmed.slice(-1);
+    if (".!?…".includes(last)) return trimmed;
+    return trimmed + ".";
+  }
+  function formatDateItalian(dateString) {
+    if (!dateString) return "";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return dateString;
+    const [y, m, d] = parts;
+    return `${d}/${m}/${y}`;
+  }
+  function cleanYesPrefix(s) {
+    return (s || "")
+      .toString()
+      .trim()
+      .replace(/^\s*s[ìi]\s*\.{0,}\s*/i, "")
+      .replace(/^\s*s[ìi]\s*[:,\-]\s*/i, "")
+      .trim();
+  }
+
+function extractComuneProvinciaFromPlace(place) {
+  // Ritorna { comune, provincia } quando possibile
+  const out = { comune: "", provincia: "" };
+  const comps = place?.address_components || [];
+
+  const get = (type) => comps.find(c => (c.types || []).includes(type));
+
+  const locality = get("locality") || get("postal_town") || get("administrative_area_level_3");
+  const prov = get("administrative_area_level_2");
+
+  out.comune = locality?.long_name || "";
+  out.provincia = prov?.short_name || prov?.long_name || "";
+  return out;
+}
+
+function initComuneFinaleAutocomplete(inputEl) {
+  if (!inputEl) return;
+
+  // Se Google non è caricato (evita crash)
+  if (!window.google || !google.maps || !google.maps.places) {
+    console.warn("Google Places non disponibile: verifica key o caricamento script.");
+    return;
+  }
+
+  // Reset geo se l’utente scrive a mano dopo una selezione
+  inputEl.addEventListener("input", () => {
+    geoFinale = null;
+  });
+
+  const ac = new google.maps.places.Autocomplete(inputEl, {
+    types: ["(cities)"],
+    componentRestrictions: { country: "it" },
+    fields: ["place_id", "geometry", "name", "formatted_address", "address_components"]
+  });
+
+  ac.addListener("place_changed", () => {
+    const place = ac.getPlace();
+
+    const lat = place?.geometry?.location?.lat?.();
+    const lng = place?.geometry?.location?.lng?.();
+
+    if (!place?.place_id || typeof lat !== "number" || typeof lng !== "number") {
+      geoFinale = null;
+      return;
+    }
+
+    const extra = extractComuneProvinciaFromPlace(place);
+    const label = place.formatted_address || place.name || inputEl.value;
+
+    geoFinale = {
+      placeId: place.place_id,
+      label,
+      comune: (extra.comune || "").trim(),
+      provincia: (extra.provincia || "").trim(),
+      lat,
+      lng,
+      source: "google_places"
+    };
+  });
+}
+
+  // Render step
+  function renderStep(index) {
+    currentStepIndex = Math.max(0, Math.min(TOTAL_STEPS - 1, index));
+    const step = steps[currentStepIndex];
+
+    if (wizardTitle) wizardTitle.textContent = step.title;
+    if (stepNumberEl) stepNumberEl.textContent = String(currentStepIndex + 1);
+
+    if (progressBar) {
+      const pct = Math.round(((currentStepIndex + 1) / TOTAL_STEPS) * 100);
+      progressBar.style.width = `${pct}%`;
+    }
+
+    if (stepError) stepError.textContent = "";
+    if (stepHelper) stepHelper.textContent = step.helper || "";
+
+    if (btnBack) btnBack.disabled = currentStepIndex === 0;
+    if (btnNext) btnNext.textContent = (currentStepIndex === TOTAL_STEPS - 1) ? "Genera" : "Avanti";
+
+    if (agentTextEl) agentTextEl.textContent = step.agent || "Ti guido passo passo.";
+
+    if (!fieldWrapper) return;
+    fieldWrapper.innerHTML = "";
+
+        if (step.type === "select") {
+      const sel = document.createElement("select");
+      sel.id = "stepInput";
+      sel.className = "step-select";
+
+      (step.options || []).forEach(opt => {
+        const o = document.createElement("option");
+        o.value = opt.value;
+        o.textContent = opt.label;
+        sel.appendChild(o);
+      });
+
+      sel.value = (answers[step.id] || "");
+      fieldWrapper.appendChild(sel);
+      return;
+    }
+
+if (step.type === "file") {
+  const file = document.createElement("input");
+  file.id = "stepInput";
+  file.type = "file";
+  file.accept = "image/*";
+  file.className = "step-file";
+  // ✅ In modalità modifica non è possibile "pre-compilare" un input file.
+  // Mostriamo quindi la foto già presente (se esiste) e permettiamo la sostituzione.
+  if (photoDataUrl) {
+    const info = document.createElement("div");
+    info.className = "step-file-current";
+
+    const row = document.createElement("div");
+    row.className = "step-file-current-row";
+
+    const chip = document.createElement("span");
+    chip.className = "step-file-chip";
+    chip.textContent = "Foto attuale: presente ✅";
+
+    const btnRemove = document.createElement("button");
+    btnRemove.type = "button";
+    btnRemove.className = "step-file-remove";
+    btnRemove.textContent = "Rimuovi foto";
+    btnRemove.addEventListener("click", () => {
+      photoDataUrl = null;
+      answers[step.id] = "";
+      answers.foto = "";
+      if (previewPhoto) previewPhoto.src = "/images/rosa.png";
+      if (finalPhoto) finalPhoto.src = "/images/rosa.png";
+      // reset input file
+      try { file.value = ""; } catch {}
+      // aggiorna UI
+      try { info.remove(); } catch {}
+    });
+
+    row.appendChild(chip);
+    row.appendChild(btnRemove);
+
+    const img = document.createElement("img");
+    img.className = "step-file-thumb";
+    img.src = photoDataUrl;
+    img.alt = "Foto attuale";
+
+    const hint = document.createElement("div");
+    hint.className = "step-file-hint";
+    hint.textContent = "Se vuoi sostituirla, seleziona un nuovo file qui sotto.";
+
+    info.appendChild(row);
+    info.appendChild(img);
+    info.appendChild(hint);
+    fieldWrapper.appendChild(info);
+  }
+
+
+  file.addEventListener("change", async (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) {
+      photoDataUrl = null;
+      answers[step.id] = "";
+      if (previewPhoto) previewPhoto.src = "/images/rosa.png";
+      if (finalPhoto) finalPhoto.src = "/images/rosa.png";
+      return;
+    }
+
+if (!currentUser) {
+  alert("Devi essere loggato come impresa per caricare la foto.");
+  e.target.value = ""; // reset input
+  return;
+}
+
+    try {
+      setLoading(true, 40, "Caricamento foto…");
+
+      const url = await uploadNecroPhoto(f);
+
+      photoDataUrl = url;           // ORA È UN URL
+      answers[step.id] = url;
+
+      if (previewPhoto) previewPhoto.src = url;
+      if (finalPhoto) finalPhoto.src = url;
+
+    } catch (err) {
+      console.error("Errore upload foto:", err);
+      alert(err.message || "Errore durante il caricamento della foto.");
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  fieldWrapper.appendChild(file);
+  return;
+}
+
+    if (step.type === "textarea") {
+      const ta = document.createElement("textarea");
+      ta.id = "stepInput";
+      ta.className = "step-textarea";
+      ta.rows = (step.id === "testoCompleto") ? 12 : 5;
+      ta.placeholder = step.placeholder || "";
+      ta.value = (answers[step.id] || "");
+      fieldWrapper.appendChild(ta);
+      return;
+    }
+
+    const input = document.createElement("input");
+input.id = "stepInput";
+input.type = step.type === "date" ? "date" : "text";
+input.placeholder = step.placeholder || "Rispondi qui…";
+input.autocomplete = "off";
+input.value = (answers[step.id] || "");
+fieldWrapper.appendChild(input);
+
+// Autocomplete SOLO per comune riga finale (Mappa dei Ricordi)
+if (step.id === "comuneRigaFinale") {
+  // Reset quando NON sei in modifica (in edit mode manteniamo il prefill)
+  if (!IS_EDIT_MODE) geoFinale = null;
+  // init autocomplete
+  initComuneFinaleAutocomplete(input);
+}
+  }
+
+  // Validate
+  function validateCurrentStep() {
+    const step = steps[currentStepIndex];
+    const input = document.getElementById("stepInput");
+
+        if (step.id === "consensi") {
+      const val = (input?.value || "").trim();
+      if (val !== "si") {
+        stepError.textContent = "Devi confermare il consenso per procedere.";
+        return false;
+      }
+      return true;
+    }
+
+   if (step.type === "file") return true;
+
+const value = (input?.value || "").trim();
+
+// Regola speciale: Comune riga finale deve essere selezionato da autocomplete
+if (step.id === "comuneRigaFinale") {
+  if (!value) {
+    stepError.textContent = "Questo campo è obbligatorio.";
+    return false;
+  }
+  if (!geoFinale || typeof geoFinale.lat !== "number" || typeof geoFinale.lng !== "number") {
+    stepError.textContent = "Seleziona il comune dalla lista (serve per la Mappa dei Ricordi).";
+    return false;
+  }
+  return true;
+}
+
+if (step.required && !value) {
+  stepError.textContent = "Questo campo è obbligatorio.";
+  return false;
+}
+return true;
+
+  }
+
+  // Save answer
+  function saveCurrentStepAnswer() {
+    const step = steps[currentStepIndex];
+    const input = document.getElementById("stepInput");
+
+    if (step.type === "file") {
+  if (photoDataUrl) answers[step.id] = photoDataUrl; // URL Storage
+  return;
+}
+    if (!input) return;
+
+    let value = (input.value || "").trim();
+    // pulizia leggera per campi pratici
+    if (["orariVisita","funeraleOra","funeralePartenza"].includes(step.id)) {
+      value = cleanYesPrefix(value);
+    }
+    answers[step.id] = value;
+  }
+
+  // Build HTML (template deterministico, non AI)
+  function buildNecrologioHtmlFromAnswers() {
+  const nome = (answers.nome || "").trim();
+  const cognome = (answers.cognome || "").trim();
+  const vedIn = (answers.vedIn || "").trim();
+  const eta = (answers.eta || "").trim();
+  const soprannome = (answers.soprannome || "").trim();
+
+  const citazione = (answers.citazione || "").trim();
+  const testoCompleto = (answers.testoCompleto || "").trim();
+  const fraseApertura = (answers.fraseApertura || "").trim();
+
+  const comuneFinale = (answers.comuneRigaFinale || "").trim().toUpperCase();
+  const dataFinale = formatDateItalian((answers.dataNecrologio || "").trim());
+
+  const righe = [];
+
+  // Citazione (se presente)
+  if (citazione) {
+    const hasQuotes = /[«»"]/.test(citazione);
+    const safe = escapeHtml(citazione);
+    righe.push(hasQuotes ? `<p><em>${safe}</em></p>` : `<p><em>«${safe}»</em></p>`);
+  }
+
+  // Frase d’apertura (se presente) — VA QUI
+if (fraseApertura) {
+  righe.push(
+    `<p>${escapeHtml(fraseApertura).replace(/\n/g, "<br>")}</p>`
+  );
+}
+
+  // Nome + eventuali righe
+  const headerLines = [];
+headerLines.push(`<strong>${escapeHtml(`${nome} ${cognome}`.trim().toUpperCase())}</strong>`);
+
+if (vedIn) {
+  headerLines.push(`<span>${escapeHtml(vedIn)}</span>`);
+}
+
+if (soprannome) {
+  headerLines.push(`<span><em>(${escapeHtml(soprannome)})</em></span>`);
+}
+
+if (eta) {
+  headerLines.push(`<span><em>di anni ${escapeHtml(eta)}</em></span>`);
+}
+
+  righe.push(`<p>${headerLines.join("<br>")}</p>`);
+
+  righe.push(`<p class="section-break"></p>`);
+
+
+  // Corpo: TESTO LIBERO (nessuna frase aggiunta da OFI)
+  if (testoCompleto) {
+    righe.push(textToParagraphsHtml(testoCompleto));
+  }
+
+  // Riga finale
+  if (comuneFinale || dataFinale) {
+    const finale = `${comuneFinale}${(comuneFinale && dataFinale) ? ", " : ""}${dataFinale}`.trim();
+    righe.push(`<p class="section-break"></p>`);
+    righe.push(`<p>${escapeHtml(finale)}</p>`);
+  }
+
+  return righe.join("\n");
+}
+
+
+function htmlToPlainText(html){
+  const tmp = document.createElement("div");
+  tmp.innerHTML = String(html || "");
+  return (tmp.textContent || tmp.innerText || "").replace(/\s+/g," ").trim();
+}
+
+function buildDraftForFinalCheck(){
+  // Draft testuale: serve alla Netlify Function per la verifica (alcune versioni lo richiedono).
+  const parts = [];
+  const nome = `${(answers.nome||"").trim()} ${(answers.cognome||"").trim()}`.trim();
+  if (nome) parts.push(nome);
+  if ((answers.vedIn||"").trim()) parts.push((answers.vedIn||"").trim());
+  if ((answers.soprannome||"").trim()) parts.push((answers.soprannome||"").trim());
+  if ((answers.eta||"").trim()) parts.push(`Anni ${(answers.eta||"").trim()}`);
+  if ((answers.citazione||"").trim()) parts.push((answers.citazione||"").trim());
+  if ((answers.fraseApertura||"").trim()) parts.push((answers.fraseApertura||"").trim());
+  if ((answers.testoCompleto||"").trim()) parts.push((answers.testoCompleto||"").trim());
+  const finale = `${(answers.comuneRigaFinale||"").trim()} ${(answers.dataNecrologio||"").trim()}`.trim();
+  if (finale) parts.push(finale);
+  return parts.join("\n\n").trim();
+}
+
+
+  function updatePreview() {
+    if (!previewBody) return;
+    const any = Object.values(answers).some(v => (v || "").toString().trim().length > 0);
+    if (!any) { previewBody.innerHTML = ""; return; }
+    previewBody.innerHTML = buildNecrologioHtmlFromAnswers();
+  }
+
+  // Modale
+  function openResultModal() {
+  if (!resultModal) return;
+
+  // 👉 ATTIVA BADGE IMPRESA (A cura di...)
+  hydrateImpresaBadge();
+
+  resultModal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+  function closeModal() {
+    if (!resultModal) return;
+    resultModal.classList.remove("open");
+    const loaderOn = !(document.getElementById("aiLoadingOverlay")?.hidden);
+    document.body.style.overflow = loaderOn ? "hidden" : "";
+  }
+
+  if (closeResultModal) closeResultModal.addEventListener("click", closeModal);
+  if (backToWizardBtn) backToWizardBtn.addEventListener("click", closeModal);
+
+  // Ornaments
+  function getOrnamentAsset(type) {
+    const base = "/images/ornamenti/";
+    const map = { croce:"croce.png", gesu:"gesu.png", madonna:"madonna.png", angelo:"angelo.png", fiore:"fiore.png" };
+    const file = map[type];
+    if (!file) return "";
+    return `<img class="ornament-img" src="${base}${file}" alt="" aria-hidden="true">`;
+  }
+  function renderOrnament(type) {
+    currentOrnamentKey = (type && type !== "none") ? type : "none";
+    if (!finalOrnamentSlot) return;
+    finalOrnamentSlot.innerHTML = (currentOrnamentKey === "none") ? "" : getOrnamentAsset(currentOrnamentKey);
+  }
+  ornamentButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      ornamentButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderOrnament(btn.dataset.ornamento || "none");
+    });
+  });
+  renderOrnament("none");
+  
+  // ===============================
+// Edit UI (TOP + BODY)
+// - TOP: modificabile ma ordine bloccato (usa sempre answers + template)
+// - BODY: testo libero
+// ===============================
+
+if (toggleEditBtn) {
+  toggleEditBtn.addEventListener("click", () => {
+    const isOpenNow = !finalEditContainer.classList.contains("hidden"); // true se è già aperto
+    finalEditContainer.classList.toggle("hidden", isOpenNow);
+
+    // testo bottone
+    toggleEditBtn.textContent = isOpenNow ? "Vuoi modificare qualcosa?" : "Nascondi modifiche";
+
+    // Se stiamo APRENDO (quindi prima era chiuso)
+    if (!isOpenNow) {
+      // Prefill TOP dai dati ufficiali (answers)
+      if (editCitazione) editCitazione.value = answers.citazione || "";
+      if (editFraseApertura) editFraseApertura.value = answers.fraseApertura || "";
+      if (editNome) editNome.value = answers.nome || "";
+      if (editCognome) editCognome.value = answers.cognome || "";
+      if (editVedIn) editVedIn.value = answers.vedIn || "";
+      if (editSoprannome) editSoprannome.value = answers.soprannome || "";
+      if (editEta) editEta.value = answers.eta || "";
+
+      // Prefill BODY
+      if (finalEditArea) finalEditArea.value = (answers.testoCompleto || "").trim();
+    }
+  });
+}
+
+if (applyEditBtn) {
+  applyEditBtn.addEventListener("click", () => {
+    if (!finalPreviewText) return;
+
+    // 1) Salva TOP nei dati (answers)
+    answers.citazione = (editCitazione?.value || "").trim();
+    answers.fraseApertura = (editFraseApertura?.value || "").trim();
+    answers.nome = (editNome?.value || "").trim();
+    answers.cognome = (editCognome?.value || "").trim();
+    answers.vedIn = (editVedIn?.value || "").trim();
+    answers.soprannome = (editSoprannome?.value || "").trim();
+    answers.eta = (editEta?.value || "").trim();
+
+    // sicurezza minima (consigliata): nome/cognome non vuoti
+    if (!answers.nome || !answers.cognome) {
+      alert("Nome e Cognome non possono essere vuoti.");
+      return;
+    }
+
+    // 2) Salva BODY libero
+    answers.testoCompleto = (finalEditArea?.value || "").trim();
+
+    // 3) Ricostruisci HTML DAL TEMPLATE (ordine bloccato + grafica coerente)
+    const rebuilt = buildNecrologioHtmlFromAnswers();
+    finalPreviewText.innerHTML = rebuilt;
+    if (var1) var1.innerHTML = rebuilt;
+  });
+}  
+
+  // Netlify function calls
+  async function aiProofreadTradizionale(fields) {
+    const res = await fetch("/.netlify/functions/chatNecrologio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ mode: "proofread_tradizionale", fields: fields || {} })
+    });
+    if (!res.ok) throw new Error(await res.text().catch(() => "Proofread error"));
+    return await res.json(); // { ok, corrected?, reason? }
+  }
+
+  async function aiFinalCheck(html, draft) {
+  const todayISO = new Date().toISOString().slice(0, 10); // es: 2025-12-31
+  const res = await fetch("/.netlify/functions/chatNecrologio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    body: JSON.stringify({ mode: "final_check", html, draft, todayISO })
+  });
+  if (!res.ok) throw new Error(await res.text().catch(() => "Final check error"));
+  return await res.json();
+}
+
+  // =============================
+  // AUTH HEADER helper (per Netlify Functions protette)
+  // =============================
+  async function getAuthHeader(){
+    try{
+      const u = currentUser || auth.currentUser;
+      if (!u) return {};
+      const idToken = await u.getIdToken();
+      return { Authorization: 'Bearer ' + idToken };
+    }catch(e){
+      console.warn('getAuthHeader failed', e);
+      return {};
+    }
+  }
+
+
+// -----------------------------
+// POST-PUBLISH: email + log punti (Netlify Function)
+// -----------------------------
+async function notifyNecrologioPostPublish(necrologioId, opts = {}) {
+  try {
+    // ✅ se nel tuo progetto esiste getAuthHeader(), lo usiamo (come nel necrologio-nuovo)
+    const authH = (typeof getAuthHeader === "function") ? await getAuthHeader() : {};
+
+    const res = await fetch("/.netlify/functions/necrologioPostPublish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authH },
+      cache: "no-store",
+      body: JSON.stringify({
+        necrologioId,
+        action: opts.action || "publish"
+      }),
+    });
+
+    const data = await res.json().catch(()=>null);
+    if (!res.ok || !data?.ok) {
+      console.warn("necrologioPostPublish KO:", data || { status: res.status });
+      return { ok:false, data };
+    }
+    return { ok:true, data };
+  } catch (e) {
+    console.warn("necrologioPostPublish ERROR:", e);
+    return { ok:false, error: String(e?.message || e) };
+  }
+}
+
+  function applyProofreadToAnswers(corrected) {
+  if (!corrected) return;
+
+  if (typeof corrected.citazione === "string") {
+    answers.citazione = corrected.citazione.trim();
+  }
+  if (typeof corrected.testoCompleto === "string") {
+    answers.testoCompleto = corrected.testoCompleto.trim();
+  }
+  if (typeof corrected.comuneRigaFinale === "string") {
+    answers.comuneRigaFinale = corrected.comuneRigaFinale.trim();
+  }
+}
+
+  // Generate
+  async function generaNecrologio() {
+    // Check required
+    const missing = steps
+      .filter(st => st.required && st.id !== "consensi" && st.type !== "file")
+      .some(st => !((answers[st.id] || "").toString().trim()));
+    if (missing) {
+      alert("Per generare il necrologio è necessario completare tutti i passaggi obbligatori.");
+      return;
+    }
+
+    btnNext.disabled = true;
+    setLoading(true, 20, "Controllo ortografia e idoneità…");
+    await new Promise(r => setTimeout(r, 150));
+
+    // 1) Proofread (non obbligatorio se la function non c’è ancora)
+    try {
+  const fields = {
+    citazione: answers.citazione || "",
+    testoCompleto: answers.testoCompleto || "",
+    comuneRigaFinale: answers.comuneRigaFinale || ""
+  };
+
+  const pr = await aiProofreadTradizionale(fields);
+  if (pr?.ok && pr?.corrected) {
+    applyProofreadToAnswers(pr.corrected);
+  } else if (pr && pr.ok === false) {
+    setLoading(false);
+    alert("⚠️ Contenuto non idoneo: " + (pr.reason || "verifica non superata"));
+    btnNext.disabled = false;
+    return;
+  }
+} catch (e) {
+  console.warn("Proofread non disponibile o errore:", e);
+}
+
+    // 2) Impaginazione deterministica
+    setLoading(true, 70, "Sto impaginando il necrologio…");
+    await new Promise(r => setTimeout(r, 120));
+
+    const html = buildNecrologioBaseHtml();
+    if (var1) var1.innerHTML = html;
+
+    // preview finale
+    if (finalPhoto) finalPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png";
+    if (finalPreviewText) finalPreviewText.innerHTML = html;
+
+    setLoading(true, 95, "Sto preparando l’anteprima…");
+    await new Promise(r => setTimeout(r, 120));
+    await hydrateImpresaBadge();
+    setLoading(false);
+
+    openResultModal();
+    btnNext.disabled = false;
+  }
+
+  function buildNecrologioBaseHtml() {
+    return buildNecrologioHtmlFromAnswers();
+  }
+
+  // Wizard buttons
+  btnNext.addEventListener("click", async () => {
+    if (!validateCurrentStep()) return;
+    saveCurrentStepAnswer();
+    updatePreview();
+
+    if (currentStepIndex < TOTAL_STEPS - 1) {
+      renderStep(currentStepIndex + 1);
+    } else {
+      await generaNecrologio();
+    }
+  });
+
+  btnBack.addEventListener("click", () => {
+    if (currentStepIndex > 0) {
+      saveCurrentStepAnswer();
+      renderStep(currentStepIndex - 1);
+    }
+  });
+
+  // Reset
+  function resetWizard() {
+    currentStepIndex = 0;
+    answers = {};
+    photoDataUrl = null;
+
+    if (var1) var1.innerHTML = "";
+    if (finalPreviewText) finalPreviewText.innerHTML = "";
+    if (finalEditArea) finalEditArea.value = "";
+    if (finalEditContainer) finalEditContainer.classList.add("hidden");
+    if (toggleEditBtn) toggleEditBtn.textContent = "Vuoi modificare qualcosa?";
+
+    if (finalPhoto) finalPhoto.src = "/images/rosa.png";
+    if (previewPhoto) previewPhoto.src = "/images/rosa.png";
+    if (previewBody) previewBody.innerHTML = "";
+
+    ornamentButtons.forEach(b => b.classList.remove("active"));
+    const noneBtn = ornamentButtons.find(b => (b.dataset.ornamento || "") === "none");
+    if (noneBtn) noneBtn.classList.add("active");
+    renderOrnament("none");
+
+    closeModal();
+    renderStep(0);
+  }
+  if (resetWizardBtn) resetWizardBtn.addEventListener("click", resetWizard);
+
+  // Publish
+  function getEditingNecrologioIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const id = (params.get("id") || "").trim();
+  return id || null;
+}
+
+// edit=1 => modalità modifica (prefill campi)
+const __params = new URLSearchParams(window.location.search);
+const IS_EDIT_MODE = (__params.get("edit") === "1");
+function applyEditModeUI(){
+  if (!IS_EDIT_MODE) return;
+
+  // 1) microcopy: qui non stai “generando”, stai “aggiornando”
+  const headerH2 = document.querySelector(".final-preview-header h2");
+  if (headerH2) headerH2.textContent = "Modifica necrologio";
+
+  const headerP = document.querySelector(".final-preview-header p");
+  if (headerP) {
+    headerP.textContent =
+      "Qui puoi correggere il necrologio già pubblicato, senza cambiare lo stile ufficiale OFI.";
+  }
+
+  // 2) nascondi reset (evita di cancellare tutto per errore mentre stai modificando)
+  if (resetWizardBtn) resetWizardBtn.style.display = "none";
+
+  // 3) cambia label bottone finale
+  if (saveFinalBtn) {
+    saveFinalBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Salva modifiche';
+  }
+}
+
+async function hydrateImpresaBadge() {
+  try {
+    if (!finalImpresaBadge || !finalImpresaName) return;
+    finalImpresaBadge.classList.add("hidden"); // default: nascosto
+
+    if (!currentUser?.email) return;
+
+    // In OFI: docId = email impresa
+    const impRef = doc(db, "imprese_registrate", currentUser.email);
+    const snap = await getDoc(impRef);
+    if (!snap.exists()) return;
+
+    const imp = snap.data() || {};
+    const nome = (imp.nomeImpresa || imp.nome || imp.ragioneSociale || "Impresa").toString().trim();
+
+    // ✅ LOGO: usa SOLO URL finali (coerente con profilo.html)
+    // Priorità: logoUrl / logo_url / logoURL
+    let logo = (imp.logoUrl || imp.logo_url || imp.logoURL || "").toString().trim();
+
+    // Se non è una URL http/https, non provare a risolverlo: fallback
+    if (logo && !/^https?:\/\//i.test(logo)) {
+      logo = "";
+    }
+
+    finalImpresaName.textContent = nome || "Impresa";
+
+    // link profilo pubblico
+    finalImpresaBadge.href = `/imprese/profilo.html?id=${encodeURIComponent(currentUser.email)}`;
+
+    if (finalImpresaLogo) {
+      finalImpresaLogo.src = logo || "/images/logo-ofi.png";
+    }
+
+    finalImpresaBadge.classList.remove("hidden");
+  } catch (e) {
+    console.warn("hydrateImpresaBadge tradizionale:", e);
+  }
+}
+
+  saveFinalBtn.addEventListener("click", async () => {
+  try {
+    if (!currentUser) {
+      alert("Per pubblicare il necrologio devi essere loggato come impresa.");
+      return;
+    }
+
+    // 🔒 Sempre data-driven: ricostruisco l’HTML dal template ufficiale (non dal DOM)
+    try { answers.foto = photoDataUrl ? String(photoDataUrl) : ""; } catch {}
+    const htmlRaw = buildNecrologioHtmlFromAnswers().trim();
+    // aggiorna anche il DOM (utile per coerenza UI)
+    try { if (finalPreviewText) finalPreviewText.innerHTML = htmlRaw; } catch {}
+    if (!htmlRaw) {
+      alert("Anteprima vuota.");
+      return;
+    }
+
+    saveFinalBtn.disabled = true;
+    setLoading(true, 90, "Verifica finale Agente OFI…");
+
+    const draftForCheck = buildDraftForFinalCheck() || htmlToPlainText(htmlRaw);
+
+    const check = await aiFinalCheck(htmlRaw, draftForCheck);
+
+    if (!check?.ok) {
+      setLoading(false);
+      alert("⚠️ Contenuto non idoneo: " + (check?.reason || "verifica non superata"));
+      saveFinalBtn.disabled = false;
+      return;
+    }
+
+    let htmlFinal = (check?.sanitizedHtml || htmlRaw).trim();
+
+    // 🛡️ SAFETY: se per qualsiasi motivo il backend restituisce testo “piatto”
+    // (senza tag HTML), NON sovrascrivere il template ufficiale.
+    // In quel caso usiamo sempre l'HTML ricostruito dal template.
+    if (!/<[a-z][\s\S]*>/i.test(htmlFinal)) {
+      console.warn("final_check ha restituito sanitizedHtml non-HTML. Uso htmlRaw.");
+      htmlFinal = htmlRaw;
+    }
+
+    let geoPoint = null;
+    let geoHash = null;
+
+    if (geoFinale && Number.isFinite(geoFinale.lat) && Number.isFinite(geoFinale.lng)) {
+      geoPoint = new GeoPoint(geoFinale.lat, geoFinale.lng);
+      geoHash = geofire.geohashForLocation([geoFinale.lat, geoFinale.lng]);
+    }
+
+    const basePayload = {
+      status: "published",
+      lastApprovedHtml: htmlFinal,
+      uidImpresa: currentUser.uid,
+      ornamentKey: currentOrnamentKey || "none",
+      dataMorte: (answers.dataMorte || ""),
+      answersSnapshot: { ...answers, foto: (photoDataUrl ? String(photoDataUrl) : "") },
+      geoFinale: geoFinale || null,
+      geoPoint: geoPoint || null,
+      geoHash: geoHash || null,
+      sorgente: "necrologio-tradizionale",
+      photoURL: photoDataUrl || null
+    };
+
+    // ✅ email solo se esiste
+    if (currentUser.email) basePayload.emailImpresa = currentUser.email;
+
+    const editingId = getEditingNecrologioIdFromUrl();
+
+    if (editingId) {
+      // EDIT: l'owner non può aggiornare direttamente lastApprovedHtml (regole Firestore).
+      // Usiamo il backend (Admin SDK) tramite chatNecrologio in mode=publish_edit.
+      const authH = await getAuthHeader();
+
+      const resEdit = await fetch("/.netlify/functions/chatNecrologio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...authH },
+        cache: "no-store",
+        body: JSON.stringify({
+          mode: "publish_edit",
+          necrologioId: editingId,
+          html: htmlFinal,
+          draft: htmlFinal,
+          ornamentKey: (currentOrnamentKey || "none"),
+          variantKey: "tradizionale",
+          answersSnapshot: { ...answers, foto: (photoDataUrl ? String(photoDataUrl) : "") },
+          geoFinale: (geoFinale || null),
+          photoURL: (photoDataUrl || null),
+          sorgente: "necrologio-tradizionale"
+        })
+      });
+
+      const dataEdit = await resEdit.json().catch(() => null);
+      if (!resEdit.ok || !dataEdit?.ok) {
+        const msg = dataEdit?.error || dataEdit?.reason || (dataEdit ? JSON.stringify(dataEdit) : ("HTTP " + resEdit.status));
+        throw new Error("publish_edit failed: " + msg);
+      }
+
+// ✅ invia mail “update”
+await notifyNecrologioPostPublish(editingId, { action: "update" });
+
+      alert("Necrologio aggiornato e pubblicato ✅");
+      window.location.href = `/imprese/necrologio-mio.html?id=${encodeURIComponent(editingId)}&updated=1`;
+      return;
+    } else {
+      // CREATE (nuovo necrologio) — NON sovrascrive (addDoc genera un nuovo documento)
+      const refAdd = await addDoc(collection(db, "necrologi_pubblicati"), {
+  ...basePayload,
+  createdAt: serverTimestamp(),
+  updatedAt: serverTimestamp(),
+  publishedAt: serverTimestamp()
+});
+
+// ✅ 1) chiama la function post-publish (solo su NUOVO necrologio)
+await notifyNecrologioPostPublish(refAdd.id);
+
+// ✅ 2) feedback + redirect
+alert("Necrologio pubblicato con successo ✅\nID: " + refAdd.id);
+
+const qp = "published";
+window.location.href = `/necrologio.html?id=${encodeURIComponent(refAdd.id)}`;
+return;
+
+
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Errore durante il salvataggio finale.");
+  } finally {
+    setLoading(false);
+    saveFinalBtn.disabled = false;
+  }
+});
+
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        window.location.href = "/index.html";
+      } catch (err) {
+        console.error("Logout fallito:", err);
+        alert("Errore durante il logout. Riprova.");
+      }
+    });
+  }
+
+  // Init
+  await prefillWizardIfEditingLocal();
+renderStep(0);
+applyEditModeUI();
+
+// EXTRA CONSIGLIATO: dopo prefill aggiorna anteprima wizard
+updatePreview?.();
+});
+</script>
+
+<script src="/js/menu.js" defer></script>
+
+<!-- Overlay attesa AI -->
+<div id="aiLoadingOverlay" class="ai-loading" hidden>
+  <div class="ai-loading-card" role="status" aria-live="polite">
+    <div class="ai-loading-title">Agente OFI al lavoro…</div>
+    <div class="ai-loading-sub" id="aiLoadingText">Preparazione…</div>
+    <div class="ai-loading-bar">
+      <div class="ai-loading-bar-fill" id="aiLoadingBar"></div>
+    </div>
+    <div class="ai-loading-pct" id="aiLoadingPct">0%</div>
+  </div>
+</div>
+
+</body>
+</html>

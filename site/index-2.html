@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>OFI Italia · Portale nazionale di sostegno, memoria e servizi</title>
+  <meta name="description" content="OFI Italia è il portale nazionale che unisce cittadini, imprese e professionisti del supporto per offrire vicinanza, memoria e servizi nei momenti che contano. Scopri le novità e iscriviti per essere avvisato al lancio.">
+  <link rel="canonical" href="https://www.italiaofi.it/">
+  <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
+  <meta name="theme-color" content="#0b1b2c">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OFI Italia">
+  <meta property="og:title" content="OFI Italia · Portale nazionale di sostegno, memoria e servizi">
+  <meta property="og:description" content="Un unico luogo per cittadini, imprese funebri, fornitori e figure di supporto.">
+  <meta property="og:url" content="https://www.italiaofi.it/">
+  <meta property="og:image" content="https://www.italiaofi.it/images/og-ofi.jpg">
+  <meta name="twitter:image" content="https://www.italiaofi.it/images/og-ofi.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OFI Italia · Portale nazionale di sostegno, memoria e servizi">
+  <meta name="twitter:description" content="Un unico luogo per cittadini, imprese funebri, fornitori e figure di supporto.">
+  <meta name="twitter:image" content="https://www.italiaofi.it/images/og-ofi.jpg">
+
+  <!-- Fonts & CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ofi.css">
+  <link rel="stylesheet" href="ofi-contrast-hotfix.css">
+
+  <!-- JSON-LD: Organization + WebSite + FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {
+        "@type":"Organization",
+        "name":"OFI Italia",
+        "url":"https://www.italiaofi.it/",
+        "logo":"https://www.italiaofi.it/images/logo-ofi.png"
+      },
+      {
+        "@type":"WebSite",
+        "name":"OFI Italia",
+        "url":"https://www.italiaofi.it/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.italiaofi.it/cerca?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type":"FAQPage",
+        "mainEntity":[
+          {
+            "@type":"Question",
+            "name":"Che cos'è OFI Italia?",
+            "acceptedAnswer":{"@type":"Answer","text":"È il portale nazionale dedicato a sostegno, memoria e servizi per le persone e le famiglie, connesso a imprese e professionisti del supporto."}
+          },
+          {
+            "@type":"Question",
+            "name":"Posso già registrarmi?",
+            "acceptedAnswer":{"@type":"Answer","text":"Nella fase di pre-lancio puoi lasciare l’email e indicare chi sei per essere avvisato quando il portale sarà online."}
+          },
+          {
+            "@type":"Question",
+            "name":"Chi può usare OFI Italia?",
+            "acceptedAnswer":{"@type":"Answer","text":"Cittadini, imprese funebri, fornitori del settore e figure di supporto come psicologi e avvocati."}
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root{ --cs-pad: clamp(16px, 3.2vw, 28px); }
+
+    /* Darker hero */
+    .cs-hero{
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      position: relative;
+      color: #fff;
+      background:
+        radial-gradient(1200px 600px at 70% 15%, rgba(202,168,90,.16), transparent 65%),
+        linear-gradient(180deg, rgba(4,14,25,.96), rgba(6,20,33,.98));
+      padding: var(--cs-pad);
+      padding-bottom: calc(var(--cs-pad) + env(safe-area-inset-bottom));
+      overflow:hidden;
+    }
+
+    .cs-wrap{ width:min(980px, 96%); margin-inline:auto; }
+
+    /* Soft glow card */
+    .cs-panel{
+      position: relative;
+      background: rgba(14,28,46,.55);
+      backdrop-filter: saturate(135%) blur(8px);
+      border: 1px solid rgba(202,168,90,.38);
+      color:#fff;
+      border-radius: 24px;
+      box-shadow:
+        0 14px 44px rgba(0,0,0,.38),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+      padding: clamp(18px, 3vw, 28px);
+      transform: translateY(8px);
+      opacity: 0;
+      animation: rise .9s cubic-bezier(.2,.7,.2,1) .15s forwards;
+    }
+    .cs-panel:before{
+      content:"";
+      position:absolute; inset:-2px;
+      border-radius: 26px;
+      background: radial-gradient(600px 200px at 20% -10%, rgba(202,168,90,.20), transparent 45%);
+      pointer-events:none;
+      filter: blur(22px);
+    }
+
+    @keyframes rise{
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes glowPulse{
+      0%,100% { box-shadow: 0 10px 28px rgba(202,168,90,.18) }
+      50% { box-shadow: 0 16px 42px rgba(202,168,90,.32) }
+    }
+
+    .cs-logo{ width: clamp(76px, 9vw, 104px); height: auto; margin: 0 auto .7rem; filter: drop-shadow(0 6px 20px rgba(0,0,0,.28)); }
+    .cs-title{ font-size: clamp(2rem, 5.4vw, 3.6rem); line-height:1.12; letter-spacing:.2px; margin:.15rem 0 .35rem; animation: glowPulse 4s ease-in-out 1s infinite; }
+    .cs-sub{ font-size: clamp(1.02rem, 2.5vw, 1.2rem); opacity:.98; margin:0 0 1rem; text-wrap: balance; }
+
+    /* Form */
+    .cs-form{
+      display:grid; gap:.9rem;
+      align-items: start;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(202,168,90,.45);
+      border-radius: 16px;
+      padding: clamp(12px, 3vw, 18px);
+      margin-top: .9rem;
+      text-align: left;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+    }
+    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:.75rem; }
+    label{ font-weight:800; font-size:.98rem }
+    .input, .select{
+      height:50px; padding:.6rem .8rem; border-radius:14px;
+      border:1px solid rgba(202,168,90,.45);
+      background: rgba(255,255,255,.10);
+      color:#fff; width:100%;
+      outline: none;
+    }
+    .input::placeholder{ color: rgba(255,255,255,.85); }
+    .input:focus, .select:focus{ box-shadow: 0 0 0 3px rgba(202,168,90,.28); }
+
+    /* Select dropdown readability */
+    .select, .select option { color:#0f1622; background:#ffffff; }
+    .select { background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.08)); color:#fff; }
+
+    /* CTA */
+    .btn{ cursor:pointer; padding:1rem 1.25rem; border-radius:14px; font-weight:900; letter-spacing:.2px; border:0 }
+    .btn-primary{
+      background: radial-gradient(120% 140% at 30% 0%, var(--gold-2), var(--gold));
+      color:#141414;
+      box-shadow: 0 10px 24px rgba(202,168,90,.25);
+    }
+    .btn-primary:active{ transform: translateY(1px) }
+
+    .agree{ display:flex; gap:.65rem; align-items:flex-start; font-size:1rem; line-height:1.45 }
+    .agree input{ margin-top:.32rem; min-width:20px; min-height:20px }
+
+    .cs-success, .cs-error{
+      display:none;
+      margin-top:.65rem;
+      padding:.7rem .85rem;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+    }
+    .cs-error{ border-color: rgba(255,150,150,.5); background: rgba(255,0,0,.10); }
+    .cs-success{ border-color: rgba(150,255,180,.5); background: rgba(0,255,120,.10); }
+
+    .cs-footer{
+      text-align:center; color:#fff; opacity:.9; padding:18px 0 4px;
+    }
+    .cs-footer a{ color:#fff; text-decoration:underline }
+
+    @media (max-width: 760px){
+      .row{ grid-template-columns: 1fr; }
+      .btn{ width:100% }
+      .agree{ font-size: 1rem }
+    }
+  </style>
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body class="theme-dark">
+  <main class="cs-hero">
+    <div class="cs-wrap">
+      <section class="cs-panel" aria-labelledby="title">
+        <img class="cs-logo" src="images/logo-ofi.png" alt="OFI Italia">
+        <h1 class="cs-title" id="title">OFI Italia</h1>
+        <p class="cs-sub">
+          <strong>Insieme, per sostenere le persone e custodire la memoria.</strong><br>
+          Un unico portale che accoglie cittadini, imprese, fornitori e professionisti del supporto.
+        </p>
+
+        <form id="csForm" class="cs-form" novalidate>
+          <div class="row">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" class="input" type="email" placeholder="La tua email" required autocomplete="email" />
+            </div>
+            <div>
+              <label for="ruolo">Chi sei</label>
+              <select id="ruolo" name="ruolo" class="select" required>
+                <option value="" disabled selected>Seleziona un’opzione</option>
+                <option value="cittadino" style="color:#0f1622;background:#fff;">Cittadino</option>
+                <option value="impresa" style="color:#0f1622;background:#fff;">Impresa funebre</option>
+                <option value="fornitore" style="color:#0f1622;background:#fff;">Fornitore del settore</option>
+                <option value="supporto" style="color:#0f1622;background:#fff;">Figura di supporto (psicologo, avvocato…)</option>
+              </select>
+            </div>
+          </div>
+
+          <label class="agree">
+            <input type="checkbox" id="agree" required>
+            <span>Ho letto e accetto l’<a href="privacy.html" target="_blank" rel="noopener">Informativa Privacy</a> e desidero essere contattato per aggiornamenti sul lancio.</span>
+          </label>
+
+          <button class="btn btn-primary" type="submit" id="sendBtn">Tienimi aggiornato</button>
+
+          <div id="okMsg" class="cs-success" role="status" aria-live="polite">✅ Grazie! Ti avviseremo non appena il portale sarà online.</div>
+          <div id="errMsg" class="cs-error" role="alert">⚠️ Non è stato possibile registrare il tuo interesse. Controlla i campi o riprova tra poco.</div>
+        </form>
+      </section>
+
+      <footer class="cs-footer small">
+        © 2025 OFI Italia — Tutti i diritti riservati • <a href="privacy.html">Privacy</a>
+      </footer>
+    </div>
+  </main>
+
+  <noscript>Per inviare il modulo occorre abilitare JavaScript.</noscript>
+
+  <script>
+    (function initFirebase(){
+      try{
+        if (!window.firebase || (firebase.apps && firebase.apps.length === 0)) {
+          firebase.initializeApp({
+            apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+            authDomain:"ofi2025-51ba9.firebaseapp.com",
+            projectId:"ofi2025-51ba9",
+            storageBucket:"ofi2025-51ba9.firebasestorage.app",
+            messagingSenderId:"345581339212",
+            appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+          });
+        }
+      }catch(e){
+        console.warn("Firebase init warning:", e);
+      }
+    })();
+
+    const db = firebase.firestore();
+
+    function normalizeEmail(){
+      const el = document.getElementById('email');
+      el.value = (el.value || '').trim();
+    }
+
+    const form = document.getElementById('csForm');
+    const emailEl = document.getElementById('email');
+    const ruoloEl = document.getElementById('ruolo');
+    const agreeEl = document.getElementById('agree');
+    const sendBtn = document.getElementById('sendBtn');
+    const okMsg = document.getElementById('okMsg');
+    const errMsg = document.getElementById('errMsg');
+
+    emailEl.addEventListener('blur', normalizeEmail);
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      okMsg.style.display = 'none';
+      errMsg.style.display = 'none';
+
+      normalizeEmail();
+
+      if(!emailEl.checkValidity()){
+        emailEl.reportValidity();
+        return;
+      }
+      if(!ruoloEl.value){
+        errMsg.textContent = '⚠️ Seleziona chi sei.';
+        errMsg.style.display = 'block';
+        ruoloEl.focus();
+        return;
+      }
+      if(!agreeEl.checked){
+        errMsg.textContent = '⚠️ Per procedere devi accettare l’Informativa Privacy.';
+        errMsg.style.display = 'block';
+        agreeEl.focus();
+        return;
+      }
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Invio…';
+
+      try{
+        await db.collection('interessati').add({
+          email: emailEl.value,
+          ruolo: ruoloEl.value,
+          consent: true,
+          consentAt: firebase.firestore.FieldValue.serverTimestamp(),
+          source: 'cortesia-home-v4',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          userAgent: navigator.userAgent || null,
+          lang: navigator.language || null
+        });
+        okMsg.style.display = 'block';
+        form.reset();
+      }catch(err){
+        console.error(err);
+        errMsg.textContent = '⚠️ Non è stato possibile registrare il tuo interesse. Riprova tra poco.';
+        errMsg.style.display = 'block';
+      }finally{
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Tienimi aggiornato';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualizza / Modifica Necrologio</title>
+  <link rel="stylesheet" href="../style-crea-necrologio.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f4f6fa; margin: 0; padding: 0; }
+    header { text-align: center; padding: 1rem 0; background: white; }
+    header img.logo { max-height: 70px; }
+    main { max-width: 700px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    h1 { text-align: center; margin-bottom: 1.5rem; }
+    .stato-badge { font-weight: bold; padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; margin-bottom: 1rem; }
+    .attesa { background-color: #fff3cd; color: #856404; }
+    .approvato { background-color: #d4edda; color: #155724; }
+    .rifiutato { background-color: #f8d7da; color: #721c24; }
+    .eliminato { background-color: #e2e3e5; color: #383d41; }
+    form label { display: block; margin-bottom: 0.8rem; }
+    form input[type="text"],
+    form input[type="number"],
+    form input[type="date"],
+    form input[type="file"],
+    form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    textarea { height: 100px; }
+    .anteprima-img { display: block; max-width: 150px; margin: 1rem auto; border-radius: 6px; }
+    .buttons { margin-top: 1.5rem; text-align: center; }
+    .buttons button {
+      margin: 0.3rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #anteprima { background-color: #6c757d; color: white; }
+    #salva { background-color: #002b5c; color: white; }
+    #approva { background-color: #198754; color: white; }
+    #rifiuta { background-color: #fd7e14; color: white; }
+    #attesa { background-color: #0d6efd; color: white; }
+    #elimina { background-color: #dc3545; color: white; }
+    #log-sezione { margin-top: 2rem; background: #f8f9fa; padding: 1rem; border-radius: 6px; }
+    #log-sezione h3 { margin-top: 0; }
+    ul#log-lista { padding-left: 1.2rem; }
+    #contenutoAnteprima { margin-top: 2rem; padding: 1rem; border-top: 1px solid #ccc; }
+    .popup-messaggio {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #002b5c;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="../images/logo-ofi.png" alt="Logo OFI" class="logo">
+  </header>
+  <main>
+    <h1>Visualizza / Modifica Necrologio</h1>
+    <div id="badge-stato" class="stato-badge attesa">In Attesa</div>
+    <form id="form-necrologio">
+      <label><input type="checkbox" id="croce"> Includi croce</label>
+      <label>Frase iniziale: <input type="text" id="frase"></label>
+      <label>Immagine: <input type="file" id="foto" accept="image/*"></label>
+      <img id="foto-anteprima" class="anteprima-img" src="../images/rosa.png" alt="Anteprima Immagine">
+      <label>Nome e Cognome del defunto: <input type="text" id="nome"></label>
+      <label>Età: <input type="number" id="eta"></label>
+      <label>Testo necrologio: <textarea id="testo"></textarea></label>
+      <label>Ringraziamenti: <input type="text" id="ringraziamenti"></label>
+      <label>Luogo: <input type="text" id="luogo"></label>
+      <label>Data: <input type="date" id="data"></label>
+      <label id="autore-wrapper">Autore: <input type="text" id="autore" disabled></label>
+      <div class="buttons">
+        <button type="button" id="anteprima">Crea Anteprima</button>
+        <button type="button" id="salva">Salva</button>
+        <button type="button" id="approva">Approva</button>
+        <button type="button" id="rifiuta">Rifiuta</button>
+        <button type="button" id="attesa">Torna in Attesa</button>
+        <button type="button" id="elimina">Elimina</button>
+      </div>
+    </form>
+    <section id="log-sezione">
+      <h3>Storico Azioni</h3>
+      <ul id="log-lista"></ul>
+    </section>
+    <div id="contenutoAnteprima"></div>
+  </main>
+  <script src="script-visualizza-final.js"></script>
+</body>
+</html>

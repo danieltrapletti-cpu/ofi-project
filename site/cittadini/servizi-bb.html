@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Servizi — OFI</title>
+  <meta name="description" content="Scegli e utilizza i servizi OFI: preventivi, necrologi e anniversari."/>
+
+  <!-- Fonts + stile globale (allineato a profilo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/ofi.css"/>
+  <script defer src="/ofi.js?v=3"></script>
+
+  <!-- Stili locali -->
+  <style>
+    /* ---------- HERO ---------- */
+    .hero-servizi{
+      position:relative;
+      min-height:64vh;
+      background: linear-gradient(180deg, rgba(8,22,40,.96), rgba(10,30,55,.92));
+      color:#fff;
+      display:grid;
+      place-items:center;
+      text-align:center;
+    }
+    .hero-servizi .container{
+      padding:56px 16px 72px;
+    }
+    .hero-badge{
+      max-width:160px;
+      height:auto;
+      margin:.25rem auto 1rem;
+      display:block;
+    }
+    @media (max-width:520px){
+      .hero-badge{ max-width:120px; }
+    }
+    .hero-servizi h1{
+      font-family:"Noto Serif",serif;
+      font-weight:700;
+      font-size:clamp(2.1rem,4vw,3rem);
+      margin:.2rem 0 .6rem;
+    }
+    .hero-servizi p{
+      max-width:940px;
+      margin:0 auto;
+      opacity:.96;
+    }
+
+    /* ---------- LAYOUT ---------- */
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:22px 16px;
+    }
+    .grid{
+      display:grid;
+      gap:18px;
+      grid-template-columns:repeat(12,1fr);
+    }
+    .col-12{ grid-column:span 12; }
+    @media (min-width:768px){
+      .col-6{ grid-column:span 6; }
+      .col-8{ grid-column:span 8; }
+      .col-4{ grid-column:span 4; }
+    }
+
+    /* ---------- CARD SERVIZI ---------- */
+    .svc-card{
+      background:#fff;
+      color:#0e2a4a;
+      border:1px solid rgba(14,42,74,.15);
+      border-radius:18px;
+      box-shadow:0 8px 28px rgba(0,0,0,.08);
+      padding:18px;
+      transition:background-color .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    /* Fix Safari / iOS: niente sbiancamento testo nelle card */
+    .svc-card,
+    .svc-card *{
+      -webkit-text-fill-color: currentColor;
+      text-shadow:none;
+    }
+
+    .svc-card h3{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:clamp(1.15rem,2.2vw,1.35rem);
+      margin:.25rem 0 .35rem;
+      font-weight:800;
+    }
+    .svc-card p{
+      margin:.25rem 0 .8rem;
+      opacity:.95;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    /* ---------- THUMB (desktop) ---------- */
+    .thumb{
+      width:104px;
+      height:104px;
+      border-radius:18px;
+      overflow:hidden;
+      flex:0 0 auto;
+      background:#f1f5f9;
+      border:1px solid rgba(14,42,74,.12);
+      display:grid;
+      place-items:center;
+    }
+    .thumb img{
+      width:92%;
+      height:92%;
+      object-fit:contain;
+      display:block;
+    }
+
+    /* ---------- HEYGEN SLOT ---------- */
+    .heygen{
+      background:
+        radial-gradient(1200px 420px at 50% -220px, rgba(202,168,90,.22), transparent 60%),
+        linear-gradient(180deg, #0b1f38, #0d2747);
+      color:#fff;
+      border:1px dashed rgba(202,168,90,.55);
+      border-radius:20px;
+      padding:22px;
+    }
+    .heygen .player{
+      aspect-ratio:16/9;
+      width:100%;
+      border-radius:14px;
+      overflow:hidden;
+      background:#0a1d35;
+      border:1px solid rgba(255,255,255,.12);
+      display:grid;
+      place-items:center;
+      color:#cbd7e6;
+      font-weight:600;
+    }
+    .muted{ opacity:.85; }
+
+    /* ---------- MOBILE OPTIMIZATION ---------- */
+    @media (max-width: 640px){
+      .svc-card > div{
+        display:flex;
+        flex-direction:column;
+        align-items:center !important;
+        text-align:center;
+      }
+      .thumb{
+        width:120px;
+        height:120px;
+        border-radius:22px;
+        margin:2px auto 10px;
+      }
+      .thumb img{
+        width:94%;
+        height:94%;
+      }
+      .svc-card h3{
+        justify-content:center;
+        font-size:1.25rem;
+      }
+      .actions{
+        justify-content:center;
+        width:100%;
+      }
+      .actions .btn{
+        flex:1 1 48%;
+        min-width:44%;
+        padding:.9rem 1rem;
+      }
+    }
+
+    /* ---------- TO TOP BUTTON ---------- */
+    .to-top{
+      position:fixed;
+      right:14px;
+      bottom:86px; /* sopra l’agente OFI */
+      z-index:60;
+      width:46px;
+      height:46px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#caa85a,#b7964c);
+      color:#0e2a4a;
+      border:none;
+      box-shadow:0 8px 22px rgba(0,0,0,.22);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease, transform .25s ease;
+    }
+    .to-top.show{
+      opacity:1;
+      pointer-events:auto;
+      transform:translateY(0);
+    }
+    .to-top:focus{
+      outline:2px solid #0e2a4a;
+      outline-offset:2px;
+    }
+
+    /* ---------- TEMA SCURO (toggle OFI) ---------- */
+    body.theme-dark .svc-card{
+      background:#1b2e4a;
+      color:#ffffff;
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+    }
+    body.theme-dark .svc-card h3{
+      color:#ffffff;
+    }
+    body.theme-dark .svc-card p{
+      color:#dbe4ee;
+    }
+    body.theme-dark .thumb{
+      background:#16253a;
+      border-color:rgba(255,255,255,.18);
+    }
+    body.theme-dark .thumb img{
+      filter:brightness(1.05);
+    }
+  </style>
+
+  <link rel="canonical" href="https://www.onoranzefunebritalia.it/cittadini/servizi.html"/>
+  <meta property="og:title" content="Servizi — OFI"/>
+  <meta property="og:description" content="Preventivi, necrologi e anniversari. Tutto in un unico posto."/>
+  <meta property="og:type" content="website"/>
+</head>
+<body>
+
+  <!-- HEADER (allineato a profilo.html) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="/vision.html">Visione di OFI</a></li>
+            <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="/index.html#pensieri">Pensieri</a></li>
+            <li><a href="/articoli/articoli.html">Articoli</a></li>
+            <li><a href="/index.html#ricordi">Ricordi</a></li>
+            <li><a href="/index.html#mappa">Vicino a te</a></li>
+            <li><a href="/index.html#video">Video</a></li>
+          </ul>
+        </li>
+
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero-servizi">
+    <div class="container">
+      <img class="hero-badge" src="../images/OFI-Logo-Light.png" alt="Onoranze Funebri Italia"/>
+      <h1>Servizi OFI</h1>
+      <p>
+        Scegli cosa ti serve ora. Puoi inviare un <strong>preventivo</strong>, pubblicare un <strong>necrologio</strong>
+        oppure creare un <strong>anniversario</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- CONTENUTI -->
+  <main class="wrap" style="margin-top:14px">
+
+    <!-- Slot video / guida -->
+    <section class="heygen">
+      <div class="grid">
+        <div class="col-12 col-8">
+          <h2 style="margin:.25rem 0 .5rem; font-size: clamp(1.2rem,2vw,1.4rem)">Video introduttivo</h2>
+          <p class="muted" style="margin:0 0 12px">
+            A breve troverai qui un breve video con l’<strong>Avatar OFI</strong> che ti guida tra i servizi e ti aiuta a scegliere quello giusto.
+          </p>
+          <div class="player">Slot video — HeyGen (coming soon)</div>
+        </div>
+        <div class="col-12 col-4" style="display:grid; align-content:center; gap:10px">
+          <p class="muted"><strong>Come scegliere</strong></p>
+          <ul class="small" style="margin:0; padding-left:1.1rem; line-height:1.45">
+            <li><strong>Urgenza</strong>: vai su <em>Preventivi</em> e richiedi subito assistenza.</li>
+            <li><strong>Comunicare un lutto</strong>: pubblica un <em>Necrologio</em>.</li>
+            <li><strong>Una ricorrenza</strong>: crea un <em>Anniversario</em> con messaggio e immagine.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card -->
+    <section class="grid" style="margin-top:18px">
+      <!-- Preventivi -->
+      <article class="col-12 col-6 svc-card">
+        <div style="display:flex; gap:14px;">
+          <div class="thumb"><img src="../images/preventivi.png" alt="Preventivi"/></div>
+          <div style="flex:1">
+            <h3>Preventivi</h3>
+            <p>Richiedi in pochi minuti un preventivo alle imprese vicino a te. Segui poi lo stato dalla tua dashboard.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="../preventivo/scelta-preventivo.html">Richiedi un preventivo</a>
+              <a class="btn btn-outline" href="preventivi.html">I miei preventivi</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Necrologi -->
+      <article class="col-12 col-6 svc-card">
+        <div style="display:flex; gap:14px;">
+          <div class="thumb"><img src="../images/necrologi.png" alt="Necrologi"/></div>
+          <div style="flex:1">
+            <h3>Necrologi</h3>
+            <p>Pubblica un necrologio in modo semplice e rispettoso. Consulta anche i necrologi pubblici.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="necrologio-pubblica.html">Pubblica un necrologio</a>
+              <a class="btn btn-outline" href="../necrologi.html">Vedi necrologi</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Anniversari -->
+      <article class="col-12 svc-card">
+        <div style="display:flex; gap:14px;">
+          <div class="thumb"><img src="../images/anniversari.png" alt="Anniversari"/></div>
+          <div style="flex:1">
+            <h3>Anniversari</h3>
+            <p>Ricorda una data speciale con un messaggio, un’immagine e — se vuoi — una condivisione ai familiari.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="anniversario-crea.html">Crea un anniversario</a>
+              <a class="btn btn-outline" href="../anniversari.html">Vedi anniversari</a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI"/>
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="../articoli/articoli.html">Articoli</a>
+          <a href="../faq.html">FAQ</a>
+          <a href="../accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI -->
+  <button class="agent-fab" id="agentFab" aria-label="Apri Agente OFI">
+    <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+  </button>
+
+  <!-- Torna su -->
+  <button id="toTop" class="to-top" aria-label="Torna all’inizio" title="Torna su" aria-hidden="true">↑</button>
+
+  <section class="agent-panel" id="agentPanel" aria-hidden="true" aria-live="polite" inert>
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+        <div><strong>Agente OFI</strong><br/><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button class="agent-close" id="agentClose" aria-label="Chiudi">✕</button>
+    </header>
+    <div class="agent-chat">
+      <div class="msg msg-in"><p>Benvenuto nei <strong>Servizi OFI</strong>. Posso guidarti: preventivi, necrologi o anniversari.</p></div>
+      <div class="suggest">
+        <button class="chip" data-q="Richiedi un preventivo">Richiedi un preventivo</button>
+        <button class="chip" data-q="Vedi i miei preventivi">Vedi i miei preventivi</button>
+        <button class="chip" data-q="Pubblica un necrologio">Pubblica un necrologio</button>
+        <button class="chip" data-q="Vedi necrologi pubblici">Vedi necrologi pubblici</button>
+        <button class="chip" data-q="Crea un anniversario">Crea un anniversario</button>
+        <button class="chip" data-q="Apri dashboard cittadino">Apri dashboard cittadino</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda"/>
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Suggerimento: se hai urgenza, usa subito <strong>Preventivi</strong>.</div>
+  </section>
+
+  <script>
+    // Smooth scroll per il bottone Torna su
+    (function(){
+      const btn = document.getElementById('toTop');
+      const showAfter = 600; // px
+      let ticking = false;
+
+      function onScroll(){
+        if (!ticking){
+          window.requestAnimationFrame(() => {
+            if (window.scrollY > showAfter) {
+              btn.classList.add('show');
+              btn.setAttribute('aria-hidden','false');
+            } else {
+              btn.classList.remove('show');
+              btn.setAttribute('aria-hidden','true');
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', onScroll, {passive:true});
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top:0, behavior:'smooth' });
+      });
+    })();
+  </script>
+
+  <!-- JS del menù (come in profilo.html) -->
+  <script src="/js/menu.js?v=2" defer></script>
+</body>
+</html>

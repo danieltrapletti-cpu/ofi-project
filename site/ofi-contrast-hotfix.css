@@ -1,0 +1,840 @@
+/* ============================================================
+   OFI · Admin contrast + mobile fix · FINAL (2025-10-03)
+   Obiettivi: niente pan-x, no doppia scrollbar, sidebar mobile
+   sotto header, contatori leggibili, avatar sempre tondo.
+   ============================================================ */
+
+/* ——— Blocco orizzontale e scroll unificato ——— */
+html, body { width:100%; max-width:100%; overflow-x:hidden; height:auto; }
+* { box-sizing:border-box; }
+main, .admin-main, .admin-shell { touch-action:pan-y; overscroll-behavior-x:none; }
+
+/* Quando la sidebar è aperta, blocco il body */
+body.sidebar-open { position:fixed; inset:0; width:100%; overflow:hidden; }
+
+/* Elementi che non devono mai generare uno scroll orizzontale */
+.page-wrap, .admin-topbar, .page-hero-card, .kpi-row, .grid, .card,
+.container, .section, .admin-toolbar, .site-header, .site-footer,
+.footer-grid, .menu, .menu-overlay {
+  max-width: 100dvw; width:100%; overflow-x:hidden;
+}
+
+/* Ombre/bordi: niente clip fuori dal box */
+.page-hero-card, .card, .kpi-card { overflow:clip; }
+
+/* ——— Contrasti KPI / scorciatoie ——— */
+.kpi-card, .stat-card { background:var(--surface); color:var(--surface-text); }
+.kpi-card .kpi, .stat-card .stat-number { color:var(--surface-text) !important; font-weight:800; opacity:1 !important; }
+body .kpi-card .muted, body .stat-card .stat-sub, body .card .muted {
+  color: color-mix(in srgb, var(--surface-text) 72%, transparent) !important;
+}
+:root[data-theme="dark"] .stat-card .stat-number { color:#fff !important; opacity:.98 !important; }
+:root[data-theme="dark"] .stat-card .stat-sub    { color:#dfe7f5 !important; opacity:.95 !important; }
+
+/* ——— Sidebar: submenu e contatori ——— */
+.admin-sidebar .submenu{
+  background:var(--surface); color:var(--surface-text);
+  border:1px solid rgba(202,168,90,.35);
+  border-radius:12px; padding:.35rem; margin:.25rem .75rem;
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
+}
+.admin-sidebar .submenu a{ color:var(--surface-text) !important; padding:.55rem .7rem; }
+.admin-sidebar .submenu a:where(:hover,:focus){ background:rgba(0,0,0,.06); }
+
+/* Badge contatori nel submenu */
+.admin-sidebar .submenu .pill.counter,
+.admin-sidebar .submenu .counter{
+  background:#0e2239 !important;
+  color:#ffd98a !important;
+  border:1px solid rgba(255,217,138,.45) !important;
+  border-radius:10px; padding:.08rem .38rem; font:800 .82rem/1 var(--font-sans,system-ui);
+}
+
+/* Pills nel menu principale su banda blu */
+.admin-menu a .pill{
+  background:rgba(255,255,255,.14); color:#fff;
+  border:1px solid rgba(255,255,255,.28);
+}
+.admin-sidebar .pill.muted, .admin-menu .pill.muted { opacity:1 !important; }
+
+/* ——— Nota blu/hero ——— */
+.note-card, .admin-hero .note, .page-hero-card.note {
+  background:linear-gradient(180deg,var(--blue),var(--blue-2)) !important;
+  color:#fff !important;
+}
+.note-card *, .admin-hero .note *, .page-hero-card.note *{ color:#fff !important; }
+
+/* ——— Z-index e stacking: header sopra ——— */
+.site-header, .global-header, .navbar, .admin-topbar { position:relative; z-index:2000; isolation:isolate; overflow:visible; }
+
+/* ——— Sidebar desktop sticky; mobile off-canvas sotto header ——— */
+:root{ --headerH:72px; }
+
+@media (min-width:1025px){
+  .admin-sidebar{ position:sticky; top:0; height:100dvh; overflow:auto; }
+}
+@media (max-width:1024px){
+  .admin-sidebar{
+    position:fixed; left:0; top:var(--headerH);
+    width:min(88vw,320px);
+    height:calc(100dvh - var(--headerH)) !important;
+    transform:translateX(-110%);
+    transition:transform .2s ease;
+    z-index:1950; will-change:transform; contain:paint;
+    -webkit-overflow-scrolling:touch; overflow-y:auto !important;
+  }
+  .admin-sidebar.open{ transform:translateX(0); }
+
+  /* Overlay che parte DOPO la sidebar: non la “sbiadisce” */
+  #sbOverlay{
+    position:fixed; top:var(--headerH); bottom:0; left:min(88vw,320px); right:0;
+    background:rgba(0,0,0,.35); backdrop-filter:saturate(1.1) blur(2px);
+    z-index:1940;
+  }
+  #sbOverlay[hidden]{ display:none; }
+
+  /* spazio a fondo per ultimo item */
+  .admin-menu{ padding-bottom:96px; }
+}
+
+/* ——— Submenu apertura morbida ——— */
+.admin-sidebar .submenu{ max-height:0; overflow:hidden; opacity:0; visibility:hidden; transition:max-height .22s ease, opacity .18s ease; }
+.admin-sidebar .has-sub.open > .submenu{ max-height:1200px; opacity:1; visibility:visible; }
+@media (hover:hover) and (pointer:fine){
+  .admin-sidebar .has-sub:hover > .submenu{ max-height:1200px; opacity:1; visibility:visible; }
+}
+/* caret che ruota */
+.admin-sidebar .sub-toggle .caret{ display:inline-block; transition:transform .18s ease; }
+.admin-sidebar .has-sub.open .sub-toggle .caret{ transform:rotate(180deg); }
+
+/* ——— Avatar sempre tondo ——— */
+.admin-avatar{
+  width:40px !important; height:40px !important; aspect-ratio:1/1;
+  border-radius:50% !important; object-fit:cover; display:block; flex:0 0 auto;
+  border:2px solid var(--gold);
+}
+@media (max-width:560px){ .admin-avatar{ width:36px !important; height:36px !important; } }
+.admin-user{ display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.admin-user > *{ min-width:0; }
+
+/* ——— Scroll unico (niente doppia barra) ——— */
+.admin-shell, .admin-main, .page-wrap, .content-wrap, .site, #app {
+  height:auto !important; max-height:none !important; overflow-y:visible !important;
+}
+
+/* ——— Drawer del MENU principale: gestito da ofi.css; qui solo overlay ——— */
+.menu-overlay{ width:auto; left:0; right:0; }
+
+/* — anti pan-x / dx-sx che “scivola” — */
+html, body{ overflow-x:hidden; width:100%; max-width:100%; }
+.admin-shell, .admin-main, .page-wrap{ overflow-x:hidden }
+
+/* — evita che il pannello chiuso riceva click (Safari) — */
+#menuPanel{ pointer-events:none; }
+#menuPanel.open{ pointer-events:auto; }
+@media (max-width:1024px){
+  .admin-sidebar{ pointer-events:none; }
+  .admin-sidebar.open{ pointer-events:auto; }
+}
+
+/* overlay cliccabili e sopra ai contenuti, ma sotto al pannello */
+#menuOverlay{ z-index:1975; }
+#sbOverlay{ z-index:1940; }
+
+/* — fix larghezze che generano overflow su iOS — */
+.card, .kpi-card, .page-hero-card{ max-width:100%; }
+
+/* ===== FIX MOBILE ADMIN (overlay, z-index, scroll, contrasti) ===== */
+
+/* Blocca lo scroll orizzontale (iOS) e riduce fenomeni di "trascinamento" */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+}
+
+/* Quando menu o sidebar sono aperti: blocca lo scroll sotto */
+html.menu-open, body.menu-open,
+html.sidebar-open, body.sidebar-open {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Rafforza i layer: la SIDEBAR deve stare sopra il suo overlay */
+@media (max-width:1024px){
+  .admin-sidebar { z-index: 2000 !important; }
+  /* overlay della sidebar */
+  #sbOverlay { z-index: 1990 !important; }
+}
+
+/* Rafforza i layer del MENU principale mobile: menu sopra overlay */
+@media (max-width:900px){
+  /* pannello menu */
+  #menuPanel.menu { z-index: 1985 !important; will-change: transform; }
+  /* overlay del menu */
+  #menuOverlay.menu-overlay { z-index: 1975 !important; }
+}
+
+/* Assicura che gli elementi off-canvas non causino overflow */
+@media (max-width:1024px){
+  .admin-shell { overflow-x: hidden; }
+  .admin-sidebar { will-change: transform; }
+}
+
+/* Avatar perfettamente tondo su tutti i device */
+.admin-avatar {
+  width: 40px;
+  height: 40px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Contrasti coerenti nelle card anche su mobile (tema chiaro/scuro) */
+.card, .kpi-card, .page-hero-card {
+  background: var(--surface);
+  color: var(--surface-text);
+}
+.kpi-card .tag { color: var(--surface-text); }
+
+/* Evita “sbiadito” generale: nessuna opacità alla sidebar */
+.admin-sidebar { opacity: 1 !important; }
+
+/* Migliora hit-area dei pulsanti di chiusura su mobile */
+.menu-close,
+.sidebar-close,
+.sidebar-toggle,
+.menu-toggle {
+  min-height: 36px;
+  min-width: 36px;
+}
+
+/* Evita scrollbar doppia quando i submenu della sidebar sono aperti */
+.admin-menu { overscroll-behavior: contain; }
+
+/* Close button sidebar (mobile) */
+.sidebar-close{
+  position: absolute;
+  top: calc(8px + env(safe-area-inset-top, 0));
+  right: 8px;
+  z-index: 2001;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.35);
+  color: #fff;
+  border-radius: 10px;
+  padding: .35rem .6rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Evita trascinamento laterale su iPhone */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+:root{ --safeTop: env(safe-area-inset-top, 0px); }
+.site-header{ padding-top: var(--safeTop); }
+
+
+/* === FIX FINALE MOBILE OFI ADMIN (2025-10-06) === */
+
+/* Blocca qualsiasi scorrimento laterale residuo */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+  position: relative;
+  contain: paint;
+}
+
+/* Evita che elementi off-canvas causino spostamento */
+.menu,
+.admin-sidebar,
+.page-wrap,
+.admin-main,
+.admin-shell {
+  overflow-x: hidden !important;
+  contain: paint;
+  will-change: transform;
+}
+
+/* Z-index corretti per overlay e pannelli */
+@media (max-width:1024px) {
+  .admin-sidebar { z-index: 2001 !important; }
+  #sbOverlay { z-index: 1990 !important; }
+}
+@media (max-width:900px) {
+  #menuPanel.menu { z-index: 1985 !important; }
+  #menuOverlay.menu-overlay { z-index: 1975 !important; }
+}
+
+/* Migliora leggibilità su schermi piccoli */
+@media (max-width:560px) {
+  .grid.cols-3 { grid-template-columns: 1fr !important; }
+  .kpi-card, .card { width: 100%; word-wrap: break-word; }
+}
+
+/* === HOTFIX 2025-10-06 — Header/Hero mobile + visibilità desktop === */
+
+/* 1) Desktop: nascondi il bottone "Menu" e la X della sidebar */
+@media (min-width: 901px){
+  .menu-toggle{ display: none !important; }
+}
+@media (min-width: 1025px){
+  .sidebar-close{ display: none !important; }
+}
+
+/* 2) Mobile: niente testo tagliato in alto (hero/topbar) */
+.page-wrap,
+.admin-topbar,
+.page-hero-card,
+.kpi-row,
+.grid,
+.card {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Il hero non deve “tagliare” i bordi su iOS */
+.page-hero-card{
+  overflow: hidden;              /* evita crop del contenuto */
+  contain: layout paint;         /* isola il box-shadow */
+}
+
+/* Wrapping aggressivo per titoli lunghi su schermi stretti */
+h1, h2, .section-title, .section-sub,
+.kpi-card, .card {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Ottimizzazioni micro-spazi su schermi molto piccoli */
+@media (max-width: 560px){
+  .admin-topbar{ gap: .5rem; }
+  .page-hero-card{ padding-right: 1rem; }
+  #adminEmail{
+    max-width: 60vw;    /* già presente simile, rinforzo */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* Ulteriore rete di sicurezza contro overflow laterale */
+html, body{ overflow-x: hidden !important; max-width: 100% !important; }
+
+/* === HOTFIX FINALE · hero mobile + bordo bianco sinistro (2025-10-06) === */
+
+/* Blocca qualsiasi “micro-sbordamento” sub-pixel sui layer principali */
+html, body, .site-header, .admin-topbar, .admin-shell, .admin-main, .page-wrap {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Evita che il contenuto del hero/card venga “tagliato” a destra su iOS */
+.page-hero-card {
+  padding-inline: 16px !important;     /* respiro interno simmetrico */
+  overflow: visible !important;         /* niente crop del testo */
+  contain: layout paint;                /* isola ombre senza tagli */
+  box-sizing: border-box;
+}
+
+/* Testi lunghi: spezza ovunque, mai fuori dal box */
+.page-hero-card h1,
+.page-hero-card .section-sub,
+.card h3, .card p, .kpi-card .stat-sub {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Griglie/karte: sicurezza al 100% anche su viewport stretti */
+.kpi-row, .grid, .card {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Margine bianco sottile sul lato sinistro (desktop+mobile):
+   forziamo il background fino al bordo e azzeriamo qualunque outline */
+html, body {
+  background-clip: border-box;          /* riempi fino al bordo */
+  outline: none !important;
+  border: 0 !important;
+}
+
+/* Su schermi piccoli aggiungo un filo di padding simmetrico lato destro
+   così il testo del hero non “tocca” il bordo e non appare tagliato */
+@media (max-width: 560px){
+  .page-wrap { padding-inline: 12px !important; }
+  .page-hero-card { padding-inline-end: 14px !important; }
+}
+
+/* Assicura che nessun overlay o off-canvas crei un gap visivo sul bordo */
+.menu-overlay, #sbOverlay {
+  left: auto;               /* evitiamo misallineamenti subpixel */
+  right: 0;
+}
+
+/* === OFI · Patch definitiva mobile (2025-10-06) ===================== */
+/* 1) elimina ogni margine bianco “di default” del body */
+html, body { margin:0 !important; background-clip:border-box; }
+
+/* 2) MENU mobile sempre sopra a tutto + overlay pieno viewport */
+@media (max-width:900px){
+  .menu{ 
+    z-index: 3000 !important;           /* sopra header, hero, sidebar */
+    inset: 72px 0 0 auto !important;    /* parte sotto l’header */
+    will-change: transform;
+  }
+  .menu-overlay{
+    z-index: 2990 !important;
+    position: fixed !important;
+    inset: 72px 0 0 0 !important;       /* copre tutto sotto l’header */
+    background: rgba(0,0,0,.55) !important;
+    backdrop-filter: blur(3px) saturate(1.05);
+  }
+  /* quando il menu è aperto blocco lo scroll della pagina */
+  html.menu-open, body.menu-open{ height:100%; overflow:hidden !important; }
+}
+
+/* 3) Topbar admin: layout robusto + logout allineato a destra */
+.admin-topbar{
+  display:flex; align-items:center; gap:.6rem;
+  padding:10px 12px; flex-wrap:wrap;
+  min-height:56px;
+}
+.admin-user{ display:flex; align-items:center; gap:.6rem; min-width:0; }
+#adminEmail{
+  max-width:60vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.admin-actions{               /* wrapper logico per bottoni azione */
+  margin-left:auto; display:flex; align-items:center; gap:.5rem; flex-wrap:nowrap;
+}
+.admin-actions .btn,
+.admin-actions a,
+.admin-actions button{ flex:0 0 auto; }
+
+/* su schermi molto stretti stringo gli spazi senza rompere il layout */
+@media (max-width:560px){
+  .admin-topbar{ gap:.45rem; }
+  .admin-actions{ gap:.4rem; }
+}
+
+/* 4) Ulteriore rete contro “scorrimento sotto” su iOS */
+.site-header, .admin-topbar, .admin-shell, .admin-main, .page-wrap,
+.page-hero-card, .kpi-row, .grid, .card {
+  max-width:100% !important; overflow-x:hidden !important;
+}
+
+/* 5) Avatar: sempre perfettamente tondo (rinforzo) */
+.admin-avatar{ width:40px; height:40px; aspect-ratio:1/1; border-radius:50% !important; object-fit:cover; }
+
+/* === FIX DEFINITIVO MENU SU ADMIN (sopra tutto) === */
+@media (max-width: 900px){
+  #menuPanel.menu{
+    z-index: 3200 !important;              /* sopra topbar(2000) e sidebar(2001) */
+    inset: var(--headerH) 0 0 auto !important; /* parte sotto l’header sticky */
+    pointer-events: auto;                   /* cliccabile quando open */
+  }
+  #menuOverlay.menu-overlay{
+    z-index: 3190 !important;
+    inset: var(--headerH) 0 0 0 !important; /* copre tutta la pagina sotto il menu */
+  }
+}
+
+/* Quando apro il MENÙ principale: nessun “sbiadito”/opacità della sidebar chiusa */
+.admin-sidebar{ opacity: 1 !important; }
+
+/* === HARDEN: menu sopra tutto anche in admin === */
+@media (max-width: 900px){
+  #menuPanel.menu{ z-index: 3200 !important; inset: var(--headerH) 0 0 auto !important; height: calc(100dvh - var(--headerH)) !important; }
+  #menuOverlay.menu-overlay{ z-index: 3190 !important; inset: var(--headerH) 0 0 0 !important; }
+}
+
+/* === OFI: FIX CLIC ABILITATI, MENU/SIDEBAR SEMPRE SOPRA, NO OVERLAY FANTASMA === */
+
+/* 1) Gli overlay DEVONO sparire davvero quando hidden */
+#menuOverlay[hidden],
+#sbOverlay[hidden]{
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 2) Porta header e nav sopra il contenuto */
+.site-header{
+  position: sticky;
+  top: 0;
+  z-index: 2600 !important;
+}
+.main-nav{
+  position: relative;
+  z-index: 2601 !important;
+}
+
+/* 3) Sidebar sempre sopra al contenuto ma sotto al menu principale */
+.admin-sidebar{
+  z-index: 2500 !important;
+}
+.admin-main{
+  position: relative;
+  z-index: 1;
+}
+
+/* 4) Menu principale sopra TUTTO + overlay immediatamente sotto (mobile) */
+@media (max-width: 900px){
+  #menuPanel.menu{
+    z-index: 3200 !important;
+    inset: var(--headerH) 0 0 auto !important;
+    height: calc(100dvh - var(--headerH)) !important;
+    pointer-events: auto !important;
+  }
+  #menuOverlay.menu-overlay{
+    z-index: 3190 !important;
+    inset: var(--headerH) 0 0 0 !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* 5) Evita pseudo-overlay ereditati dal tema */
+.main-nav::before,
+.main-nav::after{
+  content: none !important;
+}
+
+/* 6) Safety: la classe overlay deve reagire ai click solo quando visibile */
+.overlay{
+  pointer-events: auto !important;
+}
+.menu-overlay:not([hidden]){
+  display: block !important;
+}
+
+/* ADMIN header: mostra il bottone "Menu" solo su mobile */
+.main-nav .menu-toggle { display: inline-flex; }
+@media (min-width: 901px){
+  .main-nav .menu-toggle { display: none !important; }
+}
+
+/* ADMIN sidebar hamburger: di default nascosto, visibile solo su mobile */
+.sidebar-toggle { display: none; }
+@media (max-width: 1024px){
+  .sidebar-toggle { display: inline-flex !important; }
+}
+
+
+
+/* === Z-INDEX FINALE COERENTE (ADMIN) === */
+:root{ --headerH:72px; }
+
+@media (max-width:900px){
+  #menuPanel.menu{ z-index:3200 !important; inset: var(--headerH) 0 0 auto !important; height:calc(100dvh - var(--headerH)) !important; }
+  #menuOverlay.menu-overlay{ z-index:3190 !important; inset: var(--headerH) 0 0 0 !important; }
+}
+
+.site-header{ z-index:3100 !important; }
+.admin-sidebar{ z-index:3000 !important; }
+#sbOverlay{ z-index:2990 !important; }
+.admin-main{ position:relative; z-index:1; }
+
+/* === OFI · HOTFIX 2025-10-07 — Menu desktop cliccabile + Sidebar mobile sopra topbar === */
+
+/* 1) Menu: limita il pointer-events:none al SOLO mobile */
+@media (max-width: 900px){
+  #menuPanel{ pointer-events: none; }
+  #menuPanel.open{ pointer-events: auto; }
+}
+
+/* Desktop: menu sempre cliccabile */
+@media (min-width: 901px){
+  #menuPanel{ pointer-events: auto !important; }
+}
+
+/* 2) Sidebar mobile sopra la fascia topbar (ma sotto header e sotto menu) */
+:root{ --headerH: 72px; }
+
+@media (max-width: 1024px){
+  /* Gerarchia risultante (alto -> basso):
+     menu (3200) > header (3100) > sidebar (3050) > overlay sidebar (3040) > topbar (3000) > contenuto (1) */
+
+  .admin-sidebar{ z-index: 3050 !important; top: var(--headerH); }
+  #sbOverlay{ z-index: 3040 !important; top: var(--headerH); }
+
+  .admin-topbar{ z-index: 3000 !important; }
+}
+
+/* 3) Safety: gli overlay reagiscono ai click SOLO quando visibili */
+#menuOverlay[hidden], #sbOverlay[hidden]{
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* === OFI · HOTFIX DESKTOP (Scopri OFI visibile sopra al main) === */
+
+/* Porta header e nav sopra la topbar admin (solo desktop) */
+@media (min-width: 901px){
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 3300 !important;
+    overflow: visible;         /* niente clip del dropdown */
+  }
+  .main-nav{
+    position: relative;
+    z-index: 3301 !important;
+  }
+  /* Il dropdown del menu principale deve stare sopra tutto il contenuto */
+  .menu .submenu{
+    z-index: 3302 !important;
+  }
+}
+
+/* === FIX DESKTOP DEFINITIVO — dropdown "Scopri OFI" sopra a tutto === */
+@media (min-width: 901px){
+  /* 1) L'header deve essere un tetto VERO: niente clip, z-index altissimo */
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 4000 !important;
+    overflow: visible !important;     /* il submenu può uscire fuori */
+    isolation: auto !important;       /* evita stacking context inutile */
+  }
+
+  /* 2) La barra di navigazione sta SOPRA all'header stesso */
+  .main-nav{
+    position: relative;
+    z-index: 4001 !important;
+    overflow: visible !important;     /* nessun taglio verticale */
+  }
+
+  /* 3) Il li che contiene "Scopri OFI" domina il piano */
+  .menu .has-sub{
+    position: relative;
+    z-index: 4002 !important;
+    overflow: visible !important;
+  }
+
+  /* 4) Il vero protagonista: il submenu sta sopra a tutto il main */
+  .menu .submenu{
+    position: absolute;               /* (già in ofi.css) */
+    z-index: 4003 !important;         /* > topbar (3000) e contenuto (1) */
+    display: none;                    /* lasciamo gestire hover/focus */
+  }
+
+  /* 5) Il main NON deve superare l’header */
+  .admin-topbar{ z-index: 3000 !important; }        /* già alto ma < 4000 */
+  .admin-main{ position: relative; z-index: 1 !important; }
+
+  /* 6) Nessun genitore del header deve nascondere overflow verticale */
+  .page-wrap, .admin-shell, .admin-main{
+    overflow-y: visible !important;
+  }
+}
+
+/* Anti-cache/sicurezza extra, solo se servisse */
+@media (min-width: 901px){
+  /* neutralizza eventuali regole precedenti che mettono overflow nascosto */
+  .site-header *, .main-nav *{ overflow: visible !important; }
+}
+
+/* === DESKTOP HARD-FIX — Dropdown "Scopri OFI" visibile e cliccabile === */
+@media (min-width: 901px){
+  /* Il gruppo header/nav domina lo stack */
+  .site-header{ position: sticky; top:0; z-index: 4200 !important; overflow: visible !important; }
+  .main-nav{ position: relative; z-index: 4201 !important; overflow: visible !important; }
+
+  /* La voce "Scopri OFI" crea il contesto per il submenu */
+  .menu{ position: relative; z-index: 4201 !important; }
+  .menu .has-sub{ position: relative; z-index: 4202 !important; }
+
+  /* Submenu ASSOLUTO sotto la voce, sopra a qualunque main/topbar */
+  .menu .submenu{
+    position: absolute !important;
+    left: 0; top: 100%;
+    min-width: 220px;
+    display: none;                  /* mostra solo on-hover/focus */
+    z-index: 4203 !important;       /* > admin-topbar (3000) */
+    overflow: visible !important;
+  }
+
+  /* Apertura su hover/focus tastiera */
+  .menu .has-sub:hover > .submenu,
+  .menu .has-sub:focus-within > .submenu{
+    display: block !important;
+  }
+
+  /* Evita che QUALSIASI genitore tagli in verticale */
+  .site-header *, .main-nav *, .menu *, .brand{ overflow: visible !important; }
+
+  /* Il main resta sotto allo stack del menu */
+  .admin-topbar{ z-index: 3000 !important; }
+  .admin-main{ position: relative; z-index: 1 !important; }
+}
+
+/* === SAFETY DESKTOP — il menu è sempre visibile e sopra al main === */
+@media (min-width: 901px){
+  /* Annulla l'effetto globale [aria-hidden=true]{display:none} sull'header */
+  #menuPanel[aria-hidden="true"]{ display:flex !important; }
+
+  /* Garanzia “Scopri OFI” sopra al contenuto */
+  .site-header{ position:sticky; top:0; z-index:4200 !important; overflow:visible !important; }
+  .main-nav{ position:relative; z-index:4201 !important; overflow:visible !important; }
+  .menu .submenu{ z-index:4203 !important; } /* sopra la topbar/admin */
+}
+
+/* === MENU SEMPRE SOPRA ALL’HERO (desktop) === */
+@media (min-width: 901px){
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 5000 !important;
+    overflow: visible !important;   /* il dropdown può “uscire” */
+    isolation: isolate;             /* crea tetto indipendente */
+  }
+  .main-nav{
+    position: relative;
+    z-index: 5001 !important;
+    overflow: visible !important;
+  }
+  .menu{
+    position: relative;
+    z-index: 5001 !important;
+  }
+  .menu .has-sub{
+    position: relative;
+    z-index: 5002 !important;
+    overflow: visible !important;
+  }
+  .menu .submenu{
+    position: absolute !important;
+    left: 0; top: 100%;
+    z-index: 5003 !important;       /* > di qualunque main/hero */
+    display: none;
+  }
+  .menu .has-sub:hover > .submenu,
+  .menu .has-sub:focus-within > .submenu{
+    display: block !important;
+  }
+
+  /* Il contenuto non deve “coprire” l’header */
+  .page-wrap, .admin-shell, .admin-main, .profile-hero, .page-hero{
+    position: relative;
+    z-index: 1 !important;
+    overflow: visible !important;
+  }
+}
+
+/* === OFI · FIX DEFINITIVO — Dropdown sopra a HERO (desktop) === */
+@media (min-width: 901px){
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 7000 !important;
+    overflow: visible !important;   /* il submenu può “uscire” */
+    isolation: isolate;             /* tetto indipendente */
+  }
+  .main-nav{
+    position: relative;
+    z-index: 7001 !important;
+    overflow: visible !important;
+  }
+  .menu{
+    position: relative;
+    z-index: 7001 !important;
+    overflow: visible !important;
+  }
+  .menu .has-sub{
+    position: relative;
+    z-index: 7002 !important;
+    overflow: visible !important;
+  }
+  .menu .submenu{
+    position: absolute !important;
+    left: 0; top: 100%;
+    z-index: 7003 !important;       /* sopra hero e contenuti */
+    display: none;
+    overflow: visible !important;
+  }
+  .menu .has-sub:hover > .submenu,
+  .menu .has-sub:focus-within > .submenu,
+  .menu .has-sub.open > .submenu{
+    display: block !important;
+  }
+
+  /* Il contenuto deve restare sotto al menu */
+  .hero, .page-hero, .profile-hero{
+    position: relative;
+    z-index: 1 !important;
+    overflow: visible !important;
+  }
+}
+
+/* === OFI · CONTRAST · FIX DEFINITIVO — Dropdown sopra a HERO === */
+
+/* MOBILE: mantiene comportamento standard (apre al tap via .open) */
+@media (max-width: 900px){
+  .site-header{ position: sticky; top: 0; z-index: 5000; }
+  .main-nav, .menu{ position: relative; z-index: 5001; }
+  .menu .has-sub{ position: relative; z-index: 5002; }
+  .menu .submenu{
+    position: absolute; left: 0; top: 100%;
+    z-index: 5003; display: none;
+  }
+  .menu .has-sub.open > .submenu{ display: block; }
+}
+
+/* DESKTOP: forza lo stacking sopra a hero e contenuti */
+@media (min-width: 901px){
+  .site-header{
+    position: sticky;
+    top: 0;
+    z-index: 7000 !important;
+    overflow: visible !important;   /* lascia uscire la tendina */
+    isolation: isolate;             /* nuovo stacking context pulito */
+  }
+  .main-nav{
+    position: relative;
+    z-index: 7001 !important;
+    overflow: visible !important;
+  }
+  .menu{
+    position: relative;
+    z-index: 7001 !important;
+    overflow: visible !important;
+  }
+  .menu .has-sub{
+    position: relative;
+    z-index: 7002 !important;
+    overflow: visible !important;
+  }
+  .menu .submenu{
+    position: absolute !important;
+    left: 0; top: 100%;
+    z-index: 7003 !important;
+    display: none;
+    min-width: 220px;
+    /* evita che ombre/rounded vengano tagliati */
+    overflow: visible !important;
+  }
+  .menu .has-sub:hover > .submenu,
+  .menu .has-sub:focus-within > .submenu,
+  .menu .has-sub.open > .submenu{
+    display: block !important;
+  }
+
+  /* Metti gli hero e il resto SOTTO al menu */
+  .hero, .page-hero, .profile-hero{
+    position: relative; 
+    z-index: 1 !important;
+    overflow: visible !important;
+  }
+}
+
+/* HARDENING: evita stacking accidentali su wrapper globali */
+.header-wrap, .nav-wrap, .topbar{
+  overflow: visible !important;
+}
+
+/* ACCESSIBILITÀ: il caret/trigger resta cliccabile sopra a sfondi animati */
+.menu .has-sub > a, .menu .has-sub > button{
+  position: relative; z-index: 7004;
+}
+
+

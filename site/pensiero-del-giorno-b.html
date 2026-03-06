@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pensiero del giorno — OFI</title>
+  <meta name="description" content="Un pensiero quotidiano che illumina il cuore e invita a scoprire la forza della memoria.">
+
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Noto+Serif+Display:wght@400;600&family=Source+Sans+3:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/ofi.css">
+  <script defer src="/js/menu.js"></script>
+  <script defer src="/ofi.js"></script>
+
+  <style>
+    :root {
+      --gold: #caa85a;
+      --dark-blue: #0c2340;
+      --light-gold: #e8d39a;
+    }
+
+    body {
+      background: radial-gradient(800px 400px at 50% -10%, rgba(202,168,90,.08), transparent 70%), 
+                  linear-gradient(180deg, #0b203f 0%, #0b203f 100%);
+      color: #fff;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+
+    main.page {
+      display: grid;
+      place-items: center;
+      padding: clamp(20px, 6vw, 50px);
+      min-height: calc(100vh - 160px);
+    }
+
+    .wrap {
+      width: min(900px, 95vw);
+      text-align: center;
+      animation: fadeIn 1s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+      font-family: 'Manrope', sans-serif;
+      text-transform: uppercase;
+      color: var(--light-gold);
+      font-weight: 800;
+      letter-spacing: .2px;
+      font-size: .95rem;
+      margin-bottom: 1rem;
+    }
+
+    .intro {
+      font-family: 'Noto Serif Display', serif;
+      font-size: 1.05rem;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 2rem;
+    }
+
+    .thought-card {
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border: 1px solid rgba(202,168,90,.35);
+      border-radius: 24px;
+      padding: 2.2rem 1.6rem;
+      box-shadow: 0 25px 50px rgba(0,0,0,.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .thought-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, rgba(202,168,90,.15), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .t-quote {
+      font-family: 'Noto Serif Display', serif;
+      font-size: clamp(1.3rem, 1.4rem + .6vw, 1.7rem);
+      color: var(--light-gold);
+      line-height: 1.6;
+      margin: 0 auto 1rem;
+      max-width: 760px;
+      text-shadow: 0 0 8px rgba(202,168,90,.25);
+      position: relative;
+      animation: fadeQuote 1.2s ease-out forwards;
+    }
+
+    @keyframes fadeQuote {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .t-quote::before {
+      content: '“';
+      position: absolute;
+      left: -1rem;
+      top: -1.2rem;
+      font-size: 3rem;
+      opacity: .3;
+      color: var(--light-gold);
+    }
+
+    .t-author {
+      color: var(--light-gold);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .btn-share {
+      background: var(--gold);
+      color: #0b203f;
+      border: none;
+      border-radius: 999px;
+      padding: .75rem 1.5rem;
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(202,168,90,.25);
+      transition: all .25s ease;
+    }
+
+    .btn-share:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(202,168,90,.4);
+    }
+
+    .info {
+      font-size: .9rem;
+      color: rgba(255,255,255,.8);
+      margin-top: .8rem;
+      font-style: italic;
+    }
+
+    .discover {
+      margin-top: 2.4rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,.85);
+    }
+
+    .discover a {
+      color: var(--light-gold);
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color .25s ease;
+    }
+
+    .discover a:hover {
+      border-color: var(--light-gold);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-expanded="false"><span></span><span></span><span></span></button>
+      <ul id="menuPanel" class="menu" role="menu"></ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="page">
+    <div class="wrap">
+
+      <h2 class="page-title">Pensiero del giorno</h2>
+      <p class="intro">Ogni giorno una frase di luce, un piccolo gesto per ricordare che la memoria non è mai sola.</p>
+
+      <article class="thought-card">
+        <p id="pensieroTxt" class="t-quote">“Nel ricordo, ogni assenza trova una forma gentile di presenza.”</p>
+        <p id="pensieroAutore" class="t-author">— </p>
+
+        <button id="shareBtn" class="btn-share">✨ Condividi questo pensiero</button>
+        <p class="info">Condividere un pensiero aiuta chi lo legge e genera punti valore OFI.</p>
+
+        <p id="status" class="t-status center" aria-live="polite"></p>
+
+        <div class="discover">
+          Scopri <a href="/index.html">Onoranze Funebri Italia</a> e iscriviti per ricevere ogni giorno un pensiero come questo.
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container small center">
+      <p>© 2025 OFI — Onoranze Funebri Italia</p>
+    </div>
+  </footer>
+
+  <script>
+    const $ = (s,sc=document)=>sc.querySelector(s);
+    const todayISO = (d=new Date()) => d.toISOString().slice(0,10);
+    const parseDate = (iso)=>{ const [y,m,dd] = iso.split('-').map(Number); return new Date(y,m-1,dd); };
+    const dayOfYear = (d)=>{ const s=new Date(d.getFullYear(),0,0); return Math.floor((d-s)/86400000); };
+
+    async function fetchPensieri(){
+      try{
+        const res = await fetch('/data/pensieri_2025.json',{cache:'no-cache'});
+        if(!res.ok) throw new Error();
+        return await res.json();
+      }catch{
+        return [
+          "Nel ricordo, ogni assenza trova una forma gentile di presenza.",
+          "La memoria è una casa: apri le finestre alla luce.",
+          "Il bene donato non svanisce: diventa eredità per chi resta."
+        ];
+      }
+    }
+
+    function pickText(items,date){
+      const idx = (dayOfYear(date)-1) % items.length;
+      const raw = items[idx];
+      if(typeof raw==='string') return {text:raw,author:''};
+      if(typeof raw==='object') return {text:raw.text||raw.t||'', author:raw.author||raw.a||''};
+      return {text:'Oggi abito il silenzio con gratitudine.',author:''};
+    }
+
+    function setQuote({text,author}){
+      $('#pensieroTxt').textContent = `“${text}”`;
+      $('#pensieroAutore').textContent = author ? `— ${author}` : '';
+    }
+
+    async function init(){
+      const items = await fetchPensieri();
+      const date = new Date();
+      const {text,author} = pickText(items,date);
+      setQuote({text,author});
+
+      const shareUrl = `${location.origin}/p/${todayISO(date)}`;
+      $('#shareBtn').addEventListener('click', async ()=>{
+        const payload = { title: 'Pensiero del giorno — OFI', text, url: shareUrl };
+        try{
+          if(navigator.share){ await navigator.share(payload); }
+          else window.open(`https://wa.me/?text=${encodeURIComponent(text+' '+shareUrl)}`, '_blank');
+          $('#status').textContent = 'Grazie per aver condiviso 🌿';
+        }catch{}
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

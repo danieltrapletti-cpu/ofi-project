@@ -1,0 +1,1689 @@
+/* ======================================================
+   LUOGO DELLA MEMORIA — HUB INGRESSO (coerente con Necrologio mio)
+   File: site/cittadini/luogo-memoria.css
+   ====================================================== */
+
+/* ===== Variabili locali pagina ===== */
+:root{
+  --pageMax: 1100px;
+  --cardBg: rgba(255,255,255,.06);
+  --cardBrd: rgba(255,255,255,.12);
+  --shadow: 0 10px 28px rgba(0,0,0,.25);
+
+  /* oro più sobrio / istituzionale */
+  --gold: #b8952f;
+
+  --lm-soft: rgba(255,255,255,.05);
+  --lm-soft2: rgba(255,255,255,.08);
+
+  /* Font page (come dashboard cittadino) */
+  --fontSans: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --fontSerif: "Noto Serif", serif;
+}
+
+body{
+  font-family: var(--fontSans);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(255,215,100,.08), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(90,160,255,.10), transparent 55%),
+    var(--bg);
+}
+
+/* layout */
+.wrap{ max-width: var(--pageMax); margin: 0 auto; padding: 1.2rem 1rem 2.2rem; }
+
+/* ✅ Forza visibilità del toggle dashboard (se ofi.css lo nasconde) */
+#dashToggle{ display: inline-flex !important; }
+
+/* ===== HERO ===== */
+.hero{
+  margin-top: 1rem;
+  border-radius: 22px;
+  padding: 1.1rem 1.1rem;
+  border: 1px solid rgba(255,255,255,.10);
+
+  /* più profondo / autorevole */
+  background: linear-gradient(180deg, rgba(10,25,45,.92), rgba(10,25,45,.70));
+
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.hero::after{
+  content:"";
+  position:absolute; inset:-2px;
+  background: radial-gradient(600px 260px at 20% 20%, rgba(184,149,47,.12), transparent 60%),
+              radial-gradient(700px 260px at 110% 10%, rgba(90,160,255,.12), transparent 58%);
+  pointer-events:none;
+  border-radius: 24px;
+  z-index: 0;
+}
+.heroTop{ position: relative; z-index: 1; }
+
+.heroLeft{ display:flex; gap: 14px; align-items:flex-start; }
+.logo{
+  width: 54px; height: 54px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  display:grid; place-items:center;
+  box-shadow: 0 12px 26px rgba(0,0,0,.25);
+}
+.logo img{ width: 28px; height: 28px; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0,0,0,.28)); }
+
+.heroLabel{ font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; opacity: .82; }
+
+.heroName{
+  font-family: var(--fontSerif);
+  font-size: 2.0rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  margin-top: 6px;
+}
+
+.heroSub{ margin: 10px 0 0; line-height: 1.55; opacity: .92; max-width: 780px; }
+
+
+/* accento oro testuale */
+.gold{ color: var(--gold); }
+
+/* riga benvenuto (sottile, istituzionale) */
+.heroWelcome{
+  margin-top: 6px;
+  font-size: .92rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: rgba(184,149,47,.95);
+  text-shadow: 0 12px 26px rgba(0,0,0,.25);
+}
+
+/* dettagli apri/chiudi (puliti) */
+.lm-details{
+  margin-top: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  overflow: hidden;
+}
+.lm-details-summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  font-weight: 950;
+}
+.lm-details-summary::-webkit-details-marker{ display:none; }
+.lm-details-title{ letter-spacing: .01em; }
+.lm-details-hint{
+  font-size: .78rem;
+  opacity: .78;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+.lm-details[open] .lm-details-hint{
+  border-color: rgba(184,149,47,.28);
+  background: rgba(184,149,47,.12);
+}
+
+/* riepilogo minimal */
+.heroStats{ margin-top: 12px; display:flex; gap: 8px; flex-wrap: wrap; }
+.statPill{
+  display:inline-flex;
+  align-items:center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+}
+.statPill--soft{ border-color: rgba(184,149,47,.20); background: rgba(184,149,47,.10); }
+
+/* buttons */
+.btn{
+  height: 44px;
+  border-radius: 14px;
+  padding: 0 14px;
+  font-weight: 900;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: inherit;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+.btn:hover{ transform: translateY(-1px); border-color: rgba(184,149,47,.30); background: rgba(255,255,255,.08); }
+
+.btn--gold{
+  border: 1px solid rgba(184,149,47,.38);
+  background: linear-gradient(135deg, rgba(184,149,47,.96), rgba(255,215,140,.92));
+  color: #0b1220;
+  box-shadow: 0 16px 34px rgba(184,149,47,.22);
+}
+.btn--gold:hover{ transform: translateY(-1px); }
+
+.btn--ghost{
+  background: rgba(255,255,255,.05);
+}
+
+.btn-i{
+  display:inline-flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  align-items:center;
+  justify-content:center;
+  font-size: .75rem;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  margin-right: 8px;
+}
+
+/* ===== Cards grid ===== */
+.grid2{
+  margin-top: 14px;
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 980px){
+  .grid2{ grid-template-columns: 1fr; }
+  .heroLeft{ align-items:flex-start; }
+  .heroName{ font-size: 1.65rem; }
+}
+
+/* card */
+.card{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(15,35,60,.35);
+  box-shadow: var(--shadow);
+  padding: 12px;
+}
+.card--lm{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.08);
+}
+.cardHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 10px;
+}
+.cardHead h2{ margin:0; font-size: 1.05rem; letter-spacing: .02em; display:flex; align-items:center; gap: 6px; }
+
+/* link button (non tecnico) */
+.linkBtn{
+  border:none;
+  background: transparent;
+  color: rgba(255,255,255,.86);
+  font-weight: 900;
+  cursor:pointer;
+  padding: 8px 10px;
+  border-radius: 999px;
+}
+.linkBtn:hover{ background: rgba(255,255,255,.06); }
+
+/* info icon elegante */
+.infoIcon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);
+  cursor:pointer;
+  margin-left:4px;
+  transition:all 180ms ease;
+}
+.infoIcon:hover{
+  background:rgba(184,149,47,.15);
+  border-color:rgba(184,149,47,.35);
+}
+
+/* mini cards list */
+.miniList{ display:flex; flex-direction: column; gap: 10px; }
+.miniCard{
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  padding: 12px;
+}
+
+/* mini card professionale (Registro) */
+.miniCard--pro{
+  position: relative;
+  border-radius: 18px;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  overflow: hidden;
+}
+.miniCard--pro::before{
+  content:"";
+  position:absolute;
+  top:0; left:0; right:0;
+  height:4px;
+  border-radius: 18px 18px 0 0;
+  background: linear-gradient(90deg, rgba(184,149,47,.92), rgba(255,215,140,.72));
+  opacity: .95;
+}
+.miniBadge{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 950;
+  border: 1px solid rgba(184,149,47,.26);
+  background: rgba(184,149,47,.12);
+  color: rgba(255,255,255,.92);
+  white-space: nowrap;
+}
+.miniMeta{
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+.miniMetaRow{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap: 10px;
+  opacity: .92;
+}
+.miniMetaLabel{
+  font-size: .82rem;
+  opacity: .82;
+  font-weight: 850;
+}
+.miniMetaValue{
+  font-weight: 950;
+  opacity: .98;
+}
+.miniPrimary{
+  margin-top: 12px;
+}
+.miniPrimary .btn{
+  width: 100%;
+  justify-content: center;
+}
+.miniLinkRow{
+  margin-top: 8px;
+  display:flex;
+  justify-content:flex-end;
+}
+.miniLinkBtn{
+  padding: 6px 10px;
+  font-size: .85rem;
+  opacity: .92;
+}
+.miniCard--click{
+  width: 100%;
+  text-align:left;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+.miniCard--click:hover{
+  transform: translateY(-1px);
+  border-color: rgba(184,149,47,.28);
+  background: rgba(184,149,47,.08);
+}
+
+.miniTop{ display:flex; align-items:flex-start; justify-content:space-between; gap: 10px; margin-bottom: 6px; }
+.miniName{ font-weight: 950; letter-spacing: .01em; }
+.miniSub{ opacity: .88; line-height: 1.35; }
+.miniActions{ margin-top: 10px; display:flex; gap: 8px; flex-wrap: wrap; }
+.miniCta{ margin-top: 8px; font-weight: 950; opacity: .9; }
+
+.emptyState{
+  border-radius: 16px;
+  border: 1px dashed rgba(255,255,255,.18);
+  background: rgba(255,255,255,.04);
+  padding: 12px;
+  opacity: .9;
+}
+.emptySub{ margin-top: 6px; opacity: .86; }
+
+/* chips */
+.chip{
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  padding: 8px 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+.chip:hover{ transform: translateY(-1px); border-color: rgba(184,149,47,.30); }
+.chip--gold{
+  border-color: rgba(184,149,47,.38);
+  background: rgba(184,149,47,.16);
+}
+.chip--soft{ background: rgba(255,255,255,.05); opacity: .95; cursor: default; }
+
+/* ===== Sidebar + sidepanel ===== */
+:root{ --headerH: 64px; }
+html.is-dashboard #dashToggle{ display: inline-flex !important; }
+
+.dash-overlay{
+  position: fixed;
+  inset: var(--headerH) 0 0 0;
+  background: rgba(0,0,0,.50);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+
+.sidebar{
+  position: fixed;
+  top: var(--headerH);
+  left: 0;
+  height: calc(100vh - var(--headerH));
+  width: min(320px, 92vw);
+  background: rgba(8,18,36,.92);
+  border-right: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55);
+  z-index: 45;
+  transform: translateX(-110%);
+  transition: transform 180ms ease;
+  overflow: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.sidebar.open{ transform: translateX(0); }
+
+.sb-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.sb-brand{ display:flex; align-items:center; gap: 10px; }
+.sb-brand img{ width: 26px; height: 26px; object-fit: contain; }
+.sb-name{ font-weight: 950; letter-spacing: .01em; }
+.sb-close{
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.9);
+  border-radius: 12px;
+  height: 36px;
+  width: 38px;
+  cursor: pointer;
+}
+
+.group{ padding: 12px; }
+.group h4{
+  margin: 0 0 8px;
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .78;
+}
+.group nav{ display:flex; flex-direction: column; gap: 8px; }
+.group a{
+  text-decoration: none;
+  color: rgba(255,255,255,.92);
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  border-radius: 14px;
+  padding: 10px 10px;
+  font-weight: 850;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+.group a:hover{ transform: translateY(-1px); border-color: rgba(184,149,47,.28); background: rgba(255,255,255,.07); }
+.sb-back{ opacity: .88; }
+
+/* sidepanel */
+.sidepanel{
+  position: fixed;
+  top: var(--headerH);
+  right: 0;
+  height: calc(100vh - var(--headerH));
+  width: min(520px, 94vw);
+  background: rgba(8,18,36,.94);
+  border-left: 1px solid rgba(255,255,255,.10);
+  box-shadow: -30px 0 80px rgba(0,0,0,.55);
+  z-index: 46;
+  transform: translateX(110%);
+  transition: transform 180ms ease;
+  display:flex;
+  flex-direction: column;
+}
+.sidepanel.open{ transform: translateX(0); }
+
+.sp-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.sp-title{ font-weight: 950; letter-spacing: .01em; }
+.sp-close{
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.9);
+  border-radius: 12px;
+  height: 36px;
+  width: 38px;
+  cursor: pointer;
+}
+.sp-body{
+  padding: 12px 12px 18px;
+  overflow: auto;
+}
+
+/* panel content */
+.panelBlock{ padding: 4px 2px 10px; }
+.panelKicker{
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .78;
+  font-weight: 900;
+}
+.panelH{
+  margin: 8px 0 8px;
+  font-size: 1.25rem;
+  font-family: var(--fontSerif);
+  font-weight: 600;
+}
+.panelP{ margin: 0 0 10px; opacity: .9; line-height: 1.5; }
+
+.noteBox{
+  border-radius: 16px;
+  border: 1px solid rgba(184,149,47,.26);
+  background: rgba(184,149,47,.10);
+  padding: 12px;
+  line-height: 1.5;
+  opacity: .95;
+  margin-top: 10px;
+}
+
+.formGrid{ display:flex; flex-direction:column; gap: 10px; margin-top: 10px; }
+.field label{ display:block; font-weight: 900; margin-bottom: 6px; opacity: .9; }
+.field input{
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 10px 12px;
+  background: rgba(255,255,255,.06);
+  color: inherit;
+  font-family: inherit;
+}
+.actions{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 2px; }
+
+.steps{ margin: 10px 0 0; padding-left: 18px; line-height: 1.55; opacity: .92; }
+.panelCards{ display:flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.panelCard{
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  padding: 12px;
+}
+.panelCardTitle{ font-weight: 950; }
+.panelCardSub{ margin-top: 4px; opacity: .88; }
+
+/* ======================================================
+   INTRO + MAPPA
+   ====================================================== */
+
+.lm-wow{
+  margin-top: 14px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg, rgba(15,35,60,.50), rgba(15,35,60,.28));
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.lm-wow::before{
+  content:"";
+  position:absolute; inset:-2px;
+  background:
+    radial-gradient(700px 280px at 12% 12%, rgba(184,149,47,.12), transparent 60%),
+    radial-gradient(800px 300px at 110% 10%, rgba(90,160,255,.10), transparent 60%);
+  pointer-events:none;
+  border-radius: 24px;
+  opacity: .95;
+}
+.lm-wow-grid{
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 14px;
+  padding: 14px;
+}
+@media (max-width: 980px){
+  .lm-wow-grid{ grid-template-columns: 1fr; }
+}
+
+.lm-kicker{
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .82;
+  font-weight: 900;
+}
+.lm-wow-title{
+  margin: 10px 0 8px;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  letter-spacing: .01em;
+  font-family: var(--fontSerif);
+  font-weight: 600;
+}
+.lm-wow-text{
+  margin: 0;
+  opacity: .92;
+  line-height: 1.55;
+  max-width: 680px;
+}
+.lm-wow-actions{
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.lm-micro{
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+.lm-micro-item{
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  opacity: .92;
+  line-height: 1.35;
+}
+.lm-dot{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: rgba(184,149,47,.55);
+  box-shadow: 0 0 0 4px rgba(184,149,47,.12);
+  margin-top: 5px;
+  flex: 0 0 auto;
+}
+
+/* MAPPA CARD */
+.lm-mapCard{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  padding: 12px;
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+.lm-mapTop{ padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,.10); }
+.lm-mapTitle{
+  font-weight: 950;
+  letter-spacing: .01em;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.lm-mapSub{
+  margin-top: 4px;
+  opacity: .86;
+  font-size: .92rem;
+}
+
+.lm-mapStage{
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 10px 0;
+  overflow: hidden;
+}
+
+/* Mapbox stage */
+.lm-mapbox{
+  width: 100%;
+  height: 220px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  overflow: hidden;
+  background: rgba(0,0,0,.18);
+}
+
+/* Fallback */
+.lm-fallback{
+  width: 100%;
+  height: 220px;
+  border-radius: 14px;
+  border: 1px dashed rgba(255,255,255,.18);
+  background: rgba(255,255,255,.03);
+  display:flex;
+  flex-direction: column;
+  justify-content:center;
+  align-items:center;
+  padding: 12px;
+  text-align:center;
+}
+.lm-fallbackTitle{ font-weight: 900; margin-bottom: 6px; }
+.lm-fallbackSub{ opacity: .85; font-size: .92rem; line-height: 1.45; }
+
+.lm-mapBottom{
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+.lm-mapNote{
+  opacity: .85;
+  line-height: 1.45;
+  font-size: .92rem;
+}
+
+/* piccole rifiniture Mapbox (nascondi credits in mini-card) */
+.lm-mapCard .mapboxgl-ctrl-logo,
+.lm-mapCard .mapboxgl-ctrl-attrib{ display:none !important; }
+
+
+
+/* ======================================================
+   WELCOME VIDEO MODAL
+   ====================================================== */
+.lm-welcome-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(3px);
+  z-index: 80;
+}
+.lm-welcome-modal{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 81;
+}
+.lm-welcome-card{
+  width: min(860px, 96vw);
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(180deg, rgba(8,18,36,.96), rgba(8,18,36,.88));
+  box-shadow: 0 30px 90px rgba(0,0,0,.70);
+  overflow: hidden;
+}
+.lm-welcome-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+}
+.lm-welcome-title{
+  font-family: var(--fontSerif);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+.lm-welcome-close{
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.92);
+  border-radius: 12px;
+  height: 38px;
+  width: 40px;
+  cursor: pointer;
+}
+.lm-welcome-body{
+  padding: 14px 14px 16px;
+}
+.lm-welcome-sub{
+  margin: 0 0 12px;
+  opacity: .90;
+  line-height: 1.55;
+}
+.lm-welcome-video{
+  border-radius: 18px;
+  border: 1px dashed rgba(184,149,47,.28);
+  background:
+    radial-gradient(900px 240px at 20% 0%, rgba(184,149,47,.12), transparent 55%),
+    rgba(255,255,255,.04);
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+}
+.lm-welcome-video-inner{
+  text-align: center;
+  max-width: 520px;
+}
+.lm-welcome-video-kicker{
+  font-size: .72rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .86;
+  font-weight: 950;
+}
+.lm-welcome-video-title{
+  margin-top: 10px;
+  font-family: var(--fontSerif);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+.lm-welcome-video-note{
+  margin-top: 8px;
+  opacity: .88;
+  line-height: 1.5;
+}
+.lm-welcome-details{
+  margin-top: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.04);
+  padding: 10px 12px;
+}
+.lm-welcome-details summary{
+  cursor: pointer;
+  font-weight: 950;
+  list-style: none;
+}
+.lm-welcome-details summary::-webkit-details-marker{ display:none; }
+.lm-welcome-details ul{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  line-height: 1.55;
+  opacity: .92;
+}
+.lm-welcome-actions{
+  margin-top: 12px;
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+@media (max-width: 640px){
+  .lm-welcome-video{ min-height: 240px; }
+}
+
+/* ✅ FIX: assicurati che hidden funzioni sempre (evita conflitti con ofi.css) */
+#lmWelcomeModal[hidden],
+#lmWelcomeOverlay[hidden]{
+  display: none !important;
+}
+
+/* ✨ Cinematic */
+#lmWelcomeOverlay{
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+#lmWelcomeModal{
+  opacity: 0;
+  transform: scale(.985) translateY(6px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+#lmWelcomeOverlay:not([hidden]){
+  opacity: 1;
+}
+#lmWelcomeModal:not([hidden]){
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Glow sobrio oro */
+.lm-welcome-card{
+  position: relative;
+}
+.lm-welcome-card::before{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius: 24px;
+  background: radial-gradient(600px 220px at 15% 10%, rgba(184,149,47,.18), transparent 60%);
+  pointer-events:none;
+  opacity: .9;
+}
+
+/* 🎬 Video stage pulito */
+.lm-welcome-video{
+  padding: 10px;
+  min-height: unset;
+}
+#lmVideo{
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  display: block;
+  background: rgba(0,0,0,.35);
+  box-shadow: 0 18px 50px rgba(0,0,0,.55);
+}
+
+
+
+
+/* ===== HERO actions (pulite, senza chip) ===== */
+.heroActions{
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn--xl{
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 16px;
+  font-size: .98rem;
+}
+.btn--video{
+  position: relative;
+  border-color: rgba(184,149,47,.20);
+}
+.btn--video::after{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius: 18px;
+  background: radial-gradient(260px 120px at 20% 30%, rgba(184,149,47,.22), transparent 60%);
+  pointer-events:none;
+  opacity:.9;
+}
+
+
+/* ======================================================
+   MAPPA IMMERSIVA — full bleed, modalità Atmosfera/Registro
+   ====================================================== */
+
+/* full width "bleed" dentro il wrap */
+.bleed{
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  max-width: 100vw;
+}
+.lm-mapImmersive{
+  margin-top: 14px;
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg, rgba(10,25,45,.88), rgba(10,25,45,.62));
+  box-shadow: 0 24px 70px rgba(0,0,0,.42);
+  position: relative;
+  overflow: hidden;
+}
+
+/* halo cinematic */
+.lm-mapImmersive::before{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius: 28px;
+  background:
+    radial-gradient(900px 340px at 10% 12%, rgba(184,149,47,.14), transparent 60%),
+    radial-gradient(1100px 420px at 95% 8%, rgba(90,160,255,.10), transparent 62%);
+  pointer-events:none;
+  opacity: .95;
+}
+
+.lm-mapHead{
+  position: relative;
+  z-index: 1;
+  padding: 18px 18px 10px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.lm-mapH{
+  margin: 8px 0 6px;
+  font-family: var(--fontSerif);
+  font-weight: 600;
+  font-size: 2.0rem;
+  letter-spacing: .01em;
+}
+.lm-mapP{
+  margin: 0;
+  opacity: .92;
+  max-width: 900px;
+  line-height: 1.55;
+}
+.lm-mapControls{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+.lm-modeBtn{
+  opacity: .92;
+}
+.lm-modeBtn.is-active{
+  border-color: rgba(184,149,47,.40);
+  background: rgba(184,149,47,.16);
+}
+
+.lm-mapFrame{
+  position: relative;
+  z-index: 1;
+  padding: 0 18px 16px;
+}
+
+/* contenitore mappa */
+.lm-mapboxBig{
+  width: 100%;
+  height: clamp(380px, 54vh, 560px);
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(0,0,0,.20);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+/* overlay sopra mapbox */
+.lm-mapOverlay{
+  position:absolute;
+  inset: 0 18px 16px 18px; /* allineato al padding del frame */
+  border-radius: 22px;
+  pointer-events:none;
+  overflow:hidden;
+}
+
+/* griglia: solo in modalità Registro */
+.lm-gridOverlay{
+  position:absolute; inset:0;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 70px 70px;
+  mix-blend-mode: overlay;
+}
+
+/* glow: sempre, ma più forte in Atmosfera */
+.lm-glowOverlay{
+  position:absolute; inset:0;
+  opacity: .45;
+  background:
+    radial-gradient(900px 380px at 20% 0%, rgba(184,149,47,.12), transparent 60%),
+    radial-gradient(900px 360px at 100% 30%, rgba(90,160,255,.10), transparent 60%);
+  transition: opacity 200ms ease;
+}
+
+.lm-mapImmersive.mode-registro .lm-gridOverlay{ opacity: .55; }
+.lm-mapImmersive.mode-registro .lm-glowOverlay{ opacity: .28; }
+
+/* fallback grande */
+.lm-fallback--big{
+  position:absolute;
+  inset: 0 18px 16px 18px;
+  height: auto;
+  border-radius: 22px;
+}
+
+/* legenda */
+.lm-legend{
+  position:absolute;
+  right: 34px;
+  bottom: 30px;
+  z-index: 2;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(8,18,36,.68);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  padding: 12px 12px;
+  width: min(320px, 82vw);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.lm-mapImmersive.mode-registro .lm-legend{
+  opacity: 1;
+  transform: translateY(0);
+}
+.lm-legendTitle{
+  font-weight: 950;
+  margin-bottom: 8px;
+  letter-spacing: .01em;
+}
+.lm-legendItem{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  opacity: .92;
+  line-height: 1.25;
+  margin-top: 6px;
+}
+.lm-dotLegend{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: rgba(184,149,47,.85);
+  box-shadow: 0 0 0 5px rgba(184,149,47,.12), 0 0 18px rgba(184,149,47,.25);
+  flex: 0 0 auto;
+}
+.lm-dotLegend--reserved{
+  background: rgba(184,149,47,.42);
+  box-shadow: 0 0 0 5px rgba(184,149,47,.08);
+}
+
+/* footer riga sotto mappa */
+.lm-mapFoot{
+  position: relative;
+  z-index: 1;
+  padding: 0 18px 16px;
+  opacity: .88;
+  line-height: 1.45;
+}
+
+/* Marker luce (Mapbox custom element) */
+.lm-light{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(184,149,47,.95);
+  box-shadow:
+    0 0 0 6px rgba(184,149,47,.12),
+    0 0 22px rgba(184,149,47,.25);
+  animation: lmPulse 2.6s ease-in-out infinite;
+}
+.lm-light.is-reserved{
+  opacity: .55;
+  filter: saturate(.9);
+  box-shadow: 0 0 0 6px rgba(184,149,47,.08), 0 0 16px rgba(184,149,47,.18);
+  animation-duration: 3.4s;
+}
+
+
+/* Mapbox: togli watermark/attrib (sezione immersiva) */
+.lm-mapImmersive .mapboxgl-ctrl-logo,
+.lm-mapImmersive .mapboxgl-ctrl-attrib{
+  display:none !important;
+}
+
+@media (max-width: 980px){
+  .lm-mapHead{ padding: 16px 14px 10px; }
+  .lm-mapFrame{ padding: 0 14px 14px; }
+  .lm-mapOverlay{ inset: 0 14px 14px 14px; }
+  .lm-legend{ right: 22px; bottom: 22px; }
+  .lm-mapH{ font-size: 1.55rem; }
+}
+
+/* ======================================================
+   MAPPA — look cinematografico (1 sola mappa)
+   ====================================================== */
+
+/* Variabili (solo mappa) */
+:root{
+  --lmDeep:  #071a33; /* blu profondo */
+  --lmDeep2: #041225; /* ancora più scuro */
+  --lmGold:  rgba(215, 175, 74, .95);
+  --lmGlass: rgba(10, 22, 40, .55);
+  --lmBorder: rgba(255,255,255,.10);
+}
+
+/* Shell della mappa immersiva */
+.lm-mapImmersive{
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(1200px 600px at 30% 20%, rgba(255,255,255,.06), transparent 60%),
+    linear-gradient(180deg, var(--lmDeep), var(--lmDeep2));
+  border: 1px solid var(--lmBorder);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* Vignetta/film grain soft sopra la mappa */
+.lm-mapImmersive::after{
+  content:"";
+  pointer-events:none;
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 520px at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%),
+    linear-gradient(180deg, rgba(5,10,20,.55), rgba(5,10,20,.65));
+}
+
+/* Contenitore Mapbox */
+.lm-mapboxBig{
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(7,16,32,.55), rgba(7,16,32,.65));
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+/* Canvas mapbox sempre arrotondato */
+.lm-mapboxBig .mapboxgl-canvas,
+.lm-mapboxBig .mapboxgl-map{
+  border-radius: 18px;
+}
+
+/* Overlay glass (testi/pulsanti sopra) */
+.lm-mapOverlay{
+  background: linear-gradient(180deg, rgba(6,16,34,.62), rgba(6,16,34,.22));
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+}
+
+/* Fallback loading testo */
+#lmMapFallback, .lmMapFallback{
+  background: transparent;
+  color: rgba(255,255,255,.80);
+  text-shadow: 0 10px 25px rgba(0,0,0,.45);
+}
+#lmMapFallback strong, .lmMapFallback strong{
+  color: rgba(255,255,255,.92);
+}
+
+/* Controlli Mapbox più “istituzionali” */
+.mapboxgl-ctrl-group{
+  background: rgba(10,18,32,.60) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  backdrop-filter: blur(10px);
+}
+.mapboxgl-ctrl-group button{
+  filter: saturate(1.1);
+}
+
+/* ======================================================
+   Luci (marker) — demo e futuro Firestore
+   ====================================================== */
+
+/* Marker base (se già usi .lm-light nel JS) */
+.lm-light{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: var(--lmGold);
+  box-shadow:
+    0 0 0 6px rgba(215,175,74,.12),
+    0 0 22px rgba(215,175,74,.35),
+    0 0 55px rgba(215,175,74,.18);
+  animation: lmPulse 3.2s ease-in-out infinite;
+}
+.lm-light.is-reserved{
+  opacity: .55;
+  filter: saturate(.85);
+}
+
+/* Marker “glow” (se usi .lm-glow nel JS) */
+.lm-glow{
+  width: 10px; height: 10px;
+  border-radius: 999px;
+  background: var(--lmGold);
+  box-shadow:
+    0 0 0 6px rgba(215,175,74,.12),
+    0 0 22px rgba(215,175,74,.35),
+    0 0 55px rgba(215,175,74,.18);
+  animation: lmPulse 3.2s ease-in-out infinite;
+}
+
+/* Unica animazione pulse (evita override) */
+@keyframes lmPulse{
+  0%,100%{ transform: scale(1); opacity: .95; }
+  50%{ transform: scale(1.35); opacity: .70; }
+}
+
+html, body{
+  overflow-x: hidden;
+}
+
+body.no-scroll{
+  overflow: hidden !important;
+}
+
+/* =========================================
+   FIX doppia scrollbar (body + wrapper)
+   Forziamo: scroll SOLO sul body
+   ========================================= */
+html, body{
+  height: auto !important;
+  overflow-y: auto !important;
+}
+
+/* se ofi.css imposta un contenitore “scrollabile” */
+main, .wrap{
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+/* Se esiste un layout dashboard con container centrale */
+.is-dashboard main,
+.is-dashboard .wrap{
+  overflow: visible !important;
+}
+
+/* Manteniamo solo il blocco orizzontale (già ok) */
+html, body{
+  overflow-x: hidden !important;
+}
+
+
+/* ======================================================
+   MAPPA IMMERSIVA — sempre leggibile come tema scuro
+   (testi + chip + legenda fissi)
+   ====================================================== */
+
+.lm-mapImmersive{
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* Titoli e testi mappa: SEMPRE bianchi */
+.lm-mapImmersive .lm-kicker,
+.lm-mapImmersive .lm-mapH,
+.lm-mapImmersive .lm-mapP,
+.lm-mapImmersive .lm-mapFoot,
+.lm-mapImmersive .lm-legend,
+.lm-mapImmersive .lm-legendTitle,
+.lm-mapImmersive .lm-legendItem{
+  color: rgba(255,255,255,.92) !important;
+  opacity: 1 !important;
+  text-shadow: 0 10px 25px rgba(0,0,0,.45);
+}
+
+/* Pulsanti/Chip nella mappa: SEMPRE stile scuro */
+.lm-mapImmersive .chip,
+.lm-mapImmersive .lm-modeBtn{
+  color: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+.lm-mapImmersive .chip:hover,
+.lm-mapImmersive .lm-modeBtn:hover{
+  background: rgba(255,255,255,.08) !important;
+  border-color: rgba(184,149,47,.30) !important;
+}
+
+/* Stato attivo: oro (già coerente col tuo design) */
+.lm-mapImmersive .lm-modeBtn.is-active{
+  background: rgba(184,149,47,.16) !important;
+  border-color: rgba(184,149,47,.40) !important;
+  color: rgba(255,255,255,.95) !important;
+}
+
+/* Legenda: resta scura e leggibile anche in tema chiaro */
+.lm-mapImmersive .lm-legend{
+  background: rgba(8,18,36,.68) !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+/* Fallback testo: sempre white */
+.lm-mapImmersive .lm-fallbackTitle,
+.lm-mapImmersive .lm-fallbackSub{
+  color: rgba(255,255,255,.88) !important;
+  opacity: 1 !important;
+}
+
+/* ======================================================
+   THEME SAFE — Cards (Luoghi/Collegamenti) sempre leggibili
+   - Base = DARK (coerente col look della pagina)
+   - LIGHT solo quando il tema è realmente light
+   - AUTO segue prefers-color-scheme
+   ====================================================== */
+
+:root{
+  /* default: dark */
+  --lmCardBg: rgba(255,255,255,.04);
+  --lmCardBrd: rgba(255,255,255,.08);
+  --lmCardShadow: 0 10px 28px rgba(0,0,0,.25);
+
+  --lmText: rgba(255,255,255,.92);
+  --lmText2: rgba(255,255,255,.78);
+
+  --lmUiBg: rgba(255,255,255,.06);
+  --lmUiBrd: rgba(255,255,255,.14);
+
+  --lmEmptyBg: rgba(255,255,255,.04);
+  --lmEmptyBrd: rgba(255,255,255,.18);
+  --lmEmptyText: rgba(255,255,255,.90);
+  --lmEmptySub: rgba(255,255,255,.78);
+}
+
+/* Tema LIGHT (qualsiasi marker usato da ofi.js / menu.js) */
+:where(
+  html[data-theme="light"],
+  body[data-theme="light"],
+  html.theme-light,
+  body.theme-light
+){
+  --lmCardBg: rgba(255,255,255,.92);
+  --lmCardBrd: rgba(11,19,34,.10);
+  --lmCardShadow: 0 18px 45px rgba(0,0,0,.10);
+
+  --lmText: rgba(11,19,34,.92);
+  --lmText2: rgba(11,19,34,.72);
+
+  --lmUiBg: rgba(11,19,34,.04);
+  --lmUiBrd: rgba(11,19,34,.14);
+
+  --lmEmptyBg: rgba(11,19,34,.03);
+  --lmEmptyBrd: rgba(11,19,34,.22);
+  --lmEmptyText: rgba(11,19,34,.86);
+  --lmEmptySub: rgba(11,19,34,.72);
+}
+
+/* AUTO: segue il sistema */
+@media (prefers-color-scheme: light){
+  html[data-theme="auto"]{
+    --lmCardBg: rgba(255,255,255,.92);
+    --lmCardBrd: rgba(11,19,34,.10);
+    --lmCardShadow: 0 18px 45px rgba(0,0,0,.10);
+
+    --lmText: rgba(11,19,34,.92);
+    --lmText2: rgba(11,19,34,.72);
+
+    --lmUiBg: rgba(11,19,34,.04);
+    --lmUiBrd: rgba(11,19,34,.14);
+
+    --lmEmptyBg: rgba(11,19,34,.03);
+    --lmEmptyBrd: rgba(11,19,34,.22);
+    --lmEmptyText: rgba(11,19,34,.86);
+    --lmEmptySub: rgba(11,19,34,.72);
+  }
+}
+
+/* Applica variabili alle card problematiche */
+.card--lm{
+  background: var(--lmCardBg);
+  border-color: var(--lmCardBrd);
+  box-shadow: var(--lmCardShadow);
+}
+
+.cardHead{
+  border-bottom-color: color-mix(in srgb, var(--lmText) 14%, transparent);
+}
+
+.cardHead h2{
+  color: var(--lmText);
+}
+
+.linkBtn{
+  color: var(--lmText);
+}
+.linkBtn:hover{
+  background: var(--lmUiBg);
+}
+
+.infoIcon{
+  color: var(--lmText);
+  background: var(--lmUiBg);
+  border-color: var(--lmUiBrd);
+}
+
+/* mini-card pro (es. Maria Rossi) */
+.miniCard--pro{
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--lmCardBg) 92%, transparent),
+    color-mix(in srgb, var(--lmCardBg) 86%, transparent)
+  );
+  border-color: color-mix(in srgb, var(--lmText) 12%, transparent);
+}
+
+.miniName,
+.miniMetaValue{
+  color: var(--lmText);
+}
+.miniMetaLabel{
+  color: var(--lmText2);
+  opacity: 1;
+}
+
+.miniLinkBtn{
+  color: var(--lmText);
+  opacity: 1;
+}
+
+/* ✅ QUI è il tuo problema: emptyState */
+.emptyState{
+  background: var(--lmEmptyBg);
+  border-color: var(--lmEmptyBrd);
+  color: var(--lmEmptyText);
+  opacity: 1;
+}
+.emptySub{
+  color: var(--lmEmptySub);
+  opacity: 1;
+}
+
+/* ======================================================
+   FIX DEFINITIVO (PULITO) — Cards sempre leggibili
+   Default = LIGHT
+   Override = DARK quando presente un marker dark
+   ====================================================== */
+
+/* ---------- DEFAULT (LIGHT) ---------- */
+.card--lm{
+  background: rgba(255,255,255,.92);
+  border: 1px solid rgba(11,19,34,.10);
+  box-shadow: 0 18px 45px rgba(0,0,0,.10);
+  color: rgba(11,19,34,.92);
+}
+
+.card--lm .cardHead{
+  border-bottom: 1px solid rgba(11,19,34,.10);
+}
+.card--lm .cardHead h2{
+  color: rgba(11,19,34,.92);
+}
+
+.card--lm .linkBtn{
+  color: rgba(11,19,34,.86);
+}
+.card--lm .linkBtn:hover{
+  background: rgba(11,19,34,.06);
+}
+
+.card--lm .infoIcon{
+  border-color: rgba(11,19,34,.16);
+  background: rgba(11,19,34,.05);
+  color: rgba(11,19,34,.88);
+}
+
+/* Empty state (era quello che diventava “bianco su chiaro”) */
+.card--lm .emptyState{
+  border-color: rgba(11,19,34,.22);
+  background: rgba(11,19,34,.03);
+  color: rgba(11,19,34,.86);
+  opacity: 1;
+}
+.card--lm .emptySub{
+  color: rgba(11,19,34,.72);
+  opacity: 1;
+}
+
+/* Mini card “pro” (es. Maria Rossi) */
+.card--lm .miniCard--pro{
+  background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.90));
+  border: 1px solid rgba(11,19,34,.12);
+  box-shadow: 0 14px 38px rgba(0,0,0,.10);
+  color: rgba(11,19,34,.92);
+}
+.card--lm .miniName,
+.card--lm .miniMetaValue{
+  color: rgba(11,19,34,.92);
+}
+.card--lm .miniMetaLabel{
+  color: rgba(11,19,34,.68);
+  opacity: 1;
+}
+.card--lm .miniBadge{
+  background: rgba(184,149,47,.16);
+  border-color: rgba(184,149,47,.30);
+  color: rgba(11,19,34,.92);
+}
+.card--lm .miniLinkBtn{
+  color: rgba(11,19,34,.80);
+  opacity: 1;
+}
+.card--lm .miniLinkBtn:hover{
+  background: rgba(11,19,34,.06);
+}
+
+
+/* ---------- DARK OVERRIDE ---------- */
+/* (Se il tema scuro è attivo, queste regole vincono e tornano “come nello screen scuro”) */
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 10px 28px rgba(0,0,0,.25);
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .cardHead{
+  border-bottom-color: rgba(255,255,255,.10);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .cardHead h2,
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .linkBtn{
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .linkBtn:hover{
+  background: rgba(255,255,255,.06);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .infoIcon{
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .emptyState{
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.04);
+  color: rgba(255,255,255,.90);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .emptySub{
+  color: rgba(255,255,255,.78);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniCard--pro{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 18px 45px rgba(0,0,0,.35);
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniName,
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniMetaValue{
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniMetaLabel{
+  color: rgba(255,255,255,.78);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniBadge{
+  background: rgba(184,149,47,.12);
+  border-color: rgba(184,149,47,.26);
+  color: rgba(255,255,255,.92);
+}
+
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniLinkBtn{
+  color: rgba(255,255,255,.86);
+}
+:where(
+  body.theme-dark,
+  html.theme-dark,
+  .theme-dark,
+  html[data-theme="dark"],
+  body[data-theme="dark"]
+) .card--lm .miniLinkBtn:hover{
+  background: rgba(255,255,255,.06);
+}

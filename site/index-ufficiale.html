@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Onoranze Funebri Italia · OFI</title>
+<meta content="OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce cittadini, imprese, figure di supporto e fornitori. Vicinanza, aiuto e tecnologia, quando conta davvero." name="description"/>
+<link as="image" href="images/logo-ofi.png" rel="preload"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&amp;family=Noto+Serif:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="ofi.css" rel="stylesheet"/><link href="ofi-contrast-hotfix.css" rel="stylesheet"/>
+<link crossorigin="" href="https://api.mapbox.com" rel="preconnect"/>
+<script defer="" src="ofi.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+<!-- Firebase (per sezione Articoli in home) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<header class="site-header">
+<div class="brand">
+<a aria-label="Torna alla home" href="index.html">
+<img alt="OFI" class="brand-logo" src="images/logo-ofi.png"/>
+</a>
+</div>
+<nav aria-label="Principale" class="main-nav">
+<button aria-controls="menuPanel" aria-expanded="false" aria-label="Apri menù" class="hamburger" id="menuToggle">
+<span></span><span></span><span></span>
+</button>
+<ul class="menu" id="menuPanel" role="menu">
+<li class="menu-mobile-head"><img alt="OFI" src="images/logo-ofi.png"/><button aria-label="Chiudi menù" class="menu-close" id="menuClose">✕</button></li>
+<li aria-hidden="true" class="menu-divider"></li>
+<li><a class="menu-callout" href="necrologi.html">NECROLOGI</a></li>
+<li><a class="menu-callout" href="pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+<li aria-hidden="true" class="menu-divider"></li>
+<li class="has-sub">
+<a aria-expanded="false" aria-haspopup="true" href="#">Scopri OFI <span class="caret">▾</span></a>
+<ul class="submenu">
+<li><a href="vision.html">Visione di OFI</a></li>
+<li><a href="index.html#cos-e-ofi">Cos'è OFI</a></li>
+<li><a href="index.html#pensieri">Pensieri</a></li>
+<li><a href="articoli/articoli.html">Articoli</a></li>
+<li><a href="index.html#ricordi">Ricordi</a></li>
+<li><a href="index.html#mappa">Vicino a te</a></li>
+<li><a href="index.html#video">Video</a></li>
+</ul>
+</li>
+<li><a class="btn btn-primary" href="accesso.html">Accedi / Registrati</a></li>
+</ul>
+<button aria-label="Cambia tema" class="theme-switch" id="themeToggle">◐</button>
+</nav>
+<div class="menu-overlay" hidden="" id="menuOverlay"></div>
+</header>
+<!-- HERO -->
+<section class="hero" id="hero">
+<div class="hero-media">
+<video autoplay="" class="hero-video" loop="" muted="" playsinline="" poster="images/OFI-Social.png" preload="metadata">
+<source src="videos/OFI.mp4" type="video/mp4"/>
+</video>
+<div class="hero-overlay"></div>
+</div>
+<div class="hero-content container">
+<img alt="OFI – Onoranze Funebri Italia" class="hero-badge" src="images/logo-ofi.png"/>
+<h1>Vicinanza. Aiuto. Tecnologia. <span class="nowrap">Quando conta davvero.</span></h1>
+<p class="lead">OFI è l'ecosistema nazionale che ti accompagna con rispetto e chiarezza. Qui trovi imprese affidabili, professionisti che ascoltano e strumenti semplici per ricordare.</p>
+<div class="cta">
+<a class="btn btn-primary" href="accesso.html">Accedi / Registrati</a>
+<a class="btn btn-outline inverse" href="#mappa">Trova vicino a te</a>
+</div>
+</div>
+</section>
+<!-- QUICK STRIP -->
+<section aria-label="Accesso rapido a contenuti pubblici" class="quick-strip">
+<div class="container strip-grid">
+<a class="strip-item" href="necrologi.html">
+<span class="kicker">PUBBLICI</span>
+<strong>Necrologi &amp; Anniversari</strong>
+<em>Consulta gli avvisi ufficiali</em>
+</a>
+<a class="strip-item" href="pensieri-pubblici.html">
+<span class="kicker">PUBBLICI</span>
+<strong>Pensieri condivisi</strong>
+<em>Parole di conforto</em>
+</a>
+</div>
+</section>
+<!-- COS'E OFI -->
+<section class="section container reveal" id="cos-e-ofi">
+<div class="section-head">
+<h2>Cos'è OFI</h2>
+<p>Un ecosistema di aiuto, fatto di persone e tecnologia.</p>
+</div>
+<div class="grid grid-3">
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/OFI-Logo-3.png"/>
+<h3>Un unico luogo sicuro</h3>
+</div>
+<p>Richiesta preventivi chiara, contatti verificati e aggiornamenti sullo stato: tutto in modo trasparente.</p>
+</article>
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-impresa.png"/>
+<h3>Imprese affidabili</h3>
+</div>
+<p>Rete di imprese funebri con profili completi e <em>Marchio di Affidabilità Nazionale</em>. Risposte puntuali, vicine a te.</p>
+</article>
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-supporto.png"/>
+<h3>Supporto che ascolta</h3>
+</div>
+<p>Psicologi e professionisti per orientarti nelle scelte pratiche e nel prendersi cura del ricordo.</p>
+</article>
+</div>
+</section>
+<!-- PENSIERI -->
+<section class="section container" id="pensieri">
+<div class="section-head">
+<h2 class="kicker">NUOVO SOCIAL DI OFI</h2>
+</div>
+<div class="card card-highlight pensieri-hero">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/pensieri-logo.png"/>
+<h3>PENSIERI</h3>
+</div>
+<p class="mb-0">Il luogo dove i ricordi vivono per sempre. Condividi un pensiero del giorno o parole che possano essere di conforto ad altri. È semplice, rispettoso e libero.</p>
+<div class="cta">
+<a class="btn btn-primary" href="cittadini/pensieri.html">Scopri PENSIERI</a>
+<a class="btn btn-ghost" href="accesso.html#cittadini">Inizia ora</a>
+</div>
+</div>
+</section>
+<!-- RICORDI & COMMEMORAZIONE -->
+<section class="section container reveal" id="ricordi">
+<div class="section-head">
+<h2>Ricordi &amp; Commemorazione</h2>
+<p>Spazi semplici e rispettosi per onorare chi ami.</p>
+</div>
+<div class="grid grid-3">
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/pensieri-logo.png"/>
+<h3>Necrologi &amp; Anniversari</h3>
+</div>
+<p>Pubblica un annuncio ufficiale e lascia che OFI ne custodisca la memoria.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="necrologi.html">Vai ai necrologi pubblici</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#necrologi">Come si pubblica (guida)</a>
+</div>
+</article>
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/pensieri.png"/>
+<h3>Luogo della Memoria</h3>
+</div>
+<p>Un luogo digitale dedicato: foto, parole, piccoli video e il segno di un posto del cuore da fissare sulla mappa.</p>
+</article>
+<article class="card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/OFI-Logo-Light.png"/>
+<h3>Pensieri Pubblici</h3>
+</div>
+<p>Leggi i pensieri condivisi pubblicamente dalla comunità.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="pensieri-pubblici.html">Vai ai pensieri pubblici</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#pensieri">Come si scrive (guida)</a>
+</div>
+</article>
+</div>
+</section>
+<!-- ARTICOLI -->
+<section class="section container reveal" id="articoli-home">
+<div class="section-head">
+<h2>Articoli &amp; Approfondimenti</h2>
+<p>Spunti utili e riflessioni. L’anteprima è pubblica; il testo completo è disponibile dopo l’accesso.</p>
+</div>
+<div class="grid grid-3" id="articoliGrid">
+<div class="skeleton-card"></div>
+<div class="skeleton-card"></div>
+<div class="skeleton-card"></div>
+</div>
+<div class="cta" style="margin-top:.8rem">
+<a class="btn btn-primary" href="articoli/articoli.html">Vedi tutti gli articoli</a>
+</div>
+</section>
+<!-- MAPPA -->
+<section class="section map-wrap reveal" id="mappa">
+<div class="container section-head">
+<h2>Vicino a te</h2>
+<p>Attiva la geolocalizzazione: vedrai imprese e figure di supporto intorno a te, evidenziate con luci eleganti.</p>
+<div class="legend">
+<span aria-hidden="true" class="dot dot-impresa"></span> Imprese  
+      <span aria-hidden="true" class="dot dot-supporto"></span> Figure di supporto
+    </div>
+</div>
+<div class="geo-toast" id="geoToast" style="display:none;"></div>
+<div class="map-actions"><button class="btn btn-outline inverse btn-sm" id="geoBtn">📍 Localizzami</button></div>
+<div aria-label="Mappa delle realtà vicine" class="map" id="map"></div>
+</section>
+<!-- VIDEO -->
+<section class="section container reveal" id="video">
+<h2>Guarda e scopri</h2>
+<div class="card card-highlight">
+<div aria-label="Seleziona video" class="video-tabs" role="tablist">
+<button aria-selected="true" class="tab active" data-key="benvenuto" role="tab">Benvenuto</button>
+<button aria-selected="false" class="tab" data-key="spot" role="tab">Spot</button>
+</div>
+<div aria-live="polite" class="video-stage"></div>
+</div>
+</section>
+<!-- ENTRA NELLA RETE NAZIONALE -->
+<section aria-labelledby="recruitTitle" class="section recruit-wrap reveal" id="entra-rete">
+<div class="container">
+<header class="section-head">
+<img alt="Marchio di Affidabilità Nazionale OFI" class="recruit-badge" src="images/sigillo-ofi.png"/>
+<h2 id="recruitTitle">Entra nella Rete Nazionale OFI</h2>
+<p>Più visibilità, più fiducia, più contatti. Un ecosistema serio, con strumenti reali.</p>
+</header>
+<div class="grid grid-4 recruit-grid">
+<article class="card recruit-card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-impresa.png"/>
+<h3>Imprese funebri</h3>
+</div>
+<p>Marchio di Affidabilità, profilo pubblico avanzato, richieste di preventivo in arrivo, sigillo condivisibile.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="accesso.html#imprese">Inizia come Impresa</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#imprese">Scopri come funziona</a>
+</div>
+</article>
+<article class="card recruit-card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-supporto.png"/>
+<h3>Figure di supporto</h3>
+</div>
+<p>Profilo verificato, geolocalizzazione e contatto chiaro per essere trovati quando serve, vicino alle famiglie.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="accesso.html#supporto">Entra come Supporto</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#supporto">Scopri come funziona</a>
+</div>
+</article>
+<article class="card recruit-card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-fornitore.png"/>
+<h3>Fornitori del settore</h3>
+</div>
+<p>Vetrina verso le imprese, presentazioni mirate e promozioni regionali con il servizio PLUS.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="accesso.html#fornitori">Diventa Fornitore</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#fornitori">Dettagli servizio</a>
+</div>
+</article>
+<article class="card recruit-card">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/icona-cittadino.png"/>
+<h3>Cittadini</h3>
+</div>
+<p>Pensieri, necrologi e anniversari, luogo della memoria, articoli completi e richieste preventivo tracciate.</p>
+<div class="cta">
+<a class="btn btn-primary btn-sm" href="accesso.html#cittadini">Registrati gratis</a>
+<a class="btn btn-ghost btn-sm" href="faq.html#cittadini">Cosa puoi fare</a>
+</div>
+</article>
+</div>
+<div class="recruit-trust small">
+<span>✅ Marchio di Affidabilità Nazionale</span>
+<span>🔒 Sicurezza &amp; controllo</span>
+<span>🗺️ Presenza in tutta Italia</span>
+</div>
+<p class="recruit-legal small">
+      Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è riservato alle imprese aderenti e non sostituisce licenze o autorizzazioni dell’operatore.
+    </p>
+</div>
+</section>
+<!-- AGENTE OFI - sezione dedicata -->
+<section class="section container" id="agente-ofi">
+<div class="card card-highlight">
+<div class="card-head">
+<img alt="" class="icon-xl" src="images/agente-ofi.png"/>
+<h3>Agente OFI</h3>
+</div>
+<p class="mb-0">Un’assistente discreta e sempre presente. Apri la guida passo‑passo, trova subito ciò che ti serve, oppure scrivimi una domanda.</p>
+<div class="cta">
+<button class="btn btn-primary" id="openAgent">Apri Agente OFI</button>
+<a class="btn btn-ghost" href="faq.html">Apri guida</a>
+</div>
+</div>
+</section>
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="f-brand">
+<img alt="OFI" class="footer-logo" src="images/logo-ofi.png"/>
+<p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+<p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+</div>
+<div class="f-links">
+<a href="articoli/articoli.html">Articoli</a>
+<a href="faq.html">FAQ</a>
+<a href="accesso.html">Accedi</a>
+</div>
+<div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br/>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+</div>
+</div>
+</footer>
+<!-- Agente OFI (chat) -->
+<button aria-label="Apri Agente OFI" class="agent-fab" id="agentFab">
+<img alt="" src="images/agente-ofi.png"/>
+</button>
+<section aria-hidden="true" aria-live="polite" class="agent-panel" id="agentPanel">
+<header class="agent-top">
+<div class="agent-id">
+<img alt="" src="images/agente-ofi.png"/>
+<div><strong>Agente OFI</strong><br/><small>Sono qui per aiutarti</small></div>
+</div>
+<button aria-label="Chiudi" class="agent-close" id="agentClose">✕</button>
+</header>
+<div class="agent-chat" id="agentChat">
+<div class="msg msg-in">
+<p>Ciao, sono l’Agente OFI. Posso guidarti in ogni passo: dalle urgenze, ai preventivi, fino alla creazione di un ricordo.</p>
+</div>
+<div class="suggest">
+<button class="chip" data-q="Come chiedo un preventivo?">Come chiedo un preventivo?</button>
+<button class="chip" data-q="Come pubblico un necrologio?">Come pubblico un necrologio?</button>
+<button class="chip" data-q="Cos’è il Luogo della Memoria?">Cos’è il Luogo della Memoria?</button>
+</div>
+</div>
+<form action="#" autocomplete="off" class="agent-form" id="agentForm">
+<input aria-label="Scrivi qui la tua domanda" id="agentInput" placeholder="Scrivi qui la tua domanda…" type="text"/>
+<button class="btn btn-primary">Invia</button>
+</form>
+<div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+</section>
+<!-- Torna su -->
+<button aria-label="Torna su" class="back-top" id="backTop">↑</button>
+<script>
+  /* Firebase init per articoli in home */
+  if (!window.firebase || (firebase.apps && firebase.apps.length === 0)) {
+    firebase.initializeApp({
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    });
+  }
+  const db = firebase.firestore();
+
+  /* Carica 3 articoli in home */
+  const grid = document.getElementById('articoliGrid');
+  function cardTpl(id, x){
+    const img = x.immagineURL || 'images/placeholder-article.jpg';
+    const estratto = (x.estratto||'').length>160 ? (x.estratto.substring(0,157)+'…') : (x.estratto||'');
+    return `
+      <article class="article-card">
+        <img class="thumb" src="${img}" alt="${x.titolo||'Articolo'}">
+        <div class="kicker">${x.categoria||'Articolo'}</div>
+        <h3>${x.titolo||''}</h3>
+        <p>${estratto}</p>
+        <div class="actions">
+          <a class="btn btn-primary btn-sm" href="articoli/articolo.html?id=${id}">Leggi tutto</a>
+          <a class="btn btn-ghost btn-sm" href="articoli/articoli.html">Altri articoli</a>
+        </div>
+      </article>`;
+  }
+
+  db.collection('articoli_pubblicati').orderBy('data','desc').limit(3).get()
+    .then(snap=>{
+      if (snap.empty){ grid.innerHTML = '<p class="small">Nessun articolo pubblicato al momento.</p>'; return; }
+      grid.innerHTML = snap.docs.map(d=>cardTpl(d.id, d.data())).join('');
+    })
+    .catch(()=>{ grid.innerHTML = '<p class="small">Impossibile caricare gli articoli.</p>'; });
+</script>
+<script>
+  // Mobile submenu toggle (safe fallback)
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    if(!trigger) return;
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const open = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+<script>
+// Mobile submenu toggle + close on second tap / outside
+document.addEventListener('click', function(e){
+  const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+  const menu = document.getElementById('menuPanel');
+  if(trigger){
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const isOpen = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }else{
+    // click outside submenu: close all
+    if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  }
+});
+</script>
+</body>
+</html>

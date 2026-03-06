@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<title>Dashboard Admin - Pubblica Articolo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+    padding: 2rem;
+    color: #002c5d;
+  }
+  h1 {
+    text-align: center;
+    color: #002c5d;
+    margin-bottom: 2rem;
+  }
+  .form-box {
+    background: white;
+    max-width: 700px;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  .form-box input[type=text], .form-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .form-box textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+  .form-box input[type=file] {
+    margin-bottom: 1rem;
+  }
+  .form-box button {
+    background-color: #002c5d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    margin-top: 1rem;
+  }
+  .form-box button:hover {
+    opacity: 0.9;
+  }
+  .anteprima {
+    max-width: 100%;
+    margin-bottom: 1rem;
+    display: none;
+    border-radius: 6px;
+  }
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script type="module" src="admin-header.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app",
+    messagingSenderId: "345581339212",
+    appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storageRef = firebase.storage().ref();
+</script>
+
+</head>
+<body>
+<h1>📝 Pubblica nuovo articolo</h1>
+<div class="form-box">
+<input id="titolo" placeholder="Titolo dell’articolo" type="text"/>
+<input id="estratto" placeholder="Estratto (anteprima visibile pubblicamente)" type="text"/>
+<select id="categoria" style="width: 100%; padding: 10px; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;">
+<option value="">Seleziona categoria</option>
+<option value="Lutto">Lutto</option>
+<option value="Consigli">Consigli</option>
+<option value="Memoria">Memoria</option>
+<option value="Normative">Normative</option>
+</select>
+<textarea id="contenuto" placeholder="Contenuto completo dell’articolo"></textarea>
+<input accept="image/*" id="immagine" onchange="mostraAnteprima()" type="file"/>
+<img class="anteprima" id="preview"/>
+<button onclick="pubblicaArticolo()">📤 Pubblica articolo</button>
+</div>
+
+<script>
+  function mostraAnteprima() {
+    const file = document.getElementById('immagine').files[0];
+    const preview = document.getElementById('preview');
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.src = reader.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+
+  async function pubblicaArticolo() {
+    const titolo = document.getElementById("titolo").value.trim();
+    const estratto = document.getElementById("estratto").value.trim();
+    const contenuto = document.getElementById("contenuto").value.trim();
+    const categoria = document.getElementById("categoria").value.trim();
+    const immagineFile = document.getElementById("immagine").files[0];
+
+    if (!titolo || !estratto || !contenuto || !categoria) {
+      alert("Compila tutti i campi obbligatori.");
+      return;
+    }
+
+    let immagineURL = "";
+    if (immagineFile) {
+      const fileName = Date.now() + "_" + immagineFile.name;
+      const imgRef = storageRef.child('immagini_articoli/' + fileName);
+      await imgRef.put(immagineFile);
+      immagineURL = `https://firebasestorage.googleapis.com/v0/b/ofi2025-51ba9.firebasestorage.app/o/immagini_articoli%2F${encodeURIComponent(fileName)}?alt=media`;
+    }
+
+    // 1) Crea metadati pubblici
+    const metaRef = await db.collection("articoli_pubblicati").add({
+      titolo,
+      estratto,
+      immagineURL,
+      categoria,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // 2) Crea contenuto riservato con lo stesso id
+    await db.collection("articoli_contenuti").doc(metaRef.id).set({
+      contenuto,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    alert("✔ Articolo pubblicato correttamente.");
+    location.reload();
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,234 @@
+/* =============================================================
+   PENSIERI MIEI — COMPACT CLEAN
+   Carica DOPO pensieri-miei.css
+   Target: mobile-first, ordinato
+   ============================================================= */
+
+/* ---------- Tipografia base mobile ---------- */
+@media (max-width:520px){
+  html{ font-size:15px; }
+  body{ line-height:1.45; }
+}
+
+/* ======================== COMMENTI =========================== */
+
+/* Contenitore thread */
+.cm-thread-wrap{ border-radius:16px; margin:10px auto 12px; }
+.cm-thread{ padding:10px 12px; }
+
+/* Item commento */
+.cm-item{ gap:8px; padding:8px 0; }
+.cm-item .cm-row{
+  display:grid; grid-template-columns:28px minmax(0,1fr);
+  gap:8px; align-items:start;
+}
+.cm-avatar{ width:28px; height:28px; border-radius:50%; overflow:hidden; }
+.cm-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+/* Testi */
+.cm-meta{ font-size:.9rem; gap:.35rem; }
+.cm-text{ margin:4px 0; font-size:.95rem; line-height:1.38; }
+
+/* ===== Footer: reazioni + azioni ordinate ===== */
+.cm-actions{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  gap:8px 12px;
+  line-height:1.2 !important;
+}
+
+/* Riga 1: reazioni ❤️ */
+.cm-actions .cm-reactions{
+  order:0; flex:1 0 100%;
+  display:inline-flex !important; align-items:center; gap:8px;
+}
+.cm-reactions .cm-react{
+  display:inline-flex; align-items:center; gap:6px;
+  background:transparent !important; border:0 !important;
+  padding:0 !important; margin:0 !important; box-shadow:none !important;
+  font-size:14px;
+}
+.cm-reactions .cm-react .emo{ font-size:0; }
+.cm-reactions .cm-react:first-child .emo::before{ content:"❤️"; font-size:16px; }
+.cm-reactions .cm-react .cnt{ font-weight:700; font-size:12px; }
+.cm-reactions .cm-react:not(:first-child){ display:none !important; }
+
+/* Riga 2: azioni come icone */
+.cm-actions .cm-link{
+  order:1;
+  display:inline-flex !important; align-items:center; justify-content:center;
+  width:24px; height:24px; padding:0; margin:0;
+  background:transparent !important; border:none !important; box-shadow:none !important;
+  font-size:0 !important; line-height:1 !important; text-decoration:none !important;
+  opacity:.9;
+}
+.cm-actions .cm-link:hover{ opacity:1; }
+
+/* Icone via data-act */
+.cm-actions .cm-link[data-act="reply"]::before   { content:"↩︎"; }
+.cm-actions .cm-link[data-act="edit"]::before    { content:"✏️"; }
+.cm-actions .cm-link[data-act="delete"]::before  { content:"🗑️"; }
+.cm-actions .cm-link[data-act="report"]::before  { content:"🚩"; }
+.cm-actions .cm-link::before{
+  font-size:16px; line-height:1; display:block;
+}
+
+/* Risposte: indent leggero */
+.cm-replies{ margin-left:10px; padding-left:8px; border-left:1.5px solid #e9ecef; gap:6px; }
+.cm-replies .cm-row{ grid-template-columns:26px minmax(0,1fr); }
+.cm-replies .cm-avatar{ width:26px; height:26px; }
+
+/* Mobile fine-tuning */
+@media (max-width:520px){
+  .cm-actions{ gap:6px 10px; }
+  .cm-actions .cm-link{ width:22px; height:22px; }
+  .cm-actions .cm-link::before{ font-size:15px; }
+}
+
+/* Desktop coerenza */
+@media (min-width:981px){
+  .cm-actions .cm-link::before{ font-size:17px; }
+}
+
+/* ===== Commenti: gating unico & icone compatte ===== */
+.pensiero-box .cm-thread-wrap{ display:none !important; }
+.pensiero-box.is-comments-open .cm-thread-wrap{ display:block !important; }
+
+/* icone link azioni */
+.cm-actions .cm-ico{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:32px; height:32px; border-radius:8px;
+  text-decoration:none; font-size:14px; line-height:1;
+  border:1px solid rgba(0,0,0,.08);
+  background:rgba(0,0,0,.02);
+  margin-left:6px;
+}
+.theme-dark .cm-actions .cm-ico{
+  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+}
+.cm-actions .cm-ico:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+/* Gating unico dei commenti */
+.pensiero-box .cm-thread-wrap { display: none !important; }
+.pensiero-box.is-comments-open .cm-thread-wrap { display: block !important; }
+
+/* ===== base esistente … (lascia tutto il tuo CSS) ===== */
+
+/* --- Watermark OFI come background (definitivo) --- */
+.pensiero-box{
+  position: relative;
+background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 128 128'><rect x='0' y='0' width='128' height='128' rx='16' ry='16' fill='%23ffffff08'/><text x='50%' y='58%' text-anchor='middle' font-family='Segoe UI, Arial, sans-serif' font-size='44' fill='%23ffffff22' font-weight='700'>OFI</text></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px bottom 12px;
+  background-size: 64px auto;
+  padding-bottom: 110px; /* più respiro per bottoni */
+}
+.pensiero-box.is-comments-open{ padding-bottom: 140px; }
+@media (min-width: 981px){
+  .pensiero-box{ padding-right: 84px; }
+}
+
+/* rimuovi eventuale vecchio .social-watermark assoluto se presente */
+.pensiero-box .social-watermark{ display:none !important; }
+
+/* --- Media (img/video) cliccabili per viewer --- */
+.pensiero-box .media{
+  margin-top: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  cursor: zoom-in;
+}
+.pensiero-box .media img,
+.pensiero-box .media video{
+  display:block;
+  width:100%;
+  max-height:420px;
+  object-fit:contain;
+}
+
+/* --- Viewer full screen --- */
+.mv.hidden{ display:none; }
+.mv{
+  position: fixed; inset:0; z-index: 1000;
+}
+.mv-backdrop{
+  position:absolute; inset:0; background:rgba(0,0,0,0.7);
+}
+.mv-dialog{
+  position: relative;
+  margin: 4vh auto;
+  max-width: min(1200px, 94vw);
+  min-height: 60vh;
+  background: #0f1a26;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  display:flex; flex-direction:column;
+}
+.mv-close{
+  position:absolute; top:10px; right:12px;
+  width:40px; height:40px; border-radius:999px;
+  background:rgba(255,255,255,0.08); color:#fff; font-size:22px;
+  border:0; cursor:pointer;
+}
+.mv-content{
+  padding: 24px 24px 12px 24px;
+  display:flex; align-items:center; justify-content:center; flex:1;
+}
+.mv-content img, .mv-content video{
+  width:100%; height:auto; max-height:70vh; object-fit:contain;
+  border-radius:12px; background:#0a141e;
+}
+.mv-actions{
+  padding: 12px 18px 18px;
+  border-top:1px solid rgba(255,255,255,0.08);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+}
+
+/* Accessibilità cursori */
+[data-mv-close]{ cursor:pointer; }
+
+/* assicurare che i bottoni/azioni stiano sopra al bg watermark */
+.pensiero-box .actions-row,
+.pensiero-box .cm-thread-wrap{ position:relative; z-index:1; }
+
+/* Pulsante Modifica: evitiamo collisioni sui device stretti */
+.post-footer{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+
+/* nel viewer i controlli video restano sempre visibili appena si muove il puntatore */
+.mv-content video::-webkit-media-controls-panel{ background-color: rgba(0,0,0,.25); }
+.mv-content video{ outline: none; }
+
+.mv-reacts{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.mv-content video::-webkit-media-controls-panel{ background-color: rgba(0,0,0,.25); }
+.mv-content video{ outline:none; }
+
+/* Media Viewer: mini header + reazioni leggibili su scuro */
+.mv .mv-head{display:flex;justify-content:center;align-items:center;padding:.35rem 0 .2rem}
+.mv .mv-logo{height:28px; width:auto; opacity:.95; filter:drop-shadow(0 2px 8px rgba(0,0,0,.45))}
+.mv .mv-actions{gap:.5rem}
+.mv .mv-actions .react-btn{color:#fff;border-color:rgba(255,255,255,.35)}
+.mv .mv-actions .react-btn .cnt,
+.mv .mv-actions .react-btn .count{color:#fff}
+.mv .mv-actions .btn{color:#fff;border-color:rgba(255,255,255,.35)}
+
+/* Media Viewer: mini header + reazioni leggibili */
+.mv .mv-head{display:flex;justify-content:center;align-items:center;padding:.35rem 0 .2rem}
+.mv .mv-logo{height:28px;width:auto;opacity:.95;filter:drop-shadow(0 2px 8px rgba(0,0,0,.45))}
+.mv .mv-actions{gap:.5rem}
+.mv .mv-actions .react-btn{color:#fff;border-color:rgba(255,255,255,.35)}
+.mv .mv-actions .react-btn .cnt,
+.mv .mv-actions .react-btn .count{color:#fff}
+.mv .mv-actions .btn{color:#fff;border-color:rgba(255,255,255,.35)}
+
+/* OVERRIDE: Media Viewer – logo più grande */
+.mv .mv-logo{ height:36px; }
+@media (max-width:520px){
+  .mv .mv-logo{ height:32px; }
+}
+

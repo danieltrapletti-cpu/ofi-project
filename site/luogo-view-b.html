@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Luogo della Memoria — Copertina | OFI</title>
+  <meta name="description" content="Luogo della Memoria OFI: una copertina sobria per scegliere se entrare e visitare. Un ingresso rispettoso, senza dinamiche social." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/luogo-view.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body class="cover-only">
+  <script>
+    // A/B Tema per VISITA (pubblica)
+    // URL: ?theme=auto | dark | light
+    function ofiApplyVisitTheme(){
+      const p = new URLSearchParams(location.search);
+      const t = (p.get("theme") || "auto").toLowerCase();
+
+      document.body.classList.remove("theme-dark", "theme-light");
+
+      if (t === "dark") {
+        document.body.classList.add("theme-dark");
+        document.documentElement.setAttribute("data-theme","dark");
+        return;
+      }
+      if (t === "light") {
+        document.body.classList.add("theme-light");
+        document.documentElement.setAttribute("data-theme","light");
+        return;
+      }
+
+      document.documentElement.setAttribute("data-theme","auto");
+    }
+
+    ofiApplyVisitTheme();
+    window.addEventListener("DOMContentLoaded", () => {
+      ofiApplyVisitTheme();
+      setTimeout(ofiApplyVisitTheme, 0);
+    });
+  </script>
+
+  <!-- HEADER (coerente) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="menu-callout" href="/cittadini/dashboard-cittadino.html">DASHBOARD</a></li>
+        <li><a class="menu-callout" href="/cittadini/luogo-memoria.html">HUB LUOGO</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- appare solo se custode -->
+        <li id="manageNavItem" hidden><a class="menu-callout" id="manageNavLink" href="#">GESTISCI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="wrap fadeIn" aria-label="Luogo della Memoria — Copertina">
+
+      <!-- HERO / COPERTINA -->
+      <div class="hero" aria-label="Ingresso Luogo">
+        <div class="heroInner">
+          <div class="kicker" id="kicker">Luogo della Memoria</div>
+          <h1 class="heroName" id="heroName">Caricamento…</h1>
+
+          <div class="portraitWrap" id="portraitWrap" hidden>
+            <img class="portrait" id="portraitImg" src="" alt="Ritratto" loading="lazy">
+          </div>
+
+          <div class="portraitWrap" id="portraitEmpty">
+            <div class="portraitEmpty">
+              Nessuna fotografia disponibile.
+            </div>
+          </div>
+
+          <p class="heroMeta" id="heroMeta">—</p>
+          <p class="heroQuote" id="heroQuote">Un luogo dove il legame continua.</p>
+
+          <div class="heroActions">
+            <a class="btn" href="/cittadini/luogo-memoria.html">Torna al HUB</a>
+            <a class="btn primary" id="btnEnter" href="#" aria-label="Entra nel Luogo">Entra nel Luogo</a>
+            <a class="btn primary" id="btnManage" href="#" hidden>Gestisci</a>
+          </div>
+
+          <p class="coverHint" id="coverHint">
+            Prima di entrare, verifica che questo sia il Luogo corretto.
+          </p>
+        </div>
+      </div>
+
+      <div class="footerNote">
+        OFI — Luogo della Memoria. Questo è un ingresso rispettoso. Per tutelare famiglie e visitatori, non è un social e non sostituisce documenti ufficiali.
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Overlay: Accesso riservato -->
+  <div class="overlay" id="lockOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Accesso riservato">
+      <div class="overlayHead">
+        <div class="overlayTitle">Accesso riservato</div>
+        <button class="overlayClose" id="btnLockClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="note" id="lockText">
+          <strong>Questo Luogo è in modalità FAMILY.</strong><br>
+          Per visitarlo devi essere custode ed effettuare l’accesso.
+        </div>
+        <div style="display:flex; gap:.55rem; flex-wrap:wrap; margin-top:.85rem;">
+          <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn" href="/cittadini/luogo-memoria.html">Torna al HUB</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+    const theme = (params.get("theme") || "").trim();
+
+    const $ = (id)=>document.getElementById(id);
+
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl", "cover.photoURL"], ""));
+
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita", "visibilityMode"], "family")) || "family";
+      const custody = raw.custody || {};
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(custody.coUids) ? custody.coUids.map(safeStr).filter(Boolean) : (Array.isArray(raw.coUids) ? raw.coUids.map(safeStr).filter(Boolean) : []);
+
+      return {
+        nome, cognome, dataMorte,
+        placeLabel, coverUrl,
+        visibilityMode: (visibilityMode === "pubblico" ? "public" : visibilityMode),
+        mainUid, coUids
+      };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    /* Overlay (solo lock) */
+    const lockOverlay = $("lockOverlay");
+    function openOverlay(el){
+      if (!el) return;
+      el.classList.add("open");
+      el.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(el){
+      if (!el) return;
+      el.classList.remove("open");
+      el.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+    $("btnLockClose")?.addEventListener("click", ()=>closeOverlay(lockOverlay));
+    lockOverlay?.addEventListener("click", (e)=>{ if (e.target === lockOverlay) closeOverlay(lockOverlay); });
+
+    window.addEventListener("keydown", (e)=>{ if (e.key === "Escape") closeOverlay(lockOverlay); });
+
+    async function load(){
+      if (!luogoId){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>ID mancante.</strong><br>Torna al HUB e apri un Luogo valido.`;
+        $("btnEnter").classList.add("is-disabled");
+        $("btnEnter").setAttribute("aria-disabled","true");
+        $("btnEnter").href = "/cittadini/luogo-memoria.html";
+        return;
+      }
+
+      // Auth (non forziamo login)
+      const user = await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{ unsub(); resolve(u || null); });
+      });
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>Questo Luogo non esiste</strong><br>Oppure non è più disponibile.`;
+        $("btnEnter").classList.add("is-disabled");
+        $("btnEnter").setAttribute("aria-disabled","true");
+        $("btnEnter").href = "/cittadini/luogo-memoria.html";
+        return;
+      }
+
+      const luogo = normalizeDoc(snap.data() || {});
+      const userUid = user?.uid || null;
+      const isCustode = !!(userUid && (userUid === luogo.mainUid || luogo.coUids.includes(userUid)));
+
+      const displayName = [luogo.nome, luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      const date = fmtDate(luogo.dataMorte);
+      const place = luogo.placeLabel || "Luogo non specificato";
+
+      $("heroName").textContent = displayName;
+      $("heroMeta").textContent = `${date} · ${place}`;
+
+      // Foto ritratto
+      const url = safeStr(luogo.coverUrl);
+      if (url){
+        $("portraitWrap").hidden = false;
+        $("portraitEmpty").style.display = "none";
+        $("portraitImg").src = url;
+        $("portraitImg").alt = `Ritratto di ${displayName}`;
+      } else {
+        $("portraitWrap").hidden = true;
+        $("portraitEmpty").style.display = "block";
+      }
+
+      // Gestione se custode
+      if (isCustode){
+        const manageUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+        $("btnManage").hidden = false;
+        $("btnManage").href = manageUrl;
+        $("manageNavItem").hidden = false;
+        $("manageNavLink").href = manageUrl;
+      }
+
+      // URL interno
+      const q = new URLSearchParams();
+      q.set("id", luogoId);
+      if (theme) q.set("theme", theme);
+      $("btnEnter").href = `/cittadini/luogo-visit.html?${q.toString()}`;
+
+      // Accesso FAMILY: se non custode, blocca ingresso
+      if (luogo.visibilityMode !== "public" && !isCustode){
+        openOverlay(lockOverlay);
+        $("btnEnter").classList.add("is-disabled");
+        $("btnEnter").setAttribute("aria-disabled","true");
+        $("btnEnter").href = "/cittadini/login-cittadino.html";
+        return;
+      }
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      openOverlay(lockOverlay);
+      $("lockText").innerHTML = `<strong>Errore nel caricamento.</strong><br>Riprova tra poco.`;
+    });
+  </script>
+
+  <script src="/js/menu.js" defer></script>
+</body>
+</html>

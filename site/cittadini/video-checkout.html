@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Attiva Filmato Ufficiale OFI</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#061226;color:#fff;}
+    .wrap{max-width:820px;margin:0 auto;padding:28px 18px;}
+    .card{border:1px solid rgba(202,168,90,.28);background:rgba(202,168,90,.08);border-radius:18px;padding:18px;}
+    h1{margin:0 0 10px;font-family:Georgia,serif;font-weight:800;}
+    .k{letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:rgba(253,230,138,.92);font-size:.74rem;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:999px;padding:.7rem 1rem;border:1px solid rgba(255,255,255,.18);background:rgba(2,6,23,.55);color:#fff;text-decoration:none;cursor:pointer;font-weight:800;}
+    .btn.primary{border-color:rgba(202,168,90,.55);background:rgba(202,168,90,.18);}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+    .small{opacity:.88;line-height:1.55;}
+    .muted{opacity:.7}
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0;}
+    .pill{display:inline-block;border:1px solid rgba(255,255,255,.16);padding:.25rem .55rem;border-radius:999px;font-size:.78rem;opacity:.9}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="k">Filmato Commemorativo Ufficiale OFI</div>
+      <h1>Attivazione</h1>
+      <p class="small">
+        Stai per sbloccare la versione <strong>definitiva</strong>: senza protezione visiva e con download abilitato.
+      </p>
+      <div class="hr"></div>
+      <p class="small muted">
+        <span class="pill">FASE TEST</span>
+        In questa fase il pagamento reale verrà integrato con Stripe. Per ora puoi usare il pulsante di simulazione per verificare il flusso end‑to‑end.
+      </p>
+      <div class="row">
+        <button class="btn primary" id="btnSimula">Simula pagamento (TEST)</button>
+        <a class="btn" id="btnBack" href="#">Torna al Luogo</a>
+      </div>
+      <p class="small" id="status" style="margin-top:12px;"></p>
+    </div>
+  </div>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const qs = new URLSearchParams(location.search);
+  const luogoId = (qs.get("luogoId") || "").toString();
+  const videoId = (qs.get("videoId") || "").toString();
+  const statusParam = (qs.get("status") || "").toString();
+
+  const statusEl = document.getElementById("status");
+  const btnPay = document.getElementById("btnSimula"); // riuso lo stesso id del bottone esistente
+  const backUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+  document.getElementById("btnBack").href = backUrl;
+
+  function setMsg(t){ statusEl.textContent = t; }
+
+  async function pollPaid(maxMs = 20000) {
+    const started = Date.now();
+    const ref = doc(db, "luoghi_memoria", luogoId, "videos", videoId);
+
+    while (Date.now() - started < maxMs) {
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const v = snap.data() || {};
+        if ((v.paymentStatus || "") === "paid") return true;
+      }
+      await new Promise(r => setTimeout(r, 1000));
+    }
+    return false;
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      setMsg("Devi essere loggato per attivare il filmato.");
+      btnPay.disabled = true;
+      return;
+    }
+
+    if (!luogoId || !videoId) {
+      setMsg("Parametri mancanti (luogoId/videoId).");
+      btnPay.disabled = true;
+      return;
+    }
+
+    // Se arrivi da Stripe success: aspetta webhook -> Firestore
+    if (statusParam === "success") {
+      btnPay.disabled = true;
+      setMsg("Pagamento completato ✅ Sto confermando l’attivazione…");
+      const ok = await pollPaid(25000);
+      if (ok) {
+        setMsg("Attivato ✅ Torno al Luogo…");
+        setTimeout(() => (location.href = backUrl), 800);
+      } else {
+        setMsg("Pagamento ricevuto, ma l’attivazione non è ancora arrivata. Riprova tra pochi secondi (o torna al Luogo e aggiorna).");
+      }
+      return;
+    }
+
+    if (statusParam === "cancel") {
+      setMsg("Pagamento annullato. Puoi riprovare quando vuoi.");
+      btnPay.disabled = false;
+      return;
+    }
+
+    // Stato normale: pronto al pagamento
+    setMsg("Pronto per l’attivazione ufficiale.");
+    btnPay.disabled = false;
+
+    btnPay.addEventListener("click", async () => {
+      try {
+        btnPay.disabled = true;
+        setMsg("Apro Stripe Checkout…");
+
+        const idToken = await user.getIdToken(true);
+
+        const res = await fetch("/.netlify/functions/createCheckoutSession", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`
+          },
+          body: JSON.stringify({ luogoId, videoId })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok || !data.url) {
+          throw new Error(data.error || "Errore creazione sessione checkout");
+        }
+
+        location.href = data.url;
+      } catch (e) {
+        console.error(e);
+        setMsg("Non riesco ad aprire il pagamento. Controlla variabili Netlify / webhook / console.");
+        btnPay.disabled = false;
+      }
+    }, { once: true });
+  });
+</script>
+</body>
+</html>

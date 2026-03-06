@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Luogo della Memoria — OFI</title>
+  <meta name="description" content="Luogo della Memoria OFI: uno spazio sobrio e istituzionale per custodire ricordi. Crea un Luogo da zero oppure da necrologio, con tutela e unicità nazionale." />
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+
+  <!-- Fonts (come Dashboard Cittadino) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS globali -->
+  <link rel="stylesheet" href="/ofi.css" />
+  <!-- CSS pagina -->
+  <link rel="stylesheet" href="luogo-memoria.css" />
+
+  <!-- Mapbox (ripresa dalla dashboard cittadino) -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+  <!-- Menu + logiche comuni (stesso setup di Necrologio mio) -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+</head>
+
+<body>
+
+<!-- HEADER (allineato a Necrologio mio) -->
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="dashToggle" class="hamburger" aria-label="Apri menu" aria-controls="sidebar" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu"></ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero hero--lm">
+    <div class="heroTop heroTop--wow">
+      <div class="heroLeft heroLeft--wow">
+        <div class="logo" aria-hidden="true">
+          <img src="../images/rosa.png" alt="">
+        </div>
+
+        <div class="heroText">
+          <div class="heroLabel">Area personale</div>
+          <div class="heroWelcome">Registro nazionale dei ricordi</div>
+          <div class="heroName">Luogo della <span class="gold">Memoria</span></div>
+
+          <p class="heroSub">
+            Uno spazio sobrio e istituzionale dedicato alla custodia dei ricordi.
+            Puoi creare un Luogo da zero oppure partire da un collegamento (quando è disponibile).
+          </p>
+
+          <div class="heroActions" aria-label="Azioni principali">
+            <button id="btnCreateFromZero" class="btn btn--gold" type="button">
+              ＋ Crea un nuovo Luogo
+            </button>
+
+            <button id="btnWelcomeVideo" class="btn btn--ghost btn--video" type="button">
+              <span class="btn-i" aria-hidden="true">▶</span> Guarda il video
+            </button>
+
+            <button class="btn btn--ghost" type="button" data-open="how">
+              <span class="btn-i" aria-hidden="true">i</span> Come funziona
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- MAPPA IMMERSIVA (Atmosfera / Registro) -->
+  <section class="lm-mapImmersive bleed mode-atmo" aria-label="Mappa nazionale dei ricordi">
+    <div class="lm-mapHead">
+      <div>
+        <div class="lm-kicker">Registro nazionale dei ricordi</div>
+        <h2 class="lm-mapH">La memoria è presente in Italia.</h2>
+        <p class="lm-mapP">I Luoghi pubblici, quando autorizzati, entrano nella mappa. Le luci indicano presenze reali e rispettose.</p>
+      </div>
+
+      <div class="lm-mapControls" role="group" aria-label="Seleziona vista mappa">
+        <button class="chip chip--soft lm-modeBtn is-active" type="button" data-mode="atmo">Atmosfera</button>
+        <button class="chip chip--soft lm-modeBtn" type="button" data-mode="registro">Registro</button>
+      </div>
+    </div>
+
+    <div class="lm-mapFrame">
+      <div id="lmMap" class="lm-mapboxBig" aria-label="Mappa d’Italia"></div>
+
+      <!-- overlay luci + griglia (sopra Mapbox) -->
+      <div class="lm-mapOverlay" aria-hidden="true">
+        <div class="lm-gridOverlay"></div>
+        <div class="lm-glowOverlay"></div>
+      </div>
+
+      <!-- fallback (solo se Mapbox non carica) -->
+      <div id="lmMapFallback" class="lm-fallback lm-fallback--big" hidden>
+        <div class="lm-fallbackTitle">Mappa in caricamento</div>
+        <div class="lm-fallbackSub">Se la mappa non si carica, non è un problema: puoi usare comunque tutte le funzioni.</div>
+      </div>
+
+      <div class="lm-legend" aria-label="Legenda">
+        <div class="lm-legendTitle">Registro nazionale</div>
+        <div class="lm-legendItem"><span class="lm-dotLegend"></span> Luogo pubblico autorizzato</div>
+        <div class="lm-legendItem"><span class="lm-dotLegend lm-dotLegend--reserved"></span> Presenza riservata (non visibile al pubblico)</div>
+      </div>
+    </div>
+
+    <div class="lm-mapFoot">
+      <span>Questo spazio non sostituisce la visita: la affianca, con rispetto.</span>
+    </div>
+  </section>
+
+
+
+  <!-- CONTENUTO PULITO -->
+  <section class="grid2">
+
+    <article class="card card--lm">
+      <header class="cardHead">
+        <h2>
+          I tuoi Luoghi
+          <button class="infoIcon" type="button" data-open="how" aria-label="Informazioni">i</button>
+        </h2>
+        <button class="linkBtn linkBtn--info" type="button" data-open="places">Visualizza</button>
+      </header>
+
+      <div id="placesList" class="miniList"></div>
+
+      <div id="placesEmpty" class="emptyState" hidden>
+        Non hai ancora creato un Luogo.
+        <div class="emptySub">Premi “Crea un nuovo Luogo” per iniziare.</div>
+      </div>
+    </article>
+
+    <article class="card card--lm">
+      <header class="cardHead">
+        <h2>
+          Collegamenti disponibili
+          <button class="infoIcon" type="button" data-open="how" aria-label="Informazioni">i</button>
+        </h2>
+        <button class="linkBtn linkBtn--info" type="button" data-open="deliveries">Visualizza</button>
+      </header>
+
+      <div id="deliveriesList" class="miniList"></div>
+
+      <div id="deliveriesEmpty" class="emptyState" hidden>
+        Nessun collegamento disponibile al momento.
+        <div class="emptySub">Quando viene creato un necrologio associato a te (da impresa o da te), lo vedrai comparire qui.</div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- DASHBOARD LATERALE (come Necrologio mio) -->
+  <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+  <aside id="sidebar" class="sidebar" aria-label="Menu">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <img src="../images/rosa.png" alt="" aria-hidden="true">
+        <span class="sb-name">Luogo della Memoria</span>
+      </div>
+
+    <div class="sb-stats" aria-label="Riepilogo">
+      <div class="sb-pill"><span>Collegamenti</span><strong id="statDeliveriesSb">—</strong></div>
+      <div class="sb-pill"><span>Luoghi attivi</span><strong id="statPlacesSb">—</strong></div>
+    </div>
+
+      <button class="sb-close" id="btnSidebarClose" type="button" aria-label="Chiudi menu">✕</button>
+    </div>
+
+    <div class="group">
+      <h4>Memoria</h4>
+      <nav>
+        <a href="#azione-crea" data-act="create">＋ Nuovo Luogo</a>
+        <a href="#azione-necrologi" data-act="deliveries">🔗 Collegamenti</a>
+        <a href="#azione-luoghi" data-act="places">🕯️ Luoghi attivi</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Informazioni</h4>
+      <nav>
+        <a href="#azione-come" data-act="how">i Come funziona</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Area personale</h4>
+      <nav>
+        <a class="sb-back" href="./dashboard-cittadino.html">← Torna alla dashboard</a>
+      </nav>
+    </div>
+  </aside>
+
+  <aside id="sidepanel" class="sidepanel" aria-label="Dettagli" aria-hidden="true">
+    <div class="sp-head">
+      <div class="sp-title" id="sidePanelTitle">Dettagli</div>
+      <button class="sp-close" id="btnPanelClose" type="button" aria-label="Chiudi sezione">✕</button>
+    </div>
+    <div class="sp-body" id="sidePanelBody"></div>
+  </aside>
+
+  <div id="panelStash" hidden></div>
+  <!-- WELCOME VIDEO (modal) -->
+  <div id="lmWelcomeOverlay" class="lm-welcome-overlay" hidden></div>
+
+  <section id="lmWelcomeModal" class="lm-welcome-modal" hidden role="dialog" aria-modal="true" aria-label="Benvenuto nel Luogo della Memoria">
+    <div class="lm-welcome-card">
+      <div class="lm-welcome-head">
+        <div class="lm-welcome-title">
+          Benvenuto nel Luogo della <span class="gold">Memoria</span>
+        </div>
+        <button id="lmWelcomeClose" class="lm-welcome-close" type="button" aria-label="Chiudi">✕</button>
+      </div>
+
+      <div class="lm-welcome-body">
+        <p class="lm-welcome-sub">
+          Un breve messaggio di orientamento. Puoi rivederlo quando vuoi.
+        </p>
+
+        <!-- ✅ SPAZIO VIDEO HEYGEN -->
+        <!-- Incolla qui l'embed HeyGen quando lo avrai (iframe/script). -->
+        <!-- Per ora: placeholder pulito -->
+        <div class="lm-welcome-video" id="lmWelcomeVideoBox" aria-label="Video di benvenuto">
+  <video 
+    id="lmVideo"
+    controls 
+    playsinline 
+    preload="metadata"
+    style="width:100%; border-radius:14px;">
+    <source src="../videos/luogo-della-memoria.mp4" type="video/mp4">
+    Il tuo browser non supporta il video.
+  </video>
+</div>
+
+        <details class="lm-welcome-details">
+          <summary>In due parole</summary>
+          <ul>
+            <li>Puoi creare un Luogo <strong>da zero</strong> o <strong>da necrologio</strong>.</li>
+            <li><strong>Ogni persona ricordata</strong> ha un solo Luogo (anti‑doppione).</li>
+            <li>Accesso iniziale: <strong>riservato ai familiari</strong>.</li>
+          </ul>
+        </details>
+
+        <div class="lm-welcome-actions">
+          <button class="btn btn--gold" type="button" id="lmWelcomeOk">Ho capito</button>
+          <button class="btn btn--ghost" type="button" id="lmWelcomeNoShow">Non mostrare più</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">OFI — Registro della Memoria. Spazio sobrio e rispettoso, senza like e senza gamification.</p>
+      </div>
+      <div class="f-links">
+        <a href="../faq.html">FAQ</a>
+        <a href="../privacy.html">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ✅ Allinea sidebar/pannello sotto la barra blu (header) */
+(function(){
+  const header = document.querySelector('.site-header');
+  if(!header) return;
+
+  const setH = () => {
+    const h = Math.ceil(header.getBoundingClientRect().height || 0);
+    if (h > 0) document.documentElement.style.setProperty('--headerH', h + 'px');
+  };
+
+  setH();
+  window.addEventListener('resize', setH, { passive:true });
+
+  try{
+    const ro = new ResizeObserver(setH);
+    ro.observe(header);
+  }catch(e){}
+})();
+</script>
+
+<script>
+/* ============================
+   Sidebar + pannello (stile Necrologio mio)
+   ============================ */
+(function(){
+  const overlay = document.getElementById('dashOverlay');
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('dashToggle');
+  const closeBtn = document.getElementById('btnSidebarClose');
+
+  const sidepanel = document.getElementById('sidepanel');
+  const spTitle = document.getElementById('sidePanelTitle');
+  const spBody  = document.getElementById('sidePanelBody');
+  const spClose = document.getElementById('btnPanelClose');
+
+  function openSidebar(){
+  sidebar.classList.add('open');
+  overlay.hidden = false;
+  document.body.classList.add('no-scroll');
+  toggle?.setAttribute('aria-expanded','true');
+}
+
+function closeSidebar(){
+  sidebar.classList.remove('open');
+  toggle?.setAttribute('aria-expanded','false');
+  if(!sidepanel.classList.contains('open')) {
+    overlay.hidden = true;
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openPanel(title, html){
+  spTitle.textContent = title || 'Dettagli';
+  spBody.innerHTML = html || '';
+  sidepanel.classList.add('open');
+  sidepanel.setAttribute('aria-hidden','false');
+  overlay.hidden = false;
+  document.body.classList.add('no-scroll');
+}
+
+function closePanel(){
+  sidepanel.classList.remove('open');
+  sidepanel.setAttribute('aria-hidden','true');
+  if(!sidebar.classList.contains('open')) {
+    overlay.hidden = true;
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+  toggle?.addEventListener('click', ()=> sidebar.classList.contains('open') ? closeSidebar() : openSidebar());
+  closeBtn?.addEventListener('click', closeSidebar);
+  spClose?.addEventListener('click', closePanel);
+
+  overlay?.addEventListener('click', ()=>{
+    closeSidebar();
+    closePanel();
+  });
+
+  // expose
+  window.__LM_OPEN_PANEL__ = openPanel;
+  window.__LM_CLOSE_PANEL__ = closePanel;
+  window.__LM_CLOSE_SIDEBAR__ = closeSidebar;
+})();
+</script>
+
+<!-- Mapbox JS -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+/* ============================
+   Mini-mappa Italia (come dashboard-cittadino)
+   - Se Mapbox non carica, mostriamo fallback.
+   ============================ */
+(function(){
+  const stage = document.getElementById('lmMap');
+  const fallback = document.getElementById('lmMapFallback');
+  if(!stage) return;
+
+  // se Mapbox non è disponibile
+  if (!window.mapboxgl){
+    if (fallback) fallback.hidden = false;
+    return;
+  }
+
+  try{
+    mapboxgl.accessToken = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+
+    const map = new mapboxgl.Map({
+      container: 'lmMap',
+      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      center: [12.4964, 41.9028],
+      zoom: 4.6,
+      interactive: false
+    });
+
+    map.on('load', () => {
+
+  // ===== DEMO luci più eleganti =====
+  const DEMO_POINTS = [
+    { lat: 45.4642, lng: 9.19 },
+    { lat: 41.9028, lng: 12.4964 },
+    { lat: 40.8518, lng: 14.2681 },
+    { lat: 44.4949, lng: 11.3426 },
+    { lat: 45.4384, lng: 10.9916 },
+    { lat: 38.1157, lng: 13.3615 },
+  ];
+
+  function addGlowMarker({lat,lng}){
+    const el = document.createElement('div');
+    el.className = 'lm-glow';
+    new mapboxgl.Marker({ element: el, anchor:'center' })
+      .setLngLat([lng, lat])
+      .addTo(map);
+  }
+
+  DEMO_POINTS.forEach(addGlowMarker);
+
+});
+
+  }catch(e){
+    if (fallback) fallback.hidden = false;
+  }
+})();
+</script>
+
+<script>
+/* ============================
+   Vista mappa: Atmosfera / Registro
+   ============================ */
+(function(){
+  const sec = document.querySelector('.lm-mapImmersive');
+  if(!sec) return;
+
+  const btns = Array.from(sec.querySelectorAll('.lm-modeBtn'));
+  function setMode(mode){
+    sec.classList.toggle('mode-registro', mode === 'registro');
+    sec.classList.toggle('mode-atmo', mode !== 'registro');
+    btns.forEach(b => b.classList.toggle('is-active', b.dataset.mode === mode));
+  }
+  btns.forEach(b=>{
+    b.addEventListener('click', ()=> setMode(b.dataset.mode || 'atmo'));
+  });
+
+  // default
+  setMode('atmo');
+})();
+</script>
+
+<script type="module">
+/* ============================
+   Luogo della Memoria — Collegamenti da Necrologi (LIVE)
+   - Mostra card "Attiva il Luogo" per necrologi creati dal cittadino e ricevuti.
+   ============================ */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDoc, getDocs, query, where, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain:"ofi2025-51ba9.firebaseapp.com",
+  projectId:"ofi2025-51ba9",
+  storageBucket:"ofi2025-51ba9.firebasestorage.app",
+  messagingSenderId:"345581339212",
+  appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+try{ await setPersistence(auth, browserLocalPersistence); }catch(e){}
+const db = getFirestore(app);
+
+const $ = (id)=>document.getElementById(id);
+
+// CTA principale: crea un Luogo da zero
+document.getElementById('btnCreateFromZero')?.addEventListener('click', ()=>{
+  window.location.href = './luogo-wizard.html?mode=zero';
+});
+
+function escapeHtml(str){
+  return String(str ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function fmtDate(val){
+  if(!val) return '—';
+  try{
+    if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)){
+      const d = new Date(val + 'T00:00:00');
+      return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+    }
+    const d = val?.toDate ? val.toDate() : new Date(val);
+    return isNaN(d.getTime()) ? '—' : d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+  }catch{ return '—'; }
+}
+
+function pickNomeCognome(x){
+  const a = x?.answersSnapshot || {};
+  const s = x?.structuredDataSnapshot || {};
+  const p = s?.datiPersona || {};
+  const nome = a.nome || p.nome || x.nome || x.nomeDefunto || x.titolo || '';
+  const cognome = a.cognome || p.cognome || x.cognome || '';
+  return {
+    nome: String(nome||'').trim() || '—',
+    cognome: String(cognome||'').trim()
+  };
+}
+
+function pickDataMorte(x){
+  const a = x?.answersSnapshot || {};
+  const s = x?.structuredDataSnapshot || {};
+  const p = s?.datiPersona || {};
+  const candidates = [
+    a.dataMorte, a.dataDecesso, a.dataDiMorte,
+    p.dataMorte, p.dataDecesso, p.dataDiMorte,
+    x.dataMorte, x.dataDecesso, x.dataDiMorte,
+    // fallback (alcuni template)
+    a.dataNecrologio, s?.chiusura?.dataNecrologio,
+    x.publishedAt, x.createdAt, x.updatedAt
+  ].filter(Boolean);
+  return candidates[0] || '';
+}
+
+function pickProvenienza(kind){
+  return kind === 'ricevuto' ? 'Ricevuto' : 'Creato da te';
+}
+
+/* ============================
+   Render cards
+   ============================ */
+function renderDeliveries(items){
+  const list = $('deliveriesList');
+  const empty = $('deliveriesEmpty');
+  if(!list || !empty) return;
+
+  list.innerHTML = '';
+  if(!items || !items.length){
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+
+  items.forEach(k=>{
+    const el = document.createElement('div');
+    el.className = 'miniCard miniCard--pro';
+
+    const disabled = !!k.disabled;
+
+    el.innerHTML = `
+      <div class="miniTop">
+        <div class="miniName">${escapeHtml(k.nome)} ${escapeHtml(k.cognome)}</div>
+        <span class="miniBadge">${escapeHtml(k.stato || 'Disponibile')}</span>
+      </div>
+
+      <div class="miniMeta">
+        <div class="miniMetaRow">
+          <span class="miniMetaLabel">Data di morte</span>
+          <strong class="miniMetaValue">${escapeHtml(fmtDate(k.dataMorte))}</strong>
+        </div>
+        <div class="miniMetaRow">
+          <span class="miniMetaLabel">Origine</span>
+          <span class="miniMetaValue">${escapeHtml(k.provenienza || '—')}</span>
+        </div>
+      </div>
+
+      <div class="miniPrimary">
+        <button class="btn btn--gold" type="button" data-create="${escapeHtml(k.id)}" ${disabled ? 'disabled' : ''}>
+          ${disabled ? 'Luogo già attivato' : 'Attiva il Luogo della Memoria'}
+        </button>
+      </div>
+
+      <div class="miniLinkRow">
+        <button class="linkBtn miniLinkBtn" type="button" data-details="${escapeHtml(k.id)}">
+          Visualizza dettagli
+        </button>
+      </div>
+    `;
+
+    el.querySelector('[data-create]')?.addEventListener('click', ()=>{
+      if (disabled) return;
+      window.location.href = `./luogo-wizard.html?deliveryId=${encodeURIComponent(k.id)}&from=necrologio`;
+    });
+
+    el.querySelector('[data-details]')?.addEventListener('click', ()=>{
+      window.__LM_OPEN_PANEL__?.('Dettagli', deliveryDetailsHtml(k));
+    });
+
+    list.appendChild(el);
+  });
+}
+
+function renderPlaces(items){
+  const list = $('placesList');
+  const empty = $('placesEmpty');
+  if(!list || !empty) return;
+
+  list.innerHTML = '';
+  if(!items || !items.length){
+    empty.hidden = false;
+    return;
+  }
+  empty.hidden = true;
+
+  items.forEach(l=>{
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'miniCard miniCard--pro miniCard--click';
+    const accesso = l.accesso || 'Riservato ai familiari';
+    el.innerHTML = `
+      <div class="miniTop">
+        <div class="miniName">${escapeHtml(l.nome)} ${escapeHtml(l.cognome)}</div>
+        <span class="miniBadge">${escapeHtml(accesso)}</span>
+      </div>
+      <div class="miniMeta">
+        <div class="miniMetaRow">
+          <span class="miniMetaLabel">Data di morte</span>
+          <strong class="miniMetaValue">${escapeHtml(fmtDate(l.dataMorte))}</strong>
+        </div>
+      </div>
+      <div class="miniCta">Apri il Luogo →</div>
+    `;
+    el.addEventListener('click', ()=>{
+      window.__LM_OPEN_PANEL__?.('Apri Luogo', placeStubHtml(l));
+    });
+    list.appendChild(el);
+  });
+}
+
+/* ============================
+   Panel templates
+   ============================ */
+function deliveryDetailsHtml(k){
+  return `
+    <div class="panelBlock">
+      <div class="panelKicker">Necrologio</div>
+      <h3 class="panelH">${escapeHtml(k.nome)} ${escapeHtml(k.cognome)}</h3>
+      <p class="panelP">Data di morte: <strong>${escapeHtml(fmtDate(k.dataMorte))}</strong></p>
+      <div class="noteBox">
+        Da questo necrologio puoi attivare un Luogo con dati precompilati.
+        Il Luogo è unico e viene associato al Custode Principale.
+      </div>
+      <div class="actions">
+        <button class="btn btn--gold" type="button" onclick="window.__LM_CLOSE_PANEL__?.()">Ok</button>
+      </div>
+    </div>
+  `;
+}
+
+function placeStubHtml(l){
+  const visitUrl = `./luogo-view.html?id=${encodeURIComponent(l.id)}`;
+  const manageUrl = `./luogo-manage.html?id=${encodeURIComponent(l.id)}`;
+
+  return `
+    <div class="panelBlock">
+      <div class="panelKicker">Luogo della Memoria</div>
+      <h3 class="panelH">${escapeHtml(l.nome)} ${escapeHtml(l.cognome)}</h3>
+      <p class="panelP">Data di morte: <strong>${escapeHtml(fmtDate(l.dataMorte))}</strong></p>
+      ${l.placeLabel ? `<div class="noteBox"><strong>Luogo fisico</strong><br>${escapeHtml(l.placeLabel)}</div>` : ``}
+
+      <div class="actions">
+        <a class="btn btn--gold" href="${visitUrl}" target="_blank" rel="noopener">Visita</a>
+        ${l.isCustode ? `<a class="btn btn--ghost" href="${manageUrl}" target="_blank" rel="noopener">Gestisci</a>` : ``}
+        <button class="btn btn--ghost" type="button" onclick="window.__LM_CLOSE_PANEL__?.()">Chiudi</button>
+      </div>
+
+      <div class="noteBox" style="margin-top:12px;">
+        <strong>Nota</strong><br>
+        “Segna la tua visita” è un gesto riservato (visibile solo ai custodi). “Lascia un ricordo” è pubblico.
+      </div>
+    </div>
+  `;
+}
+
+function howItWorksHtml(){
+  return `
+    <div class="panelBlock">
+      <div class="panelKicker">Guida breve</div>
+      <h3 class="panelH">Come funziona</h3>
+      <ul class="steps">
+        <li><strong>Qui compaiono automaticamente</strong> i necrologi che hai creato e quelli che ti sono stati consegnati.</li>
+        <li>Da ogni scheda puoi <strong>attivare il Luogo della Memoria</strong> (creazione guidata).</li>
+        <li><strong>Unicità:</strong> un solo Luogo per ogni persona ricordata (anti‑doppione).</li>
+        <li><strong>Custodi:</strong> un Custode Principale + eventuali Co‑custodi.</li>
+      </ul>
+      <div class="noteBox">
+        Questo spazio è volutamente sobrio: nessun like, nessuna classifica. Solo memoria e rispetto.
+      </div>
+    </div>
+  `;
+}
+
+function panelDeliveriesHtml(items){
+  if(!items.length) return `<div class="panelBlock"><div class="emptyState">Nessun collegamento disponibile.</div></div>`;
+  return `
+    <div class="panelBlock">
+      <div class="panelKicker">Disponibili</div>
+      <h3 class="panelH">Collegamenti da necrologi</h3>
+      <p class="panelP">Da qui puoi attivare il Luogo della Memoria con dati già pronti.</p>
+      <div class="panelCards">
+        ${items.map(k=>{
+          const disabled = !!k.disabled;
+          return `
+            <div class="panelCard">
+              <div class="panelCardTitle">${escapeHtml(k.nome)} ${escapeHtml(k.cognome)}</div>
+              <div class="panelCardSub">Data di morte: ${escapeHtml(fmtDate(k.dataMorte))} • ${escapeHtml(k.provenienza || '—')}</div>
+              <div class="miniActions">
+                <button class="chip chip--gold" type="button" ${disabled ? 'disabled' : ''} onclick="if(!this.disabled){ window.location.href='./luogo-wizard.html?deliveryId=${encodeURIComponent(k.id)}&from=necrologio'; }">
+                  ${disabled ? 'Già attivato' : 'Attiva il Luogo'}
+                </button>
+                <button class="chip" type="button" data-info="${escapeHtml(k.id)}">Informazioni</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+function panelPlacesHtml(items){
+  if(!items.length){
+    return `<div class="panelBlock"><div class="emptyState">Non hai ancora creato un Luogo.</div></div>`;
+  }
+
+  const cards = items.map(l=>{
+    const accesso = l.accesso || 'Riservato ai familiari';
+    const visitUrl = `./luogo-view.html?id=${encodeURIComponent(l.id)}`;
+    const manageUrl = `./luogo-manage.html?id=${encodeURIComponent(l.id)}`;
+    return `
+      <div class="panelCard">
+        <div class="panelCardTitle">${escapeHtml(l.nome)} ${escapeHtml(l.cognome)}</div>
+        <div class="panelCardSub">Data di morte: ${escapeHtml(fmtDate(l.dataMorte))} • ${escapeHtml(accesso)}</div>
+        <div class="miniActions">
+          <a class="chip chip--gold" href="${visitUrl}" target="_blank" rel="noopener">Visita</a>
+          ${l.isCustode ? `<a class="chip" href="${manageUrl}" target="_blank" rel="noopener">Gestisci</a>` : ``}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="panelBlock">
+      <div class="panelKicker">Attivi</div>
+      <h3 class="panelH">I tuoi Luoghi</h3>
+      <div class="panelCards">
+        ${cards}
+      </div>
+
+      <div class="noteBox" style="margin-top:12px;">
+        <strong>Nota</strong><br>
+        “Segna la tua visita” è riservato ai familiari/custodi. “Lascia un ricordo” è pubblico e visibile a tutti.
+      </div>
+    </div>
+  `;
+}
+
+
+function wirePanelInfoButtons(container, items){
+  container.querySelectorAll('[data-info]')?.forEach(btn=>{
+    const id = btn.getAttribute('data-info');
+    const k = items.find(x=>x.id===id);
+    if(k) btn.addEventListener('click', ()=> window.__LM_OPEN_PANEL__?.('Dettagli', deliveryDetailsHtml(k)));
+  });
+}
+
+/* ============================
+   Firestore fetch (robusto)
+   ============================ */
+async function safeGetDocs(q1, q2){
+  try{ return await getDocs(q1); }
+  catch(e1){
+    console.warn('Query fallita (indice mancante?). Fallback...', e1);
+    if (q2) return await getDocs(q2);
+    throw e1;
+  }
+}
+
+
+async function loadPlacesForUser(uid){
+  const COL = 'luoghi_memoria';
+
+  // 1) creati da me
+  const q1  = query(collection(db, COL), where('createdByUid','==', uid), orderBy('createdAt','desc'), limit(80));
+  const q1b = query(collection(db, COL), where('createdByUid','==', uid), limit(80));
+
+  // 2) custodia principale (fallback utile per luoghi consegnati / migrati)
+  const q2  = query(collection(db, COL), where('custody.mainUid','==', uid), orderBy('createdAt','desc'), limit(80));
+  const q2b = query(collection(db, COL), where('custody.mainUid','==', uid), limit(80));
+
+  const [s1, s2] = await Promise.all([
+    safeGetDocs(q1, q1b).catch(()=>null),
+    safeGetDocs(q2, q2b).catch(()=>null)
+  ]);
+
+  const map = new Map();
+  [s1, s2].filter(Boolean).forEach(snap=>{
+    snap.docs.forEach(d=>{
+      if(!map.has(d.id)) map.set(d.id, { __id:d.id, ...d.data() });
+    });
+  });
+
+  const raw = Array.from(map.values());
+
+  // normalizza
+  return raw.map(r=>{
+    const person = r.person || {};
+    const place = r.place || r.luogo || {};
+    const visibility = r.visibility || {};
+    const custody = r.custody || {};
+    return {
+      id: r.__id,
+      nome: person.nome || r.nome || '',
+      cognome: person.cognome || r.cognome || '',
+      dataMorte: person.dataMorte || r.dataMorte || '',
+      accesso: (visibility.mode || r.visibilita || 'family') === 'public' ? 'Visibile a tutti' : 'Riservato ai familiari',
+      placeLabel: place.label || '',
+      coverUrl: (r.cover && (r.cover.photoUrl || r.cover.photoURL)) || r.coverUrl || '',
+      sourceNecrologioId: (r.source && r.source.necrologioId) ? r.source.necrologioId : '',
+      isCustode: (custody.mainUid || r.custodePrincipaleUid || '') === uid
+    };
+  });
+}
+
+async function loadNecrologiForUser(uid){
+  const COL = 'necrologi_pubblicati';
+
+  const qC1 = query(collection(db, COL), where('publisherUid','==', uid), orderBy('createdAt','desc'), limit(120));
+  const qC1b = query(collection(db, COL), where('publisherUid','==', uid), limit(120));
+
+  const qC2 = query(collection(db, COL), where('uidCittadino','==', uid), orderBy('createdAt','desc'), limit(120));
+  const qC2b = query(collection(db, COL), where('uidCittadino','==', uid), limit(120));
+
+  const ricevutiCol = collection(db, 'utenti_cittadini', uid, 'necrologi_consegnati');
+  const qR = query(ricevutiCol, orderBy('deliveredAt','desc'), limit(120));
+  const qRb = query(ricevutiCol, limit(120));
+
+  const [snapC1, snapC2, snapR] = await Promise.all([
+    safeGetDocs(qC1, qC1b),
+    safeGetDocs(qC2, qC2b),
+    safeGetDocs(qR, qRb),
+  ]);
+
+  const mapCreati = new Map();
+  [snapC1, snapC2].forEach(snap=>{
+    snap.docs.forEach(d=>{
+      if(!mapCreati.has(d.id)) mapCreati.set(d.id, { __id:d.id, ...d.data() });
+    });
+  });
+  const creati = Array.from(mapCreati.values());
+
+  const ricevutiRefs = snapR.docs.map(d => ({ __id:d.id, ...d.data() }));
+  const ids = ricevutiRefs
+    .map(x => x.necrologioId || x.idNecrologio || x.__id)
+    .filter(Boolean);
+
+  let ricevuti = [];
+  if(ids.length){
+    const chunks = [];
+    for(let i=0;i<ids.length;i+=20) chunks.push(ids.slice(i,i+20));
+    for(const chunk of chunks){
+      const docs = await Promise.all(chunk.map(async (nid)=>{
+        try{
+          const s = await getDoc(doc(db, COL, nid));
+          return s.exists() ? ({ __id:s.id, ...s.data() }) : null;
+        }catch(e){
+          console.warn('getDoc ricevuto fallito', nid, e);
+          return null;
+        }
+      }));
+      ricevuti.push(...docs.filter(Boolean));
+    }
+  }
+
+  return { creati, ricevuti };
+}
+
+function makeDeliveryFromNecrologio(x, kind){
+  const { nome, cognome } = pickNomeCognome(x);
+  const dataMorte = pickDataMorte(x);
+  const id = x.__id;
+
+  // TODO: quando esiste la collezione "luoghi_memoria", useremo un campo certo per dire se già creato.
+  const linked = !!(x.luogoMemoriaId || x.luogoId || x.memorialId);
+
+  return {
+    id,
+    nome,
+    cognome,
+    dataMorte,
+    provenienza: pickProvenienza(kind),
+    stato: linked ? 'Luogo già attivato' : 'Disponibile',
+    disabled: linked
+  };
+}
+
+async function refreshUI(uid){
+  const { creati, ricevuti } = await loadNecrologiForUser(uid);
+
+  const mapAll = new Map();
+  creati.forEach(x => mapAll.set(x.__id, makeDeliveryFromNecrologio(x, 'creato')));
+  ricevuti.forEach(x => { if(!mapAll.has(x.__id)) mapAll.set(x.__id, makeDeliveryFromNecrologio(x, 'ricevuto')); });
+
+  const deliveries = Array.from(mapAll.values());
+
+  // ✅ Luoghi già creati (anti‑doppione / stato "già attivato")
+  const places = await loadPlacesForUser(uid).catch(()=>[]);
+
+  // Se un Luogo nasce da necrologio, salviamo necrologioId in source.necrologioId:
+  const activatedNecroIds = new Set(places.map(p=>p.sourceNecrologioId).filter(Boolean));
+
+  // Disabilita le card "Attiva il Luogo" se già esiste un Luogo collegato
+  deliveries.forEach(d=>{
+    if (activatedNecroIds.has(d.id)){
+      d.disabled = true;
+      d.stato = 'Luogo già attivato';
+    }
+  });
+
+  renderDeliveries(deliveries);
+(deliveries);
+  renderPlaces(places);
+
+  // stats
+  const elDSb = $('statDeliveriesSb'); if (elDSb) elDSb.textContent = deliveries.length;
+  const elPSb = $('statPlacesSb'); if (elPSb) elPSb.textContent = places.length;
+
+  // Rewire open buttons (hero + card header)
+  document.querySelectorAll('[data-open]')?.forEach(btn=>{
+    btn.onclick = ()=>{
+      const what = btn.getAttribute('data-open');
+      if(what === 'deliveries'){
+        window.__LM_OPEN_PANEL__?.('Collegamenti disponibili', panelDeliveriesHtml(deliveries));
+        setTimeout(()=> wirePanelInfoButtons(document.getElementById('sidePanelBody'), deliveries), 0);
+      }
+      if(what === 'places') window.__LM_OPEN_PANEL__?.('I tuoi Luoghi', panelPlacesHtml(places));
+      if(what === 'how') window.__LM_OPEN_PANEL__?.('Come funziona', howItWorksHtml());
+    };
+  });
+
+  document.querySelectorAll('#sidebar [data-act]')?.forEach(a=>{
+    a.onclick = (e)=>{
+      e.preventDefault();
+      window.__LM_CLOSE_SIDEBAR__?.();
+      const act = a.getAttribute('data-act');
+      if(act === 'create') window.location.href = './luogo-wizard.html?mode=zero';
+      if(act === 'deliveries'){
+        window.__LM_OPEN_PANEL__?.('Collegamenti disponibili', panelDeliveriesHtml(deliveries));
+        setTimeout(()=> wirePanelInfoButtons(document.getElementById('sidePanelBody'), deliveries), 0);
+      }
+      if(act === 'places') window.__LM_OPEN_PANEL__?.('I tuoi Luoghi', panelPlacesHtml(places));
+      if(act === 'how') window.__LM_OPEN_PANEL__?.('Come funziona', howItWorksHtml());
+    };
+  });
+}
+
+/* ============================
+   Auth gate
+   ============================ */
+let __AUTH_READY__ = false;
+
+async function waitForUser(maxMs = 5000){
+  const start = Date.now();
+  while(Date.now() - start < maxMs){
+    const u = auth.currentUser;
+    if(u) return u;
+    await new Promise(r=>setTimeout(r, 250));
+  }
+  return null;
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if (__AUTH_READY__ && !user) return;
+
+  if (!user) user = await waitForUser(5000);
+  if(!user){
+    const r = encodeURIComponent(window.location.pathname + window.location.search);
+    try{ sessionStorage.setItem('ofi_citizen_continue', window.location.pathname + window.location.search); }catch(e){}
+    window.location.replace(`/cittadini/login-cittadino.html?continue=${r}`);
+    return;
+  }
+  __AUTH_READY__ = true;
+
+  await refreshUI(user.uid);
+});
+</script>
+
+
+<script>
+/* ============================
+   Welcome video (mostra 1 volta)
+   ============================ */
+(function(){
+  const KEY = 'ofi-lm-welcome-seen';
+  const modal = document.getElementById('lmWelcomeModal');
+  const overlay = document.getElementById('lmWelcomeOverlay');
+  const btnOpen = document.getElementById('btnWelcomeVideo');
+  const btnClose = document.getElementById('lmWelcomeClose');
+  const btnOk = document.getElementById('lmWelcomeOk');
+  const btnNoShow = document.getElementById('lmWelcomeNoShow');
+
+  if(!modal || !overlay) return;
+
+  function open(){
+    modal.hidden = false;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function close(){
+  const v = document.getElementById('lmVideo');
+  if(v){
+    v.pause();
+    v.currentTime = 0;
+  }
+  modal.hidden = true;
+  overlay.hidden = true;
+  document.body.style.overflow = '';
+}
+
+  function markSeen(){
+    try{ localStorage.setItem(KEY, '1'); }catch(e){}
+  }
+
+  btnOpen?.addEventListener('click', ()=>{
+    open();
+    markSeen(); // se lo apre volontariamente, non ha senso riproporlo
+  });
+
+  btnClose?.addEventListener('click', close);
+  overlay?.addEventListener('click', close);
+  btnOk?.addEventListener('click', ()=>{
+    markSeen();
+    close();
+  });
+  btnNoShow?.addEventListener('click', ()=>{
+    markSeen();
+    close();
+  });
+
+  // auto: solo la prima volta
+  let seen = false;
+  try{ seen = localStorage.getItem(KEY) === '1'; }catch(e){}
+  if(!seen){
+    setTimeout(()=> open(), 650);
+  }
+})();
+</script>
+
+</body>
+</html>

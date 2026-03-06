@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>OFI – Import imprese non registrate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1630;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 24px;
+    }
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #101b3d;
+      border-radius: 16px;
+      padding: 24px 24px 32px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h1 span.logo {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #f9e7b0, #e0b85a 40%, #b98b2c 80%);
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #101b3d;
+      font-size: 0.9rem;
+    }
+    p.desc {
+      margin-top: 4px;
+      color: #d0d7ff;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .alert {
+      margin-top: 16px;
+      background: rgba(255, 193, 7, 0.08);
+      border-left: 3px solid #ffc107;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      color: #ffe49d;
+      border-radius: 8px;
+    }
+    .alert strong {
+      color: #ffd86b;
+    }
+    .panel {
+      margin-top: 24px;
+      background: rgba(10,18,46,0.9);
+      border-radius: 12px;
+      padding: 16px 18px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    label {
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 6px;
+      color: #e1e6ff;
+    }
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(6,13,40,0.9);
+      color: #f5f5f5;
+      font-size: 0.9rem;
+    }
+    input[type="file"]::file-selector-button {
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-right: 10px;
+      background: #1a4fff;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .buttons {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button.primary {
+      background: linear-gradient(135deg, #1a4fff, #5f8dff);
+      color: #fff;
+    }
+    button.secondary {
+      background: rgba(255,255,255,0.06);
+      color: #e0e6ff;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .status {
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #cdd4ff;
+    }
+    .status span {
+      font-weight: 600;
+      color: #fff;
+    }
+    .log-box {
+      margin-top: 20px;
+      background: rgba(0,0,0,0.35);
+      border-radius: 10px;
+      padding: 10px 12px;
+      max-height: 260px;
+      overflow: auto;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .log-line.ok {
+      color: #8de4b2;
+    }
+    .log-line.warn {
+      color: #ffec8b;
+    }
+    .log-line.err {
+      color: #ff9d9d;
+    }
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin-top: 10px;
+    }
+    .preview-table th,
+    .preview-table td {
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 4px 6px;
+      text-align: left;
+    }
+    .preview-table th {
+      background: rgba(255,255,255,0.06);
+    }
+    .badge-small {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-left: 6px;
+      color: #ffd86b;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>
+      <span class="logo">OFI</span>
+      Import imprese non registrate
+    </h1>
+    <p class="desc">
+      Questa pagina serve solo a <strong>caricare il database iniziale delle imprese</strong> dentro Firestore
+      nella collezione <code>imprese_non_registrate</code>. Nessuna email verrà inviata a queste imprese
+      da questa pagina.
+    </p>
+
+    <div class="alert">
+      <strong>ATTENZIONE:</strong> usa questa pagina solo tu (amministratore). In fase di test il sistema
+      non deve inviare email alle imprese reali. Le funzioni di invio email verranno abilitate solo quando
+      deciderai esplicitamente di farlo.
+    </div>
+
+    <div class="panel">
+      <label for="csvFile">
+        File CSV esportato da <em>database imprese.xlsx</em>
+        <span class="badge-small">intestazioni: CATEGORIA, RAGIONE SOCIALE, INDIRIZZO, CAP, COMUNE, PROV., REGIONE, NAZIONE, TELEFONO, FAX, EMAIL</span>
+      </label>
+      <input type="file" id="csvFile" accept=".csv">
+
+      <div class="buttons">
+        <button id="btnPreview" class="secondary" type="button">Anteprima prime righe</button>
+        <button id="btnImport" class="primary" type="button">Importa in Firestore</button>
+      </div>
+
+      <div class="status" id="status">
+        Nessun file caricato.
+      </div>
+
+      <div class="log-box" id="logBox"></div>
+      <div id="previewBox"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { firebaseConfig } from "../js/firebase-config.js"; // stesso file che usi nelle altre pagine
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const fileInput  = document.getElementById('csvFile');
+    const btnPreview = document.getElementById('btnPreview');
+    const btnImport  = document.getElementById('btnImport');
+    const logBox     = document.getElementById('logBox');
+    const statusEl   = document.getElementById('status');
+    const previewBox = document.getElementById('previewBox');
+
+    function log(msg, level = 'ok') {
+      const div = document.createElement('div');
+      div.className = 'log-line ' + level;
+      div.textContent = msg;
+      logBox.appendChild(div);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function parseCsv(text) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (!lines.length) return { header: [], rows: [] };
+
+      // Riconosciamo se il separatore è ; oppure ,
+      let delimiter = ',';
+      if (lines[0].includes(';') && !lines[0].includes(',')) {
+        delimiter = ';';
+      }
+
+      const clean = line => line.split(delimiter).map(c =>
+        c.trim().replace(/^"|"$/g, '')
+      );
+
+      const header = clean(lines[0]);
+      const rows = lines.slice(1).map(clean);
+
+      return { header, rows };
+    }
+
+    async function readFileText() {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert('Seleziona prima un file CSV.');
+        return null;
+      }
+      const text = await file.text();
+      return text;
+    }
+
+    btnPreview.addEventListener('click', async () => {
+      previewBox.innerHTML = '';
+      logBox.innerHTML = '';
+      const text = await readFileText();
+      if (!text) return;
+
+      const { header, rows } = parseCsv(text);
+      statusEl.innerHTML = `File caricato. Intestazioni trovate: <span>${header.join(' | ')}</span>`;
+
+      log('Anteprima CSV caricata. Righe totali (escluse intestazioni): ' + rows.length, 'ok');
+
+      // Piccola tabella con max 5 righe
+      const maxRows = Math.min(rows.length, 5);
+      const table = document.createElement('table');
+      table.className = 'preview-table';
+
+      const theadRow = document.createElement('tr');
+      header.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        theadRow.appendChild(th);
+      });
+      table.appendChild(theadRow);
+
+      for (let i = 0; i < maxRows; i++) {
+        const tr = document.createElement('tr');
+        rows[i].forEach(col => {
+          const td = document.createElement('td');
+          td.textContent = col;
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      }
+
+      previewBox.appendChild(table);
+    });
+
+    btnImport.addEventListener('click', async () => {
+      logBox.innerHTML = '';
+      previewBox.innerHTML = '';
+
+      const text = await readFileText();
+      if (!text) return;
+
+      const conferma = confirm(
+        'Confermi di voler importare tutte le imprese del CSV in "imprese_non_registrate"?\\n' +
+        'Questa operazione può creare molti documenti.'
+      );
+      if (!conferma) return;
+
+      const { header, rows } = parseCsv(text);
+
+      const idxCategoria = header.indexOf('CATEGORIA');
+      const idxRagione   = header.indexOf('RAGIONE SOCIALE');
+      const idxIndirizzo = header.indexOf('INDIRIZZO');
+      const idxCap       = header.indexOf('CAP');
+      const idxComune    = header.indexOf('COMUNE');
+      const idxProv      = header.indexOf('PROV.');
+      const idxRegione   = header.indexOf('REGIONE');
+      const idxNazione   = header.indexOf('NAZIONE');
+      const idxTel       = header.indexOf('TELEFONO');
+      const idxFax       = header.indexOf('FAX');
+      const idxEmail     = header.indexOf('EMAIL');
+
+      const required = [
+        ['CATEGORIA', idxCategoria],
+        ['RAGIONE SOCIALE', idxRagione],
+        ['INDIRIZZO', idxIndirizzo],
+        ['CAP', idxCap],
+        ['COMUNE', idxComune],
+        ['PROV.', idxProv],
+        ['REGIONE', idxRegione],
+        ['NAZIONE', idxNazione],
+        ['TELEFONO', idxTel],
+        ['FAX', idxFax],
+        ['EMAIL', idxEmail]
+      ];
+
+      let okHeader = true;
+      required.forEach(([name, idx]) => {
+        if (idx === -1) {
+          log('Colonna mancante nel CSV: "' + name + '"', 'warn');
+          okHeader = false;
+        }
+      });
+
+      if (!okHeader) {
+        log('Correggi le intestazioni del CSV e riprova. Nessun dato è stato importato.', 'err');
+        return;
+      }
+
+      log('Inizio import in Firestore. Righe da elaborare: ' + rows.length, 'ok');
+      btnImport.disabled = true;
+      btnPreview.disabled = true;
+      fileInput.disabled = true;
+
+      let created = 0;
+      let skipped = 0;
+
+      for (let i = 0; i < rows.length; i++) {
+        const cols = rows[i];
+
+        // Saltiamo eventuali righe vuote
+        const ragione = (cols[idxRagione] || '').trim();
+        const email   = (cols[idxEmail] || '').trim();
+        if (!ragione && !email) {
+          skipped++;
+          continue;
+        }
+
+        const docData = {
+          categoria:       (cols[idxCategoria] || '').trim(),
+          ragione_sociale: ragione,
+          indirizzo:       (cols[idxIndirizzo] || '').trim(),
+          cap:             (cols[idxCap] || '').trim(),
+          comune:          (cols[idxComune] || '').trim(),
+          provincia:       (cols[idxProv] || '').trim(),
+          regione:         (cols[idxRegione] || '').trim(),
+          nazione:         (cols[idxNazione] || '').trim(),
+          telefono:        (cols[idxTel] || '').trim(),
+          fax:             (cols[idxFax] || '').trim(),
+          email:           email,
+          stato:           'attiva',
+          fonte:           'database_iniziale',
+          // campi geolocalizzazione da riempire in un secondo momento
+          lat: null,
+          lon: null,
+          // flag per ricordare che non devono ricevere email finché non lo decidi tu
+          email_attiva:    false
+        };
+
+        try {
+          await addDoc(collection(db, 'imprese_non_registrate'), docData);
+          created++;
+          if (created % 50 === 0) {
+            log('Create ' + created + ' imprese finora...', 'ok');
+          }
+        } catch (err) {
+          log('Errore alla riga ' + (i + 2) + ': ' + err.message, 'err');
+        }
+      }
+
+      log('Import completato. Documenti creati: ' + created + '. Righe saltate: ' + skipped + '.', 'ok');
+      statusEl.innerHTML =
+        'Import completato. <span>Creati ' + created +
+        ' documenti in imprese_non_registrate</span>.';
+
+      btnImport.disabled = false;
+      btnPreview.disabled = false;
+      fileInput.disabled = false;
+    });
+  </script>
+</body>
+</html>

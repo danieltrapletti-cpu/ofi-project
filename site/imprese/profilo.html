@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Profilo Impresa — OFI</title>
+  <meta name="description" content="Profilo pubblico dell'impresa — Marchio di Affidabilità Nazionale OFI">
+
+  <!-- Favicon + Stili globali OFI (root-relative) -->
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/imprese/profilo.css">
+
+  <!-- Mapbox -->
+  <link href="/vendor/mapbox-gl.css" rel="stylesheet">
+
+  <!-- JS globale (root-relative) -->
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+<body>
+
+<!-- HEADER — allineato al menu di accesso.html -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="/vision.html">Visione di OFI</a></li>
+          <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="/index.html#pensieri">Pensieri</a></li>
+          <li><a href="/articoli/articoli.html">Articoli</a></li>
+          <li><a href="/index.html#ricordi">Ricordi</a></li>
+          <li><a href="/index.html#mappa">Vicino a te</a></li>
+          <li><a href="/index.html#video">Video</a></li>
+        </ul>
+      </li>
+
+      <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<main>
+  <!-- HERO PULITO -->
+  <section class="profile-hero">
+    <div class="profile-hero__panel profile-hero--center">
+
+      <!-- MENU TRE PUNTINI (visitatore / funzioni neutre) -->
+      <button
+        id="heroMenuBtn"
+        class="hero-menu-btn"
+        type="button"
+        aria-label="Altre azioni sul profilo"
+        aria-expanded="false"
+      >
+        ⋮
+      </button>
+
+      <div id="heroMenu" class="hero-menu" hidden>
+        <button type="button" class="hero-menu__item" data-action="share">
+          <span class="icon">📤</span>
+          <span>Condividi questo profilo</span>
+        </button>
+        <button type="button" class="hero-menu__item" data-action="copy-link">
+          <span class="icon">🔗</span>
+          <span>Copia link del profilo</span>
+        </button>
+        <button type="button" class="hero-menu__item" data-action="punti">
+          <span class="icon">✨</span>
+          <span>Punti &amp; Reputazione OFI</span>
+        </button>
+        <!-- Scarica certificato (se presente) -->
+        <a
+          id="menuCertificato"
+          class="hero-menu__item"
+          href="#"
+          target="_blank"
+          rel="noopener"
+          hidden
+        >
+          <span class="icon">📄</span>
+          <span>Scarica certificato di adesione</span>
+        </a>
+      </div>
+
+      <!-- Logo impresa -->
+      <figure class="logo-wrap logo-wrap--free">
+        <!-- default: rosa OFI; se il logo reale non esiste o 404 -> fallback -->
+        <img id="logoImg"
+             src="/images/rosa.png"
+             alt="Logo Impresa"
+             onerror="this.onerror=null; this.src='/images/rosa.png';" />
+      </figure>
+
+      <!-- Nome + stelle + ID -->
+      <h1 id="nomeImpresa" class="hero-title">Impresa</h1>
+
+      <div class="hero-meta">
+        <span id="stelleWrap" class="stars" aria-label="Valutazione"></span>
+        <span class="id-ofi" id="idOFI">ID <span id="codiceOFI">—</span></span>
+      </div>
+
+      <!-- Sigillo / Marchio personalizzato -->
+      <div id="heroSeal" class="hero-seal" hidden>
+        <a
+          href="./preventivo/marchio.html"
+          title="Scopri il Marchio di Affidabilità Nazionale OFI"
+          class="seal-link"
+        >
+          <svg id="sealSvg" viewBox="0 0 400 400" class="seal-svg" aria-hidden="true">
+            <defs>
+              <path id="arcTop"
+                    d="M 40,200 A 160,160 0 0 1 360,200" />
+              <path id="arcBottom"
+                    d="M 25,200 A 175,175 0 0 0 375,200" />
+            </defs>
+
+            <circle cx="200" cy="200" r="190"
+                    fill="#0e2638"
+                    stroke="#caa85a"
+                    stroke-width="12" />
+
+            <!-- Clip circolare -->
+            <clipPath id="logoClip">
+              <circle cx="200" cy="200" r="150" />
+            </clipPath>
+
+            <!-- PNG base -->
+            <image href="/images/sigillo-ofi-base.png"
+                   x="50" y="50"
+                   width="300" height="300"
+                   clip-path="url(#logoClip)" />
+
+            <!-- Testo superiore -->
+            <text fill="#ffd46a"
+                  font-family="Noto Serif, serif"
+                  font-size="20"
+                  letter-spacing="3">
+              <textPath href="#arcTop"
+                        startOffset="50%"
+                        text-anchor="middle">
+                MARCHIO DI AFFIDABILITÀ NAZIONALE
+              </textPath>
+            </text>
+
+            <!-- Stelle più in alto -->
+            <text id="sealStarsText"
+                  x="200" y="120"
+                  text-anchor="middle"
+                  fill="#ffd46a"
+                  font-family="Noto Serif, serif"
+                  font-size="32">
+              ★★★★★
+            </text>
+
+            <!-- Codice OFI sotto il tricolore -->
+            <text id="sealCodeText"
+                  x="200" y="292"
+                  text-anchor="middle"
+                  fill="#ffd46a"
+                  font-family="Source Sans 3, system-ui, sans-serif"
+                  font-size="16"
+                  letter-spacing="2">
+              ID OFI-000000
+            </text>
+
+            <!-- Nome impresa parte inferiore -->
+            <text id="sealNameArcText"
+                  fill="#ffffff"
+                  font-family="Noto Serif, serif"
+                  font-size="18"
+                  letter-spacing="2">
+              <textPath href="#arcBottom"
+                        startOffset="50%"
+                        text-anchor="middle"
+                        dy="12">
+                NOME IMPRESA
+              </textPath>
+            </text>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Certificato -->
+      <div class="hero-badges">
+        <a id="badgeCertificato"
+           class="badge soft"
+           hidden
+           target="_blank"
+           rel="noopener">
+          Certificato di Adesione
+        </a>
+      </div>
+
+      <!-- Contatti rapidi -->
+      <div id="heroContacts" class="hero-contacts" hidden>
+        <!-- pill dinamiche -->
+      </div>
+
+      <!-- CTA primaria (richiedi preventivo) -->
+      <div class="cta-top">
+        <a id="btnPreventivo" class="btn btn-primary" href="#" role="button">Richiedi un preventivo</a>
+      </div>
+
+      <!-- Bio breve (hero) eventualmente nascosta da CSS globale -->
+      <p id="bioShort" class="bio-short" hidden></p>
+      <button id="toggleBio" class="link-ghost" hidden>Leggi tutto</button>
+
+      <!-- Condivisione + Dashboard -->
+      <div class="hero-share">
+        <button id="shareBtn" class="btn-ghost" type="button">Condividi profilo</button>
+
+        <!-- Icona info per spiegare punti & condivisioni -->
+        <button
+          id="shareInfoBtn"
+          class="btn-ghost info-ghost"
+          type="button"
+          aria-expanded="false"
+          aria-controls="shareInfoPanel"
+          title="Informazioni su condivisioni e punti"
+        >
+          i
+        </button>
+
+        <!-- Torna alla dashboard impresa (solo owner) -->
+        <a id="vaiDashboard" href="/imprese/imprese-dashboard.html" class="btn-ghost" hidden>
+          Torna alla dashboard impresa
+        </a>
+      </div>
+
+      <!-- Pannello informativo con il testo che prima era sempre visibile -->
+      <div id="shareInfoPanel" class="hero-share-info" hidden>
+        <p id="shareHintOwner" class="hero-share-hint" hidden>
+          Condividi liberamente questo profilo OFI sui social, via WhatsApp o email.
+          Una sola condivisione al giorno, fatta come impresa proprietaria, ti assegna punti
+          nel sistema <strong>Punti &amp; Stelle</strong>. Le condivisioni sono sempre senza limiti.
+        </p>
+        <p id="shareHintVisitor" class="hero-share-hint" hidden>
+          Puoi condividere liberamente questo profilo con chi vuoi.
+          Solo l’impresa proprietaria, accedendo con il proprio account, può trasformare
+          una condivisione al giorno in punti nel sistema <strong>Punti &amp; Stelle OFI</strong>.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTENUTO -->
+  <section class="section container">
+
+    <!-- Chi siamo + Servizi (IN COLONNA, ordine pulito) -->
+    <article class="card">
+      <h2>Chi siamo</h2>
+
+      <p id="bio" class="mb-0">—</p>
+
+      <h3 class="h3-soft" style="margin-top:1.2rem;">Servizi</h3>
+      <ul id="serviziList" class="servizi-list"></ul>
+
+      <p class="small muted" id="verificaTxt" style="margin-top:.6rem">Profilo verificato su OFI.</p>
+    </article>
+
+    <!-- === SOCIAL IMPRESA === -->
+    <section class="card card-social">
+      <div class="card-head">
+        <h2>Social</h2>
+      </div>
+
+      <div id="socialLinks" class="social-links">
+        <!-- Riempito da JS -->
+      </div>
+    </section>
+
+    <!-- === REPUTAZIONE (card principale, niente chip in hero) === -->
+    <section class="card card-reputazione">
+      <div class="card-head">
+        <h2>Reputazione</h2>
+      </div>
+
+      <p class="rep-score" id="repScoreText">
+        Valutazione generale in aggiornamento…
+      </p>
+
+      <button class="btn-primary" id="btnLasciaRecensione" type="button">
+        Lascia una recensione
+      </button>
+    </section>
+
+    <!-- === CONTATTI & INFO === -->
+    <section class="card card-contatti">
+      <div class="card-head">
+        <h2>Contatti e Informazioni</h2>
+      </div>
+
+      <ul class="contatti-list">
+        <li id="contatto-email"><strong>Email:</strong> <span></span></li>
+        <li id="contatto-telefono"><strong>Telefono:</strong> <span></span></li>
+        <li id="contatto-sito"><strong>Sito web:</strong> <span></span></li>
+      </ul>
+    </section>
+
+    <!-- Sedi + mappa -->
+    <article class="card">
+      <header class="card-head">
+        <h2>Le nostre sedi operative</h2>
+      </header>
+
+      <div id="mappaSedi" class="mapbox-stage"></div>
+      <ul id="sediList" class="sedi"></ul>
+    </article>
+
+    <!-- Galleria -->
+    <article class="card">
+      <header class="card-head">
+        <h2>Galleria fotografica</h2>
+        <nav class="gallery-nav" aria-label="Controlli galleria" hidden>
+          <button class="g-btn" type="button" id="gPrev" aria-label="Precedente">‹</button>
+          <button class="g-btn" type="button" id="gNext" aria-label="Successivo">›</button>
+        </nav>
+      </header>
+
+      <div class="gallery-rail" id="galleryRail" tabindex="0" aria-label="Galleria immagini"></div>
+      <div class="gallery-dots" id="galleryDots" role="tablist" aria-label="Pagine galleria"></div>
+    </article>
+
+    <!-- Video -->
+    <article class="card" id="videoBlock" hidden>
+      <h2>Video</h2>
+      <div class="ratio-16x9">
+        <video id="video" controls playsinline preload="metadata"></video>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">
+          OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.
+          Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.
+        </p>
+      </div>
+      <div class="f-links">
+        <a href="/articoli/articoli.html">Articoli</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze,
+        autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="/images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="/images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p></div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Come pubblico un necrologio?</button>
+        <button class="chip" role="listitem">Come funziona PENSIERI?</button>
+        <button class="chip" role="listitem">Come richiedo un preventivo?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">Suggerimento: scrivi parole semplici (es. “necrologio”, “pensieri”, “preventivo”).</p>
+  </section>
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+
+<!-- JS Mapbox (globale) -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<!-- Firebase + Logica profilo -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, limit, getDocs,
+           addDoc, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const qs = new URLSearchParams(location.search);
+  const impresaId = (qs.get('id') || '').toLowerCase();
+  const $  = s => document.querySelector(s);
+
+  let currentUserEmail = null;
+  let isOwnerCurrent = false;
+
+  function renderStarsByScore(score){
+    if (typeof score !== 'number') return '';
+    const n = Math.max(0, Math.min(5, Math.round(score/20)));
+    return n ? `<span class="starline" aria-hidden="true">${'★'.repeat(n)}</span><span class="sr-only">${n} stelle</span>` : '';
+  }
+  function renderStars(n){
+    n = Math.max(0, Math.min(5, Number(n)||0));
+    return n ? `<span class="starline" aria-hidden="true">${'★'.repeat(n)}</span><span class="sr-only">${n} stelle</span>` : '';
+  }
+
+  // Calcolo stelle coerente con la dashboard imprese
+  function mappaStellePotenziale(profilo_score){
+    const s = Number(profilo_score||0);
+    if (s >= 95) return 5;
+    if (s >= 80) return 4;
+    if (s >= 50) return 3;
+    if (s >= 20) return 2;
+    return 1;
+  }
+
+  function stelleDaPunti(punti_saldo, fattore_reputazione=1){
+    const p = Number.isFinite(+punti_saldo) ? +punti_saldo : 0;
+    const r = (Number.isFinite(+fattore_reputazione) && +fattore_reputazione>0)
+      ? +fattore_reputazione : 1;
+    const eff = p * r;
+    if (eff >= 600) return 5;
+    if (eff >= 300) return 4;
+    if (eff >= 150) return 3;
+    if (eff >= 50)  return 2;
+    return 1;
+  }
+
+  // Converte sia stringhe che Timestamp Firestore in Date
+  function toDateMaybe(v){
+    if (!v) return null;
+    if (typeof v === 'object' && typeof v.toDate === 'function'){
+      return v.toDate();
+    }
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function calcolaStelleCorrenti({profilo_score, punti_saldo, fattore_reputazione=1, stelle_lock_until}){
+  const pot  = mappaStellePotenziale(profilo_score||0);
+  const byPts = stelleDaPunti(punti_saldo||0, fattore_reputazione||1);
+  const now  = new Date();
+  const lock = toDateMaybe(stelle_lock_until);
+
+  // Durante il periodo protetto: mai sotto il potenziale
+  if (lock && now <= lock) {
+    return Math.max(pot, byPts);
+  }
+
+  // Dopo il periodo protetto:
+  // le stelle seguono i punti, ma NON scendono sotto il potenziale
+  return Math.max(pot, byPts);
+}
+
+  const nl2br = s => (s||'').toString().replace(/\n/g,'<br>');
+
+  function onlyOwnerUI(show){
+    // Il bottone "Condividi profilo" resta SEMPRE visibile
+    $('#vaiDashboard')?.toggleAttribute('hidden', !show);
+
+    // Voci del menu dedicate al proprietario (al momento nessuna)
+    document.querySelectorAll('[data-owner-only]').forEach(el=>{
+      el.toggleAttribute('hidden', !show);
+    });
+  }
+
+  // Default: pagina vista come visitatore (niente elementi owner)
+  onlyOwnerUI(false);
+
+  function cameFromSearch(){
+    const src = (qs.get('src')||'').toLowerCase();
+    const ref = document.referrer || '';
+    if (src === 'auto' || src === 'automatica' || src === 'manuale' || src === 'manual') return true;
+    return /richiedi-preventivo|ricerca|selezione-imprese/i.test(ref);
+  }
+
+  async function canShareToday(docId){
+    const key = `shareProfile:${docId}:${new Date().toDateString()}`;
+    if (localStorage.getItem(key)) return false;
+    try{
+      const since = Timestamp.fromMillis(Date.now() - 24*60*60*1000);
+      const qRef = query(
+        collection(db, 'imprese_registrate', docId, 'logAzioni'),
+        where('tipo','==','share_profile'),
+        where('ts','>=', since),
+        limit(1)
+      );
+      const snap = await getDocs(qRef);
+      return snap.empty;
+    }catch{ return true }
+  }
+  async function logShare(docId){
+    try{
+      await addDoc(collection(db, 'imprese_registrate', docId, 'logAzioni'), {
+        tipo: 'share_profile',
+        ts: serverTimestamp()
+      });
+    }catch(e){ console.warn('Log share fallito:', e); }
+    localStorage.setItem(`shareProfile:${docId}:${new Date().toDateString()}`, '1');
+  }
+
+  async function getPublicOrOwnerData(id){
+    const vis = await getDoc(doc(db, 'imprese_visibili', id));
+    if (vis.exists()) return { data: vis.data(), source: 'public' };
+
+    return new Promise(resolve=>{
+      onAuthStateChanged(auth, async user=>{
+        const isOwner = !!user && (user.email?.toLowerCase() === id);
+        if (!isOwner) return resolve(null);
+        const reg = await getDoc(doc(db, 'imprese_registrate', id)).catch(()=>null);
+        resolve(reg && reg.exists() ? { data: reg.data(), source: 'owner' } : null);
+      });
+    });
+  }
+
+  function toArrayMaybe(v){
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    // stringa separata da • o , o ;
+    return v.split(/•|,|;/).map(s=>s.trim()).filter(Boolean);
+  }
+
+  /* Galleria */
+  function setupGallery(urls){
+    const rail = document.getElementById('galleryRail');
+    const dots = document.getElementById('galleryDots');
+    const nav  = document.querySelector('.gallery-nav');
+
+    rail.innerHTML = ''; dots.innerHTML = '';
+    if (!urls || !urls.length){ nav.hidden = true; return; }
+
+    urls.slice(0,18).forEach((u,i)=>{
+      const fig = document.createElement('figure');
+      fig.className = 'g-item';
+      fig.innerHTML = `<img loading="lazy" src="${u}" alt="Foto ${i+1}" data-idx="${i}">`;
+      rail.appendChild(fig);
+
+      const dot = document.createElement('button');
+      dot.type='button'; dot.setAttribute('role','tab');
+      dot.setAttribute('aria-selected', i===0 ? 'true':'false');
+      dot.addEventListener('click',()=> rail.scrollTo({left: fig.offsetLeft - rail.offsetLeft, behavior:'smooth'}));
+      dots.appendChild(dot);
+    });
+
+    nav.hidden = false;
+
+    const items = [...rail.children];
+    const selectNearest = ()=>{
+      const center = rail.scrollLeft + rail.clientWidth/2;
+      let idx = 0, best = Infinity;
+      items.forEach((el,i)=>{
+        const mid = el.offsetLeft + el.clientWidth/2;
+        const d = Math.abs(mid - center);
+        if (d < best){best = d; idx = i;}
+      });
+      [...dots.children].forEach((b,j)=> b.setAttribute('aria-selected', j===idx ? 'true':'false'));
+    };
+    rail.addEventListener('scroll', ()=>{ requestAnimationFrame(selectNearest); }, {passive:true});
+    selectNearest();
+
+    document.getElementById('gPrev').onclick = ()=>{
+      const i = [...dots.children].findIndex(b=>b.getAttribute('aria-selected')==='true');
+      const n = Math.max(0, i-1); dots.children[n].click();
+    };
+    document.getElementById('gNext').onclick = ()=>{
+      const i = [...dots.children].findIndex(b=>b.getAttribute('aria-selected')==='true');
+      const n = Math.min(dots.children.length-1, i+1); dots.children[n].click();
+    };
+
+    rail.addEventListener('click', (e)=>{
+      const img = e.target.closest('img'); if(!img) return;
+      openLightbox(urls, Number(img.dataset.idx)||0);
+    });
+  }
+
+  /* MAPPA */
+  let map=null, mainMarker=null, secMarkers=[];
+  function prefersDark(){ return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches; }
+
+  new MutationObserver(()=>syncMapStyle()).observe(
+    document.documentElement,
+    { attributes:true, attributeFilter:['data-theme'] }
+  );
+
+  function activeTheme(){
+    const t=document.documentElement.getAttribute('data-theme')||'auto';
+    return t==='dark'||(t==='auto'&&prefersDark()) ? 'dark' : 'light';
+  }
+
+  function syncHtmlThemeClass(){
+    const t = activeTheme();
+    document.documentElement.classList.toggle('theme-dark', t==='dark');
+    document.documentElement.classList.toggle('theme-light', t==='light');
+  }
+
+  function initMap(){
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+    const style = activeTheme()==='dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+    map = new mapboxgl.Map({
+      container: 'mappaSedi',
+      style, center:[12.4964,41.9028], zoom:4.7, attributionControl:false
+    });
+    map.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+    map.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'bottom-right');
+  }
+
+  function syncMapStyle(){
+    if (!map) return;
+    try{
+      map.setStyle(activeTheme()==='dark' ? 'mapbox://styles/mapbox/dark-v11'
+                                          : 'mapbox://styles/mapbox/light-v11');
+    }catch(e){ console.warn(e); }
+    syncHtmlThemeClass();
+  }
+
+  function mapLinkFor(s){
+    const q = encodeURIComponent([s.indirizzo, s.cap, s.comune, s.provincia, s.regione].filter(Boolean).join(' '));
+    return `https://www.google.com/maps/search/?api=1&query=${q}`;
+  }
+  function popupHtmlFor(s){
+    const addr = [s.indirizzo, s.cap, s.comune].filter(Boolean).join(', ');
+    return `<div style="min-width:220px">
+      <strong>${s.label || s.titolo || s.tipo || 'Sede OFI'}</strong><br>
+      <span>${addr || 'Indirizzo non disponibile'}</span><br>
+      <a href="${mapLinkFor(s)}" target="_blank" rel="noopener" class="btn btn-ghost" style="margin-top:.35rem">Apri su Google Maps</a>
+    </div>`;
+  }
+
+  /* Marker OFI personalizzati */
+  function svgPin(g1='#ffd46a', g2='#caa85a', ring='#b78927'){
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${g1}"/>
+          <stop offset="1" stop-color="${g2}"/>
+        </linearGradient>
+        <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="b"/>
+          <feOffset dy="2" result="o"/>
+          <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M17 43C17 43 32 27.8 32 17C32 8.163 24.837 1 16 1S0 8.163 0 17c0 10.8 17 26 17 26Z" fill="url(#g)" filter="url(#sh)"/>
+      <circle cx="16.5" cy="16.5" r="8.7" fill="white" fill-opacity=".14" />
+      <circle cx="16.5" cy="16.5" r="5.9" fill="none" stroke="${ring}" stroke-opacity=".8" stroke-width="1.6"/>
+      <circle cx="16.5" cy="14.8" r="2.9" fill="#ffffff" fill-opacity=".85"/>
+    </svg>`;
+    return `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+  }
+  function makeMarkerEl(variant='gold'){
+    const el = document.createElement('div');
+    el.style.width='34px'; el.style.height='44px';
+    el.style.backgroundImage = (variant==='gold')
+      ? svgPin('#FFD46A','#CAA85A','#B78927')
+      : svgPin('#6FD1FF','#0EA5E9','#1777b7');
+    el.style.backgroundSize='contain';
+    el.style.backgroundRepeat='no-repeat';
+    el.style.transform='translateY(-2px)';
+    return el;
+  }
+
+  function plotSedi(sedi){
+    if (!map) initMap();
+    secMarkers.forEach(m=>{try{m.remove()}catch{}}); 
+    secMarkers = [];
+
+    const pts = [];
+    const sp = sedi.find(s => s._type === 'principale' && typeof s.lat === 'number' && typeof s.lng === 'number');
+    if (sp){
+      if (!mainMarker) mainMarker = new mapboxgl.Marker({ element: makeMarkerEl('gold') });
+      mainMarker
+        .setLngLat([sp.lng, sp.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' }).setHTML(popupHtmlFor(sp)))
+        .addTo(map);
+      pts.push([sp.lng, sp.lat]);
+    }
+    sedi
+      .filter(s => s._type === 'dist' && typeof s.lat === 'number' && typeof s.lng === 'number')
+      .forEach(s => {
+        const m = new mapboxgl.Marker({ element: makeMarkerEl('blue') })
+          .setLngLat([s.lng, s.lat])
+          .setPopup(new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' }).setHTML(popupHtmlFor(s)))
+          .addTo(map);
+        secMarkers.push(m);
+        pts.push([s.lng, s.lat]);
+      });
+
+    if (pts.length === 1){
+      map.flyTo({ center: pts[0], zoom: 14 });
+    } else if (pts.length > 1){
+      const b = pts.reduce((bb, c) => bb.extend(c), new mapboxgl.LngLatBounds(pts[0], pts[0]));
+      map.fitBounds(b, { padding: 60, duration: 700 });
+    }
+  }
+
+  /* Lightbox minimal */
+  function ensureLightboxRoot(){
+    if (document.querySelector('.lb')) return document.querySelector('.lb');
+    const lb = document.createElement('div');
+    lb.className='lb'; lb.innerHTML = `
+      <button class="lb-close" aria-label="Chiudi">✕</button>
+      <button class="lb-prev" aria-label="Precedente">‹</button>
+      <img alt="Anteprima immagine galleria">
+      <button class="lb-next" aria-label="Successivo">›</button>`;
+    document.body.appendChild(lb);
+    return lb;
+  }
+  function openLightbox(urls, index=0){
+    const lb = ensureLightboxRoot();
+    const img = lb.querySelector('img');
+    let i = index;
+
+    function show(k){ i = (k+urls.length)%urls.length; img.src = urls[i]; }
+    function close(){ lb.classList.remove('open'); lb.removeEventListener('click',onClick); document.removeEventListener('keydown',onKey); }
+    function onClick(e){
+      if (e.target.classList.contains('lb-close') || e.target === lb) close();
+      if (e.target.classList.contains('lb-prev')) show(i-1);
+      if (e.target.classList.contains('lb-next')) show(i+1);
+    }
+    function onKey(e){
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(i-1);
+      if (e.key === 'ArrowRight') show(i+1);
+    }
+
+    lb.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKey);
+    show(i);
+    lb.classList.add('open');
+  }
+
+  function renderVideo(url){
+    const wrap = document.getElementById('videoBlock');
+    const vtag = document.getElementById('video');
+    if (!url || typeof url !== 'string'){ wrap.hidden = true; return; }
+
+    const u = url.trim();
+
+    // File (mp4/webm/ogg)
+    if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(u)){
+      vtag.src = u;
+      vtag.hidden = false;
+      wrap.hidden = false;
+      return;
+    }
+
+    // YouTube
+    const yt = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+    if (yt){
+      const id = yt[1];
+      const iframe = document.createElement('iframe');
+      iframe.width = '560';
+      iframe.height = '315';
+      iframe.setAttribute('allowfullscreen','');
+      iframe.setAttribute('loading','lazy');
+      iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      iframe.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+      const slot = wrap.querySelector('.ratio-16x9');
+      slot.innerHTML = ''; slot.appendChild(iframe);
+      vtag.hidden = true;
+      wrap.hidden = false;
+      return;
+    }
+
+    // Vimeo
+    const vm = u.match(/vimeo\.com\/(\d+)/i);
+    if (vm){
+      const id = vm[1];
+      const iframe = document.createElement('iframe');
+      iframe.width = '560';
+      iframe.height = '315';
+      iframe.setAttribute('allowfullscreen','');
+      iframe.setAttribute('loading','lazy');
+      iframe.src = `https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0`;
+      const slot = wrap.querySelector('.ratio-16x9');
+      slot.innerHTML = ''; slot.appendChild(iframe);
+      vtag.hidden = true;
+      wrap.hidden = false;
+      return;
+    }
+
+    // Non riconosciuto → nascondi
+    wrap.hidden = true;
+  }
+
+  // ==== MARCHIO OFI PERSONALIZZATO (SVG) ===========================
+  function updateSealSvg({ nome, codice, stelle }) {
+    const svg = document.getElementById('sealSvg');
+    if (!svg) return;
+
+    const codeText = svg.querySelector('#sealCodeText');
+    const starsText = svg.querySelector('#sealStarsText');
+    const nameArc   = svg.querySelector('#sealNameArcText');
+    const namePath  = svg.querySelector('#sealNameArcText textPath');
+
+    // Codice OFI (testo centrale)
+    if (codeText) {
+      if (codice && codice !== '—') {
+        codeText.textContent = `ID ${codice}`;
+      } else {
+        codeText.textContent = '';
+      }
+    }
+
+    // Stelle (1–5)
+    const n = Math.max(1, Math.min(5, Number(stelle) || 1));
+    if (starsText) {
+      starsText.textContent = '★★★★★'.slice(0, n);
+    }
+
+    // Nome impresa in arco inferiore (maiuscolo + adattamento font-size)
+    if (namePath && nameArc) {
+      const raw = (nome || '').trim();
+      const nomeClean = raw.toUpperCase();
+
+      // font-size dinamico semplice in base alla lunghezza
+      let size = 18;
+      if (nomeClean.length > 26) size = 16;
+      if (nomeClean.length > 34) size = 14;
+      if (nomeClean.length > 42) size = 13;
+
+      nameArc.setAttribute('font-size', size);
+      namePath.textContent = nomeClean || '';
+    }
+  }
+
+  async function loadProfile(){
+    if (!impresaId){ $('#nomeImpresa').textContent = 'Profilo non disponibile'; return; }
+
+    const payload = await getPublicOrOwnerData(impresaId);
+    if (!payload){ $('#nomeImpresa').textContent = 'Profilo non disponibile'; return; }
+    const d = payload.data || {};
+    const source = payload.source || 'public';
+    const nome    = d.nomeImpresa || d.nome || 'Impresa senza nome';
+    const codice  = d.codiceOFI || d.codice_ofi || '—';
+    const logo    = d.logoUrl || d.logo_url || d.logo || '';
+    const telefono = d.telefono || d.telefono_1 || d.tel || '';
+    const email    = d.email_op || d.email || '';
+
+    // Leggo SOLO la nuova logica
+    const abStatRaw = d.abbonamento?.stato || '';
+    const abStat    = String(abStatRaw).toLowerCase();
+
+    // Marchio attivo SOLO se trial o active
+    const marchio   = ['active','trial'].includes(abStat);
+
+    // Contatti diretti visibili solo con abbonamento attivo / trial / piani "pro/premium"
+    // (per ora consideriamo "free" come NON abilitato ai contatti, ma col marchio visibile)
+    const canShowContactsToVisitors = ['active','trial','pro','premium'].includes(abStat);
+
+    // Stelle: ricalcolo con la stessa logica della dashboard
+    let stelle = calcolaStelleCorrenti({
+      profilo_score: Number(d.profilo_score ?? 0),
+      punti_saldo: Number(d.punti_saldo ?? 0),
+      fattore_reputazione: Number(d.fattore_reputazione ?? 1),
+      stelle_lock_until: d.stelle_lock_until || null
+    });
+
+    // Se per qualche motivo i dati non ci sono ancora, uso il valore salvato
+    if (!Number.isFinite(stelle) || stelle <= 0) {
+      if (typeof d.stelle_correnti === 'number') {
+        stelle = d.stelle_correnti;
+      } else if (typeof d.stelle === 'number') {
+        stelle = d.stelle;
+      } else {
+        stelle = 1;
+      }
+    }
+
+    // Se il profilo arriva da "imprese_visibili" lo consideriamo già approvato
+    const approved = (
+      source === 'public' ||           // documento in imprese_visibili = profilo pubblicato
+      d.stato === 'approved' ||
+      d.approvato === true
+    );
+
+    // URL base dinamico del certificato (HTML) — per ora SEMPRE questo
+    const certUrl =
+      `${location.origin}/imprese/certificato-ofi-adesione.html?id=${encodeURIComponent(impresaId)}`;
+
+    updateSealSvg({ nome, codice, stelle });
+
+    // Il certificato è mostrabile se l’impresa è approvata/pubblica
+    const certOK = approved;
+    
+    const bio     = d.descrizioneBio || d.bio || d.descrizione || '—';
+    const serviziArr = toArrayMaybe(d.servizi).concat(toArrayMaybe(d.serviziAltro || d.altro_servizi || d.altroServizi));
+    const updRaw  = d.updatedAt?.toDate?.() || d.updatedAt || d.dataAggiornamento || d.aggiornato_il || null;
+
+    const gal = Array.isArray(d.galleriaUrls) ? d.galleriaUrls
+              : Array.isArray(d.gallery_urls) ? d.gallery_urls
+              : Array.isArray(d.galleria)     ? d.galleria
+              : [];
+    const videoUrl = d.videoUrl || d.video_url || '';
+
+    const sedePrincipale = d.sede_principale || null;
+    const sediDist       = Array.isArray(d.sedi_distaccate) ? d.sedi_distaccate : [];
+    const sediVecchie    = Array.isArray(d.sedi) ? d.sedi : (Array.isArray(d.sediSecondarie) ? d.sediSecondarie : []);
+    const sediTot = (sedePrincipale ? [{...sedePrincipale, _type:'principale'}] : [])
+                      .concat((sediDist||[]).map(s=>({...s,_type:'dist'})),
+                              (sediVecchie||[]).map(s=>({...s,_type:'dist'})));
+
+    // HERO
+    $('#nomeImpresa').textContent = nome;
+    $('#codiceOFI').textContent   = codice;
+    const logoEl = document.getElementById('logoImg');
+    if (logo && typeof logo === 'string') logoEl.src = logo;
+
+    // Stelle
+    $('#stelleWrap').innerHTML = Number.isFinite(stelle) && stelle>0
+      ? renderStars(stelle)
+      : renderStarsByScore(d.profilo_score);
+
+    // Certificato: badge + voce nel menu tre puntini
+    const certBadge = document.getElementById('badgeCertificato');
+    const certMenu  = document.getElementById('menuCertificato');
+
+    if (certBadge) {
+      certBadge.hidden = !certOK;
+      if (certOK) {
+        certBadge.href = certUrl;
+      } else {
+        certBadge.removeAttribute('href');
+      }
+    }
+
+    if (certMenu) {
+      certMenu.hidden = !certOK;
+      if (certOK) {
+        certMenu.href = certUrl;
+      } else {
+        certMenu.removeAttribute('href');
+      }
+    }
+
+    // Marchio attivo solo se abbonamento attivo / trial
+    const heroSealEl = document.getElementById('heroSeal');
+    if (heroSealEl) heroSealEl.hidden = !marchio;
+
+    // Se il Marchio è visibile, nascondo la riga stelle + ID sotto al nome
+    const heroMeta = document.querySelector('.hero-meta');
+    if (heroMeta) {
+      heroMeta.hidden = marchio;
+    }
+
+    // REPUTAZIONE: solo nella card (hero chip eliminato)
+    const repScore = Number(d.reputazione_media ?? d.reputazione ?? 0);
+
+        // Contatti: pill dinamiche con logica abbonamento
+    const heroContacts = document.getElementById('heroContacts');
+    let pills = [];
+
+    if (!canShowContactsToVisitors){
+      // Nessun contatto diretto: solo messaggio + sedi
+      pills.push(
+        `<span class="contact-pill contact-pill--muted">
+          Contatti diretti disponibili con abbonamento attivo<br>
+          Usa il pulsante "Richiedi un preventivo" per contattare l'impresa.
+        </span>`
+      );
+    } else {
+      // Abbonamento attivo/trial → mostro SOLO il telefono (niente email)
+      if (telefono){
+        pills.push(
+          `<a class="contact-pill" href="tel:${telefono.replace(/\s+/g,'')}">
+            📞 ${telefono}
+          </a>`
+        );
+      }
+    }
+
+    // In ogni caso, link alle sedi
+    pills.push(
+      `<a class="contact-pill btn-map" href="#mappaSedi">
+        📍 Vedi sedi
+      </a>`
+    );
+
+    if (!heroContacts || !pills.length){
+      if (heroContacts) heroContacts.hidden = true;
+    } else {
+      heroContacts.innerHTML = `
+        <button
+          type="button"
+          id="heroContactsToggle"
+          class="hero-contacts-toggle"
+          aria-expanded="false"
+        >
+          Contatti rapidi
+          <span class="chevron" aria-hidden="true">▼</span>
+        </button>
+        <div id="heroContactsRail" class="hero-contacts-rail" hidden>
+          ${pills.join('')}
+        </div>
+      `;
+      heroContacts.hidden = false;
+
+      const toggle = document.getElementById('heroContactsToggle');
+      const rail   = document.getElementById('heroContactsRail');
+
+      if (toggle && rail){
+        toggle.addEventListener('click', () => {
+          const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', String(!isOpen));
+          rail.hidden = isOpen;
+          toggle.classList.toggle('is-open', !isOpen);
+        });
+      }
+    }
+
+
+    // CTA preventivo (in alto): link alla versione FINALE
+    const btnPrev = document.getElementById('btnPreventivo');
+    btnPrev.href  = `/richiedi-preventivo-FINALE.html?id=${encodeURIComponent(impresaId)}&src=profilo`;
+    btnPrev.hidden = isOwnerCurrent || cameFromSearch();
+
+    // Bio breve + toggle
+    const fullBio = (bio||'').trim();
+    const short = fullBio.length > 180 ? fullBio.slice(0,180).trim()+'…' : fullBio;
+    const bioShort = document.getElementById('bioShort');
+    const tgl = document.getElementById('toggleBio');
+    if (fullBio){
+      bioShort.textContent = short; bioShort.hidden = false;
+      if (fullBio.length > 180){
+        tgl.hidden = false;
+        tgl.onclick = ()=>{ document.getElementById('bio')?.scrollIntoView({behavior:'smooth', block:'start'}); };
+      }
+    }
+
+    // Chi siamo + Servizi
+    $('#bio').innerHTML           = nl2br(fullBio || '—');
+    const ul = $('#serviziList');
+    function beautify(s){
+      return String(s||'')
+        .replace(/_/g,' ')
+        .replace(/\s+/g,' ')
+        .trim()
+        .toLowerCase()
+        .replace(/\b([a-zà-ù])/g, m => m.toUpperCase());
+    }
+    ul.innerHTML = (serviziArr.length ? serviziArr : ['—'])
+      .map(s => `<li>${beautify(s)}</li>`).join('');
+
+    const verificaTxt = $('#verificaTxt');
+    if (verificaTxt){
+      if (updRaw){
+        verificaTxt.textContent = `Profilo verificato su OFI. Aggiornato ${new Date(updRaw).toLocaleDateString('it-IT')}.`;
+      } else {
+        verificaTxt.textContent = 'Profilo verificato su OFI.';
+      }
+    }
+
+    // === CARD REPUTAZIONE (testo interno) ===
+    const repText = document.getElementById('repScoreText');
+    if (repText) {
+      if (repScore > 0) {
+        repText.textContent = `Valutazione media ${repScore.toFixed(1)}/5 su OFI.`;
+      } else {
+        repText.textContent = 'Reputazione in fase di costruzione: le prime recensioni definiranno questo indicatore.';
+      }
+    }
+
+    const btnRec = document.getElementById('btnLasciaRecensione');
+    if (btnRec) {
+      btnRec.onclick = () => {
+        alert('La sezione recensioni è in preparazione. In futuro da qui i cittadini potranno lasciare una valutazione verificata.');
+      };
+    }
+
+    // === CARD SOCIAL (link dinamici) ===
+    const socialBox = document.getElementById('socialLinks');
+if (socialBox) {
+  socialBox.innerHTML = '';
+
+  const social = d.social || {};
+  const links = [];
+
+  const fb = social.facebook || d.facebook;
+  if (fb) links.push(`<a href="${fb}" target="_blank" rel="noopener">Facebook</a>`);
+
+  const ig = social.instagram || d.instagram;
+  if (ig) links.push(`<a href="${ig}" target="_blank" rel="noopener">Instagram</a>`);
+
+  const yt = social.youtube || d.youtube;
+  if (yt) links.push(`<a href="${yt}" target="_blank" rel="noopener">YouTube</a>`);
+
+  // --- nuovo: prende il primo sito da "siti" se presente ---
+  const siti = Array.isArray(d.siti) ? d.siti : (d.siti ? [d.siti] : []);
+  const sitoPrimario = siti.find(u => typeof u === 'string' && u.trim()) || '';
+
+  const site = social.website || d.website || d.sito_web || d.sito || sitoPrimario;
+  if (site) links.push(`<a href="${site}" target="_blank" rel="noopener">Sito web</a>`);
+
+  if (links.length) {
+    socialBox.innerHTML = links.join('');
+  } else {
+    socialBox.innerHTML = '<span class="small muted">Canali social non indicati.</span>';
+  }
+}
+
+    // === CARD CONTATTI (riassunto in basso) ===
+    const emailSpan = document.querySelector('#contatto-email span');
+    const telSpan   = document.querySelector('#contatto-telefono span');
+    const sitoSpan  = document.querySelector('#contatto-sito span');
+
+    if (emailSpan) emailSpan.textContent = email || '—';
+    if (telSpan)   telSpan.textContent   = telefono || '—';
+
+    const siti = Array.isArray(d.siti) ? d.siti : (d.siti ? [d.siti] : []);
+const sitoPrimario = siti.find(u => typeof u === 'string' && u.trim()) || '';
+
+const sitoVal = d.website || d.sito_web || d.sito || (d.social && d.social.website) || sitoPrimario;
+if (sitoSpan) sitoSpan.textContent = sitoVal || '—';
+
+
+    // Galleria
+    setupGallery((gal || []).filter(Boolean));
+
+    // Video
+    renderVideo(videoUrl);
+
+    // Lista sedi
+    const sediList = $('#sediList');
+    const safeSedi = (sediTot.length ? sediTot : [{ indirizzo: d.indirizzo, comune: d.comune, cap: d.cap }])
+      .filter(s => s && (s.indirizzo || s.comune));
+
+    const items = safeSedi.map((s, i)=>{
+      const addrTxt = [s.indirizzo, s.comune].filter(Boolean).join(', ') + (s.cap ? ' · ' + s.cap : '');
+      const link = mapLinkFor(s);
+      const baseLabel = s.label || s.titolo || s.tipo || (s._type==='principale' ? 'Sede Principale' : 'Sede');
+      const labelNice = beautify(baseLabel);
+
+      // Icona in base al tipo di sede
+      let icon = '📍';
+      if (s._type === 'principale') icon = '🏛️';
+      if (s.has_casa_funeraria || s.has_casa_commiato) icon = '🕊️';
+
+      const displayLabel = `${icon} ${labelNice}`;
+
+      const badge = s._type==='principale' ? `<span class="sede-badge">Principale</span>` : '';
+      const extra = s.has_casa_funeraria || s.has_casa_commiato
+        ? `<span class="sede-tag">${s.has_casa_funeraria?'Casa funeraria':''} ${s.has_casa_commiato?'· Sala commiato':''}</span>`
+        : '';
+
+      return `
+        <li class="sede-item">
+          <div class="sede-col">
+            <div class="sede-head">
+              <strong>${displayLabel}</strong> ${badge}
+            </div>
+            <div class="sede-text">${addrTxt || 'Indirizzo non disponibile'}</div>
+            ${extra ? `<div class="sede-extra">${extra}</div>` : ''}
+          </div>
+          <a class="btn-map" href="${link}" target="_blank" rel="noopener">Apri su Google Maps</a>
+        </li>`;
+    });
+
+    sediList.innerHTML = items.length ? items.join('') : '<li class="sede-item"><div class="sede-text">—</div></li>';
+
+    // Mappa
+    initMap();
+    syncHtmlThemeClass();
+    plotSedi(safeSedi);
+  }
+
+  // Owner extras
+  onAuthStateChanged(auth, (user)=>{
+    currentUserEmail = user?.email?.toLowerCase() || null;
+    isOwnerCurrent = !!user && currentUserEmail === impresaId;
+    onlyOwnerUI(isOwnerCurrent);
+
+    // Se è l'impresa proprietaria nascondo comunque la CTA preventivo
+    const btnPrev = document.getElementById('btnPreventivo');
+    if (btnPrev && isOwnerCurrent) btnPrev.hidden = true;
+  });
+
+  // Share (bottone principale)
+  document.getElementById('shareBtn')?.addEventListener('click', async ()=>{
+    const shareUrl = `${location.origin}/imprese/profilo.html?id=${encodeURIComponent(impresaId)}`;
+    const titolo = document.getElementById('nomeImpresa')?.textContent?.trim() || 'Profilo su OFI';
+
+    try{
+      if (navigator.share){
+        await navigator.share({ title: titolo, text: 'Scopri il profilo di questa impresa su OFI', url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert('Link copiato. Grazie per la condivisione!');
+      }
+    }catch(e){
+      console.warn(e);
+      // Se l'utente ha annullato la share esco senza messaggi
+      return;
+    }
+
+    // Se NON è l'impresa proprietaria: nessun log, ma ringrazio
+    if (!isOwnerCurrent){
+      if (!navigator.share){
+        // abbiamo già mostrato l'alert "link copiato"
+      } else {
+        alert('Grazie per aver condiviso questo profilo.');
+      }
+      return;
+    }
+
+    // Se è l'impresa: verifico se oggi può ricevere punti
+    if (await canShareToday(impresaId)){
+      await logShare(impresaId);
+      alert('Grazie! Questa condivisione ti ha assegnato punti sul tuo profilo OFI.');
+    } else {
+      alert('Grazie per la condivisione! Le condivisioni successive di oggi non assegnano punti aggiuntivi.');
+    }
+  });
+
+  // Pannello info con “i” (spiega logica condivisioni/punti)
+  const shareInfoBtn   = document.getElementById('shareInfoBtn');
+  const shareInfoPanel = document.getElementById('shareInfoPanel');
+
+  shareInfoBtn?.addEventListener('click', ()=>{
+    if (!shareInfoPanel) return;
+    const isOpen = !shareInfoPanel.hidden;
+
+    if (isOpen){
+      shareInfoPanel.hidden = true;
+      shareInfoBtn.setAttribute('aria-expanded','false');
+      return;
+    }
+
+    const ownerP   = document.getElementById('shareHintOwner');
+    const visitorP = document.getElementById('shareHintVisitor');
+
+    if (ownerP && visitorP){
+      ownerP.hidden   = !isOwnerCurrent;
+      visitorP.hidden = isOwnerCurrent;
+    }
+
+    shareInfoPanel.hidden = false;
+    shareInfoBtn.setAttribute('aria-expanded','true');
+  });
+
+  loadProfile().catch(err=>{
+    console.error(err);
+    document.querySelector('#nomeImpresa').textContent = 'Profilo non disponibile';
+  });
+
+  // === MENU TRE PUNTINI HERO ===
+  const heroMenuBtn = document.getElementById('heroMenuBtn');
+  const heroMenu    = document.getElementById('heroMenu');
+
+  function closeHeroMenu(){
+    if (!heroMenu || !heroMenuBtn) return;
+    heroMenu.hidden = true;
+    heroMenuBtn.setAttribute('aria-expanded','false');
+  }
+
+  function toggleHeroMenu(){
+    if (!heroMenu || !heroMenuBtn) return;
+    const isOpen = heroMenu.hidden === false;
+    heroMenu.hidden = isOpen;           // se aperto → chiudi, se chiuso → apri
+    heroMenuBtn.setAttribute('aria-expanded', String(!isOpen));
+  }
+
+  heroMenuBtn?.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    toggleHeroMenu();
+  });
+
+  // Chiudi il menu cliccando fuori
+  document.addEventListener('click', (e)=>{
+    if (!heroMenu || heroMenu.hidden) return;
+    if (e.target.closest('#heroMenu') || e.target.closest('#heroMenuBtn')) return;
+    closeHeroMenu();
+  });
+
+  // Azioni voci di menu
+  heroMenu?.addEventListener('click', async (e)=>{
+    const item = e.target.closest('.hero-menu__item');
+    if (!item) return;
+    const act = item.dataset.action;
+
+    if (act === 'share'){
+      // riuso la stessa logica del bottone Condividi
+      document.getElementById('shareBtn')?.click();
+    } else if (act === 'copy-link'){
+      try{
+        const shareUrl = `${location.origin}/imprese/profilo.html?id=${encodeURIComponent(impresaId)}`;
+        await navigator.clipboard.writeText(shareUrl);
+        alert('Link del profilo copiato negli appunti.');
+      }catch(err){
+        console.warn('Clipboard error', err);
+      }
+    } else if (act === 'punti'){
+      // Pagina di spiegazione Punti & Reputazione (puoi cambiarla se usi un altro path)
+      window.open('/imprese/punti-crediti.html', '_blank', 'noopener');
+    }
+
+    closeHeroMenu();
+  });
+</script>
+
+<!-- Lightbox styles minimal -->
+<style>
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999}
+  .lb.open{display:flex}
+  .lb img{max-width:92vw;max-height:88vh;border-radius:14px}
+  .lb-close,.lb-prev,.lb-next{position:absolute;border:none;background:rgba(255,255,255,.12);backdrop-filter:blur(4px);border-radius:999px;width:44px;height:44px;color:#fff;font-size:20px;cursor:pointer}
+  .lb-close{top:18px;right:18px}
+  .lb-prev{left:18px}
+  .lb-next{right:18px}
+</style>
+
+<!-- JS del menù -->
+<script src="/js/menu.js?v=2" defer></script>
+</body>
+</html>

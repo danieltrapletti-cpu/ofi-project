@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>I tuoi Preventivi | OFI</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #f5f7fa;
+      color: #002c5d;
+    }
+    header {
+      background: #002c5d;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.8rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #e9f0f7;
+      color: #002c5d;
+    }
+    .stato {
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+    .attesa { background: #fff3cd; color: #856404; }
+    .approvato { background: #c8e6c9; color: #256029; }
+    .inviato { background: #bbdefb; color: #0d47a1; }
+    .rifiutato { background: #ffcdd2; color: #c62828; }
+    .id-small { font-size: 0.85rem; color: #555; }
+    .btn-dettaglio {
+      padding: 6px 10px;
+      background: #002c5d;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .btn-dettaglio:hover {
+      background: #001b3f;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📄 I tuoi Preventivi</h1>
+    <p>Visualizza lo stato delle tue richieste inviate alle imprese</p>
+  </header>
+  <div class="container">
+
+<div style="text-align:right; margin-bottom: 1.5rem;">
+  <a href="../preventivo/richiedi-preventivo.html" style="background:#002c5d; color:white; padding:10px 20px; border-radius:6px; text-decoration:none; font-weight:600;">
+    ➕ Invia nuovo preventivo
+  </a>
+</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Stato</th>
+          <th>Imprese</th>
+          <th>Data</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="preventiviTable">
+        <tr><td colspan="5" style="text-align:center;">⏳ Caricamento in corso...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const emailUtente = "demo@email.it";  // ← Sostituibile con email dinamica
+
+    db.collection("preventivi")
+      .where("Email", "==", emailUtente)
+      .orderBy("timestamp", "desc")
+      .get()
+      .then(snapshot => {
+        const tbody = document.getElementById("preventiviTable");
+        tbody.innerHTML = "";
+        if (snapshot.empty) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 Nessun preventivo trovato</td></tr>';
+          return;
+        }
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const stato = (data.stato || "in attesa").toLowerCase();
+          const imprese = Array.isArray(data.imprese) ? data.imprese.join(", ") : "-";
+          const date = new Date(data.timestamp || Date.now());
+          const dataStr = `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth()+1).padStart(2, "0")}/${date.getFullYear()}`;
+
+          const row = `
+            <tr>
+              <td><strong>${doc.id}</strong><br><span class="id-small">${data.modalità || ""}</span></td>
+              <td><span class="stato ${stato}">${data.stato}</span></td>
+              <td>${imprese}</td>
+              <td>${dataStr}</td>
+              <td><a href="dettaglio-preventivo.html?id=${doc.id}" class="btn-dettaglio">Dettaglio</a></td>
+            </tr>`;
+          tbody.innerHTML += row;
+        });
+      })
+      .catch(err => {
+        console.error("Errore nel recupero dei preventivi:", err);
+        document.getElementById("preventiviTable").innerHTML = '<tr><td colspan="5" style="text-align:center;color:red;">❌ Errore nel caricamento.</td></tr>';
+      });
+  </script>
+</body>
+</html>

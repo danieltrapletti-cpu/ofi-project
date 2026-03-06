@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Imprese | Onoranze Funebri Italia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f7f9fc;
+      color: #002b5c;
+    }
+    h1 {
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.8rem;
+    }
+    #map {
+      width: 100%;
+      height: 440px;
+    }
+    .card-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: scale(1.01);
+    }
+    .card img.cover {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #eee;
+    }
+    .card-content {
+      padding: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .logo {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      background: white;
+    }
+    .info {
+      flex: 1;
+    }
+    .info h3 {
+      margin: 0 0 0.3rem;
+      font-size: 1.2rem;
+    }
+    .info p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .azioni {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .azioni label {
+      font-size: 0.95rem;
+    }
+    .azioni button {
+      background: #002b5c;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    #continua {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.9rem 2rem;
+      background-color: #002b5c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #continua:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Imprese disponibili vicino a <span id="comuneLabel"></span></h1>
+  <div id="map"></div>
+  <div class="card-container" id="impreseList"></div>
+  <button id="continua" disabled>Continua con le imprese selezionate</button>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+    const comune = new URLSearchParams(window.location.search).get("comune");
+    document.getElementById("comuneLabel").textContent = comune || "";
+
+    const selezionate = new Set();
+
+    async function loadMapAndData() {
+      const geo = await fetch(`https://nominatim.openstreetmap.org/search?q=${comune}&format=json`).then(r => r.json());
+      const posizione = geo[0] ? [parseFloat(geo[0].lon), parseFloat(geo[0].lat)] : [9.69, 45.69];
+
+      const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/navigation-night-v1',
+        center: posizione,
+        zoom: 12
+      });
+
+      const imprese = await fetch("/imprese.json").then(r => r.json());
+      const container = document.getElementById("impreseList");
+
+      imprese.forEach(i => {
+        const popup = new mapboxgl.Popup().setHTML(`<strong>${i.nome}</strong><br>${i.comune}`);
+        const marker = new mapboxgl.Marker({ color: "#ffc107" })
+          .setLngLat([i.lng, i.lat])
+          .setPopup(popup)
+          .addTo(map);
+
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <img src="/images/${i.copertina || 'preview-spot.jpg'}" alt="copertina" class="cover">
+          <div class="card-content">
+            <img src="/images/${i.logo || 'logo-ofi.png'}" alt="logo" class="logo">
+            <div class="info">
+              <h3>${i.nome}</h3>
+              <p>${i.comune}</p>
+              <p style="margin-top:0.4rem;">${i.descrizione || ""}</p>
+              <div class="azioni">
+                <label><input type="checkbox" value="${i.id}" onchange="toggleImpresa(this)"> Seleziona</label>
+                <button onclick="apriProfilo('${i.id}')">Profilo</button>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function toggleImpresa(checkbox) {
+      if (checkbox.checked) {
+        if (selezionate.size >= 10) {
+          alert("Puoi selezionare al massimo 10 imprese.");
+          checkbox.checked = false;
+          return;
+        }
+        selezionate.add(checkbox.value);
+      } else {
+        selezionate.delete(checkbox.value);
+      }
+      document.getElementById("continua").disabled = selezionate.size === 0;
+    }
+
+    function apriProfilo(id) {
+      window.location.href = "/impresa.html?id=" + id;
+    }
+
+    document.getElementById("continua").addEventListener("click", () => {
+      if (selezionate.size > 0) {
+        const param = Array.from(selezionate).join(",");
+        window.location.href = "/preventivo/crea-preventivo.html?imprese=" + encodeURIComponent(param);
+      }
+    });
+
+    loadMapAndData();
+  </script>
+</body>
+</html>

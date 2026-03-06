@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pannello Memoria Interattiva — OFI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ofi-blue:#0e2638;
+      --ofi-blue2:#071b2a;
+      --ofi-gold:#caa85a;
+      --ink:#0f172a;
+      --muted:#475569;
+      --cream:#F4EBDD;       /* fondo crema */
+      --cream2:#F7F1E6;
+    }
+
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+      background:radial-gradient(circle at top, #0b1b2a 0, #020617 55%, #000 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .print-btn{
+      position:fixed;
+      top:14px;
+      right:14px;
+      padding:.55rem 1.05rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(10,28,44,.85);
+      color:#fff;
+      font-size:.75rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(0,0,0,.35);
+      z-index:50;
+    }
+    .print-btn:hover{ filter:brightness(1.06); }
+
+    /* ====== “Foglio” A4 ORIZZONTALE ====== */
+    .page{
+      width:min(1180px, 96vw);
+      aspect-ratio: 297 / 210;            /* A4 landscape */
+      background:linear-gradient(180deg, var(--cream2), var(--cream));
+      border-radius:18px;
+      box-shadow:0 28px 90px rgba(0,0,0,.55);
+      position:relative;
+      overflow:hidden;
+      padding:28px 34px;
+    }
+
+    /* cornice elegante */
+    .page::before{
+      content:"";
+      position:absolute;
+      inset:18px;
+      border-radius:14px;
+      border:1px solid rgba(15,23,42,.10);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,.18);
+      pointer-events:none;
+    }
+
+    /* micro-luce oro */
+    .page::after{
+      content:"";
+      position:absolute;
+      inset:-40% -10% auto -10%;
+      height:260px;
+      background:radial-gradient(600px 220px at 50% 20%, rgba(202,168,90,.18), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .inner{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; }
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:14px;
+    }
+
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:280px;
+    }
+
+    .logo-frame{
+      width:86px;
+      height:54px;
+      border-radius:12px;
+      background:rgba(255,255,255,.75);
+      border:1px solid rgba(148,163,184,.45);
+      box-shadow:0 6px 16px rgba(15,23,42,.12);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      flex-shrink:0;
+    }
+    .logo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      padding:8px;
+      display:block;
+    }
+
+    .brand-text .kicker{
+      font-size:.72rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:#64748b;
+      margin:0 0 4px;
+    }
+    .brand-text .impresa{
+      margin:0;
+      font-weight:800;
+      color:var(--ofi-blue2);
+      letter-spacing:.02em;
+      line-height:1.15;
+    }
+
+    .ofi-mini{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#64748b;
+      font-size:.74rem;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .ofi-mini img{ height:26px; width:auto; display:block; }
+
+    .gold-line{
+      height:2px;
+      width:100%;
+      background:linear-gradient(90deg, transparent, rgba(202,168,90,.95), transparent);
+      opacity:.85;
+      border-radius:999px;
+      margin:6px 0 10px;
+    }
+
+    /* ====== corpo 3 colonne ====== */
+    .row{
+      display:flex;
+      gap:26px;
+      flex:1;
+      align-items:stretch;
+      padding-top:6px;
+    }
+
+    .col-left{
+      width:34%;
+      min-width:320px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding-left:6px;
+    }
+
+    .name-label{
+      font-size:.78rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:#64748b;
+      margin:0 0 10px;
+    }
+
+    /* ====== NOME / COGNOME separati ====== */
+    .defunto{
+      font-family:"Noto Serif",serif;
+      line-height:1.10;
+      margin:0;
+    }
+    .defunto .nome{
+      display:block;
+      font-size:1.6rem;
+      letter-spacing:.15em;
+      color:#334155;
+      font-weight:500;
+      text-transform:uppercase;
+    }
+    .defunto .cognome{
+  display:block;
+  font-size:2.8rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ofi-blue2);
+  font-weight:800;
+  margin-top:2px;
+  text-shadow:0 1px 0 rgba(255,255,255,.6);
+}
+
+.defunto::after{
+  content:"";
+  display:block;
+  width:80px;
+  height:2px;
+  margin-top:14px;
+  background:var(--ofi-gold);
+  border-radius:999px;
+}
+
+    .memorial-line{
+      margin:10px 0 0;
+      font-family:"Noto Serif",serif;
+      font-size:1.02rem;
+      font-style:italic;
+      color:#64748b;
+    }
+
+    .hint-left{
+      margin-top:14px;
+      font-size:.96rem;
+      line-height:1.55;
+      color:var(--muted);
+      max-width:34ch;
+    }
+
+    .col-mid{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      text-align:center;
+      padding:0 10px;
+    }
+
+    .title{
+      font-family:"Noto Serif",serif;
+      font-weight:600;
+      font-size:2.4rem;
+      margin:0 0 10px;
+      color:var(--ofi-blue2);
+      letter-spacing:.02em;
+    }
+    .title::after{
+      content:"";
+      display:block;
+      width:60px;
+      height:2px;
+      margin:12px auto 0;
+      background:var(--ofi-gold);
+      border-radius:999px;
+      opacity:.95;
+    }
+
+    .subtitle{
+      margin:14px auto 0;
+      font-size:1.02rem;
+      line-height:1.6;
+      color:var(--muted);
+      max-width:46ch;
+    }
+
+    .col-right{
+      width:30%;
+      min-width:300px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+    }
+
+    /* QR più “premium” */
+    .qr-wrap{
+  width:210px;
+  height:210px;
+  border-radius:22px;
+  background:linear-gradient(145deg,#fff,#f8f8f8);
+  border:3px solid var(--ofi-gold);
+  box-shadow:
+    0 18px 40px rgba(15,23,42,.18),
+    inset 0 0 0 6px rgba(202,168,90,.08);
+}
+
+    .qr-wrap img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      border-radius:12px;
+      background:#fff;
+    }
+
+    .qr-note{
+      margin-top:12px;
+      text-align:center;
+      font-size:.96rem;
+      line-height:1.45;
+      color:var(--muted);
+      max-width:28ch;
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:14px;
+      color:#64748b;
+      font-size:.82rem;
+    }
+
+    .foot-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .foot-left img{ height:22px; width:auto; opacity:.95; }
+    .foot-right{ text-align:right; opacity:.95; }
+
+    /* ====== stampa ====== */
+    @media print{
+      @page{ size:A4 landscape; margin:0; }
+
+      html,body{
+        width:297mm;
+        height:210mm;
+        margin:0;
+        padding:0;
+        background:#fff !important;
+      }
+      body{ display:block !important; }
+
+      .print-btn{ display:none !important; }
+
+      .page{
+        width:297mm !important;
+        height:210mm !important;
+        aspect-ratio:auto !important;
+        border-radius:0 !important;
+        box-shadow:none !important;
+        padding:10mm 12mm !important;
+        overflow:hidden !important;
+      }
+      .page::before{ inset:6mm !important; }
+    }
+
+    /* mobile: pagina scrollabile */
+    @media (max-width: 900px){
+      .page{ aspect-ratio:auto; height:auto; }
+      .row{ flex-direction:column; text-align:left; }
+      .col-left, .col-right{ width:100%; min-width:0; align-items:flex-start; }
+      .col-mid{ text-align:left; padding:0; }
+      .title::after{ margin-left:0; }
+      .qr-wrap{ width:220px; height:220px; }
+    }
+
+.watermark{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:.06;
+  z-index:1;
+}
+
+.watermark img{
+  max-width:420px;
+  width:60%;
+  filter: sepia(1) hue-rotate(10deg) saturate(2);
+}
+
+  </style>
+</head>
+
+<body>
+  <button class="print-btn" onclick="window.print()">STAMPA</button>
+
+  <div class="page">
+    <div class="inner">
+
+<div class="watermark">
+  <img src="/images/ornamenti/madonna.png" alt="">
+</div>
+
+      <div class="topline">
+        <div class="brand-left">
+          <div class="logo-frame" id="logoFrame" hidden>
+            <img id="logoImpresa" alt="Logo impresa">
+          </div>
+
+          <div class="brand-text">
+            <p class="kicker">Servizio digitale messo a disposizione da</p>
+            <p class="impresa" id="impresaName">Impresa</p>
+          </div>
+        </div>
+
+        <div class="ofi-mini">
+          <span>Pannello Memoria Interattiva</span>
+          <img src="/images/logo-ofi.png" alt="OFI">
+        </div>
+      </div>
+
+      <div class="gold-line"></div>
+
+      <div class="row">
+        <section class="col-left">
+          <p class="name-label">In memoria di</p>
+
+          <h1 class="defunto" aria-label="Nome defunto">
+            <span class="nome" id="defuntoNome">MIRKO</span>
+            <span class="cognome" id="defuntoCognome">ROSSI</span>
+          </h1>
+
+          <p class="memorial-line" id="memorialLine">Per sempre nei nostri cuori</p>
+         
+        </section>
+
+        <section class="col-mid">
+          <h2 class="title">Lascia un pensiero</h2>
+          <p class="subtitle">
+  Scansiona il QR e lascia un pensiero alla famiglia.
+</p>
+        </section>
+
+        <section class="col-right">
+          <div class="qr-wrap">
+            <img id="qrImg" alt="QR code necrologio">
+          </div>
+
+          <div class="qr-note">
+            Inquadra il codice per partecipare al ricordo.
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <div class="foot-left">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <span>OFI — Onoranze Funebri Italia</span>
+        </div>
+        <div class="foot-right" id="dateNow">—</div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+  const qs = new URLSearchParams(location.search);
+
+  // Parametri principali
+  const impresa = (qs.get("impresa") || "Impresa").trim();
+  const logo    = (qs.get("logo") || "").trim();
+  const url     = (qs.get("url") || "").trim();
+  const mem     = (qs.get("mem") || "1").trim();
+
+  // --- Impresa / logo
+  document.getElementById("impresaName").textContent = impresa;
+
+  const logoFrame = document.getElementById("logoFrame");
+  const logoImg   = document.getElementById("logoImpresa");
+  if (logo){
+    logoImg.src = logo;
+    logoFrame.hidden = false;
+  } else {
+    logoFrame.hidden = true;
+  }
+
+  // --- Nome/Cognome (priorità: pNome + pCognome)
+  const nomeParam = (qs.get("pNome") || "").trim();
+  const cognomeParam = (qs.get("pCognome") || "").trim();
+
+  function splitNomeCognomeSmart(full){
+    const cleaned = String(full || "").replace(/\s+/g, " ").trim();
+    if (!cleaned) return { nome:"NOME", cognome:"COGNOME" };
+
+    const tokens = cleaned.split(" ").filter(Boolean);
+    if (tokens.length === 1) return { nome: tokens[0], cognome: "" };
+
+    const particles = new Set(["DA","DE","DEL","DELLA","DEI","DEGLI","DI","D","LA","LE","LO","VAN","VON"]);
+    let cognomeTokens = [tokens[tokens.length - 1]];
+    let nomeTokens = tokens.slice(0, -1);
+
+    const prev = (tokens[tokens.length - 2] || "").toUpperCase();
+    if (particles.has(prev)){
+      cognomeTokens = [tokens[tokens.length - 2], tokens[tokens.length - 1]];
+      nomeTokens = tokens.slice(0, -2);
+      if (nomeTokens.length === 0) nomeTokens = [tokens[0]];
+    }
+
+    return { nome: nomeTokens.join(" "), cognome: cognomeTokens.join(" ") };
+  }
+
+  let nomeFinale = nomeParam;
+  let cognomeFinale = cognomeParam;
+
+  // fallback: se ti arriva ancora ?name=
+  if (!nomeFinale && !cognomeFinale){
+    const defuntoRaw = (qs.get("name") || "NOME COGNOME").trim();
+    const parts = splitNomeCognomeSmart(defuntoRaw);
+    nomeFinale = parts.nome || "NOME";
+    cognomeFinale = parts.cognome || "COGNOME";
+  }
+
+  const nomeEl = document.getElementById("defuntoNome");
+  const cognomeEl = document.getElementById("defuntoCognome");
+
+  nomeEl.textContent = (nomeFinale || "NOME").toUpperCase();
+  cognomeEl.textContent = (cognomeFinale || "").toUpperCase();
+
+  // se cognome mancante, sistema layout
+  if (!cognomeFinale){
+    cognomeEl.style.display = "none";
+    nomeEl.style.fontSize = "2.3rem";
+    nomeEl.style.letterSpacing = ".08em";
+    nomeEl.style.color = "var(--ink)";
+    nomeEl.style.fontWeight = "700";
+  } else {
+    cognomeEl.style.display = "";
+  }
+
+  // --- Memorial line on/off
+  if (mem === "0"){
+    const ml = document.getElementById("memorialLine");
+    if (ml) ml.style.display = "none";
+  }
+
+  // --- QR via quickchart (robusto)
+  const qrImg = document.getElementById("qrImg");
+  const qrApi = "https://quickchart.io/qr";
+
+  // se non passi url, almeno usa location.href (funziona anche su Netlify)
+  const target = url || location.href;
+
+  qrImg.src = `${qrApi}?text=${encodeURIComponent(target)}&size=360&margin=1`;
+
+  // --- Data
+  const now = new Date();
+  document.getElementById("dateNow").textContent =
+    now.toLocaleDateString("it-IT", { day:"2-digit", month:"long", year:"numeric" });
+</script>
+
+</body>
+</html>

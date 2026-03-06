@@ -1,0 +1,127 @@
+/* =============================================================
+   OFI · Contrast Hotfix (admin + mobile)
+   Version: 2025-10-03
+   Note: include AFTER ofi.css (non-breaking)
+   ============================================================= */
+
+/* --- Pulsanti neutri/outline: contrasto sicuro di default --- */
+.btn-outline {
+  color: var(--surface-text);
+  border-color: color-mix(in srgb, var(--surface-text) 28%, transparent);
+  background: transparent;
+}
+.btn-outline:hover { background: color-mix(in srgb, var(--surface-text) 10%, transparent); }
+
+.btn-ghost {
+  color: var(--surface-text);
+  background: transparent;
+  border-color: transparent;
+}
+.btn-ghost:hover { background: color-mix(in srgb, var(--surface-text) 8%, transparent); }
+
+/* --- “Inverse” (su bande scure/blu) --------------------------- */
+.inverse.btn-outline,
+.on-dark.btn-outline { color:#fff !important; border-color:color-mix(in srgb,#fff 60%,transparent) !important; }
+.inverse.btn-outline:hover,
+.on-dark.btn-outline:hover { background:color-mix(in srgb,#fff 12%,transparent) !important; }
+
+.inverse.btn-ghost,
+.on-dark.btn-ghost { color:#fff !important; }
+
+/* =============================================================
+   ADMIN: CONTRASTI SIDEBAR + KPI + SCORCIATOIE
+   ============================================================= */
+
+/* Submenu “card” chiara dentro la sidebar blu (leggi subito) */
+.admin-sidebar .submenu{
+  background: var(--surface);
+  color: var(--surface-text);
+  border: 1px solid rgba(202,168,90,.35);
+  border-radius: 12px;
+  padding: .35rem;
+  margin: .25rem .75rem;
+  box-shadow: 0 12px 32px rgba(0,0,0,.18);
+}
+.admin-sidebar .submenu a{
+  color: var(--surface-text) !important;
+  padding: .55rem .7rem;
+  border-left: 0;
+}
+.admin-sidebar .submenu a:hover,
+.admin-sidebar .submenu a:focus{ background: rgba(0,0,0,.06); outline: none; }
+
+/* Pill/contatori nel submenu: fondo blu scuro + testo oro chiaro */
+.admin-sidebar .submenu .counter,
+.admin-sidebar .submenu .pill.counter{
+  background: #0e2239;                 /* blu scuro coerente con brand */
+  color: #ffd98a;                       /* oro chiaro leggibile */
+  border: 1px solid rgba(255,217,138,.45);
+  border-radius: 10px;
+  padding: .08rem .38rem;
+  font-weight: 800;
+  font-size: .82rem;
+}
+
+/* Pill nel menu principale (bordo bianco → più leggibile su blu) */
+.admin-menu a .pill{
+  background: rgba(255,255,255,.14);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.28);
+}
+
+/* KPI: numeri e testi sempre ad alto contrasto (qualsiasi tema) */
+.kpi-card{ background: var(--surface); color: var(--surface-text); }
+.kpi-card h3{ color: var(--surface-text); }
+.kpi-card .kpi{ color: var(--surface-text); text-shadow: none; }
+.kpi-card .muted{ color: var(--muted); }
+:root[data-theme="dark"] .stat-card .stat-number { color: #ffffff; opacity: .98; }
+:root[data-theme="dark"] .stat-card .stat-sub    { color: #d8e0f2; opacity: .95; }
+
+/* Card “Note rapide” (blu scuro) → testo sempre bianco */
+.note-card{
+  background: linear-gradient(180deg, var(--blue), var(--blue-2)) !important;
+  color: #fff !important;
+}
+.note-card h3, .note-card p, .note-card .small{ color:#fff !important; }
+.note-card code{
+  color:#fff !important;
+  background: rgba(255,255,255,.10) !important;
+  border-color: rgba(255,255,255,.25) !important;
+}
+
+/* Scorciatoie (le tre card sotto i KPI): testi “muted” più scuri */
+.grid.cols-3 .card .muted{
+  color: color-mix(in srgb, var(--surface-text) 72%, transparent);
+}
+
+/* =============================================================
+   MOBILE: BLOCCA PAN-X & OVERFLOW ORIZZONTALE
+   ============================================================= */
+
+/* niente scroll orizzontale globale + solo pan-y */
+html, body { width:100%; overflow-x:hidden; }
+#app, body { overscroll-behavior-x: none; }
+main { touch-action: pan-y; }
+.admin-shell, .admin-main { overflow-x:hidden; }
+
+/* quando la sidebar è aperta, blocco il body (niente “saltelli”) */
+body.sidebar-open { position: fixed; inset: 0; overflow: hidden; width: 100%; }
+
+/* hover only desktop; mobile apre col tap (coerente con tuo JS) */
+@media (hover: hover) and (pointer: fine) {
+  .sidebar .has-sub:hover > .submenu { display: block; }
+}
+@media (hover: none) and (pointer: coarse) {
+  .sidebar .submenu { display: none; }
+  .sidebar .has-sub.open > .submenu { display: block; }
+}
+
+/* micro-fix: elementi flessibili non “spingono” la larghezza */
+.admin-topbar > *{ min-width:0 }
+.admin-user{ min-width:0 }
+#adminEmail{ min-width:0 }
+
+/* tap target bottoni topbar leggermente più “facili” su mobile */
+@media (max-width:560px){
+  .btn-ghost-sm{ min-width:auto; padding:0 .6rem; }
+}

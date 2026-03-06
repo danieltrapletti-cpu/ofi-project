@@ -1,0 +1,235 @@
+/* =============================================================================
+   OFI · Tema/Contrasto + Admin Layout (leggeri)
+   Mantiene il nome file esistente per compatibilità.
+   NIENTE regole strutturali duplicate: qui solo variabili tema + piccoli ritocchi.
+   Strati: theme, admin, final
+   ============================================================================ */
+
+@layer theme, admin, final;
+
+/* ============================== THEME ================================== */
+@layer theme {
+  /* Tema chiaro (default) – override dei soli token */
+  body.theme-light{
+    --bg:#ffffff; --fg:#101418; --muted:#556070; --surface:#ffffff; --border:#e6e6e6;
+    --blue:#102845; --blue-2:#173356;
+  }
+
+  /* Tema scuro/contrasto – SOLO variabili */
+  body.theme-dark{
+    --bg:linear-gradient(180deg, #0b1b2f, #102845);
+    --fg:#e9eef6; --muted:#a9b4c4;
+    --surface:#0f2742; --border:#1f2c3a;
+    --blue:#0b1b2f; --blue-2:#071322;
+  }
+
+  /* Bottoni su bande scure (hero/map/section blu) */
+  .hero .btn:not(.btn-primary),
+  .map-wrap .btn:not(.btn-primary),
+  .page-hero .btn:not(.btn-primary){
+    color:#fff; border-color:#fff; background:transparent;
+  }
+  .hero .btn:not(.btn-primary):hover,
+  .map-wrap .btn:not(.btn-primary):hover,
+  .page-hero .btn:not(.btn-primary):hover{
+    background:rgba(255,255,255,.12);
+  }
+}
+
+/* ============================== ADMIN ================================= */
+@layer admin {
+  /* Altezze/header */
+  :root{ --headerH:72px; }
+
+  /* Header admin e sidebar: gerarchie semplici e coerenti */
+  .site-header{ z-index:50 }       /* già sticky nel base */
+  .admin-topbar{ position:relative; z-index:45 }
+  .admin-sidebar{ position:relative; z-index:40 }
+
+  /* Sidebar responsive: sticky su desktop, off-canvas sotto header su mobile */
+  @media (min-width:1025px){
+    .admin-sidebar{ position:sticky; top:0; height:100dvh; overflow:auto }
+  }
+  @media (max-width:1024px){
+    .admin-sidebar{
+      position:fixed; left:0; top:var(--headerH);
+      width:min(88vw,320px);
+      height:calc(100dvh - var(--headerH));
+      transform:translateX(-110%); transition:transform .2s ease;
+      background:var(--surface); color:var(--fg);
+      border-right:1px solid var(--border);
+      z-index:48; will-change:transform; -webkit-overflow-scrolling:touch; overflow:auto;
+    }
+    .admin-sidebar.open{ transform:translateX(0) }
+
+    /* Overlay della sidebar (se lo usi con id="sbOverlay") */
+    #sbOverlay{
+      position:fixed; top:var(--headerH); left:0; right:0; bottom:0;
+      background:rgba(0,0,0,.35); backdrop-filter:blur(2px) saturate(1.05);
+      z-index:47; display:none;
+    }
+    #sbOverlay.open{ display:block }
+  }
+
+  /* Submenu sidebar */
+  .admin-sidebar .submenu{
+    background:var(--surface); color:var(--fg);
+    border:1px solid var(--border); border-radius:12px; padding:.35rem; margin:.25rem .75rem;
+    box-shadow:0 12px 32px rgba(0,0,0,.12);
+  }
+  .admin-sidebar .submenu a{ padding:.55rem .7rem; border-radius:10px; display:block }
+  .admin-sidebar .submenu a:hover{ background:rgba(0,0,0,.06) }
+
+  /* Avatar sempre tondo */
+  .admin-avatar{
+    width:40px; height:40px; border-radius:50%; object-fit:cover; display:block; border:2px solid var(--gold);
+  }
+
+  /* Toolbar compatta */
+  .admin-topbar{
+    display:flex; align-items:center; gap:.6rem; padding:10px 12px; flex-wrap:wrap; min-height:56px;
+    background:var(--surface); color:var(--fg); border-bottom:1px solid var(--border);
+  }
+  #adminEmail{ max-width:60vw; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+  .admin-actions{ margin-left:auto; display:flex; align-items:center; gap:.5rem }
+}
+
+/* ============================== FINAL ================================= */
+@layer final {
+  /* Il menu principale DEVE rimanere sopra agli hero e al contenuto */
+  .site-header{ isolation:isolate }           /* tetto pulito per i dropdown */
+  .main-nav{ position:relative }
+  .menu{ position:relative }
+  .has-sub{ position:relative }
+
+  /* Nota pratica:
+     Se in qualche pagina un wrapper dell’hero ha transform/overflow che crea
+     stacking extra, TOLLERALO spostando quell'effetto sul contenuto interno,
+     non sul contenitore dell’hero. Qui NON forziamo z-index monster. */
+}
+
+/* ===== Visibilità perfetta del toggle in tema scuro (senza cambiare nomi) ===== */
+body.theme-dark .theme-toggle{
+  border-color:rgba(255,255,255,.35);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,.12), 0 10px 24px rgba(0,0,0,.35);
+}
+body.theme-dark .theme-toggle:hover{
+  background:rgba(255,255,255,.12);
+}
+body.theme-dark .btn-outline{
+  color:#fff; border-color:rgba(255,255,255,.45);
+}
+body.theme-dark .btn-outline:hover{
+  background:rgba(255,255,255,.10);
+}
+
+/* ===== Header e footer in dark: meno alti visivamente ===== */
+body.theme-dark .site-header{
+  background:linear-gradient(180deg, rgba(10,15,22,.00), rgba(10,15,22,.25));
+}
+body.theme-dark .site-footer{
+  background:linear-gradient(180deg, #0c1a2b, #0b1624);
+}
+
+/* ================== OFI · PROFILO COMPATTO ================== */
+/* Incolla in fondo a ofi-contrast-hotfix.css e attiva con <body class="ui-compact"> */
+@layer final {
+  body.ui-compact {
+    /* tipografia generale un filo più piccola */
+    font-size: 0.96rem;
+  }
+
+  /* Header più sottile */
+  body.ui-compact :root{ --headerH:56px; }
+  body.ui-compact .site-header{ min-height:var(--headerH); padding-block:0; }
+  body.ui-compact .brand { padding:.25rem .6rem; }
+  body.ui-compact .brand-logo{ height:30px; }         /* prima 36–44px nel base */
+  body.ui-compact .main-nav{ padding:.25rem .6rem; gap:.2rem; }
+  body.ui-compact .menu{ gap:.5rem; }
+
+  /* Dropdown: compatti e sempre sopra a hero */
+  body.ui-compact .submenu{
+    margin-top:.15rem; padding:.3rem; border-radius:8px;
+  }
+  body.ui-compact .submenu a{ padding:.45rem .6rem; border-radius:.5rem }
+
+  /* Hero meno alto + testo più equilibrato */
+  body.ui-compact .hero{ min-height:56vh; }
+  body.ui-compact .hero-video{ height:56vh; }
+  body.ui-compact .hero h1{
+    font-size:clamp(1.8rem, 3vw, 2.4rem);
+    line-height:1.1;
+  }
+  body.ui-compact .lead{ font-size:1.02rem; max-width:760px; }
+
+  /* Sezioni e griglie più strette */
+  body.ui-compact .section{ padding:48px 0; }
+  body.ui-compact .section + .section{ padding-top:40px; }
+  body.ui-compact .grid{ gap:.75rem; }
+
+  /* Card più piccole e dense */
+  body.ui-compact .card{
+    padding:.85rem 1rem;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+  }
+  /* Immagini delle card meno invadenti, rapporto fisso */
+  body.ui-compact .card img{
+    aspect-ratio:4/3; object-fit:cover; border-radius:10px; max-height:220px;
+  }
+  @media (max-width:900px){
+    body.ui-compact .card img{ max-height:180px; }
+  }
+
+  /* Mappa un po’ più bassa */
+  body.ui-compact .map{ height:48vh; }
+
+  /* Footer più snello */
+  body.ui-compact .site-footer{ padding:18px 0; }
+  body.ui-compact .footer-grid{ gap:.5rem; }
+  body.ui-compact .site-footer .brand-logo{ height:26px; }
+  body.ui-compact .site-footer p, 
+  body.ui-compact .site-footer a{ font-size:.95rem; }
+
+  /* Bottoni compatti */
+  body.ui-compact .btn{ padding:.65rem .95rem; border-radius:10px; }
+  body.ui-compact .btn-sm{ padding:.5rem .75rem; border-radius:8px; }
+
+  /* Drawer mobile: più stretto e link meno alti */
+  @media (max-width:900px){
+    body.ui-compact .menu{
+      width:min(80vw,360px);
+      inset: var(--headerH) 0 0 auto;
+      height:calc(100dvh - var(--headerH));
+    }
+    body.ui-compact .menu a{
+      padding:.55rem .55rem; border-radius:8px;
+    }
+    /* Submenu nel drawer più sobrio */
+    body.ui-compact .has-sub.open > .submenu{ margin-top:0 }
+  }
+
+  /* Immagini “hero/pagina” opzionali: se usi banner grandi, limitane l’altezza */
+  body.ui-compact .page-hero img, 
+  body.ui-compact .profile-hero img{
+    max-height:420px; object-fit:cover; width:100%;
+  }
+
+  /* Raggio e ombre un filo meno “gonfie” */
+  body.ui-compact :root{
+    --radius:12px;
+    --shadow-1:0 6px 16px rgba(0,0,0,.08);
+    --shadow-2:0 12px 28px rgba(0,0,0,.12);
+  }
+}
+
+/* Hardening z-index (se qualche hero mette trasformazioni strane) */
+@layer final {
+  body.ui-compact .site-header{ position:sticky; top:0; z-index: 1000; }
+  body.ui-compact .hero, 
+  body.ui-compact .page-hero, 
+  body.ui-compact .profile-hero{ z-index: 1; }
+}
+

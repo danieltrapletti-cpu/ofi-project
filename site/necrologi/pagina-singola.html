@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>In memoria</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    .pensiero-item {
+      border-bottom: 1px solid #ccc;
+      padding: 1rem 0;
+      text-align: left;
+    }
+    .pensiero-item strong {
+      color: #002b5c;
+    }
+    .pensiero-item .reazioni {
+      margin: 0.4rem 0;
+      font-size: 0.9rem;
+    }
+    .pensiero-item small {
+      color: #555;
+    }
+    .pensiero-item .risposta-box {
+      margin-top: 0.7rem;
+      background: #eef;
+      padding: 0.6rem;
+      border-left: 4px solid #448;
+      border-radius: 6px;
+    }
+    .pensiero-item .risposta-box div {
+      margin-bottom: 0.5rem;
+    }
+    .pensiero-item .azioni {
+      margin-top: 0.5rem;
+    }
+    .pensiero-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+    .pensiero-form input, .pensiero-form textarea {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .pensiero-form button {
+      align-self: flex-start;
+    }
+    #mappa {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+  </style>
+
+  <style>
+    img[src*="rosa.png"] {
+      max-width: 180px;
+      height: auto;
+      display: block;
+      margin: 1rem auto;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+  </style>
+
+  <style>
+    .pensiero-item {
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1.2rem;
+      text-align: left;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .pensiero-item strong {
+      color: #002b5c;
+      font-size: 1.05rem;
+    }
+
+    .pensiero-item p {
+      font-size: 1rem;
+      margin: 0.5rem 0;
+    }
+
+    .pensiero-item small {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .pensiero-item .reazioni {
+      margin-top: 0.6rem;
+      display: flex;
+      gap: 12px;
+      font-size: 0.9rem;
+      align-items: center;
+    }
+
+    .pensiero-item .reazioni button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .pensiero-item .risposta-box {
+      margin-top: 1rem;
+      background: #f3f6fb;
+      padding: 0.6rem;
+      border-left: 4px solid #88a;
+      border-radius: 6px;
+    }
+
+    .pensiero-item .risposta-box div {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .pensiero-item .azioni {
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+    }
+
+    .pensiero-item .azioni a {
+      color: #004d8c;
+      text-decoration: none;
+      margin-right: 12px;
+    }
+
+    .pensiero-item .azioni a:hover {
+      text-decoration: underline;
+    }
+
+    .pensiero-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .pensiero-form input, .pensiero-form textarea {
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .pensiero-form button {
+      background: #002b5c;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .pensiero-form button:hover {
+      background: #001d3d;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo-container">
+    <a href="../index.html">
+      <img src="../images/OFI-Logo-Long-Light.png" alt="Logo Onoranze Funebri Italia" />
+    </a>
+  </div>
+  <nav class="navbar">
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../preventivo/preventivo.html">Richiedi Preventivo</a></li>
+      <li><a href="../necrologi.html">Necrologi</a></li>
+      <li><a href="#">Informazioni Utili</a></li>
+      <li><a href="#">Area Imprese</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="main-content">
+  <div id="contenuto-necessario" class="card-necrologio"></div>
+  <div id="impresa-info" class="pubblicato-da"></div>
+
+  <div class="mappa" style="position:relative;margin:2rem 0;border-radius:12px;overflow:hidden;">
+    <h2 id="titolo-mappa" style="position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.5); color:white; padding:6px 12px; border-radius:6px; font-size:1rem;">
+      Mappa commemorativa
+    </h2>
+    <div id="mappa" style="height:400px;"></div>
+  </div>
+
+  <div class="qr" style="text-align:center;margin:2rem auto;">
+    <canvas id="qr"></canvas>
+  </div>
+
+  <div class="share-buttons" style="text-align:center;">
+    <h3>Condividi</h3>
+    <a href="#" onclick="condividiFacebook()">Facebook</a>
+    <a href="#" onclick="condividiWhatsApp()">WhatsApp</a>
+    <a href="#" onclick="window.print()">Stampa</a>
+  </div>
+
+  <div class="pensieri" style="margin-top:3rem;">
+    
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h3>Pensieri lasciati</h3>
+      <span id="pensieroCounter" class="counter-pill" style="background:#e4e7f1;padding:4px 10px;border-radius:20px;font-size:0.9rem;color:#333;">0 pensieri</span>
+    </div>
+    
+    <div id="pensieriList" style="margin-top:1rem;"></div>
+<button class="show-more-btn" onclick="mostraTutti()" style="display:none;background:none;border:none;color:#004d8c;font-size:0.95rem;text-decoration:underline;cursor:pointer;margin-top:1rem;">Mostra tutti i pensieri</button>
+    <h4 style="margin-top:2rem;">Scrivi un pensiero</h4>
+    <form class="pensiero-form" onsubmit="event.preventDefault(); inviaPensiero();">
+      <input type="text" id="autore" placeholder="Il tuo nome" required />
+      <textarea id="pensiero" rows="4" placeholder="Scrivi un messaggio..." required></textarea>
+      <button type="submit">Invia</button>
+    </form>
+  </div>
+
+  <a href="../necrologi.html" class="back-link">&larr; Torna ai necrologi</a>
+</main>
+
+<footer class="footer">
+  <p>&copy; 2025 Onoranze Funebri Italia - Tutti i diritti riservati</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script src="regioni-coord.js"></script>
+<script src="script-singolo.js"></script>
+</body>
+</html>

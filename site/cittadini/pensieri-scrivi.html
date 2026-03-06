@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Pensieri — Scrivi | OFI</title>
+<meta name="description" content="Scrivi un pensiero personale su OFI. I post nascono privati; potrai aggiungere una riflessione e rendere pubblico dalla tua bacheca 'I miei pensieri'."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../ofi.css"/>
+<meta property="og:title" content="Scrivi un Pensiero | OFI"/>
+<meta property="og:description" content="Scrivi un pensiero. Nasce privato: gestisci riflessione e pubblicazione nella bacheca 'I miei pensieri'."/>
+<meta property="og:type" content="website"/><meta property="og:locale" content="it_IT"/>
+<style>
+  main{ padding-bottom:40px }
+  .form-card .hint{ color:var(--muted); font-size:.92rem }
+  .form-card .input,.form-card textarea,.form-card input[type="file"]{
+    width:100%; border:1px solid rgba(202,168,90,.35); border-radius:12px;
+    padding:.7rem .75rem; background:var(--surface); color:var(--surface-text);
+    outline:none; transition: box-shadow .15s, border-color .15s;
+  }
+  .form-card textarea{ min-height:200px; line-height:1.6; resize:vertical }
+  .form-card .input:focus,.form-card textarea:focus{ box-shadow:0 0 0 3px rgba(202,168,90,.25); border-color:var(--gold) }
+  .pill-luogo{ display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .6rem; border-radius:999px; border:1px solid rgba(202,168,90,.45); background:var(--surface); color:var(--surface-text); font-size:.85rem }
+  .preview-wrap{ margin-top:1rem }
+  .pensiero-post{ position:relative; padding:1.1rem 1.2rem 76px; border-radius:16px; background:linear-gradient(180deg, var(--blue-3), var(--blue)); color:#fff; border:2px solid var(--gold); box-shadow:0 14px 40px rgba(0,0,0,.18); min-height:340px }
+  .pensiero-post h3{ margin:.1rem 0 .35rem; font-weight:800; color:#fff }
+  .pensiero-post .testo{ font-family:"Noto Serif", serif; font-size:1.15rem; line-height:1.8; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; margin:.25rem 0 .35rem; position:relative }
+  .testo.clamp{ --maxH:10.5em; max-height:var(--maxH); overflow:hidden }
+  .testo.clamp::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:52px; background:linear-gradient(180deg, rgba(15,39,66,0), rgba(15,39,66,.95)) }
+  .pensiero-post .meta{ margin-top:.7rem; font-size:.92rem; opacity:.95 }
+  .pensiero-post .social-watermark{ position:absolute; right:12px; bottom:10px; width:64px; opacity:.55; filter: drop-shadow(0 2px 8px rgba(0,0,0,.45)); pointer-events:none }
+  .preview-media{ position:relative; margin:.6rem 0 .7rem; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.28); background:rgba(0,0,0,.25) }
+  .preview-media img,.preview-media video{ width:100%; display:block; max-height:420px; object-fit:contain; background:#0f2742 }
+  .preview-media .backdrop{ position:absolute; inset:0; filter:blur(24px); transform:scale(1.2); background-position:center; background-size:cover; opacity:.35; pointer-events:none }
+  .preview-media.cover img{ object-fit:cover }
+  @media (max-width:640px){ .preview-media img,.preview-media video{ max-height:320px } }
+  .progress-lite{ height:10px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden }
+  .progress-lite>span{ display:block; height:100%; background:linear-gradient(180deg, var(--gold-2), var(--gold)) }
+  .row{ display:flex; gap:.5rem; flex-wrap:wrap } .row .btn{ min-width:0 }
+  .cta-row{ display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:.6rem; margin-top:.8rem }
+  @media (max-width:640px){ .cta-row{ grid-template-columns:1fr } }
+  .cta-row .btn{ height:48px; border-radius:12px; font-weight:800 }
+  .cta-row .btn.solid{ box-shadow:0 6px 18px rgba(0,0,0,.12) }
+  .hash-chips{ margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.4rem }
+  .hash-chip{ padding:.25rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.18); color:#fff; font-weight:700; font-size:.85rem }
+  .agent-fab{ position:fixed; right:18px; bottom:18px; z-index:10000 } .agent-panel{ z-index:9999 }
+  .vis-badge{ position:absolute; top:10px; right:10px; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.5); color:#fff; padding:.2rem .5rem; border-radius:999px; font-size:.8rem; font-weight:800 }
+
+  /* ===== HERO WOW ===== */
+  .page-hero--wow{ position:relative; padding:42px 0 28px; overflow:hidden }
+  .page-hero--wow .section-title{ font-weight:800; line-height:1.15; margin-bottom:.35rem; color:#fff }
+  /* >>> testo SEMPRE leggibile nel hero <<< */
+  .page-hero--wow .hero-intro p,
+  .page-hero--wow .hero-intro .lead,
+  .page-hero--wow .hero-note,
+  .page-hero--wow .hero-quote { color: rgba(255,255,255,.92) }
+  .page-hero--wow .hero-intro a{ color:#fff; text-decoration: underline; text-underline-offset: 2px }
+  .hero-intro .lead{ font-size:1.05rem; margin:.6rem 0 1rem }
+  .lumina-callout{
+    display:flex; align-items:center; gap:.55rem;
+    padding:.6rem .75rem; border:1px dashed rgba(202,168,90,.6);
+    background:linear-gradient(180deg, rgba(202,168,90,.08), transparent);
+    border-radius:12px; margin:.6rem 0 .5rem; font-weight:600;
+    color: rgba(255,255,255,.95);
+  }
+  .lumina-dot{
+    width:14px; height:14px; border-radius:50%;
+    background: radial-gradient(circle, var(--gold, #caa85a), var(--gold-2, #b89449));
+    box-shadow: 0 0 0 0 rgba(202,168,90,.6);
+    animation: luminaPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes luminaPulse{
+    0%{ box-shadow:0 0 0 0 rgba(202,168,90,.55); transform:scale(1) }
+    70%{ box-shadow:0 0 0 14px rgba(202,168,90,0); transform:scale(1.06) }
+    100%{ box-shadow:0 0 0 0 rgba(202,168,90,0); transform:scale(1) }
+  }
+  .hero-note{ margin:.5rem 0 .25rem }
+  .hero-quote{
+    margin-top:.45rem; font-style:italic; opacity:.95;
+    border-left:3px solid var(--gold); padding-left:.6rem;
+  }
+  .br-md{ display:none } @media(min-width:720px){ .br-md{ display:inline } }
+
+  /* Rosa OFI di sfondo */
+  .page-hero--wow::after{
+    content:""; position:absolute; right:-40px; top:-30px; width:300px; height:300px;
+    background:url("../images/pensieri-logo.png") center/contain no-repeat;
+    opacity:.08; filter:drop-shadow(0 6px 18px rgba(0,0,0,.12));
+    pointer-events:none;
+  }
+  @media (max-width:720px){
+    .page-hero--wow::after{ width:220px; height:220px; right:-30px; top:-20px; opacity:.1 }
+  }
+
+  /* Micro-meter Lumina 0% nel hero */
+  .lumina-meter{ height:6px; margin-top:.6rem; background:linear-gradient(90deg, var(--gold), transparent); border-radius:999px; opacity:.6 }
+</style>
+
+<link rel="canonical" href="https://www.onoranzefunebritalia.it/cittadini/pensieri-scrivi.html"/>
+<meta property="og:image" content="https://www.onoranzefunebritalia.it/images/OFI-Social.png"/><meta name="twitter:card" content="summary_large_image"/>
+</head>
+<body>
+  <!-- Header coerente -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home">
+        <img class="brand-logo" src="../images/logo-ofi.png" alt="OFI"/>
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="menu" id="menuPanel" role="menu">
+        <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"/><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- HERO WOW -->
+  <section class="page-hero page-hero--wow">
+    <div class="container">
+      <h1 class="section-title">
+        Scrivi il tuo Pensiero,<br class="br-md"/> custodito al sicuro
+      </h1>
+
+      <div class="hero-intro">
+        <p class="lead">
+          Ogni pensiero nasce <strong>privato</strong>, visibile solo a te.<br/>
+          Nella pagina <a href="pensieri-miei.html"><strong>I miei pensieri</strong></a> potrai in ogni momento
+          <strong>modificarlo</strong>, aggiungere una <strong>riflessione</strong> e decidere se
+          <strong>condividerlo in pubblico</strong>.
+        </p>
+
+        <div class="lumina-callout" aria-live="polite">
+          <span class="lumina-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Lumina</strong> parte da <strong>0</strong> e cresce nel tempo con le tue parole,
+            i ricordi, le reazioni e i commenti di chi ti è vicino.
+          </div>
+        </div>
+        <div class="lumina-meter" aria-hidden="true"></div>
+
+        <p class="hero-note">
+          Nella tua bacheca personale potrai dare vita alla tua
+          <strong>Storia delle Emozioni</strong>: un percorso che cresce <em>post dopo post</em>.
+        </p>
+
+        <p id="heroQuote" class="hero-quote" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <main class="container db-wrap">
+    <p id="notLogged" class="card card--md" hidden>Per scrivere un pensiero devi accedere.</p>
+
+    <section id="formArea" class="grid grid-2" hidden>
+      <article class="card card--md form-card">
+        <div class="card-head"><img src="../images/pensieri-logo.png" class="icon-xl" alt=""/><h3>Il tuo pensiero</h3></div>
+
+        <label class="small" for="titolo">Titolo (facoltativo)</label>
+        <input id="titolo" class="input" type="text" placeholder="Inserisci un titolo…"/>
+
+        <label class="small" for="testo" style="margin-top:.6rem">Testo</label>
+        <textarea id="testo" class="input" placeholder="Scrivi qui…"></textarea>
+        <div class="hash-hint">Usa gli <strong>hashtag</strong> <em>dentro al testo</em> (es. <code>#ricordo</code>, <code>#gratitudine</code>).</div>
+
+        <label class="small" for="media" style="margin-top:.6rem">Immagine o video (facoltativo)</label>
+        <input id="media" type="file" accept="image/*,video/*"/>
+        <p class="hint">Suggerimento: per i video mantieni dimensioni contenute (max ~60 MB).</p>
+
+        <hr class="separator"/>
+
+        <h4 style="margin:.1rem 0 .3rem">Luogo (opzionale)</h4>
+        <p class="hint">Se lo attivi, mostreremo solo <strong>il comune</strong>, mai la via.</p>
+
+        <div class="row" style="margin:.2rem 0 .4rem">
+          <select id="luogoOpt" class="input" style="flex:1; min-width:240px">
+            <option value="nessuno">🙈 Non mostrare il luogo</option>
+            <option value="residenza">📍 Mostra il comune di residenza (dal profilo)</option>
+            <option value="posizione">📡 Usa il comune della posizione attuale</option>
+          </select>
+          <span id="pillLuogo" class="pill-luogo" hidden>Luogo: <strong id="luogoPreview"></strong></span>
+        </div>
+
+        <div id="rowRes" class="row" hidden><button id="usaResidenza" type="button" class="btn">Usa la mia residenza</button></div>
+
+        <div id="rowGeo" class="row" hidden>
+          <button id="rilevaPosizione" type="button" class="btn">Rileva posizione</button>
+          <input id="geoInput" class="input" type="text" placeholder="Oppure digita il comune…" style="flex:1"/>
+          <button id="confermaGeo" type="button" class="btn">Conferma</button>
+          <span id="geoMsg" class="small muted"></span>
+        </div>
+
+        <div class="cta-row">
+          <button id="anteprimaBtn" type="button" class="btn solid">👁️ Anteprima</button>
+          <button id="pubblicaBtn" type="button" class="btn">💾 Salva e custodisci</button>
+          <a href="pensieri-miei.html" class="btn">I miei pensieri</a>
+        </div>
+        <div id="saveMsg" class="small" aria-live="polite" style="margin-top:.35rem"></div>
+      </article>
+
+      <aside id="preview" class="card card--md preview-wrap" hidden>
+        <div class="card-head"><img src="../images/pensieri-logo.png" class="icon-xl" alt=""/><h3>Anteprima (stile OFI)</h3></div>
+        <article class="pensiero-post">
+          <span id="visBadge" class="vis-badge">Visibilità: Privato</span>
+          <h3 id="pTitolo"></h3>
+          <div id="pMedia"></div>
+          <div id="pTesto" class="testo clamp"></div>
+          <div class="meta">
+            <span id="pLuogo"></span>
+            <div class="progress-lite" aria-hidden="true" style="margin-top:.5rem"><span style="width:0%"></span></div>
+            <small>Lumina: Livello 0 • 0%</small>
+          </div>
+          <div id="hashChips" class="hash-chips" aria-live="polite"></div>
+          <img src="../images/OFI-Social.png" alt="OFI Social" class="social-watermark"/>
+        </article>
+        <div class="cta-row" style="margin-top:.8rem; grid-template-columns:1fr">
+          <button id="toggleClamp" type="button" class="btn" hidden>Espandi</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI"/>
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links"><a href="../articoli/articoli.html">Articoli</a><a href="../faq.html">FAQ</a><a href="../accesso.html">Accedi</a></div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI"><img src="../images/agente-ofi.png" alt="Agente OFI"/></button>
+  <section id="agentPanel" class="agent-panel" aria-hidden="true" aria-live="polite">
+    <header class="agent-top">
+      <div class="agent-id"><img src="../images/agente-ofi.png" alt="Agente OFI"/><div><strong>Agente OFI</strong><br/><small>Sono qui per aiutarti</small></div></div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div class="agent-chat">
+      <div class="msg msg-in"><p>Ciao, ti aiuto a scrivere: anteprima, luogo, immagini/video e consigli per <strong>Lumina</strong>.</p></div>
+      <div class="suggest">
+        <button class="chip" data-q="Mostra anteprima">Mostra anteprima</button>
+        <button class="chip" data-q="Imposta il luogo di residenza">Imposta residenza</button>
+        <button class="chip" data-q="Rileva posizione">Rileva posizione</button>
+        <button class="chip" data-q="Perché Pubblica è disattivo?">Perché “Salva” è disattivo?</button>
+        <button class="chip" data-q="Cambia tema">Cambia tema</button>
+      </div>
+    </div>
+    <form class="agent-form" action="#" autocomplete="off"><input aria-label="Scrivi qui la tua domanda" placeholder="Scrivi qui la tua domanda…" type="text"/><button class="btn btn-primary">Invia</button></form>
+    <div class="agent-note small">Suggerimento: i pensieri crescono con il tempo e con le reazioni e i commenti degli altri. Condividilo con chi vuoi!</div>
+  </section>
+
+  <style>
+    #agentPanel[aria-hidden="false"]{
+      display:flex !important; position:fixed !important; right:20px !important; bottom:90px !important;
+      width:360px !important; max-height:70vh !important; flex-direction:column !important;
+      background:var(--surface,#fff) !important; border:1px solid rgba(0,0,0,.1) !important; border-radius:16px !important;
+      box-shadow:0 16px 32px rgba(0,0,0,.28) !important; opacity:1 !important; visibility:visible !important; transform:none !important;
+      pointer-events:auto !important; z-index:2147483647 !important; overflow:hidden !important;
+    }
+    .agent-panel{ width:360px; }
+  </style>
+
+  <!-- ===== Script applicativo (mod semplificato: tutti PRIVATI) ===== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, collection, addDoc, doc, getDoc, updateDoc,
+      serverTimestamp, query, orderBy, limit, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",authDomain:"ofi2025-51ba9.firebaseapp.com",projectId:"ofi2025-51ba9",storageBucket:"ofi2025-51ba9.firebasestorage.app",messagingSenderId:"345581339212",appId:"1:345581339212:web:f0b8bc241945691c876ae9"};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const storage = getStorage(app);
+
+    const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+    const formatLuogo = (s)=> (s||"").split(",")[0]?.trim() || "";
+    const $  = (id)=>document.getElementById(id);
+
+    let userData=null, luogoScelto="", mediaBlob=null, existingMediaURL=null, existingMediaType=null;
+    let editingDoc = null, posterTempURL=null; // posterTempURL per anteprima
+    const params = new URLSearchParams(location.search);
+    const editingPostId = params.get('postId');
+
+    // Bottone Salva abilitato quando c'è testo
+    const pubBtn  = $('pubblicaBtn');
+    const testoEl = $('testo');
+    function updatePublishState(){ if (!pubBtn || !testoEl) return; pubBtn.disabled = (testoEl.value.trim().length === 0); }
+    const autoresize = ()=>{ const ta=$('testo'); ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; };
+    window.addEventListener('load', ()=>{ $('testo').addEventListener('input', ()=>{ autoresize(); updatePublishState(); }); autoresize(); updatePublishState(); });
+
+    // Auth + profilo
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ $('notLogged').hidden=false; $('formArea').hidden=true; return; }
+      const snap = await getDoc(doc(db,'utenti_cittadini', user.uid));
+      if(snap.exists()) userData = snap.data();
+      $('notLogged').hidden=true; $('formArea').hidden=false;
+      if(editingPostId){ await loadForEdit(editingPostId); }
+      updatePublishState();
+    });
+
+    async function loadForEdit(pid){
+      try{
+        const s = await getDoc(doc(db,'pensieri_utente', pid));
+        if(!s.exists()) return;
+        const d = s.data();
+        if (auth.currentUser?.uid !== d.uid) { alert('Non puoi modificare questo post.'); return; }
+        editingDoc = { id: pid, ...d };
+        existingMediaURL = d.media || null;
+        existingMediaType = d.mediaType || (existingMediaURL ? (/\.(mp4|webm|ogg)(\?|$)/i.test(existingMediaURL) ? 'video' : 'image') : null);
+        $('titolo').value = d.titolo || '';
+        $('testo').value  = d.testo  || '';
+        if(d.luogo){ $('luogoOpt').value = 'residenza'; aggiornaPillLuogo(d.luogo); }
+        $('pubblicaBtn').textContent = '💾 Salva modifiche';
+        updatePublishState();
+      }catch(e){ console.error(e); }
+    }
+
+    // Luogo — UI
+    function aggiornaPillLuogo(text){
+      $('pillLuogo').hidden = !text; $('luogoPreview').textContent = text||""; luogoScelto = text||"";
+      if(!$('preview').hidden){ $('pLuogo').textContent = luogoScelto ? `📍 ${luogoScelto}` : ""; }
+    }
+    $('luogoOpt').addEventListener('change', ()=>{
+      const v = $('luogoOpt').value;
+      $('rowGeo').hidden = (v!=='posizione'); $('rowRes').hidden = (v!=='residenza'); aggiornaPillLuogo("");
+    });
+    $('usaResidenza').addEventListener('click', ()=>{
+      const r = formatLuogo(userData?.luogo || userData?.luogo_residenza || "");
+      if(!r){ alert("Nessuna residenza salvata nel profilo."); return; }
+      aggiornaPillLuogo(r);
+    });
+    $('rilevaPosizione').addEventListener('click', ()=>{
+      if(!navigator.geolocation){ alert("Geolocalizzazione non disponibile."); return; }
+      $('geoMsg').textContent = "Rilevazione in corso…";
+      navigator.geolocation.getCurrentPosition(async (pos)=>{
+        try{
+          const { latitude, longitude } = pos.coords;
+          const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?types=place,locality,region&language=it&access_token=${MAPBOX_TOKEN}`;
+          const res = await fetch(url); const data = await res.json();
+          const f = data.features?.[0]; const luogo = formatLuogo(f?.place_name || f?.text);
+          $('geoInput').value = luogo; $('geoMsg').textContent = luogo ? "Posizione trovata. Controlla e conferma." : "Non sono riuscito a ottenere il comune.";
+        }catch{ $('geoMsg').textContent = "Impossibile completare il rilevamento ora."; }
+      }, ()=> $('geoMsg').textContent = "Permesso negato o posizione non disponibile.");
+    });
+    $('confermaGeo').addEventListener('click', ()=>{
+      const v = $('geoInput').value.trim(); if(!v){ alert("Inserisci o rileva un comune prima di confermare."); return; }
+      aggiornaPillLuogo(v);
+    });
+
+    // ======= Generazione poster da video =======
+    async function makeVideoPoster(file, frameSec = 0.5, maxW = 1280) {
+      if (!file || !file.type?.startsWith('video/')) return null;
+      return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const v = document.createElement('video');
+        v.src = url; v.muted = true; v.playsInline = true; v.preload = 'metadata';
+        v.addEventListener('loadedmetadata', () => {
+          const t = Math.min(frameSec, (v.duration || 1) - 0.01);
+          const onSeeked = () => {
+            const r = (v.videoWidth||1280) / (v.videoHeight||720);
+            let w = Math.min(v.videoWidth || 1280, maxW);
+            let h = Math.round(w / r);
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(v, 0, 0, w, h);
+            c.toBlob(b=>{
+              URL.revokeObjectURL(url);
+              if(!b) return resolve(null);
+              const posterFile = new File([b], 'poster.jpg', { type:'image/jpeg' });
+              resolve(posterFile);
+            }, 'image/jpeg', 0.85);
+            v.removeEventListener('seeked', onSeeked);
+          };
+          v.addEventListener('seeked', onSeeked);
+          try { v.currentTime = t > 0 ? t : 0; } catch { v.currentTime = 0; }
+        }, { once:true });
+        v.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+      });
+    }
+
+    // File media change + hard-limit video
+    $('media').addEventListener('change', ()=>{
+      const file = $('media').files?.[0] || null;
+      if (file && file.type.startsWith('video/') && file.size > 60*1024*1024) {
+        alert("Il video supera 60 MB. Riduci la dimensione oppure carica un file più leggero.");
+        $('media').value = ""; mediaBlob = null; return;
+      }
+      mediaBlob = file; posterTempURL = null;
+    });
+
+    function smartMediaFit(imgEl, wrap){
+      const img = new Image();
+      img.onload = ()=>{
+        const ratio = img.width/img.height;
+        if(ratio>=1.4){ wrap.classList.add('cover'); }
+        else if(ratio<=0.7){
+          const url = imgEl.src; const bd = document.createElement('div');
+          bd.className='backdrop'; bd.style.backgroundImage=`url('${url}')`; wrap.prepend(bd);
+        }
+      };
+      img.src = imgEl.src;
+    }
+    function applicaClamp(){ const t = $('pTesto'); if(!t) return; t.classList.add('clamp'); $('toggleClamp').hidden=false; $('toggleClamp').textContent='Espandi'; }
+    function extractHashtags(text){ return Array.from(new Set((text.match(/#[\p{L}\p{N}_]{2,}/gu)||[]).map(s=>s.toLowerCase().replace(/^#/,'')))); }
+    function renderHashtagChips(arr){ const wrap = document.getElementById('hashChips'); if(!wrap) return; wrap.innerHTML=''; if(!arr || arr.length===0) return; arr.slice(0,8).forEach(tag=>{ const span=document.createElement('span'); span.className='hash-chip'; span.textContent='#'+tag; wrap.appendChild(span); }); }
+
+    // ======= Anteprima =======
+    $('anteprimaBtn').addEventListener('click', async ()=>{
+      const titolo = $('titolo').value.trim();
+      const testo  = $('testo').value.trim();
+      if(!testo){ alert("Scrivi almeno il testo del pensiero."); return; }
+
+      $('pTitolo').textContent = titolo || " ";
+      $('pTesto').textContent  = testo; applicaClamp();
+
+      renderHashtagChips(extractHashtags(testo));
+
+      const wrapCtn = $('pMedia'); wrapCtn.innerHTML = "";
+      let url=null, type=null, poster=null;
+
+      if(mediaBlob){
+        url = URL.createObjectURL(mediaBlob);
+        type = mediaBlob.type.startsWith("image") ? "image" : (mediaBlob.type.startsWith("video") ? "video" : null);
+        if (type==='video'){
+          const posterFile = await makeVideoPoster(mediaBlob);
+          if (posterFile){ posterTempURL = URL.createObjectURL(posterFile); poster = posterTempURL; }
+        }
+      }else if(existingMediaURL){
+        url = existingMediaURL;
+        type = existingMediaType || (/\.(mp4|webm|ogg)(\?|$)/i.test(url) ? "video" : "image");
+      }
+
+      if(url && type==='image'){
+        const dv = document.createElement('div'); dv.className='preview-media';
+        dv.innerHTML = `<img alt="" src="${url}">`; wrapCtn.appendChild(dv);
+        const imgEl = dv.querySelector('img'); imgEl.addEventListener('load', ()=> smartMediaFit(imgEl, dv));
+      }else if(url && type==='video'){
+        wrapCtn.innerHTML = `
+          <div class="preview-media">
+            <video controls playsinline preload="metadata" ${poster ? `poster="${poster}"` : ""} src="${url}"></video>
+          </div>`;
+        const vid = wrapCtn.querySelector('video');
+        try{ vid.load(); }catch(e){}
+      }
+
+      $('pLuogo').textContent = luogoScelto ? `📍 ${luogoScelto}` : "";
+      $('preview').hidden = false;
+      // Badge visibilità: sempre Privato in questa pagina
+      const b = document.getElementById('visBadge'); if(b) b.textContent = 'Visibilità: Privato';
+      window.scrollTo({ top: $('preview').offsetTop - 80, behavior:'smooth' });
+    });
+
+    $('toggleClamp').addEventListener('click', ()=>{
+      const t = $('pTesto'); const isClamped = t.classList.toggle('clamp');
+      $('toggleClamp').textContent = isClamped ? 'Espandi' : 'Riduci';
+    });
+
+    // ======= Compressione immagini =======
+    async function compressImageBlob(blob, maxSide=1920, quality=0.82){
+      if(!/^image\//.test(blob.type)) return blob;
+      const bmp = await createImageBitmap(blob);
+      let w=bmp.width, h=bmp.height, ratio=w/h;
+      if(Math.max(w,h)>maxSide){ if(ratio>=1){ w=maxSide; h=Math.round(maxSide/ratio); } else{ h=maxSide; w=Math.round(maxSide*ratio); } }
+      const canvas=document.createElement('canvas'); canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(bmp,0,0,w,h);
+      const dataUrl=canvas.toDataURL('image/jpeg', quality);
+      const res=await (await fetch(dataUrl)).blob();
+      return new File([res], (blob.name||'image')+'.jpg', { type:'image/jpeg' });
+    }
+
+    // ======= SALVA (tutto privato qui) =======
+    $('pubblicaBtn').addEventListener('click', async ()=>{
+      const user = auth.currentUser; if(!user){ alert("Devi essere loggato per salvare."); return; }
+      $('pubblicaBtn').disabled = true; $('saveMsg').textContent = "⏳ Salvataggio in corso…";
+
+      try{
+        // 1) Upload eventuale media
+        let mediaURL=null, mediaType=null, posterURL=null;
+        if(mediaBlob){
+          let toUpload = mediaBlob;
+          if (mediaBlob.type.startsWith('image/')) toUpload = await compressImageBlob(mediaBlob);
+          const ext = (toUpload.name||"").split(".").pop() || (toUpload.type.startsWith("image")?"jpg":"mp4");
+          const ref = storageRef(storage, `pensieri_media/${user.uid}_${Date.now()}.${ext}`);
+          await uploadBytes(ref, toUpload);
+          mediaURL  = await getDownloadURL(ref);
+          mediaType = toUpload.type.startsWith("image") ? "image" : "video";
+
+          if (toUpload.type.startsWith('video/')) {
+            let posterFile = null;
+            if (posterTempURL) { const r = await fetch(posterTempURL); const b = await r.blob(); posterFile = new File([b], 'poster.jpg', { type: 'image/jpeg' }); }
+            else { posterFile = await makeVideoPoster(mediaBlob); }
+            if (posterFile){ const posterRef = storageRef(storage, `pensieri_media/${user.uid}_${Date.now()}_poster.jpg`); await uploadBytes(posterRef, posterFile); posterURL = await getDownloadURL(posterRef); }
+          }
+        } else if (editingPostId && existingMediaURL) {
+          mediaURL  = existingMediaURL; mediaType = existingMediaType; posterURL = editingDoc?.poster_url || null;
+        }
+
+        // 2) Dati del post (sempre privato se nuovo)
+        const hashtags = extractHashtags($('testo').value);
+        const base = {
+          uid: auth.currentUser.uid,
+          titolo: $('titolo').value.trim(),
+          testo:  $('testo').value.trim(),
+          luogo:  luogoScelto || "",
+          tema:   "ofi",
+          font:   "noto-serif",
+          fontSize: "1.15rem",
+          textAlign: "left",
+          visibilita: editingDoc ? (editingDoc.visibilita||'privato') : 'privato',
+          is_pubblico: editingDoc ? (editingDoc.visibilita === 'pubblico' || editingDoc.is_pubblico === true) : false,
+          attivo: true,
+          media: mediaURL || null,
+          mediaType: mediaType || null,
+          cover_url: mediaURL || null,
+          poster_url: posterURL || null,
+          reazioni: { cuore:0, luce:0, colomba:0, rosa:0 },
+          reazioni_count: editingDoc?.reazioni_count || 0,
+          reactions_count: editingDoc?.reactions_count || 0,
+          commenti_count: editingDoc?.commenti_count || 0,
+          hashtags,
+          lumina_score: editingDoc?.lumina_score || 0,
+          lumina_gain:  editingDoc?.lumina_gain  || 0,
+          fioritura_progress: editingDoc?.fioritura_progress || 0
+        };
+        const docData = (function cleanDoc(obj){ const out = {}; for (const [k,v] of Object.entries(obj)){ if (v === null || v === undefined) continue; if (typeof v === 'string'){ const t = v.trim(); if (t === '') continue; out[k] = t; } else { out[k] = v; } } return out; })(base);
+
+        // 3) Crea/aggiorna
+        let postId = editingPostId || null;
+        if(editingPostId){ await updateDoc(doc(db,'pensieri_utente', editingPostId), { ...docData, updatedAt: serverTimestamp() }); postId = editingPostId; }
+        else{ const newRef = await addDoc(collection(db,'pensieri_utente'), { ...docData, createdAt: serverTimestamp(), data: serverTimestamp(), ts: serverTimestamp() }); postId = newRef.id; }
+
+        // 4) Redirect alla bacheca con anchor al nuovo post → modale riflessione lì
+        $('saveMsg').textContent = "✅ Fatto! Ti porto nella tua bacheca…";
+        location.href = `pensieri-miei.html?newPostId=${encodeURIComponent(postId)}`;
+      }catch(e){
+        console.error(e);
+        $('saveMsg').textContent = "Impossibile salvare ora."; $('pubblicaBtn').disabled = false;
+      }
+    });
+  </script>
+
+  <script>
+    // Toggle tema
+    (function(){
+      const btn = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('ofi-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = saved || (prefersDark ? 'theme-dark' : 'theme-light');
+      document.body.classList.remove('theme-dark','theme-light');
+      document.body.classList.add(initial);
+      btn?.addEventListener('click', ()=>{
+        const isDark = document.body.classList.toggle('theme-dark');
+        document.body.classList.toggle('theme-light', !isDark);
+        localStorage.setItem('ofi-theme', isDark ? 'theme-dark' : 'theme-light');
+      });
+    })();
+  </script>
+
+  <script>
+    // Citazione casuale nel hero
+    (function(){
+      const quotes = [
+        "Ogni parola che scrivi è un seme di luce.",
+        "Il pensiero di oggi diventa la memoria di domani.",
+        "Dare un nome alle emozioni è già un atto di cura.",
+        "Scrivere è custodire: ciò che è vivo resta.",
+        "Anche i passi più piccoli fanno strada al cuore."
+      ];
+      const q = quotes[Math.floor(Math.random()*quotes.length)];
+      const el = document.getElementById('heroQuote');
+      if(el) el.textContent = "✨ " + q;
+    })();
+  </script>
+
+  <script>
+    // Agente OFI — toggle
+    (function(){
+      const fab = document.getElementById('agentFab');
+      const panel = document.getElementById('agentPanel');
+      const btnClose = document.getElementById('agentClose');
+      function openAgent(){ panel.setAttribute('aria-hidden','false'); fab?.setAttribute('aria-expanded','true'); }
+      function closeAgent(){ panel.setAttribute('aria-hidden','true');  fab?.setAttribute('aria-expanded','false'); }
+      function toggleAgent(){ (panel.getAttribute('aria-hidden')==='true') ? openAgent() : closeAgent(); }
+      fab?.addEventListener('click', toggleAgent);
+      btnClose?.addEventListener('click', closeAgent);
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAgent(); });
+      const overlay = document.getElementById('menuOverlay'); if (overlay){ overlay.setAttribute('hidden',''); overlay.style.pointerEvents = 'none'; }
+    })();
+  </script>
+</body>
+</html>

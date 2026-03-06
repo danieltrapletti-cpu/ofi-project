@@ -1,0 +1,2163 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Gestione necrologio — OFI</title>
+  <meta name="description" content="Gestisci il necrologio pubblicato dalla tua impresa: pagina pubblica, modifiche, consegna alla famiglia, QR e stampa." />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- CSS globali -->
+  <link rel="stylesheet" href="/ofi.css?v=3" />
+  <link rel="stylesheet" href="../necrologio.css" />
+
+  <!-- CSS TEMPLATE NECROLOGI (serve per mantenere lo stile ufficiale: nome oro, card, ecc.) -->
+  <link rel="stylesheet" href="./necrologio-nuovo.css?v=3" />
+
+  <!-- CSS SPECIFICO PAGINA (SEMPRE PER ULTIMO) -->
+  <link rel="stylesheet" href="./necrologio-mio.css?v=2" />
+
+<!-- QR CODE LIB: caricato dinamicamente (fallback multi-CDN) -->
+<!-- JS -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+</head>
+
+<body>
+
+<!-- Auth loader (evita il “flash” + redirect immediato) -->
+<div id="authLoader" class="auth-loader" role="status" aria-live="polite">
+  <div class="auth-card">
+    <div class="spinner" aria-hidden="true"></div>
+    <div>
+      <div class="auth-title">Verifica accesso…</div>
+      <div class="auth-sub">Sto controllando la sessione impresa per aprire la gestione del contenuto.</div>
+    </div>
+  </div>
+</div>
+<!-- Working overlay (Agente OFI) -->
+<div id="aiWorking" class="work-overlay" hidden role="status" aria-live="polite">
+  <div class="work-card">
+    <div class="spinner" aria-hidden="true"></div>
+    <div>
+      <div class="work-title" id="workTitle">Agente OFI al lavoro…</div>
+      <div class="work-sub" id="workSub">Sto verificando e armonizzando il testo prima di salvare.</div>
+    </div>
+  </div>
+</div>
+
+
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="dashToggle" class="hamburger" aria-label="Apri menu dashboard" aria-controls="sidebar" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu"></ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+<main class="wrap">
+
+  <section class="hero hero--wow">
+  <div class="heroTop heroTop--wow">
+    <div class="heroLeft heroLeft--wow">
+      <div class="logo">
+        <img id="impLogo" src="../images/rosa.png" alt="Logo impresa" onerror="this.onerror=null; this.src='../images/rosa.png';">
+      </div>
+
+      <div class="heroText">
+        <div class="heroLabel" id="hTitle">Gestione necrologio</div>
+
+        <!-- Nome protagonista -->
+        <div class="heroName" id="hName">—</div>
+
+        <!-- Stato “wow” -->
+        <div class="heroStatusRow">
+          <span class="statusBadge statusBadge--ok" id="pubBadge" title="Il necrologio è online e visibile nella pagina pubblica">
+            <span class="statusDot" aria-hidden="true">✓</span>
+            Online (pubblico)
+          </span>
+        </div>
+
+        <p class="sub heroSub" id="hSub">
+          Sto caricando i dati del necrologio…
+        </p>
+
+        <!-- Azioni (NO doppioni) -->
+        <div class="heroActions heroActions--wow">
+          <button class="btn btn-view btn-heroPrimary" id="btnOpenPublicHero" type="button">
+            🌍 Apri necrologio
+          </button>
+</div>
+
+        <!-- Documento OFI / ID (istituzionale + copia) -->
+        <div class="docRow" aria-label="Documento OFI">
+          <span class="docLabel">Documento OFI</span>
+          <code class="docId" id="docIdText">—</code>
+          <button class="docCopy" id="btnCopyId" type="button" title="Copia ID negli appunti">📋</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>  
+
+<!-- NECROLOGIO (stile pagina pubblica, senza iframe) -->
+<section class="public-shell">
+  <div class="final-preview-card">
+
+        <!-- FOTO DESKTOP (a sinistra) -->
+        <div class="final-preview-photo">
+          <div class="final-photo-frame">
+            <img id="finalPhoto" src="/images/rosa.png" alt="Fotografia della persona cara">
+          </div>
+        </div>
+
+        <!-- CORPO (testo) -->
+        <div class="final-preview-body">
+
+          <!-- ORNAMENTO -->
+          <div class="final-ornament" id="finalOrnamentSlot"></div>
+
+          <!-- FOTO MOBILE (dentro al flusso del testo) -->
+          <div class="final-mobile-photo" id="finalMobilePhotoWrap">
+            <div class="final-photo-frame">
+              <img id="finalPhotoMobile" src="/images/rosa.png" alt="Fotografia della persona cara">
+            </div>
+          </div>
+
+          <article id="finalPreviewText" class="final-preview-text"></article>
+        </div>
+
+        <!-- FOOTER CARD: impresa (opzionale) + sigillo -->
+        <div class="final-card-footer">
+
+          <!-- BLOCCO IMPRESA (OPZIONALE) -->
+          <a class="final-impresa-badge hidden" id="finalImpresaBadge"
+             href="#"
+             target="_blank" rel="noopener">
+            <img id="finalImpresaLogo" class="final-impresa-logo hidden" src="/images/rosa.png" alt="Logo impresa">
+            <div class="final-impresa-meta">
+              <div class="final-impresa-label" id="finalPublisherLabel">A cura di</div>
+              <div class="final-impresa-name" id="finalImpresaName">Impresa</div>
+            </div>
+          </a>
+
+          <!-- SIGILLO (SEMPRE) -->
+          <div class="ofi-editorial-seal ofi-editorial-seal--corner">
+            <img
+              src="/images/sigillo-editoriale.png"
+              alt="Sigillo editoriale OFI"
+              class="ofi-editorial-seal-img"
+            />
+            <div class="ofi-editorial-seal-text" id="publicSealText">
+              <strong>Sigillo editoriale OFI</strong><br>
+              Testo riletto e armonizzato secondo criteri editoriali di chiarezza e rispetto.
+            </div>
+          </div>
+
+        </div>
+  </div>
+</section>
+
+<!-- AZIONE PRINCIPALE (dopo anteprima) -->
+<section class="primary-action" aria-label="Azione principale">
+  <button class="btn btn-primary btn-edit-main" id="btnEditMain" type="button">
+    ✏️ Modifica il necrologio
+  </button>
+  <div class="primary-action-sub">
+    Apri la modifica guidata con i campi già compilati. Il formato resta sempre quello ufficiale OFI.
+  </div>
+
+</section>
+
+<!-- WOW: CONSEGNA ALLA FAMIGLIA -->
+<section id="sectionDelivery" class="delivery-spotlight dash-hidden" aria-label="Consegna alla famiglia">
+  <div class="delivery-head">
+    <div class="delivery-title">🎁 Consegna questo necrologio alla famiglia</div>
+    <div class="delivery-sub">
+      Collega il necrologio all’area personale del cittadino: resterà custodito nel tempo nel suo <b>Luogo della Memoria</b>.
+      <span class="ihelp" title="La consegna non rimuove il necrologio dall’impresa: aggiunge solo un collegamento sicuro all’area personale.">ℹ️</span>
+    </div>
+  </div>
+
+  <!-- STATO + AZIONI -->
+  <div class="df-state" id="deliverState">
+    <span class="df-pill df-pill--idle" id="deliverPill">Stato consegna: non inviata</span>
+    <span class="df-meta" id="deliverMeta" hidden></span>
+  </div>
+
+  <div class="df-actions" id="deliverActions" hidden>
+    <button class="btn btn-view" id="btnDeliverResend" type="button">📩 Reinvia email</button>
+    <button class="btn btn-view" id="btnDeliverCopyLink" type="button">🔗 Copia link</button>
+    <button class="btn btn-mini danger" id="btnDeliverRevoke" type="button">🚫 Revoca</button>
+  </div>
+
+
+  <!-- CONFERMA WOW (solo quando accettata) -->
+  <div class="df-done" id="deliverDone" hidden>
+    <div class="df-done-icon" aria-hidden="true">✓</div>
+    <div class="df-done-text">
+      <div class="df-done-title">Consegna completata</div>
+      <div class="df-done-sub">La famiglia ha accettato. Questo necrologio è ora collegato al <b>Luogo della Memoria</b> del cittadino.</div>
+    </div>
+  </div>
+
+  <div class="delivery-form">
+    <label class="df-label" for="deliverEmail">Email del familiare</label>
+
+    <div class="df-row">
+      <input class="df-input" id="deliverEmail" type="email" inputmode="email" autocomplete="email"
+        placeholder="es. nome.cognome@email.it" />
+      <button class="btn btn-deliver" id="btnDeliverSpot" type="button">Invia consegna</button>
+    </div>
+
+    <label class="df-check" for="deliverConfirm">
+      <input id="deliverConfirm" type="checkbox" />
+      <span>
+        Confermo che la famiglia mi ha richiesto la consegna.
+        <em>(obbligatorio)</em>
+      </span>
+    </label>
+
+    <div class="df-hint">
+      📩 Il familiare riceverà un’email per accettare la consegna. La richiesta resta valida <b>14 giorni</b>.
+    </div>
+
+    <div class="df-status" id="deliverStatus" hidden></div>
+  </div>
+
+  <div class="delivery-note">
+    ✨ È una funzione pensata per dare continuità e supporto alla famiglia, oltre la pubblicazione.
+  </div>
+</section>
+
+<!-- STRUMENTI (QR + stampa) -->
+<section id="sectionTools" class="tools dash-hidden" aria-label="Strumenti">
+  <div class="toolsWrap">
+
+    <!-- ACCORDION: QR -->
+    <div class="toolAcc toolAcc--qr" data-acc="qr">
+      <button class="toolHead" type="button" aria-expanded="false">
+        <span class="toolHeadLeft">
+          <span class="toolIcon">📱</span>
+          <span class="toolHeadText">
+            <span class="toolHeadTitle">QR del necrologio</span>
+            <span class="toolHeadSub">Per condividere e lasciare un pensiero</span>
+          </span>
+        </span>
+        <span class="toolArrow" aria-hidden="true">▾</span>
+      </button>
+
+      <div class="toolBody" hidden>
+        <div class="qrBox qrBox--visible" id="qrMount" aria-label="QR code"></div>
+
+        <div class="toolNoteLine">
+          <span class="ihelp" title="Scansiona per aprire il necrologio e lasciare un pensiero.">ℹ️</span>
+          Scansiona per aprire il necrologio.
+        </div>        
+      </div>
+    </div>
+
+    <!-- ACCORDION: MEMORIA INTERATTIVA -->
+<div class="toolAcc toolAcc--memoria" data-acc="memoria">
+  <button class="toolHead" type="button" aria-expanded="false">
+    <span class="toolHeadLeft">
+      <span class="toolIcon">🕊</span>
+      <span class="toolHeadText">
+        <span class="toolHeadTitle">Memoria Interattiva</span>
+        <span class="toolHeadSub">Pannello A4 orizzontale da esporre</span>
+      </span>
+    </span>
+    <span class="toolArrow" aria-hidden="true">▾</span>
+  </button>
+
+  <div class="toolBody" hidden>
+    <div class="tool-steps">
+      <div class="tool-step"><span class="step-n">1</span><span>Apri il pannello in una nuova scheda</span></div>
+      <div class="tool-step"><span class="step-n">2</span><span>Premi “Stampa” oppure “Salva in PDF”</span></div>
+    </div>
+
+    <div class="btnrow" style="margin-top:.9rem;">
+      <button class="btn btn-view" id="btnMemoriaA4" type="button">🕊 Genera e stampa pannello</button>
+    </div>
+
+    <div class="small tool-note">
+      <span class="ihelp" title="Consiglio: scegli “Salva come PDF” per inviarlo alla famiglia via WhatsApp.">ℹ️</span>
+      Tip: puoi salvarlo in PDF e inviarlo alla famiglia.
+    </div>
+  </div>
+</div>
+
+  </div>
+</section>
+<!-- COMMENTI (moderazione soft) -->
+<section id="sectionComments" class="commentsShell dash-hidden">
+  <div class="commentsHead">
+    <div>
+      <div class="commentsTitle">Gestione commenti</div>
+      <div class="commentsSub">Puoi nascondere messaggi non appropriati. Il contenuto resta tracciato e recuperabile.</div>
+    </div>
+  </div>
+  <div id="commentsBox" class="commentsBox"></div>
+</section>
+
+
+  <!-- DASHBOARD LATERALE (azioni + pannello) -->
+  <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+    <aside id="sidebar" class="sidebar" aria-label="Menu dashboard">
+    <div class="sb-head">
+      <div class="sb-brand">
+        <img src="../images/rosa.png" alt="" aria-hidden="true">
+        <span class="sb-name">Necrologio</span>
+      </div>
+      <button class="sb-close" id="btnSidebarClose" type="button" aria-label="Chiudi menu">✕</button>
+    </div>
+
+    <div class="group">
+      <h4>Azioni</h4>
+      <nav>
+        <a href="#azione-modifica" data-act="edit">✏️ Modifica necrologio</a>
+        <a href="#azione-consegna" data-act="deliver">🎁 Consegna alla famiglia</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Condivisione</h4>
+      <nav>
+        <a href="#azione-pubblica" data-act="public">🌍 Pagina pubblica</a>
+        <a href="#azione-qr" data-act="qr">🔳 QR del necrologio</a>
+        <a href="#azione-memoria" data-act="memoria">🕊 Memoria Interattiva</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Interazioni</h4>
+      <nav>
+        <a href="#azione-commenti" data-act="comments">💬 Commenti</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Navigation</h4>
+      <nav>
+        <a class="sb-back" href="./necrologi-miei.html">← Torna ai miei necrologi</a>
+      </nav>
+    </div>
+  </aside>
+
+  <aside id="sidepanel" class="sidepanel" aria-label="Pannello laterale" aria-hidden="true">
+    <div class="sp-head">
+      <div class="sp-title" id="sidePanelTitle">Dettagli</div>
+      <button class="sp-close" id="btnPanelClose" type="button" aria-label="Chiudi pannello">✕</button>
+    </div>
+    <div class="sp-body" id="sidePanelBody"></div>
+  </aside>
+
+  <!-- Contenitore tecnico: qui “parcheggiamo” le sezioni quando non sono in uso -->
+  <div id="panelStash" hidden></div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- AREA STAMPA (locandina) -->
+<section id="printArea" aria-hidden="true">
+  <div class="poster" id="poster">
+    <div class="posterTop">
+      <div class="posterBrand">
+        <img id="posterImpLogo" class="posterImpLogo" src="../images/rosa.png" alt="Logo impresa">
+        <div class="posterBrandText">
+          <div class="posterImpName" id="posterImpresa">Impresa</div>
+          <div class="posterMeta" id="posterId">ID: —</div>
+        </div>
+      </div>
+
+      <div class="posterOfi">
+        <img id="posterOfiLogo" src="../images/logo-ofi.png" alt="OFI">
+        <div class="posterOfiText">
+          <div class="posterOfiTitle">Onoranze Funebri Italia</div>
+          <div class="posterOfiSub">Locandina ufficiale — QR per lasciare un pensiero</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="posterName" id="posterNome">Nome Cognome</div>
+    <div class="posterLine"></div>
+    <div class="posterHint" id="posterSub">Scansiona per aprire il necrologio e lasciare un pensiero alla famiglia.</div>
+
+    <div class="posterMid">
+      <div class="posterText">
+        <div class="posterBig">Lascia un pensiero</div>
+        <div class="posterSmall">Un messaggio anche breve può essere di grande conforto alla famiglia.</div>
+
+        <div class="posterRules">
+          <div class="posterRule">• Apri il necrologio</div>
+          <div class="posterRule">• Leggi e condividi</div>
+          <div class="posterRule">• Scrivi un pensiero (se vuoi)</div>
+        </div>
+      </div>
+
+      <div class="posterQrWrap">
+        <div class="posterQr" id="posterQr"></div>
+        <div class="posterUrl" id="posterUrl">—</div>
+      </div>
+    </div>
+
+    <div class="posterFoot">
+      <span>Pubblicato tramite OFI • Riservato e rispettoso</span>
+      <span id="posterDate">—</span>
+    </div>
+  </div>
+</section>
+
+<!-- AREA STAMPA (solo QR pulito) -->
+<section id="printQrArea" aria-hidden="true">
+  <div class="qrprint" role="document" aria-label="Stampa QR">
+    <img src="../images/logo-ofi.png" alt="OFI" class="qrprintLogo">
+    <div id="qrOnlyQr" class="qrprintQr" aria-label="QR Code"></div>
+
+    <div class="qrprintBottom">Necrologio online – Onoranze Funebri Italia</div>
+
+    <!-- compatibilità: mantenuto per JS, ma non mostrato -->
+    <span id="qrOnlyUrl" class="qrprintUrl" aria-hidden="true"></span>
+  </div>
+</section>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+  getFirestore, doc, getDoc, collection, getDocs, query, orderBy, limit
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // UI hook: bottone secondario "Consegna a cittadino"
+  try{
+    const b2 = document.getElementById('btnDeliver2');
+    const b1 = document.getElementById('btnDeliver');
+    if (b2 && b1){
+      b2.addEventListener('click', ()=> b1.click());
+    }
+  }catch{}
+  // UI hook: bottone principale "Modifica"
+  try{
+    const bm = document.getElementById('btnEditMain');
+    const be = document.getElementById('btnEdit');
+    if (bm && be){
+      bm.addEventListener('click', ()=> be.click());
+    }
+  }catch{}   
+
+  // Menu "⋯" azioni:
+  // apri/chiudi + click fuori
+  try{
+    const moreBtn = document.getElementById('btnMore');
+    const menu = document.getElementById('moreMenu');
+
+    function closeMenu(){
+      if (!menu || !moreBtn) return;
+      menu.hidden = true;
+      moreBtn.setAttribute('aria-expanded','false');
+      moreBtn.classList.remove('is-open');
+    }
+    function openMenu(){
+      if (!menu || !moreBtn) return;
+      menu.hidden = false;
+      moreBtn.setAttribute('aria-expanded','true');
+      moreBtn.classList.add('is-open');
+    }
+    if (moreBtn && menu){
+      moreBtn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        e.stopPropagation();
+        if (menu.hidden) openMenu(); else closeMenu();
+      });
+
+      document.addEventListener('click', (e)=>{
+        if (menu.hidden) return;
+        const t = e.target;
+        if (menu.contains(t) || moreBtn.contains(t)) return;
+        closeMenu();
+      });
+
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      // Chiudi menu dopo click su una voce
+      menu.addEventListener('click', (e)=>{
+        const btn = e.target.closest('button');
+        if (btn) setTimeout(closeMenu, 50);
+      });
+    }
+
+window.addEventListener('scroll', ()=> closeMenu(), { passive:true });
+
+  }catch{}
+  
+
+  // Imposta persistenza esplicita (evita "null al primo giro" su alcune sessioni)
+  try{ await setPersistence(auth, browserLocalPersistence); }catch(e){ console.warn('setPersistence failed', e); }
+const $ = (s,sc=document)=>sc.querySelector(s);
+
+// Overlay "Agente OFI"
+const WORK = document.getElementById('aiWorking');
+const WORK_TITLE = document.getElementById('workTitle');
+const WORK_SUB = document.getElementById('workSub');
+
+  // Toast fallback (evita ReferenceError se toast non esiste)
+  function toast(msg){
+    try{
+      if (typeof window.toast === 'function' && window.toast !== toast){
+        window.toast(msg);
+        return;
+      }
+    }catch{}
+    alert(msg);
+  }
+
+// ✅ Attende il caricamento reale della libreria QR (evita errori su script module)
+function waitForQRCode(timeout = 6000){
+  // ✅ consideriamo "caricata" solo la libreria che espone toCanvas/toDataURL (qrcode build)
+  const hasGoodLib = () => (window.QRCode && (typeof window.QRCode.toCanvas === 'function' || typeof window.QRCode.toDataURL === 'function'));
+
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    try{
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = true;
+      s.onload = () => resolve(src);
+      s.onerror = () => reject(new Error('Script non caricato: ' + src));
+      document.head.appendChild(s);
+    }catch(e){ reject(e); }
+  });
+
+  return new Promise(async (resolve, reject)=>{
+    const start = Date.now();
+    if (hasGoodLib()) return resolve(true);
+
+    // ⚠️ fallback multiplo: se uno fallisce proviamo il successivo
+    const candidates = [
+      // CDN consentito dalla CSP (jsDelivr)
+      'https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js'
+    ];
+
+    // Prova a caricare una sola volta per URL
+    const tried = new Set();
+
+    while ((Date.now() - start) < timeout){
+      if (hasGoodLib()) return resolve(true);
+
+      // prova a caricare il prossimo candidato non ancora provato
+      const next = candidates.find(u => !tried.has(u));
+      if (next){
+        tried.add(next);
+        try{
+          await loadScript(next + (next.includes('?') ? '&' : '?') + 'v=' + Date.now());
+          if (hasGoodLib()) return resolve(true);
+        }catch(e){
+          // continua con il successivo
+          // console.warn('QR lib load failed', e);
+        }
+      }
+
+      // attesa breve prima del prossimo check
+      await new Promise(r => setTimeout(r, 120));
+    }
+
+    // ultimo check
+    if (hasGoodLib()) return resolve(true);
+    reject(new Error('QRCode library not loaded'));
+  });
+}
+
+
+  const params = new URLSearchParams(location.search);
+  const DOC_ID = (params.get('id') || '').trim();
+  const TYPE   = (params.get('type') || 'necrologio').trim(); // necrologio | anniversario
+
+  let CURRENT_EMAIL = null;
+  let IMPRESA_DOC = null;
+  let ITEM = null;
+  let PUBLIC_URL = null;
+  let ACTIVE_COLLECTION = null;
+
+  // --- Fix "flash + redirect": non fare nulla finché Auth non è risolto
+  let AUTH_RESOLVED = false;
+  const LOADER = $('#authLoader');
+  function hideLoader(){ try{ LOADER?.remove(); }catch{} }
+
+  function safeText(v, fallback='—'){ return (v ?? '').toString().trim() || fallback; }
+  function toDateMaybe(v){
+    if (!v) return null;
+    if (typeof v === 'object' && typeof v.toDate === 'function') return v.toDate();
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  function formatDate(d){
+    if (!d) return '';
+    try{ return d.toLocaleDateString('it-IT', { year:'numeric', month:'2-digit', day:'2-digit' }); }catch{ return ''; }
+  }
+  function bestName(x){
+  // 1) se esiste un "nome completo" già pronto, usalo
+  const fullCandidate = safeText(
+    x?.nomeCompleto || x?.nomeCognome || x?.nomeECognome || x?.nominativo || x?.defunto || x?.titolo,
+    ''
+  );
+  if (fullCandidate) return fullCandidate;
+
+  // 2) se hai nome + cognome separati, componi SEMPRE
+  const nome = safeText(
+    x?.nome || x?.nomeSolo || x?.nomeDefuntoNome || x?.datiPersona?.nome || x?.structuredDataSnapshot?.datiPersona?.nome,
+    ''
+  );
+  const cognome = safeText(
+    x?.cognome || x?.cognomeDefunto || x?.datiPersona?.cognome || x?.structuredDataSnapshot?.datiPersona?.cognome,
+    ''
+  );
+
+  const composed = [nome, cognome].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  if (composed) return composed;
+
+  // 3) fallback vecchi campi
+  const n = safeText(
+    x?.nomeDefunto || x?.nomeCognome || x?.nomeECognome || x?.nominativo || x?.defunto || x?.titolo,
+    ''
+  );
+  if (n) return n;
+
+  return 'Senza titolo';
+}
+
+
+  function pick(obj, keys){
+    for (const k of keys){
+      if (!k) continue;
+      const v = obj?.[k];
+      if (v === undefined || v === null) continue;
+      const s = (typeof v === 'string') ? v.trim() : v;
+      if (typeof s === 'string' && s) return s;
+      if (typeof s !== 'string') return s;
+    }
+    return null;
+  }
+  function escapeHtml(str){
+    return (str ?? '').toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+
+  function renderNecrologioCard(item, impresa){
+    // Foto (priorità: photoUrl / foto / immagine)
+    const photo = pick(item, ['photoUrl','fotoUrl','foto','immagine','photo','img','fotoDefunto','photoFinale']) || '/images/rosa.png';
+    const imgEl = document.getElementById('finalPhoto');
+    const imgMobEl = document.getElementById('finalPhotoMobile');
+
+    [imgEl, imgMobEl].forEach((el)=>{
+      if (!el) return;
+      el.src = photo || '/images/rosa.png';
+      el.onerror = ()=>{ el.src = '/images/rosa.png'; };
+    });
+
+    // Ornamento (se presente)
+    const ornKeyRaw = pick(item, ['ornamentKey','ornamento','simbolo','simboloReligioso','ornament','orn']);
+    const ornKey = (ornKeyRaw || '').toString().trim().toLowerCase().split('/').pop().replace(/\.png$/i,'') || '';
+    const ornMap = { croce:'croce.png', gesu:'gesu.png', madonna:'madonna.png', angelo:'angelo.png', fiore:'fiore.png' };
+    const ornFile = ornMap[ornKey] || (ornKey ? (ornKey + '.png') : '');
+    const ornSlot = document.getElementById('finalOrnamentSlot');
+    if (ornSlot){
+      if (ornFile && ornKey !== 'none'){
+        ornSlot.innerHTML = `<img class="ornament-img" src="/images/ornamenti/${ornFile}" alt="" loading="lazy"
+          onerror="this.onerror=null; this.src='/images/ornamenti/fiore.png';">`;
+      } else {
+        ornSlot.innerHTML = '';
+      }
+    }
+
+    // Testo: qui vogliamo ESATTAMENTE lo stesso output del pubblico (HTML già approvato).
+    const previewEl = document.getElementById('finalPreviewText');
+    if (previewEl){
+      const html = pick(item, ['lastApprovedHtml','htmlFinale','html','previewHtml','contenutoHtml','finalHtml']);
+      if (html && typeof html === 'string' && html.trim()){
+        previewEl.innerHTML = html;
+      } else {
+        // Fallback minimal (se manca HTML approvato)
+        const nome = bestName(item) || '—';
+        const g = item?.geoFinale || {};
+        const luogo = pick(g, ['comune','label','citta','luogo','localita']) || pick(item, ['comune','citta','luogo','localita','paese','zona']) || '';
+        const prov = pick(g, ['provincia']) || pick(item, ['provincia']) || '';
+        const data = pick(item, ['dataDecesso','data','date','dataEvento','data_morte']) || '';
+        const luogoLine = [luogo, prov ? `(${prov})` : ''].filter(Boolean).join(' ').trim();
+        const meta = [luogoLine, data].filter(Boolean).join(' — ');
+        const testo = pick(item, ['testo','epigrafe','messaggio','descrizione','testoCompleto','contenuto']) || '';
+
+        previewEl.innerHTML = `
+          <div class="final-label">NECROLOGIO</div>
+          <h2 class="final-name">${escapeHtml(nome)}</h2>
+          <div class="final-sub">${escapeHtml(meta || '—')}</div>
+          <div style="white-space:pre-wrap; margin-top: 1rem;">${escapeHtml(testo)}</div>
+        `;
+      }
+    }
+
+    // Footer "impresa" (stesso pattern del pubblico: badge cliccabile)
+    const impBadge = document.getElementById('finalImpresaBadge');
+    const impNameEl = document.getElementById('finalImpresaName');
+    if (impBadge && impNameEl){
+      const nomeImpresa = (impresa?.nome || impresa?.ragioneSociale || impresa?.name || '').toString().trim();
+      if (nomeImpresa){
+        impNameEl.textContent = nomeImpresa;
+        impBadge.classList.remove('hidden');
+      } else {
+        impBadge.classList.add('hidden');
+      }
+    }
+
+    // (Opzionale) Link pagina impresa nel badge, se presente
+    const impUrl = (impresa?.publicUrl || impresa?.urlProfilo || '').toString().trim();
+    if (impBadge && impUrl){
+      impBadge.href = impUrl;
+    }
+
+    // Info aggiornamento (se presente altrove)
+    const upd = pick(item, ['updatedAt','lastUpdate','modifiedAt','dataAggiornamento','editedAt']);
+    const updStr = formatDate(toDateMaybe(upd));
+    const updEl = document.getElementById('finalUpdated');
+    if (updEl) updEl.textContent = updStr ? `Aggiornato: ${updStr}` : '';
+  }
+
+  // ====== Autori commenti (come pagina pubblica) ======
+  const AUTHOR_CACHE = new Map(); // uid -> {name, photo} | null
+
+  async function fetchAuthorProfile(uid){
+    if(!uid) return null;
+    if(AUTHOR_CACHE.has(uid)) return AUTHOR_CACHE.get(uid);
+    try{
+      const snap = await getDoc(doc(db,'utenti_cittadini', uid));
+      if(!snap.exists()){
+        AUTHOR_CACHE.set(uid, null);
+        return null;
+      }
+      const x = snap.data() || {};
+      const pieces=[];
+      if(x.vis_nome && x.nome) pieces.push(x.nome);
+      if(x.vis_cognome && x.cognome) pieces.push(x.cognome);
+      const full = pieces.join(' ').trim();
+
+      const userOk = !!x.vis_nome_utente && !!x.nome_utente;
+      const nickname = userOk ? ('@'+x.nome_utente) : '';
+      const finalName = full || (userOk ? nickname : '');
+
+      const res = { name: finalName || null, photo: (x.foto || '').toString().trim() || null };
+      AUTHOR_CACHE.set(uid, res);
+      return res;
+    }catch(e){
+      AUTHOR_CACHE.set(uid, null);
+      return null;
+    }
+  }
+
+  async function hydrateAuthorsIn(container){
+    if(!container) return;
+    const nodes = Array.from(container.querySelectorAll('[data-author-uid]'));
+    const unique = Array.from(new Set(nodes.map(n=>n.getAttribute('data-author-uid')).filter(Boolean)));
+
+    await Promise.all(unique.map(async uid=>{
+      const prof = await fetchAuthorProfile(uid);
+      const name = (prof?.name || '').toString().trim();
+      const targets = nodes.filter(n=>n.getAttribute('data-author-uid')===uid);
+      for (const t of targets){
+        const fallback = t.getAttribute('data-fallback') || 'Utente';
+        t.textContent = name || fallback;
+      }
+    }));
+  }
+
+  function publicUrlFor(item){
+    const direct = item.publicUrl || item.urlPubblica || item.url || '';
+    if (direct && /^https?:\/\//i.test(direct)) return direct;
+    if (direct && direct.startsWith('/')) return location.origin + direct;
+
+    const id = encodeURIComponent(item.id || item.docId || DOC_ID);
+    const page = (TYPE === 'anniversario') ? '/anniversario.html' : '/necrologio.html';
+    return location.origin + `${page}?id=${id}`;
+  }
+
+  async function loadImpresa(email){
+    const ref = doc(db, 'imprese_registrate', email);
+    const snap = await getDoc(ref).catch(()=>null);
+    const d = snap && snap.exists() ? snap.data() : {};
+    IMPRESA_DOC = d || {};
+    const nome = d.nomeImpresa || d.nome || (email.split('@')[0]);
+    const logo = d.logoUrl || d.logo_url || d.logo || '';
+    const codice = d.codiceOFI || d.codice_ofi || '—';
+
+    $('#impLogo').src = logo || '../images/rosa.png';
+    $('#posterImpresa').textContent = nome;
+    $('#posterId').textContent = `ID: ${codice}`;
+
+    return { nome, logo, codice };
+  }
+
+  async function loadItemByTryingCollections(docId){
+    const candidates = (TYPE === 'anniversario')
+      ? ['anniversari_pubblicati','anniversari','anniversariOfi']
+      : ['necrologi_pubblicati','necrologi','necrologiOfi'];
+
+    for (const coll of candidates){
+      const snap = await getDoc(doc(db, coll, docId)).catch(()=>null);
+      if (snap && snap.exists()){
+        ACTIVE_COLLECTION = coll;
+        const raw = snap.data() || {};
+        const snap2 = (raw.answersSnapshot && typeof raw.answersSnapshot === 'object') ? raw.answersSnapshot : {};
+        return { id: snap.id, _type: TYPE, ...raw, ...snap2 };
+      }
+    }
+    return null;
+  }
+
+  async function mountQR(url, mountSelector = '#qrMount'){
+    const mount = (typeof mountSelector === 'string') ? $(mountSelector) : mountSelector;
+    if (!mount) return null;
+
+    mount.innerHTML = '';
+
+    // Usiamo la libreria "qrcode" (QRCode.toCanvas) già inclusa in pagina.
+    // È più affidabile del costruttore "new QRCode(...)" (che non esiste in questa libreria).
+    try{
+      // 🔒 attende davvero la libreria (risolve i timing con <script type="module">)
+      await waitForQRCode();
+      const c = document.createElement('canvas');
+      c.width = 260; c.height = 260;
+      mount.appendChild(c);
+
+      // eslint-disable-next-line no-undef
+      await window.QRCode.toCanvas(c, url, {
+        width: 260,
+        margin: 1,
+        errorCorrectionLevel: 'H'
+      });
+
+      // Stile "card" (bianco) per stampa/lettura perfetta
+      c.style.background = '#fff';
+      c.style.padding = '.45rem';
+      c.style.borderRadius = '14px';
+
+      return c;
+    }catch(e){
+      console.warn('QR non generabile', e);
+      mount.innerHTML = `
+        <div class="qrFallback">
+          <div class="qrFallbackTitle">QR non disponibile</div>
+          <div class="qrFallbackSub">Ricarica la pagina. Se il problema persiste, la libreria QR non si è caricata correttamente.</div>
+        </div>
+      `;
+      return null;
+    }
+  }
+
+ async function printQrClean(url){
+  const area = document.getElementById('printQrArea');
+  const posterArea = document.getElementById('printArea');
+  if (!area) return;
+
+  // mostra SOLO l'area QR
+  try{ posterArea?.classList.remove('show'); }catch{}
+  area.classList.add('show');
+
+  // url (piccolo, opzionale)
+  const urlEl = document.getElementById('qrOnlyUrl');
+  if (urlEl) urlEl.textContent = url || '';
+
+  // genera QR e aspetta davvero che sia disegnato
+  const mount = document.getElementById('qrOnlyQr');
+  if (mount){
+    mount.innerHTML = '';
+    await mountQR(url, mount);
+  }
+
+  // due frame per dare tempo al browser di impaginare prima di stampare
+  await new Promise(r => requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+  // cleanup una sola volta (dopo stampa)
+  const cleanup = ()=>{
+    try{ area.classList.remove('show'); }catch{}
+    try{ if (mount) mount.innerHTML = ''; }catch{}
+    try{ if (urlEl) urlEl.textContent = ''; }catch{}
+  };
+
+  // afterprint non sempre scatta su tutti i browser: mettiamo anche fallback
+  window.addEventListener('afterprint', cleanup, { once:true });
+  setTimeout(()=> cleanup(), 1200);
+
+  window.print();
+}
+
+  async function printPoster(item, onlyQr=false){
+    const url = PUBLIC_URL;
+    const nome = bestName(item);
+    const impNome = (IMPRESA_DOC?.nomeImpresa || IMPRESA_DOC?.nome || (CURRENT_EMAIL||'').split('@')[0] || 'Impresa').toString();
+
+    $('#posterNome').textContent = nome;
+    $('#posterSub').textContent = (TYPE === 'anniversario')
+      ? 'Scansiona per aprire la pagina e lasciare un pensiero nel ricordo.'
+      : 'Scansiona per aprire il necrologio e lasciare un pensiero.';
+$('#posterImpresa').textContent = impNome;
+$('#posterUrl').textContent = url.replace(/^https?:\/\//,'');
+
+// dettagli utili in stampa
+try{ $('#posterId').textContent = 'ID: ' + (item?.id || '—'); }catch{}
+try{ $('#posterDate').textContent = new Date().toLocaleString('it-IT'); }catch{}
+
+// logo impresa (fallback rosa OFI)
+try{
+  const impLogo = (IMPRESA_DOC?.logoUrl || IMPRESA_DOC?.logo || IMPRESA_DOC?.logoPublicUrl || IMPRESA_DOC?.logo_impresa || '').toString().trim();
+  if (impLogo) $('#posterImpLogo').src = impLogo;
+}catch{}
+
+    $('#posterQr').innerHTML = '';
+    const c = document.createElement('canvas');
+    $('#posterQr').appendChild(c);
+    try{ await waitForQRCode(); await window.QRCode.toCanvas(c, url, { margin: 1, width: 640 }); }catch{}
+
+    if (onlyQr){
+      $('#posterSub').textContent = 'Scansiona il QR per aprire la pagina.';
+    }
+
+const pa = $('#printArea');
+const qa = $('#printQrArea');
+try{ qa?.classList.remove('show'); }catch{}
+pa.classList.add('show');
+window.print();
+setTimeout(()=> pa.classList.remove('show'), 400);
+  }
+
+  function renderComments(list){
+    const box = $('#commentsBox');
+    if (!list.length){
+      box.innerHTML = `<div class="sub">Nessun commento trovato.</div>`;
+      return;
+    }
+    box.innerHTML = list.map(c=>{
+      const uid = (c.authorUid || c.uid || c.userUid || c.userId || '').toString().trim();
+      const fallbackName = safeText(c.displayName || c.nome || c.autoreNome || c.autore || c.userName, 'Utente');
+
+      const when = formatDate(toDateMaybe(c.createdAt || c.timestamp || c.data || c.publishedAt));
+      const txt = safeText(c.testo || c.text || c.commento, '');
+      const deleted = c.deleted === true || c.isDeleted === true;
+
+      return `
+        <div class="comment">
+          <div class="commentTop">
+            <div>
+              <div class="commentWho" ${uid ? `data-author-uid="${uid}" data-fallback="${fallbackName.replace(/"/g,'&quot;')}"` : ''}>
+                ${uid ? fallbackName : fallbackName}
+                ${deleted ? '<span class="chip" style="margin-left:.35rem">NASCOSTO</span>' : ''}
+              </div>
+              <div class="commentMeta">${when || ''}</div>
+            </div>
+          </div>
+          <div class="commentTxt">${deleted ? '<i>Questo commento è stato nascosto dall’impresa per moderazione.</i>' : txt}</div>
+          <div class="commentActions">
+            ${deleted
+              ? `<button class="btn-mini" data-act="restore" data-id="${c.id}">Ripristina</button>`
+              : `<button class="btn-mini danger" data-act="softdelete" data-id="${c.id}">Nascondi (soft)</button>`
+            }
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // prova a risolvere i nomi dagli utenti (se disponibili)
+    hydrateAuthorsIn(box);
+  }
+
+  async function loadComments(){
+    const base = (TYPE === 'anniversario') ? 'anniversari_pubblicati' : 'necrologi_pubblicati';
+    const collPath = collection(db, base, DOC_ID, 'commenti');
+
+    try{
+      const qs = await getDocs(query(collPath, orderBy('createdAt','desc'), limit(120)));
+      const list = qs.docs.map(d=>({ id: d.id, ...d.data() }));
+      renderComments(list);
+    }catch(e){
+      console.error('loadComments error', e);
+      $('#commentsBox').innerHTML = `<div class="sub">Non riesco a leggere i commenti (regole o indice). Se vuoi, sistemiamo regole/indice.</div>`;
+    }
+  }
+
+  async function moderateComment(commentId, action){
+    const user = auth.currentUser;
+    if (!user) { alert('Devi essere loggato.'); return; }
+    const idToken = await user.getIdToken();
+
+    const resp = await fetch('/.netlify/functions/moderateNecrologioComment', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization':'Bearer ' + idToken
+      },
+      body: JSON.stringify({
+        type: TYPE,
+        necrologioId: DOC_ID,
+        commentId,
+        action
+      })
+    });
+
+    const data = await resp.json().catch(()=> ({}));
+    if (!resp.ok || !data.ok){
+      throw new Error(data.error || 'Errore moderazione commento.');
+    }
+  }
+
+  async function deliverToCitizen(){
+    const emailEl = document.getElementById('deliverEmail');
+    const okEl = document.getElementById('deliverConfirm');
+    const statusEl = document.getElementById('deliverStatus');
+    const btn = document.getElementById('btnDeliverSpot');
+
+    const email = String(emailEl?.value || '').trim().toLowerCase();
+    const ok = !!okEl?.checked;
+
+    if (!email){
+      toast('Inserisci un’email valida.');
+      emailEl?.focus?.();
+      return;
+    }
+    if (!ok){
+      toast('Conferma la richiesta della famiglia per procedere.');
+      okEl?.focus?.();
+      return;
+    }
+
+    try{
+      const user = auth.currentUser;
+      if (!user) { alert('Devi essere loggato.'); return; }
+
+      if (btn) btn.disabled = true;
+      if (statusEl){
+        statusEl.hidden = false;
+        statusEl.className = 'df-status is-loading';
+        statusEl.textContent = 'Invio consegna in corso…';
+      }
+
+      const idToken = await user.getIdToken();
+      const resp = await fetch('/.netlify/functions/deliverNecrologioToCitizen', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + idToken
+        },
+        body: JSON.stringify({
+  necrologioId: DOC_ID,
+  citizenEmail: email,
+  type: TYPE
+})
+      });
+
+      const data = await resp.json().catch(()=> ({}));
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'Errore consegna.');
+
+      const expiresLabel = data.expiresAt ? new Date(data.expiresAt).toLocaleString('it-IT') : null;
+
+      if (statusEl){
+        statusEl.className = 'df-status is-ok';
+        statusEl.innerHTML =
+          '<b>Consegna inviata ✅</b><br>' +
+          'Stato: <b>In attesa di accettazione</b>' +
+          (expiresLabel ? (' · Scade: <b>' + expiresLabel + '</b>') : '') +
+          (data.deliveryId ? ('<br><span class="mono">ID consegna: ' + String(data.deliveryId) + '</span>') : '');
+      }
+
+await loadDeliveryStatus();
+
+      alert(`Consegna inviata ✅
+Ora il familiare deve accettare via email (entro 14 giorni).`);
+    }catch(e){
+      console.error('deliverToCitizen error', e);
+      if (statusEl){
+        statusEl.hidden = false;
+        statusEl.className = 'df-status is-err';
+        statusEl.textContent = 'Errore: ' + (e?.message || e);
+      }else{
+        alert(`Non riesco a consegnare:\n${e?.message || e}`);
+      }
+    }finally{
+      if (btn) btn.disabled = false;
+    }
+  }
+
+// ===============================
+// CONSEGNA: stato + azioni impresa
+// ===============================
+let DELIVERY = null;
+
+function setDeliveryUI(state){
+  const pill = document.getElementById('deliverPill');
+  const meta = document.getElementById('deliverMeta');
+  const actions = document.getElementById('deliverActions');
+  const doneCard = document.getElementById('deliverDone');
+  const form = document.querySelector('#sectionDelivery .delivery-form');
+
+  if (!pill || !meta || !actions) return;
+
+  DELIVERY = state || null;
+
+  const status = String((state?.status || 'not_sent')).toLowerCase();
+  const email = String(state?.citizenEmail || '');
+  const expiresAt = state?.expiresAt ? new Date(state.expiresAt) : null;
+  const acceptedAt = state?.acceptedAt ? new Date(state.acceptedAt) : null;
+
+  const isNotSent = (status === 'not_sent');
+  const isPending = (status === 'pending');
+  const isAccepted = (status === 'accepted');
+  const isExpired = (status === 'expired');
+  const isRevoked = (status === 'revoked');
+
+  // --- regole UX OFI ---
+  // 1) Form visibile solo quando posso inviare una nuova consegna
+  // 2) Azioni (reinvia/copia/revoca) visibili solo in pending
+  // 3) Dopo accettata, mostro solo conferma (niente azioni operative)
+  const canSendNew = (isNotSent || isExpired || isRevoked);
+  const canPendingActions = isPending;
+
+  const btnSend = document.getElementById('btnDeliverSpot');
+  const emailInput = document.getElementById('deliverEmail');
+  const confirmCheckbox = document.getElementById('deliverConfirm');
+
+  if (form) form.hidden = !canSendNew;
+
+  if (btnSend) btnSend.disabled = !canSendNew;
+  if (emailInput) emailInput.disabled = !canSendNew;
+  if (confirmCheckbox) confirmCheckbox.disabled = !canSendNew;
+
+  // Reset pulito quando riappaiono i campi
+  if (canSendNew){
+    if (confirmCheckbox) confirmCheckbox.checked = false;
+    if (emailInput && !emailInput.value) emailInput.value = email || '';
+  }
+
+  // Azioni solo in pending (robusto: hidden + display)
+  if (actions){
+    actions.hidden = !canPendingActions;
+    actions.style.display = canPendingActions ? '' : 'none';
+  }
+
+  // Bottoni: disabilitati quando non servono (e non devono sembrare cliccabili)
+  document.getElementById('btnDeliverResend')?.toggleAttribute('disabled', !canPendingActions);
+  document.getElementById('btnDeliverCopyLink')?.toggleAttribute('disabled', !canPendingActions);
+  document.getElementById('btnDeliverRevoke')?.toggleAttribute('disabled', !canPendingActions);
+
+  // Done card solo in accepted (robusto: hidden + display)
+  if (doneCard){
+    doneCard.hidden = !isAccepted;
+    doneCard.style.display = isAccepted ? '' : 'none';
+  }
+
+  // Meta
+  meta.hidden = true;
+
+  if (isPending){
+    pill.className = 'df-pill df-pill--pending';
+    pill.textContent = 'Stato consegna: in attesa';
+    meta.hidden = false;
+    meta.textContent =
+      `Email: ${email}` +
+      (expiresAt ? ` · Scade: ${expiresAt.toLocaleString('it-IT')}` : '');
+
+    if (emailInput && email) emailInput.value = email;
+  }
+  else if (isAccepted){
+    pill.className = 'df-pill df-pill--accepted';
+    pill.textContent = 'Stato consegna: accettata ✅';
+    meta.hidden = false;
+    meta.textContent =
+      `Email: ${email}` +
+      (acceptedAt ? ` · Accettata: ${acceptedAt.toLocaleString('it-IT')}` : '');
+  }
+  else if (isExpired){
+    pill.className = 'df-pill df-pill--expired';
+    pill.textContent = 'Stato consegna: scaduta';
+    meta.hidden = false;
+    meta.textContent = email
+      ? `Email: ${email} · Puoi inviare una nuova consegna.`
+      : `Puoi inviare una nuova consegna.`;
+  }
+  else if (isRevoked){
+    pill.className = 'df-pill df-pill--revoked';
+    pill.textContent = 'Stato consegna: revocata';
+    meta.hidden = false;
+    meta.textContent = email
+      ? `Email: ${email} · Puoi inviare una nuova consegna.`
+      : `Puoi inviare una nuova consegna.`;
+  }
+  else {
+    pill.className = 'df-pill df-pill--idle';
+    pill.textContent = 'Stato consegna: non inviata';
+  }
+}
+
+
+async function loadDeliveryStatus(){
+  try{
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const idToken = await user.getIdToken();
+    const resp = await fetch('/.netlify/functions/getDeliveryStatus', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer ' + idToken
+      },
+      body: JSON.stringify({ necrologioId: DOC_ID, type: TYPE })
+    });
+
+    const data = await resp.json().catch(()=> ({}));
+    if (!resp.ok || !data.ok) throw new Error(data.error || 'Errore stato consegna.');
+    setDeliveryUI(data.delivery || null);
+  }catch(e){
+    console.warn('loadDeliveryStatus error', e);
+  }
+}
+
+function hookDeliveryActions(){
+  // evita doppi bind
+  const root = document.getElementById('sectionDelivery');
+  if (!root || root.dataset.bound === '1') return;
+  root.dataset.bound = '1';
+
+  document.getElementById('btnDeliverResend')?.addEventListener('click', async ()=>{
+    try{
+      const user = auth.currentUser;
+      if (!user) return alert('Devi essere loggato.');
+      if (!DELIVERY?.deliveryId) return toast('Nessuna consegna da reinviare.');
+
+      const idToken = await user.getIdToken();
+      const resp = await fetch('/.netlify/functions/resendDeliveryEmail', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':'Bearer ' + idToken
+        },
+        body: JSON.stringify({ deliveryId: DELIVERY.deliveryId })
+      });
+
+      const data = await resp.json().catch(()=> ({}));
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'Errore reinvio.');
+      toast('Email reinviata ✅');
+    }catch(e){
+      alert(e.message || String(e));
+    }
+  });
+
+  document.getElementById('btnDeliverCopyLink')?.addEventListener('click', async ()=>{
+    try{
+      const url = DELIVERY?.acceptUrl;
+      if (!url) return toast('Link non disponibile.');
+
+      await navigator.clipboard.writeText(url);
+      toast('Link copiato ✅');
+    }catch(e){
+      const url = DELIVERY?.acceptUrl || '';
+      if (url) prompt('Copia il link:', url);
+      else toast('Link non disponibile.');
+    }
+  });
+
+  document.getElementById('btnDeliverRevoke')?.addEventListener('click', async ()=>{
+    const ok = confirm('Vuoi revocare la consegna?\n\nIl link diventerà inutilizzabile.');
+    if (!ok) return;
+
+    try{
+      const user = auth.currentUser;
+      if (!user) return alert('Devi essere loggato.');
+      if (!DELIVERY?.deliveryId) return toast('Nessuna consegna da revocare.');
+
+      const idToken = await user.getIdToken();
+      const resp = await fetch('/.netlify/functions/revokeDelivery', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':'Bearer ' + idToken
+        },
+        body: JSON.stringify({ deliveryId: DELIVERY.deliveryId })
+      });
+
+      const data = await resp.json().catch(()=> ({}));
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'Errore revoca.');
+      toast('Consegna revocata ✅');
+      await loadDeliveryStatus();
+    }catch(e){
+      alert(e.message || String(e));
+    }
+  });
+}
+
+  async function deleteItem(){
+  const ok = confirm(
+    "Vuoi eliminare definitivamente questo contenuto?\n\n" +
+    "⚠️ Attenzione: l'operazione è irreversibile.\n" +
+    "Il necrologio verrà rimosso in modo permanente."
+  );
+  if (!ok) return;
+
+  try{
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Devi essere loggato.');
+      return;
+    }
+
+    const idToken = await user.getIdToken();
+
+    const resp = await fetch('/.netlify/functions/deleteNecrologio', {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json',
+        'Authorization':'Bearer ' + idToken
+      },
+      body: JSON.stringify({
+        type: TYPE,
+        necrologioId: DOC_ID
+      })
+    });
+
+    const data = await resp.json().catch(()=> ({}));
+    if (!resp.ok || !data.ok) {
+      throw new Error(data.error || 'Errore eliminazione.');
+    }
+
+    alert('Necrologio eliminato correttamente.');
+    location.href = './necrologi-miei.html';
+
+  }catch(e){
+    console.error('deleteItem error', e);
+    alert('Errore durante l’eliminazione.');
+  }
+}
+
+function showWork(sub='Sto verificando e armonizzando il testo prima di salvare.', title='Agente OFI al lavoro…'){
+  try{
+    if (WORK_TITLE) WORK_TITLE.textContent = title;
+    if (WORK_SUB) WORK_SUB.textContent = sub;
+    if (WORK) WORK.hidden = false;
+    document.documentElement.style.cursor = 'progress';
+  }catch{}
+}
+function hideWork(){
+  try{
+    if (WORK) WORK.hidden = true;
+    document.documentElement.style.cursor = '';
+  }catch{}
+}
+
+// Entrata in modalità modifica
+const __btnEdit = document.getElementById('btnEditMain') || document.getElementById('btnEdit');
+if (__btnEdit) __btnEdit.onclick = () => {
+  // ✅ MODIFICA DEFINITIVA OFI:
+  // Questa pagina è SOLO LETTURA. Per modificare si apri la modifica guidata (Nuovo/Tradizionale),
+  // così il layout ufficiale non si rompe MAI.
+  try{
+    if (TYPE === 'anniversario'){
+      alert('Per modificare un anniversario useremo l’editor dedicato. (Se vuoi lo attiviamo nel prossimo step).');
+      return;
+    }
+
+    if (!DOC_ID){
+      alert('ID mancante.');
+      return;
+    }
+
+    // Deve essere un contenuto pubblicato, altrimenti non ha senso "modificare"
+    if (!ACTIVE_COLLECTION || !ACTIVE_COLLECTION.includes('_pubblicati')) {
+      alert('Questo contenuto non risulta pubblicato: per modificarlo, ripubblica oppure crea un nuovo necrologio.');
+      return;
+    }
+
+    const src = String(ITEM?.sorgente || ITEM?.source || ITEM?.tipoSorgente || '').toLowerCase();
+
+    const base = src.includes('tradizionale')
+      ? '/imprese/necrologio-tradizionale.html'
+      : '/imprese/necrologio-nuovo.html';
+
+    // edit=1: indica che stiamo modificando un necrologio esistente
+    const url = `${base}?id=${encodeURIComponent(DOC_ID)}&edit=1`;
+    window.location.href = url;
+  }catch(e){
+    console.error('redirect edit error', e);
+    alert('Impossibile aprire la modifica in questo momento.');
+  }
+};
+
+    document.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button[data-act][data-id]');
+      if (!btn) return;
+      const act = btn.getAttribute('data-act');
+      e.preventDefault();
+      const cid = btn.getAttribute('data-id');
+      try{
+        btn.disabled = true;
+        await moderateComment(cid, act);
+        await loadComments();
+      }catch(err){
+        console.error(err);
+        alert('Non riesco a moderare il commento.\nServe la Function moderateNecrologioComment oppure regole dedicate.');
+      }finally{
+        btn.disabled = false;
+      }
+    });
+  
+  // Logout
+  $('#logoutTop')?.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    try{ await signOut(auth); }catch{}
+    location.href = './login-imprese.html';
+  });
+
+function setupActions(){
+
+  // Apri necrologio (hero)
+  document.getElementById('btnOpenPublicHero')?.addEventListener('click', ()=>{
+    if (PUBLIC_URL) window.open(PUBLIC_URL, '_blank');
+  });
+
+  // ✅ STAMPA: aggancia direttamente i bottoni REALI presenti (2 e 3)
+  document.getElementById('btnMemoriaA4')?.addEventListener('click', ()=>{
+  if (!ITEM) return;
+
+  const url = PUBLIC_URL || (location.origin + '/necrologio.html?id=' + encodeURIComponent(DOC_ID || ''));
+  const defunto = bestName(ITEM) || 'NOME COGNOME';
+  const impresaNome = (IMPRESA_DOC?.nomeImpresa || IMPRESA_DOC?.nome || '').trim();
+  const logoUrl = (IMPRESA_DOC?.logo_url || IMPRESA_DOC?.logo || '').trim();
+
+  const target =
+    `/imprese/pannello-memoria.html?` +
+      `pNome=${encodeURIComponent((ITEM?.nome || ITEM?.structuredDataSnapshot?.datiPersona?.nome || defunto).trim())}` +
+          `&pCognome=${encodeURIComponent((ITEM?.cognome || ITEM?.structuredDataSnapshot?.datiPersona?.cognome || '').trim())}` +
+    `&impresa=${encodeURIComponent(impresaNome || 'Impresa')}` +
+    `&logo=${encodeURIComponent(logoUrl)}` +
+    `&url=${encodeURIComponent(url)}`;
+
+  window.open(target, '_blank', 'noopener');
+});
+
+  // Consegna a cittadino (spotlight)
+  document.getElementById('btnDeliverSpot')?.addEventListener('click', ()=>{
+    deliverToCitizen();
+  });
+}
+  
+  // ====== Accordion strumenti (QR / Stampa) ======
+  // Nota: le sezioni "Strumenti" vengono spostate dentro al pannello laterale.
+  // Quindi NON usiamo funzioni annidate/temporanee: bind robusto e riusabile.
+  function closeToolAcc(acc){
+    if (!acc) return;
+    const head = acc.querySelector('.toolHead');
+    const body = acc.querySelector('.toolBody');
+    if (head) head.setAttribute('aria-expanded','false');
+    if (body) body.hidden = true;
+    acc.classList.remove('open');
+  }
+
+  function openToolAcc(acc, scope=document){
+    if (!acc) return;
+    // chiudi gli altri nello stesso scope
+    try{
+      Array.from(scope.querySelectorAll('.toolAcc')).forEach(a=>{
+        if (a !== acc) closeToolAcc(a);
+      });
+    }catch{}
+    const head = acc.querySelector('.toolHead');
+    const body = acc.querySelector('.toolBody');
+    if (head) head.setAttribute('aria-expanded','true');
+    if (body) body.hidden = false;
+    acc.classList.add('open');
+  }
+
+  // Aggancia gli handler (una sola volta) in un certo scope (document o pannello)
+  function setupToolAccordions(scope=document){
+    const accs = Array.from(scope.querySelectorAll('.toolAcc'));
+    if (!accs.length) return;
+
+    // default: tutte chiuse
+    accs.forEach(a => closeToolAcc(a));
+
+    accs.forEach(acc=>{
+      const head = acc.querySelector('.toolHead');
+      if (!head) return;
+
+      // evita doppi listener (quando la sezione viene spostata)
+      if (head.dataset.bound === '1') return;
+      head.dataset.bound = '1';
+
+      head.addEventListener('click', ()=>{
+        const isOpen = acc.classList.contains('open');
+        if (isOpen) closeToolAcc(acc);
+        else openToolAcc(acc, scope);
+      });
+    });
+  }
+
+  function openToolByMode(scope, mode){
+    if (!scope) return;
+    const acc = scope.querySelector(`.toolAcc[data-acc="${mode}"]`);
+    if (!acc) return;
+    openToolAcc(acc, scope);
+  }
+
+
+  /* ==========================
+     DASH UI: sidebar + pannello
+     ========================== */
+/* ==========================
+     DASH UI: sidebar + pannello
+     ========================== */
+  function initDashUI(){
+    const btnSidebar = document.getElementById('dashToggle');
+    const btnSidebarClose = document.getElementById('btnSidebarClose');
+    const overlay = document.getElementById('dashOverlay');
+    const sidebar = document.getElementById('sidebar');
+
+    const panel = document.getElementById('sidepanel');
+    const panelBody = document.getElementById('sidePanelBody');
+    const panelTitle = document.getElementById('sidePanelTitle');
+    const btnPanelClose = document.getElementById('btnPanelClose');
+    const stash = document.getElementById('panelStash');
+
+    const secDelivery = document.getElementById('sectionDelivery');
+    const secTools = document.getElementById('sectionTools');
+    const secComments = document.getElementById('sectionComments');
+
+function setToolsMode(mode){
+  if (!secTools) return;
+
+  const accQr = secTools.querySelector('.toolAcc[data-acc="qr"]');
+  const accPr = secTools.querySelector('.toolAcc[data-acc="print"]');
+  if (!accQr || !accPr) return;
+
+  // mostra solo quello richiesto
+  accQr.classList.toggle('is-hidden', mode !== 'qr');
+  accPr.classList.toggle('is-hidden', mode !== 'print');
+
+  // chiudi entrambi (poi apriamo quello giusto)
+  accQr.classList.remove('open');
+  accPr.classList.remove('open');
+
+  const b1 = accQr.querySelector('.toolBody');
+  const b2 = accPr.querySelector('.toolBody');
+  if (b1) b1.hidden = true;
+  if (b2) b2.hidden = true;
+
+  accQr.querySelector('.toolHead')?.setAttribute('aria-expanded','false');
+  accPr.querySelector('.toolHead')?.setAttribute('aria-expanded','false');
+}
+
+    // Parcheggia le sezioni per evitare “tutto insieme”
+    [secDelivery, secTools, secComments].forEach(sec=>{
+      if (!sec || !stash) return;
+      stash.appendChild(sec);
+    });
+
+    let currentSection = null;
+
+    function openSidebar(){
+      if (!sidebar || !overlay) return;
+      sidebar.classList.add('open');
+      sidebar.setAttribute('aria-hidden','false');
+      overlay.hidden = false;
+      overlay.classList.add('show');
+      document.body.classList.add('dash-lock');
+      try{ btnSidebar?.setAttribute('aria-expanded','true'); }catch{}
+    }
+    function closeSidebar(){
+      if (!sidebar || !overlay) return;
+      sidebar.classList.remove('open');
+      try{ sidebar.querySelectorAll('[data-act]').forEach(x=>x.classList.remove('active')); }catch{}
+      sidebar.setAttribute('aria-hidden','true');
+      overlay.hidden = true;
+      overlay.classList.remove('show');
+      document.body.classList.remove('dash-lock');
+      try{ btnSidebar?.setAttribute('aria-expanded','false'); }catch{}
+    }
+    let lastFocusEl = null;
+
+    function openPanel(title){
+      if (!panel) return;
+
+      // salva focus attuale (per ripristino)
+      lastFocusEl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+      if (panelTitle) panelTitle.textContent = title || 'Dettagli';
+      panel.classList.add('open');
+
+      // ✅ visibile per screen reader
+      panel.setAttribute('aria-hidden','false');
+
+      // ✅ riabilita focus/click
+      try{ panel.inert = false; }catch(e){}
+      panel.removeAttribute('inert');
+
+      // porta focus sul primo controllo utile
+      setTimeout(()=>{ btnPanelClose?.focus?.(); }, 0);
+    }
+
+    function stashCurrent(){
+      if (currentSection && stash){
+        currentSection.classList.add('dash-hidden');
+        stash.appendChild(currentSection);
+        currentSection = null;
+      }
+      if (panelBody) panelBody.innerHTML = '';
+    }
+    function closePanel(){
+      if (!panel) return;
+
+      // ✅ sposta PRIMA il focus fuori dal pannello (evita warning aria-hidden)
+      try{
+        if (panel.contains(document.activeElement)) {
+          (btnSidebar || lastFocusEl || document.body).focus?.();
+        }
+      }catch(e){}
+
+      panel.classList.remove('open');
+
+      // ✅ ora possiamo nascondere
+      panel.setAttribute('aria-hidden','true');
+
+      // ✅ blocca focus/click quando chiuso
+      try{ panel.inert = true; }catch(e){}
+      panel.setAttribute('inert','');
+
+      stashCurrent();
+    }
+
+    function showSection(sec, title){
+      if (!sec || !panelBody) return;
+      // restituisci quella precedente
+      stashCurrent();
+      currentSection = sec;
+      currentSection.classList.remove('dash-hidden');
+      panelBody.appendChild(currentSection);
+
+      // 🔥 IMPORTANTISSIMO: le sezioni vengono spostate nel DOM → ri-aggancia gli accordion
+      try{ setupToolAccordions(panelBody); }catch(e){}
+
+      openPanel(title);
+    }
+
+    // Toggle
+    btnSidebar?.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); const isOpen = sidebar?.classList.contains('open'); isOpen ? closeSidebar() : openSidebar(); });
+    btnSidebarClose?.addEventListener('click', closeSidebar);
+    overlay?.addEventListener('click', ()=>{
+      if (panel && panel.classList.contains('open')) closePanel();
+      closeSidebar();
+    }, { passive:true });
+    btnPanelClose?.addEventListener('click', closePanel);
+
+    // ESC
+    window.addEventListener('keydown', (e)=>{
+      if (e.key !== 'Escape') return;
+      if (panel && panel.classList.contains('open')) closePanel();
+      if (sidebar && sidebar.classList.contains('open')) closeSidebar();
+    });
+
+// Click su voci sidebar
+    sidebar?.addEventListener('click', (e)=>{
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const act = btn.getAttribute('data-act');
+
+      
+      // stato attivo (come imprese-dashboard)
+      try{
+        sidebar.querySelectorAll('[data-act]').forEach(x=>x.classList.remove('active'));
+        btn.classList.add('active');
+      }catch{}
+if (act === 'edit'){
+        document.getElementById('btnEditMain')?.click();
+        closeSidebar();
+        closePanel();
+        return;
+      }
+      if (act === 'public'){
+        document.getElementById('btnOpenPublicHero')?.click();
+        closeSidebar();
+        return;
+      }
+      if (act === 'deliver'){
+        showSection(secDelivery, 'Consegna alla famiglia');
+        return;
+      }
+      if (act === 'comments'){
+        showSection(secComments, 'Commenti');
+        return;
+      }
+      if (act === 'qr'){
+  stashCurrent();
+
+  if (!DOC_ID){
+    toast('ID necrologio mancante nella URL');
+    return;
+  }
+
+  const url = PUBLIC_URL || (location.origin + '/necrologio.html?id=' + encodeURIComponent(DOC_ID));
+
+  panelBody.innerHTML = `
+    <div class="spCard spCard--qr spCard--qr2">
+      <div class="spCardHead spCardHead--qr2">
+        <div class="spHeadRow">
+          <div>
+            <div class="spKicker spKicker--qr2">QR del necrologio</div>
+            <div class="spLead spLead--qr2">
+              Scansionalo: apre subito il necrologio online e permette di lasciare un pensiero.
+            </div>
+          </div>
+
+          <div class="spInfoPills" aria-label="Informazioni">
+            <span class="spPill">
+              <span class="spPillLabel">Come funziona</span>
+              <span class="ihelp" title="Chi inquadra il QR con la fotocamera apre subito il necrologio online e può leggere, condividere e lasciare un pensiero alla famiglia.">ℹ️</span>
+            </span>
+
+            <span class="spPill">
+              <span class="spPillLabel">Dove usarlo</span>
+              <span class="ihelp" title="Perfetto su partecipazioni, ricordini e invii digitali (WhatsApp/gruppi). La locandina completa è nella sezione Stampa.">ℹ️</span>
+            </span>
+
+            <span class="spPill">
+              <span class="spPillLabel">Link diretto</span>
+              <span class="ihelp" title="Il link serve solo se devi inviarlo manualmente (email) o archiviarlo. In genere basta il QR.">ℹ️</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="spQrStage spQrStage--qr2">
+        <!-- QR -->
+        <div class="spQrMount spQrMount--qr2">
+          <canvas id="qrCanvasPanel" width="260" height="260" aria-label="QR del necrologio"></canvas>
+          <div id="qrPanelErr" class="spHint spHint--qr2" aria-live="polite"></div>
+        </div>
+
+        <!-- Azioni -->
+        <div class="spQrRight spQrRight--qr2">
+          <div class="spActions spActions--qr2">
+            <button class="btn btn-primary" type="button" id="btnQrDownload">Scarica QR</button>
+            <button class="btn" type="button" id="btnQrPrint">Stampa QR</button>
+            <button class="btn btn-ghost" type="button" id="btnQrShare">Condividi</button>
+          </div>
+
+          <details class="spLinkDetails spLinkDetails--qr2" id="qrLinkDetails">
+            <summary class="spLinkSummary">Mostra link del necrologio</summary>
+            <div class="spLinkBody">
+              <div class="spLinkRow">
+                <div class="spLinkValue spMono" id="qrUrlText"></div>
+                <button class="btn btn-ghost" type="button" id="btnQrCopyLink">Copia link</button>
+                <a class="btn" href="${url}" target="_blank" rel="noopener">Apri</a>
+              </div>
+              <div class="spTinyHint spTinyHint--qr2">Suggerimento: usa il link solo per invii manuali (email) o archiviazione interna.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // testo link (solo quando espanso)
+  try{
+    document.getElementById('qrUrlText').textContent = url;
+  }catch(e){}
+
+  // genera QR nel canvas (nel pannello)
+  waitForQRCode().then(()=>{
+    try{
+      if (window.QRCode){
+        const c = document.getElementById('qrCanvasPanel');
+        const ctx = c.getContext('2d');
+        ctx && ctx.clearRect(0,0,c.width,c.height);
+
+        QRCode.toCanvas(c, url, {
+          width: 260,
+          margin: 1,
+          errorCorrectionLevel: 'H'
+        }, (err)=>{
+          if (err){
+            const el = document.getElementById('qrPanelErr');
+            if (el) el.textContent = 'Non riesco a generare il QR in questo momento.';
+          }
+        });
+      }else{
+        const el = document.getElementById('qrPanelErr');
+        if (el) el.textContent = 'Libreria QR non disponibile.';
+      }
+    }catch(e){
+      const el = document.getElementById('qrPanelErr');
+      if (el) el.textContent = 'Non riesco a generare il QR in questo momento.';
+    }
+  });
+
+  // Azioni
+  document.getElementById('btnQrDownload')?.addEventListener('click', ()=>{
+    try{
+      const c = document.getElementById('qrCanvasPanel');
+      if (!c) return;
+      const a = document.createElement('a');
+      a.href = c.toDataURL('image/png');
+      a.download = `QR-necrologio-${DOC_ID}.png`;
+      a.click();
+      toast('QR scaricato ✅');
+    }catch(e){
+      toast('Download non disponibile su questo browser');
+    }
+  });
+
+  document.getElementById('btnQrPrint')?.addEventListener('click', ()=>{
+    try{
+      if (typeof printQrClean === 'function'){
+        printQrClean(url);
+      }else{
+        window.print();
+      }
+    }catch(e){
+      window.print();
+    }
+  });
+
+  document.getElementById('btnQrShare')?.addEventListener('click', async ()=>{
+    try{
+      if (navigator.share){
+        await navigator.share({ title: 'Necrologio', text: 'Apri il necrologio', url });
+        toast('Condiviso ✅');
+      }else{
+        await navigator.clipboard.writeText(url || '');
+        toast('Link copiato ✅');
+      }
+    }catch(e){
+      try{
+        await navigator.clipboard.writeText(url || '');
+        toast('Link copiato ✅');
+      }catch(_e){
+        alert('Copia manuale:\n' + (url || ''));
+      }
+    }
+  });
+
+  document.getElementById('btnQrCopyLink')?.addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(url || '');
+      toast('Link copiato ✅');
+    }catch(e){
+      alert('Copia manuale:\n' + (url || ''));
+    }
+  });
+
+  openPanel('QR del necrologio');
+  return;
+}
+
+
+if (act === 'memoria'){
+  stashCurrent();
+
+  panelBody.innerHTML = `
+    <div class="spCard spCard--memoria">
+      <div class="spCardHead">
+        <div class="spKicker">Pannello Memoria Interattiva</div>
+        <div class="spLead">
+          Documento A4 orizzontale da esporre durante la veglia per permettere a parenti e amici di lasciare un pensiero digitale.
+        </div>
+      </div>
+
+      <div class="spActions">
+        <button class="btn-mini primary" id="btnOpenMemoriaPanel">Genera e stampa pannello</button>
+      </div>
+
+      <div class="small tool-note" style="margin-top:.65rem;">
+        <span class="ihelp" title="Consiglio: puoi scegliere “Salva come PDF” per inviarlo alla famiglia via WhatsApp.">ℹ️</span>
+        Tip: puoi anche salvarlo in PDF e inviarlo alla famiglia.
+      </div>
+    </div>
+  `;
+
+  openPanel('Memoria Interattiva');
+
+  const url = PUBLIC_URL || (location.origin + '/necrologio.html?id=' + encodeURIComponent(DOC_ID || ''));
+  document.getElementById('btnOpenMemoriaPanel')?.addEventListener('click', ()=>{
+    if (!ITEM) return;
+
+    const defunto = bestName(ITEM) || 'NOME COGNOME';
+    const impresaNome = (IMPRESA_DOC?.nomeImpresa || IMPRESA_DOC?.nome || '').trim();
+    const logoUrl = (IMPRESA_DOC?.logo_url || IMPRESA_DOC?.logo || '').trim();
+
+    const target =
+      `/imprese/pannello-memoria.html?` +
+         `pNome=${encodeURIComponent((ITEM?.nome || ITEM?.structuredDataSnapshot?.datiPersona?.nome || defunto).trim())}` +
+              `&pCognome=${encodeURIComponent((ITEM?.cognome || ITEM?.structuredDataSnapshot?.datiPersona?.cognome || '').trim())}` +
+      `&impresa=${encodeURIComponent(impresaNome || 'Impresa')}` +
+      `&logo=${encodeURIComponent(logoUrl)}` +
+      `&url=${encodeURIComponent(url)}`;
+
+    window.open(target, '_blank', 'noopener');
+  });
+
+  return;
+}
+
+    }); // ✅ CHIUSURA CORRETTA DEL sidebar.addEventListener
+
+    // CTA nel fallback QR (fuori dal listener sidebar)
+    document.addEventListener('click', (e)=>{
+      const el = e.target.closest('[data-open-public]');
+      if (!el) return;
+      document.getElementById('btnOpenPublicHero')?.click();
+    });
+
+    // Inizializza accordion
+    setupToolAccordions(document);
+  }
+
+
+  // Avvio UI laterale
+  initDashUI();
+
+// Auth gate + load (FIXED)
+  let __AUTH_INITIAL_CHECK_DONE__ = false;
+let __AUTH_USER_CONFIRMED__ = false;
+
+onAuthStateChanged(auth, async (user)=>{
+
+  // 🔹 Primo check della pagina
+  if (!__AUTH_INITIAL_CHECK_DONE__) {
+    __AUTH_INITIAL_CHECK_DONE__ = true;
+
+    if (!user) {
+      // aspettiamo davvero che Firebase stabilizzi la sessione
+      await new Promise(r => setTimeout(r, 1800));
+      user = auth.currentUser;
+    }
+
+    if (!user) {
+      const r = encodeURIComponent(
+        `necrologio-mio.html?id=${encodeURIComponent(DOC_ID)}&type=${encodeURIComponent(TYPE)}`
+      );
+      location.replace(`./login-imprese.html?redirect=${r}`);
+      return;
+    }
+
+    // ✅ Utente valido al primo caricamento
+    __AUTH_USER_CONFIRMED__ = true;
+  }
+  else {
+    // 🔒 Se siamo già entrati una volta con utente valido,
+    // ignoriamo eventuali null temporanei (download, blur, ecc.)
+    if (!user && __AUTH_USER_CONFIRMED__) {
+      console.warn("Auth transient null ignored");
+      return;
+    }
+
+    if (user) {
+      __AUTH_USER_CONFIRMED__ = true;
+    }
+  }
+
+  // --- QUI CONTINUA IL TUO CODICE NORMALE ---
+  CURRENT_EMAIL = (user.email || '').toLowerCase();
+
+  try {
+    await loadImpresa(CURRENT_EMAIL);
+
+    ITEM = await loadItemByTryingCollections(DOC_ID);
+    if (!ITEM) {
+      hideLoader();
+      $('#hTitle').textContent = 'Contenuto non trovato';
+      $('#hSub').textContent = 'Questo necrologio non esiste o non è accessibile.';
+      return;
+    }
+
+    PUBLIC_URL = publicUrlFor(ITEM);
+
+    renderNecrologioCard(ITEM, IMPRESA_DOC);
+
+    const nome = bestName(ITEM);
+    $('#hTitle').textContent = 'Gestione necrologio';
+    document.getElementById('hName').textContent = nome;
+
+    $('#hSub').textContent =
+      'Questa è l’area di gestione del necrologio della tua impresa. Da qui puoi modificare il testo, stampare e consegnare alla famiglia.';
+
+    (function(){
+      const el = document.getElementById('docIdText');
+      const full = (DOC_ID || '').toString();
+      const mask = (id)=>{
+        if (!id) return '—';
+        if (id.length <= 12) return id;
+        return id.slice(0,6) + '…' + id.slice(-4);
+      };
+      if (el){
+        el.textContent = mask(full);
+        el.title = full || '';
+        el.dataset.full = full || '';
+      }
+    })();
+
+    document.getElementById('btnCopyId')?.addEventListener('click', async ()=>{
+      try{
+        const full = (document.getElementById('docIdText')?.dataset.full || DOC_ID || '').toString();
+        await navigator.clipboard.writeText(full);
+        toast('ID copiato ✅');
+      }catch(e){
+        const full = (document.getElementById('docIdText')?.dataset.full || DOC_ID || '—').toString();
+        alert('Non riesco a copiare automaticamente. ID:\n' + full);
+      }
+    });
+
+    await mountQR(PUBLIC_URL);
+    setupToolAccordions(document);
+        setupActions();
+    hookDeliveryActions();     
+    await loadDeliveryStatus(); 
+    await loadComments();
+
+    hideLoader();
+
+  } catch (err) {
+    console.error(err);
+    hideLoader();
+    $('#hSub').textContent = 'Errore di caricamento.';
+  }
+
+});
+
+  // Failsafe: se per qualunque motivo auth resta in sospeso troppo a lungo
+  setTimeout(()=>{
+    if (!AUTH_RESOLVED){
+      try{
+        $('#authLoader .auth-sub').textContent = 'Sto ancora verificando la sessione… se non si sblocca, ricarica la pagina.';
+      }catch{}
+    }
+  }, 2500);
+</script>
+
+<script>
+/* ✅ Allinea sidebar/pannello sotto la barra blu (header)
+   - Calcola l'altezza reale della .site-header e la salva in --headerH
+   - Funziona anche se la barra cambia altezza (menu mobile, font, ecc.)
+*/
+(function(){
+  const header = document.querySelector('.site-header');
+  if(!header) return;
+
+  const setH = () => {
+    const h = Math.ceil(header.getBoundingClientRect().height || 0);
+    if (h > 0) document.documentElement.style.setProperty('--headerH', h + 'px');
+  };
+
+  setH();
+  window.addEventListener('resize', setH, { passive:true });
+
+  try{
+    const ro = new ResizeObserver(setH);
+    ro.observe(header);
+  }catch(e){}
+})();
+</script>
+
+
+<script>
+/**
+ * OFI - QR loader robusto (niente CDN rotti).
+ * Motivo: il vecchio URL qrcode@1.5.3/build/qrcode.min.js NON ESISTE -> libreria mai caricata.
+ */
+(function(){
+  const QR_URLS = [
+    // ✅ preferisci sempre locale (se decidi di metterla nel progetto)
+    '../js/vendor/qrcode.min.js',
+    // ✅ build browser stabile (esiste davvero su jsDelivr)
+    'https://cdn.jsdelivr.net/npm/qrcode@1.2.2/build/qrcode.min.js'
+  ];
+
+  function loadScript(url){
+    return new Promise((resolve, reject)=>{
+      const s=document.createElement('script');
+      s.src=url;
+      s.async=true;
+      s.onload=()=>resolve(url);
+      s.onerror=()=>reject(new Error('Failed to load '+url));
+      document.head.appendChild(s);
+    });
+  }
+
+  async function ensureQrLib(){
+    if (window.QRCode && typeof window.QRCode.toCanvas === 'function') return true;
+    for (const url of QR_URLS){
+      try{
+        await loadScript(url);
+        if (window.QRCode && typeof window.QRCode.toCanvas === 'function') return true;
+      }catch(e){ /* prova il prossimo */ }
+    }
+    return false;
+  }
+
+  // Espongo helper per i tuoi handler già presenti
+  window.__OFI_ENSURE_QR__ = ensureQrLib;
+
+})();
+</script>
+
+</body>
+</html>

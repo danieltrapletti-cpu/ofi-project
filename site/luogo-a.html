@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Luogo della Memoria — OFI</title>
+  <meta name="description" content="Luogo della Memoria OFI: uno spazio sobrio e istituzionale per custodire ricordi. Visita pubblica e gestione familiare verificabile." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/luogo.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  <!-- ========================================= -->
+  <!-- HEADER (coerente)                         -->
+  <!-- ========================================= -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="menu-callout" href="/cittadini/dashboard-cittadino.html">DASHBOARD</a></li>
+        <li><a class="menu-callout" href="/cittadini/luogo-memoria.html">HUB LUOGO</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- appare solo se custode -->
+        <li id="manageNavItem" hidden><a class="menu-callout" id="manageNavLink" href="#">GESTISCI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <!-- COVER -->
+    <section class="cover">
+      <div class="coverCard">
+        <div class="coverMedia">
+          <img id="coverImg" src="/images/rosa.png" alt="Luogo della Memoria" loading="eager">
+          <div class="coverOverlay"></div>
+
+          <div class="coverInner">
+            <div class="idBlock">
+              <div class="eyebrow">Registro Nazionale OFI</div>
+              <h1 class="h1" id="hName">Luogo della Memoria</h1>
+              <p class="sub" id="hSub">Caricamento…</p>
+            </div>
+
+            <div class="chips" id="chips">
+              <span class="chip gold" id="chipScene" hidden>Ambiente</span>
+              <span class="chip" id="chipPlace" hidden>Comune</span>
+              <span class="chip" id="chipMode" hidden>Family</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BODY -->
+    <section class="shell">
+      <!-- colonna principale -->
+      <div>
+        <article class="card" id="accessCard" hidden>
+          <h2>Accesso riservato</h2>
+          <p class="small" id="accessText"></p>
+          <div class="actions">
+            <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+            <a class="btn" href="/cittadini/luogo-memoria.html">Torna al HUB</a>
+          </div>
+        </article>
+
+        <article class="card" id="albumCard">
+          <h2>Album</h2>
+          <p class="small" id="albumHint">Una sequenza essenziale di immagini e ricordi.</p>
+          <div class="hr"></div>
+          <div class="gridAlbum" id="albumGrid"></div>
+          <p class="small" id="albumEmpty" hidden>Nessun contenuto ancora.</p>
+        </article>
+
+        <article class="card" id="thoughtsCard" style="margin-top:1.05rem;">
+          <h2>Pensieri</h2>
+          <p class="small">I pensieri sono pubblicati con nome e cognome visibili, in modo sobrio e verificabile.</p>
+          <div class="hr"></div>
+          <div id="thoughtsList"></div>
+          <p class="small" id="thoughtsEmpty" hidden>Nessun pensiero ancora.</p>
+        </article>
+      </div>
+
+      <!-- colonna laterale -->
+      <aside>
+        <div class="card">
+          <h2>Dati essenziali</h2>
+          <p class="small" id="metaPerson">—</p>
+          <div class="hr"></div>
+          <p class="small" id="metaPlace">—</p>
+
+          <div class="actions" id="sideActions" style="margin-top: .95rem;">
+            <a class="btn" href="/cittadini/luogo-memoria.html">HUB</a>
+            <a class="btn primary" id="btnManage" href="#" hidden>Gestisci</a>
+          </div>
+
+          <div class="hr"></div>
+          <div class="note">
+            <strong>Nota OFI</strong><br>
+            Questo spazio è progettato per essere sobrio, senza dinamiche social.
+            OFI applica controlli anti-doppione e può intervenire in caso di incongruenze.
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="footerNote">
+      OFI — Luogo della Memoria. Tutela, unicità e custodia familiare. Questo non è un social e non sostituisce documenti ufficiali.
+    </div>
+  </main>
+
+  <!-- Overlay loading -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="overlayCard" role="status" aria-live="polite">
+      <h3 class="overlayTitle">Caricamento…</h3>
+      <p class="overlayText" id="overlayText">Preparazione del Luogo.</p>
+      <div class="overlayBar"><div class="overlayBarFill" id="overlayBar"></div></div>
+      <div class="overlayPct" id="overlayPct">0%</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+
+    const el = (id)=>document.getElementById(id);
+
+    const overlay = el("overlay");
+    const overlayText = el("overlayText");
+    const overlayBar = el("overlayBar");
+    const overlayPct = el("overlayPct");
+
+    function setLoading(on, pct=0, msg=""){
+      if (!overlay) return;
+      overlay.classList.toggle("open", !!on);
+      overlay.setAttribute("aria-hidden", on ? "false" : "true");
+      if (overlayText) overlayText.textContent = msg || "Caricamento…";
+      const p = Math.max(0, Math.min(100, Number(pct)||0));
+      if (overlayPct) overlayPct.textContent = `${p}%`;
+      if (overlayBar) overlayBar.style.width = `${p}%`;
+      document.body.style.overflow = on ? "hidden" : "";
+    }
+
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      // Compat: supporta sia schema "flat" attuale (wizard) che schema futuro "nested".
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+
+      const place = raw.place || raw.luogo || {};
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], safeStr(place.label)));
+
+      const sceneId = safeStr(pick(raw, ["scene.id", "sceneId"], ""));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl", "cover.photoURL"], ""));
+
+      const visibilityMode =
+        safeStr(pick(raw, ["visibility.mode", "visibilita", "visibilityMode"], "family")) || "family";
+
+      const custody = raw.custody || {};
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(custody.coUids) ? custody.coUids.map(safeStr).filter(Boolean) : (Array.isArray(raw.coUids) ? raw.coUids.map(safeStr).filter(Boolean) : []);
+
+      return {
+        nome, cognome, dataMorte,
+        placeLabel,
+        place,
+        sceneId,
+        coverUrl,
+        visibilityMode: (visibilityMode === "pubblico" ? "public" : visibilityMode), // compat IT
+        mainUid, coUids,
+        raw
+      };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      // atteso YYYY-MM-DD
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function setChip(id, text, cls){
+      const chip = el(id);
+      if (!chip) return;
+      chip.hidden = !text;
+      chip.textContent = text || "";
+      chip.className = "chip" + (cls ? " " + cls : "");
+    }
+
+    function setAccessLocked(msg){
+      el("accessCard").hidden = false;
+      el("accessText").textContent = msg;
+      // nascondi contenuti
+      el("albumCard").hidden = true;
+      el("thoughtsCard").hidden = true;
+    }
+
+    function escapeHtml(str){
+      return String(str||"").replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
+    }
+
+    async function loadSubcollections(){
+      // Album
+      const albumGrid = el("albumGrid");
+      const albumEmpty = el("albumEmpty");
+      albumGrid.innerHTML = "";
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), orderBy("createdAt","desc"), limit(9));
+      const snapA = await getDocs(qA).catch(()=>null);
+
+      let aCount = 0;
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          const type = safeStr(m.type || "photo");
+          const cap = safeStr(m.caption);
+
+          if (!url) return;
+          aCount++;
+
+          const tile = document.createElement("div");
+          tile.className = "mediaTile";
+
+          if (type === "video"){
+            const v = document.createElement("video");
+            v.src = url;
+            v.controls = true;
+            v.preload = "metadata";
+            tile.appendChild(v);
+          } else {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = cap ? cap : "Foto";
+            img.loading = "lazy";
+            tile.appendChild(img);
+          }
+
+          if (cap){
+            const c = document.createElement("div");
+            c.className = "mediaCap";
+            c.textContent = cap;
+            tile.appendChild(c);
+          }
+
+          albumGrid.appendChild(tile);
+        });
+      }
+      albumEmpty.hidden = aCount > 0;
+
+      // Pensieri
+      const thoughtsList = el("thoughtsList");
+      const thoughtsEmpty = el("thoughtsEmpty");
+      thoughtsList.innerHTML = "";
+      const qT = query(collection(db, "luoghi_memoria", luogoId, "pensieri"), orderBy("createdAt","desc"), limit(10));
+      const snapT = await getDocs(qT).catch(()=>null);
+
+      let tCount = 0;
+      if (snapT && !snapT.empty){
+        snapT.forEach(d=>{
+          const t = d.data() || {};
+          const text = safeStr(t.text);
+          if (!text) return;
+
+          // sicurezza: in visita pubblica mostriamo solo pensieri public (se presenti)
+          const v = safeStr(t.visibility || "");
+          if (v && v !== "public") return;
+
+          const an = t.author || {};
+          const aNome = safeStr(an.nome);
+          const aCog = safeStr(an.cognome);
+          const authorLabel = [aNome, aCog].filter(Boolean).join(" ").trim() || "—";
+
+          tCount++;
+
+          const wrap = document.createElement("div");
+          wrap.className = "thought";
+          wrap.innerHTML = `
+            <div class="thMeta">
+              <span>${escapeHtml(authorLabel)}</span>
+              <span>Pensiero</span>
+            </div>
+            <p class="thText">${escapeHtml(text)}</p>
+          `;
+          thoughtsList.appendChild(wrap);
+        });
+      }
+      thoughtsEmpty.hidden = tCount > 0;
+    }
+
+    async function load(){
+      if (!luogoId){
+        setAccessLocked("ID mancante. Torna al HUB e apri un Luogo valido.");
+        return;
+      }
+
+      setLoading(true, 10, "Apertura del Luogo…");
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        setLoading(false);
+        setAccessLocked("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      setLoading(true, 35, "Verifica accesso…");
+
+      const raw = snap.data() || {};
+      const luogo = normalizeDoc(raw);
+
+      const displayName = [luogo.nome, luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+
+      el("hName").textContent = displayName;
+      el("hSub").textContent = `Data di morte: ${fmtDate(luogo.dataMorte)} · ${luogo.placeLabel || "Luogo non specificato"}`;
+
+      // cover
+      const coverImg = el("coverImg");
+      coverImg.src = luogo.coverUrl || "/images/rosa.png";
+      coverImg.alt = displayName;
+
+      // chips
+      setChip("chipScene", luogo.sceneId ? `Ambiente: ${luogo.sceneId.replaceAll("_"," ")}` : "", "gold");
+      setChip("chipPlace", luogo.placeLabel ? `${luogo.placeLabel}` : "", "");
+      setChip("chipMode", luogo.visibilityMode === "public" ? "Pubblico" : "Family", luogo.visibilityMode === "public" ? "gold" : "");
+
+      // meta
+      el("metaPerson").textContent = `${displayName}\nData di morte: ${fmtDate(luogo.dataMorte)}`;
+      el("metaPlace").textContent = luogo.placeLabel ? `Luogo: ${luogo.placeLabel}` : "Luogo: —";
+
+      // calcolo custode
+      let userUid = null;
+      let isCustode = false;
+
+      // in visita pubblica non forziamo login, ma se c'è lo usiamo
+      await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          userUid = u?.uid || null;
+          isCustode = !!(userUid && (userUid === luogo.mainUid || luogo.coUids.includes(userUid)));
+          unsub();
+          resolve();
+        });
+      });
+
+      // access rule:
+      // - public -> visibile a tutti (album e pensieri: pensieri filtrati public)
+      // - family -> visibile solo a custodi (per ora). In futuro: family invitati.
+      if (luogo.visibilityMode !== "public" && !isCustode){
+        setLoading(false);
+        setAccessLocked("Questo Luogo è attualmente in modalità FAMILY. Per accedere devi essere custode (principale o co-custode) ed effettuare l’accesso.");
+        return;
+      }
+
+      // pulsanti gestione se custode
+      const manageUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+      if (isCustode){
+        el("btnManage").hidden = false;
+        el("btnManage").href = manageUrl;
+
+        el("manageNavItem").hidden = false;
+        el("manageNavLink").href = manageUrl;
+      }
+
+      setLoading(true, 70, "Caricamento contenuti…");
+
+      await loadSubcollections();
+
+      setLoading(false);
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      setLoading(false);
+      setAccessLocked("Errore nel caricamento. Riprova tra poco.");
+    });
+  </script>
+
+  <script src="/js/menu.js" defer></script>
+</body>
+</html>

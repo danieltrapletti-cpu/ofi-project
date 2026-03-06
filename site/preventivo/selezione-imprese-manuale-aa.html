@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+
+  <title>Seleziona le imprese (modalità manuale) — OFI</title>
+  <meta name="description" content="Scegli manualmente fino a 10 imprese funebri tra quelle suggerite da OFI, per inviare la tua richiesta di preventivo, a partire dal luogo che hai indicato.">
+
+  <!-- Stili & script globali coerenti -->
+  <link rel="stylesheet" href="/ofi.css">
+  <script src="/ofi.js?v=3" defer></script>
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <style>
+    /* Fondale coerente (desktop + mobile) */
+body{
+  background: radial-gradient(1200px 600px at 50% -120px, #0f2642 0%, #0b1d33 55%, #071526 100%) fixed;
+}
+
+    /* Layout principale */
+    .page-wrap{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    main{
+      flex:1;
+      padding:1.5rem 0 2.5rem;
+    }
+
+    .page-inner{
+      width:100%;
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 1rem;
+    }
+
+    .page-head{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:1rem;
+      margin-bottom:1.25rem;
+    }
+
+    .page-head-title{
+      max-width:630px;
+    }
+
+    .page-kicker{
+      font-size:.85rem;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      opacity:.9;
+      margin-bottom:.25rem;
+    }
+
+    .page-head h1{
+      font-size:1.5rem;
+      margin:0 0 .25rem;
+      line-height:1.25;
+    }
+
+    .page-subtitle{
+      margin:0;
+      font-size:.98rem;
+      opacity:.88;
+    }
+
+    .step-indicator{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:.25rem;
+      font-size:.9rem;
+    }
+
+    .step-indicator span{
+      opacity:.85;
+    }
+
+    .step-indicator .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.25rem .75rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.08);
+      font-size:.8rem;
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .step-indicator .pill strong{
+      font-weight:600;
+    }
+
+    /* Box info selezione */
+    .manual-select-banner{
+      background:rgba(4,18,36,.88);
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      padding:1rem 1.1rem 1.1rem;
+      display:flex;
+      gap:.8rem;
+      align-items:flex-start;
+      color:#eaf1ff;
+      margin-bottom:1.25rem;
+      box-shadow:0 14px 36px rgba(0,0,0,.45);
+    }
+
+    .manual-select-banner-icon{
+      width:32px;
+      height:32px;
+      border-radius:999px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.12);
+      flex-shrink:0;
+      font-size:1.2rem;
+    }
+
+    .manual-select-banner h2{
+      margin:.1rem 0 .25rem;
+      font-size:1.05rem;
+    }
+
+    .manual-select-banner p{
+      margin:0;
+      font-size:.9rem;
+      opacity:.94;
+    }
+
+    .manual-select-banner strong{
+      font-weight:600;
+    }
+
+    .manual-select-banner small{
+      display:block;
+      margin-top:.25rem;
+      font-size:.8rem;
+      opacity:.8;
+    }
+
+    /* Contenitore lista + azioni */
+    .manual-select-layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1.8fr) minmax(0, 1.1fr);
+      gap:1.25rem;
+      align-items:flex-start;
+    }
+
+    @media (max-width:900px){
+      .manual-select-layout{
+        grid-template-columns:1fr;
+      }
+    }
+
+    .card-shell{
+      background:rgba(255,255,255,.06);
+      border-radius:12px;
+      padding:1rem 1rem 0.3rem;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 12px 32px rgba(0,0,0,.35);
+      backdrop-filter:blur(14px);
+    }
+
+    .card-shell-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.5rem;
+      margin-bottom:.35rem;
+    }
+
+    .card-shell-title{
+      font-size:.95rem;
+      font-weight:600;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      opacity:.95;
+    }
+
+    .selection-counter{
+      font-size:.86rem;
+      opacity:.9;
+    }
+
+    .selection-counter strong{
+      font-weight:700;
+    }
+
+    .selection-info-box{
+      padding:.55rem .75rem .65rem;
+      border-radius:10px;
+      background:rgba(5,20,40,.9);
+      border:1px dashed rgba(255,255,255,.22);
+      margin-bottom:.75rem;
+      box-shadow:0 8px 22px rgba(0,0,0,.45);
+    }
+
+    .selection-info{
+      margin:.25rem 0 1.25rem;
+      font-size:.95rem;
+      color:var(--muted-text, #4b5565);  /* ben leggibile in chiaro */
+    }
+
+    /* In tema scuro la facciamo tornare chiara */
+    html[data-theme="dark"] .selection-info{
+      color:#eaf1ff;
+    }
+
+    .selection-info strong{
+      font-weight:700;
+    }
+
+    .badge-limit{
+      display:inline-flex;
+      align-items:center;
+      gap:.3rem;
+      padding:.15rem .55rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.1);
+      font-size:.78rem;
+    }
+
+    .badge-dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:#cfa349;
+      flex-shrink:0;
+    }
+
+    /* Lista imprese */
+    .lista-imprese{
+      list-style:none;
+      margin:0;
+      padding:0;
+      max-height:calc(100vh - 270px);
+      overflow:auto;
+      scrollbar-width:thin;
+      scrollbar-color:rgba(255,255,255,.4) transparent;
+    }
+
+    .lista-imprese::-webkit-scrollbar{
+      width:6px;
+    }
+    .lista-imprese::-webkit-scrollbar-track{
+      background:transparent;
+    }
+    .lista-imprese::-webkit-scrollbar-thumb{
+      background:rgba(0,0,0,.25);
+      border-radius:999px;
+    }
+
+    .impresa-card{
+      position:relative;
+      background:#fff;
+      border:2px solid transparent;
+      border-radius:16px;
+      box-shadow:0 10px 28px rgba(0,0,0,.12);
+      padding:1rem 1.25rem 0.6rem;
+      margin:.8rem 0;
+      transition:transform .18s, box-shadow .18s, border-color .18s, background-color .18s;
+      color:#0f1b2e;                 /* colore testi base BEN leggibile */
+    }
+
+    /* Fix Safari / iOS: testo sempre pieno, niente “sbiancamento” automatico */
+    .impresa-card,
+    .impresa-card *{
+      -webkit-text-fill-color: currentColor;
+      text-shadow:none;
+    }
+
+    .impresa-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 36px rgba(0,0,0,.16);
+      border-color:rgba(12,74,110,.35);
+    }
+
+    .impresa-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .card-logo{
+      width:60px;
+      height:60px;
+      border-radius:12px;
+      object-fit:contain;
+      background:#f6f7f9;
+      border:1px solid #e3e7ee;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:.8rem;
+      font-weight:600;
+      color:#4b5563;
+    }
+
+    .impresa-head h3{
+      margin:0;
+      color:#0f1b2e;
+      font-weight:700;
+    }
+
+    .impresa-meta{
+      color:#6b7a8a;
+      margin-top:3px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+    }
+
+    .impresa-meta .comune{
+      font-weight:500;
+    }
+
+    .impresa-meta .dist{
+      font-size:.85rem;
+      opacity:.9;
+    }
+
+    .impresa-meta .chip{
+      border-radius:999px;
+      border:1px solid #d0d6e2;
+      padding:.1rem .45rem;
+      font-size:.78rem;
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      background:#f9fafb;
+      white-space:nowrap;
+    }
+
+    .impresa-meta .chip span.dot{
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:#10b981;
+      flex-shrink:0;
+    }
+
+    .impresa-meta .chip.ofi{
+      border-color:#cfa349;
+      background:#fdf7e8;
+      color:#7a5a1b;
+    }
+
+    .impresa-meta .chip.check{
+      border-color:#84cc16;
+      background:#f4fce3;
+      color:#3f6212;
+    }
+
+    .impresa-meta .badge-tier{
+      font-size:.75rem;
+      padding:.1rem .5rem;
+      border-radius:999px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1d4ed8;
+      font-weight:600;
+    }
+
+    .impresa-body{
+      margin-top:.5rem;
+      font-size:.9rem;
+      color:#4b5563;
+    }
+
+    .impresa-body p{
+      margin:0;
+    }
+
+    .impresa-foot{
+      margin-top:.7rem;
+      padding-top:.55rem;
+      border-top:1px dashed #d1d5db;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:.5rem;
+      font-size:.85rem;
+      color:#4b5563;
+    }
+
+    .impresa-azioni{
+      display:flex;
+      align-items:center;
+      gap:.75rem;
+    }
+
+    .seleziona-impresa{
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      font-size:.86rem;
+      font-weight:600;
+      cursor:pointer;
+      border:none;
+      padding:.3rem .55rem;
+      border-radius:999px;
+      background:#0f5caa;
+      color:#f9fafb;
+    }
+
+    .seleziona-impresa span.icon{
+      font-size:1rem;
+    }
+
+    .link-profilo{
+      font-size:.86rem;
+      text-decoration:underline;
+      text-underline-offset:2px;
+      cursor:pointer;
+    }
+
+    .small{
+      font-size:.8rem;
+      opacity:.8;
+    }
+
+    .impresa-card.tier-3{
+      border-color:#cfa349;
+    }
+    .impresa-card.tier-2{ border-color:#3b82f6 }
+    .impresa-card.tier-1{ border-color:#10b981 }
+    .impresa-card.tier-0{ border-color:#b9bec6 }
+
+    .impresa-card.selected{
+      background:#f7f2e5;
+      box-shadow:0 14px 30px rgba(0,0,0,.22);
+    }
+
+    .impresa-card.tier-3 .ribbon{
+      position:absolute; right:-8px; top:12px;
+      background:#cfa349; color:#2d240d; font-weight:800;
+      padding:4px 10px; border-radius:10px 0 0 10px; box-shadow:0 4px 12px rgba(0,0,0,.18);
+      letter-spacing:.2px;
+      font-size:.7rem;
+      text-transform:uppercase;
+    }
+
+    /* Colonna destra: riepilogo selezione */
+    .manual-select-side{
+      display:flex;
+      flex-direction:column;
+      gap:.85rem;
+    }
+
+    .side-card{
+      background:rgba(255,255,255,.06);
+      border-radius:12px;
+      padding:.9rem 1rem;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 14px 36px rgba(0,0,0,.45);
+      backdrop-filter:blur(14px);
+    }
+
+    .side-card h3{
+      margin:0 0 .35rem;
+      font-size:1rem;
+    }
+
+    .side-card p{
+      margin:0;
+      font-size:.9rem;
+      opacity:.9;
+    }
+
+    .side-card ul{
+      margin:.35rem 0 0;
+      padding-left:1.1rem;
+      font-size:.88rem;
+    }
+
+    .side-card li{
+      margin-bottom:.2rem;
+    }
+
+    .selected-list{
+      margin-top:.35rem;
+      padding-top:.35rem;
+      border-top:1px dashed rgba(255,255,255,.28);
+      font-size:.88rem;
+    }
+
+    .selected-list strong{
+      display:block;
+      margin-bottom:.25rem;
+    }
+
+    .selected-pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.4rem;
+      padding:.18rem .55rem;
+      border-radius:999px;
+      background:rgba(255,255,255,.1);
+      margin:.15rem .25rem .15rem 0;
+      font-size:.82rem;
+      border:1px solid rgba(255,255,255,.28);
+    }
+
+    .selected-pill button{
+      background:none;
+      border:none;
+      cursor:pointer;
+      font-size:.95rem;
+      padding:0;
+      line-height:1;
+    }
+
+    .manual-select-actions{
+      display:flex;
+      gap:.6rem;
+      margin-top:.65rem;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    .manual-select-actions .btn{
+      font-size:.9rem;
+      padding:.55rem 1rem;
+      border-radius:999px;
+    }
+
+    .manual-select-actions .btn-secondary{
+      border:1px solid rgba(255,255,255,.34);
+      background:transparent;
+    }
+
+    .manual-select-actions .btn-primary{
+      background:#cfa349;
+      border:none;
+      color:#1b1305;
+      font-weight:600;
+    }
+
+    .manual-select-actions .btn-primary:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .cta-wrap .cta-note{
+      font-size:.95rem;
+      color:var(--muted-text, #4b5565);
+    }
+
+    html[data-theme="dark"] .cta-wrap .cta-note{
+      color:#eaf1ff;
+    }
+
+    /* Tema scuro forzato dal toggle OFI */
+    html[data-theme="dark"] .card-shell,
+    html[data-theme="dark"] .side-card,
+    html[data-theme="dark"] .manual-select-banner,
+    html[data-theme="dark"] .selection-info-box{
+      background:rgba(4,18,36,.96);
+      border-color:rgba(255,255,255,.22);
+    }
+
+    html[data-theme="dark"] .manual-select-banner p,
+    html[data-theme="dark"] .manual-select-banner small,
+    html[data-theme="dark"] .side-card p,
+    html[data-theme="dark"] .side-card ul,
+    html[data-theme="dark"] .side-card li,
+    html[data-theme="dark"] .selected-list,
+    html[data-theme="dark"] .selection-counter,
+    html[data-theme="dark"] .badge-limit{
+      color:#eaf1ff;
+    }
+
+    html[data-theme="dark"] .lista-imprese::-webkit-scrollbar-thumb{
+      background:rgba(148,163,184,.95);
+    }
+
+    html[data-theme="dark"] .impresa-card{
+      background:#1b2e4a !important;
+      border-color:rgba(255,255,255,.18) !important;
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      color:#ffffff !important;
+    }
+    html[data-theme="dark"] .impresa-card.selected{
+      background:#233857 !important;
+    }
+    html[data-theme="dark"] .impresa-head h3,
+    html[data-theme="dark"] .impresa-meta span,
+    html[data-theme="dark"] .impresa-foot,
+    html[data-theme="dark"] .impresa-azioni,
+    html[data-theme="dark"] .impresa-card .small,
+    html[data-theme="dark"] .impresa-card .badge{
+      color:#ffffff !important;
+    }
+    html[data-theme="dark"] .impresa-body{
+      color:#e5ecf7 !important;
+    }
+    html[data-theme="dark"] .impresa-meta{
+      color:#dbe4ee !important;
+    }
+    html[data-theme="dark"] .impresa-meta .chip{
+      border-color:rgba(255,255,255,.18) !important;
+      background:rgba(255,255,255,.06) !important;
+      color:#eaf1ff !important;
+    }
+    html[data-theme="dark"] .impresa-meta .chip.ofi{
+      border-color:rgba(207,163,73,.6) !important;
+      background:rgba(207,163,73,.08) !important;
+      color:#ffe2a7 !important;
+    }
+    html[data-theme="dark"] .impresa-meta .chip.check{
+      border-color:rgba(139,195,74,.5) !important;
+      background:rgba(139,195,74,.12) !important;
+      color:#d8f6c9 !important;
+    }
+    html[data-theme="dark"] .seleziona-impresa{
+      color:#eaf1ff !important;
+      background:#164e63;
+    }
+    html[data-theme="dark"] .link-profilo{
+      color:#cfe0ff !important;
+    }
+    html[data-theme="dark"] .impresa-card,
+    html[data-theme="dark"] .impresa-card *{
+      -webkit-text-fill-color: currentColor !important;
+    }
+
+    @media (max-width:640px){
+      .card-logo{width:52px;height:52px}
+      .impresa-meta .chip{font-size:.78rem}
+      .manual-select-actions{
+        justify-content:center;
+      }
+      .selection-info{
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header globale (come scelta/ricerca/automatica) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger"
+              aria-label="Apri il menu" aria-expanded="false" aria-controls="mainMenu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="mainMenu" class="nav-links">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/cittadini/accesso.html">Area cittadini</a></li>
+        <li><a href="/imprese/index.html">Area imprese</a></li>
+        <li><a href="/faq.html">Domande frequenti</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-toggle" aria-label="Cambia tema">
+        ◐
+      </button>
+    </nav>
+  </header>
+
+  <div class="page-wrap">
+    <main>
+      <div class="page-inner">
+        <div class="page-head">
+          <div class="page-head-title">
+            <div class="page-kicker">Richiesta preventivo · modalità manuale</div>
+            <h1>Seleziona le imprese a cui inviare la tua richiesta</h1>
+            <p class="page-subtitle">
+              Qui puoi scegliere manualmente le imprese tra quelle suggerite da OFI, fino a un massimo di <strong>10</strong>.
+              Nella pagina successiva compilerai con calma tutti i dettagli della richiesta.
+            </p>
+          </div>
+          <div class="step-indicator">
+            <span>Passo <strong>2</strong> di <strong>3</strong></span>
+            <div class="pill">
+              <span>Stai selezionando le imprese</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-select-banner">
+          <div class="manual-select-banner-icon">🏛️</div>
+          <div>
+            <h2>Scegli tu a chi inviare la richiesta</h2>
+            <p>
+              La modalità manuale ti permette di <strong>selezionare direttamente le imprese</strong> che desideri coinvolgere,
+              tra quelle suggerite in base al luogo indicato.
+            </p>
+            <small>
+              OFI non prende alcuna commissione sul preventivo: il nostro compito è solo mettere ordine, trasparenza e supporto.
+            </small>
+          </div>
+        </div>
+
+        <div class="manual-select-layout">
+          <!-- Colonna sinistra: lista imprese -->
+          <div class="card-shell">
+            <div class="card-shell-header">
+              <div class="card-shell-title">Imprese suggerite</div>
+              <div class="selection-counter">
+                Selezionate: <strong id="counterSelezionate">0</strong> / 10
+              </div>
+            </div>
+
+            <div class="selection-info-box">
+              <p class="selection-info">
+                Puoi selezionare fino a <strong>10 imprese</strong>. Ti consigliamo di scegliere
+                quelle che senti più vicine a ciò che ti aspetti in un momento così delicato.
+              </p>
+            </div>
+
+            <ul class="lista-imprese" id="listaImprese">
+              <!-- Le card delle imprese verranno popolate via JS -->
+            </ul>
+          </div>
+
+          <!-- Colonna destra: riepilogo selezione -->
+          <aside class="manual-select-side">
+            <div class="side-card">
+              <h3>La tua selezione</h3>
+              <p>
+                Qui vedi un riepilogo sintetico delle imprese che hai scelto.
+                Potrai ancora rivedere tutto nel passo successivo, prima dell'invio.
+              </p>
+              <div class="selected-list" id="selectedList">
+                <strong>Imprese selezionate (0)</strong>
+                <div id="selectedPills"></div>
+              </div>
+            </div>
+
+            <div class="side-card">
+              <h3>Cosa succede dopo?</h3>
+              <ul>
+                <li>Nel passo successivo compilerai il <strong>modulo dettagliato</strong> della richiesta.</li>
+                <li>OFI verificherà che tutto sia chiaro e completo.</li>
+                <li>Le imprese che hai scelto riceveranno la richiesta in modo ordinato e trasparente.</li>
+              </ul>
+
+              <div class="manual-select-actions">
+                <a href="scelta-preventivo.html" class="btn btn-secondary">
+                  ⬅ Torna alla scelta modalità
+                </a>
+                <button id="btnProsegui" class="btn btn-primary" disabled>
+                  Prosegui e compila la richiesta
+                </button>
+              </div>
+            </div>
+
+            <div class="cta-wrap" style="margin-top:1.5rem;text-align:center;">
+              <p class="cta-note">
+                Se preferisci annullare e cambiare modalità, puoi tornare alla scelta iniziale.
+              </p>
+              <a class="btn btn-light" href="scelta-preventivo.html">⬅ Torna alla scelta modalità</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer globale -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>© <span id="year"></span> Onoranze Funebri Italia — Un progetto per portare ordine, rispetto e trasparenza nel momento del lutto.</p>
+        <nav aria-label="Link di servizio">
+          <a href="/privacy.html">Privacy</a>
+          <a href="/termini.html">Termini di utilizzo</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Imposta anno footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Dati demo / struttura base: in produzione questa parte verrà sostituita con i dati Firestore
+    const impreseDemo = [
+      {
+        id: 'impresa1',
+        nome: 'Impresa Funebre Serenità',
+        comune: 'Bergamo',
+        provincia: 'BG',
+        distanzaKm: 3.2,
+        descrizione: 'Una realtà storica del territorio, con attenzione particolare al supporto della famiglia in tutte le fasi.',
+        tier: 3,
+        ofi: true
+      },
+      {
+        id: 'impresa2',
+        nome: 'Onoranze Funebri La Pace',
+        comune: 'Seriate',
+        provincia: 'BG',
+        distanzaKm: 5.8,
+        descrizione: 'Servizi completi e personalizzabili, nel rispetto dei desideri della famiglia e della persona cara.',
+        tier: 2,
+        ofi: true
+      },
+      {
+        id: 'impresa3',
+        nome: 'Agenzia Funebre Aurora',
+        comune: 'Albino',
+        provincia: 'BG',
+        distanzaKm: 11.4,
+        descrizione: 'Una presenza discreta e competente, con soluzioni sobrie e curate.',
+        tier: 1,
+        ofi: false
+      }
+    ];
+
+    const listaImpreseEl = document.getElementById('listaImprese');
+    const counterEl = document.getElementById('counterSelezionate');
+    const selectedListRoot = document.getElementById('selectedList');
+    const selectedPillsEl = document.getElementById('selectedPills');
+    const btnProsegui = document.getElementById('btnProsegui');
+
+    const selezionate = new Set();
+
+    function renderLista() {
+      listaImpreseEl.innerHTML = '';
+      impreseDemo.forEach(impresa => {
+        const li = document.createElement('li');
+
+        const card = document.createElement('article');
+        card.className = 'impresa-card tier-' + impresa.tier;
+        card.dataset.id = impresa.id;
+
+        const head = document.createElement('div');
+        head.className = 'impresa-head';
+
+        const logo = document.createElement('div');
+        logo.className = 'card-logo';
+        logo.textContent = impresa.nome.split(' ').slice(0,2).map(p => p[0]).join('').toUpperCase();
+
+        const headText = document.createElement('div');
+
+        const h3 = document.createElement('h3');
+        h3.textContent = impresa.nome;
+
+        const meta = document.createElement('div');
+        meta.className = 'impresa-meta';
+
+        const comuneSpan = document.createElement('span');
+        comuneSpan.className = 'comune';
+        comuneSpan.textContent = impresa.comune + ' (' + impresa.provincia + ')';
+
+        const distSpan = document.createElement('span');
+        distSpan.className = 'dist';
+        distSpan.textContent = impresa.distanzaKm.toFixed(1) + ' km';
+
+        meta.appendChild(comuneSpan);
+        meta.appendChild(distSpan);
+
+        if (impresa.ofi) {
+          const chipOfi = document.createElement('span');
+          chipOfi.className = 'chip ofi';
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          chipOfi.appendChild(dot);
+          chipOfi.appendChild(document.createTextNode(' Partner OFI'));
+          meta.appendChild(chipOfi);
+        }
+
+        const chipTier = document.createElement('span');
+        chipTier.className = 'badge-tier';
+        if (impresa.tier === 3) chipTier.textContent = 'Top partner';
+        else if (impresa.tier === 2) chipTier.textContent = 'Molto presente';
+        else if (impresa.tier === 1) chipTier.textContent = 'Presente su OFI';
+        else chipTier.textContent = 'Partner attivo';
+        meta.appendChild(chipTier);
+
+        headText.appendChild(h3);
+        headText.appendChild(meta);
+
+        head.appendChild(logo);
+        head.appendChild(headText);
+
+        const body = document.createElement('div');
+        body.className = 'impresa-body';
+        const pDesc = document.createElement('p');
+        pDesc.textContent = impresa.descrizione;
+        body.appendChild(pDesc);
+
+        const foot = document.createElement('div');
+        foot.className = 'impresa-foot';
+
+        const note = document.createElement('div');
+        note.className = 'small';
+        note.textContent = 'Potrai indicare tutte le tue richieste nel passo successivo.';
+
+        const azioni = document.createElement('div');
+        azioni.className = 'impresa-azioni';
+
+        const btnSel = document.createElement('button');
+        btnSel.type = 'button';
+        btnSel.className = 'seleziona-impresa';
+        btnSel.innerHTML = '<span class="icon">☑</span><span>Seleziona</span>';
+
+        btnSel.addEventListener('click', () => toggleSelezione(impresa.id));
+
+        const linkProfilo = document.createElement('button');
+        linkProfilo.type = 'button';
+        linkProfilo.className = 'link-profilo';
+        linkProfilo.textContent = 'Vedi il profilo sintetico';
+        linkProfilo.addEventListener('click', () => {
+          // TODO: qui collegheremo profilo-light o profilo completo in base al tipo di impresa
+          alert('In questa fase verrà aperto il profilo coerente, senza tasto "Invia preventivo".');
+        });
+
+        azioni.appendChild(btnSel);
+        azioni.appendChild(linkProfilo);
+
+        foot.appendChild(note);
+        foot.appendChild(azioni);
+
+        card.appendChild(head);
+        card.appendChild(body);
+        card.appendChild(foot);
+
+        li.appendChild(card);
+        listaImpreseEl.appendChild(li);
+      });
+
+      syncSelezioneUI();
+    }
+
+    function toggleSelezione(id) {
+      if (selezionate.has(id)) {
+        selezionate.delete(id);
+      } else {
+        if (selezionate.size >= 10) {
+          alert('Puoi selezionare al massimo 10 imprese.');
+          return;
+        }
+        selezionate.add(id);
+      }
+      syncSelezioneUI();
+    }
+
+    function syncSelezioneUI() {
+      counterEl.textContent = selezionate.size.toString();
+      selectedPillsEl.innerHTML = '';
+
+      selectedListRoot.querySelector('strong').textContent =
+        'Imprese selezionate (' + selezionate.size + ')';
+
+      impreseDemo.forEach(impresa => {
+        const card = listaImpreseEl.querySelector('.impresa-card[data-id="' + impresa.id + '"]');
+        if (!card) return;
+        if (selezionate.has(impresa.id)) {
+          card.classList.add('selected');
+          const pill = document.createElement('span');
+          pill.className = 'selected-pill';
+          pill.innerHTML =
+            '<span>' + impresa.nome + '</span>' +
+            '<button type="button" aria-label="Rimuovi ' + impresa.nome + '">×</button>';
+          pill.querySelector('button').addEventListener('click', () => toggleSelezione(impresa.id));
+          selectedPillsEl.appendChild(pill);
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+
+      btnProsegui.disabled = selezionate.size === 0;
+    }
+
+    btnProsegui.addEventListener('click', () => {
+      if (selezionate.size === 0) {
+        alert('Seleziona almeno un\'impresa prima di proseguire.');
+        return;
+      }
+      // In integrazione reale: salvare le imprese selezionate in sessionStorage / localStorage / Firestore
+      // e poi reindirizzare alla pagina richiedi-preventivo-FINALE.html
+      window.location.href = 'richiedi-preventivo-FINALE.html';
+    });
+
+    renderLista();
+  </script>
+</body>
+</html>

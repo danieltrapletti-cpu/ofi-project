@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "nome": "Giuseppina Verdi",
+    "vedIn": "Neri",
+    "eta": 87,
+    "frase": "È serenamente mancata all’affetto dei suoi cari",
+    "testo": "Ne danno il triste annuncio i figli, i nipoti e parenti tutti.",
+    "ringraziamenti": "Si ringraziano quanti parteciperanno al cordoglio.",
+    "luogo": "Torino",
+    "data": "2025-05-07",
+    "croce": true,
+    "foto": "",
+    "autore": "Onoranze Funebri Italia",
+    "stato": "in_attesa"
+  },
+  {
+    "id": 2,
+    "nome": "Marco Bianchi",
+    "vedIn": "",
+    "eta": 79,
+    "frase": "È mancato all'affetto dei suoi cari",
+    "testo": "Lo annunciano con dolore la moglie e i figli.",
+    "ringraziamenti": "Un sentito grazie a chi ci è stato vicino.",
+    "luogo": "Milano",
+    "data": "2025-05-05",
+    "croce": false,
+    "foto": "",
+    "autore": "OFI Impresa",
+    "stato": "pubblicato"
+  }
+]

@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luogo della Memoria – Creazione (Cittadino) – OFI</title>
+
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="./luogo-wizard.css">
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <script defer src="/ofi.js"></script>
+
+  <style>
+    /* Piccoli override “registro nazionale” */
+    .necro-hero-eyebrow { content: none; }
+    .necro-hero-eyebrow { color: #fde68a; }
+    .wizard-footer-left { max-width: 520px; }
+    .preview-shell { display: none !important; } /* qui niente anteprima tipo necrologio */
+  </style>
+</head>
+
+<body>
+
+<!-- ========================================= -->
+<!-- HEADER CITTADINO (coerente e pulito)      -->
+<!-- ========================================= -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <!-- ✅ qui metti le tue pagine cittadino reali -->
+      <li><a class="menu-callout" href="/cittadini/dashboard-cittadino.html">DASHBOARD</a></li>
+      <li><a class="menu-callout" href="/cittadini/luogo-memoria.html">LUOGO DELLA MEMORIA</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><button class="btn btn-primary" id="logoutBtn" type="button">ESCI</button></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- =============================== -->
+<!-- HERO ISTITUZIONALE             -->
+<!-- =============================== -->
+<section class="necro-hero">
+  <div class="necro-hero-inner">
+    <div class="necro-hero-content">
+
+      <div class="necro-hero-text">
+        <div class="necro-hero-eyebrow">Registro Nazionale OFI</div>
+        <h1>Creazione Luogo della Memoria.</h1>
+        <p>
+          Stai creando un <strong>Luogo unico</strong> dedicato a una persona cara.
+          La custodia è <strong>familiare</strong> e la visibilità predefinita è <strong>Pubblica (istituzionale)</strong>.
+        </p>
+
+        <div class="necro-hero-tricolore">
+          <div class="necro-hero-flag"></div>
+          <span class="necro-hero-tricolore-label">Standard Nazionale OFI</span>
+        </div>
+      </div>
+
+      <div class="necro-hero-agent">
+        <div class="necro-hero-agent-photo">
+          <img
+            src="/images/rosa.png"
+            alt="Luogo della Memoria – OFI"
+            loading="eager"
+          />
+        </div>
+        <div class="necro-hero-agent-label">OFI</div>
+        <div class="necro-hero-agent-phrase">Custodia sobria, istituzionale, verificabile.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =============================== -->
+<!-- WIZARD                         -->
+<!-- =============================== -->
+<main class="ofi-main">
+  <div class="wizard-shell">
+    <div class="wizard-card" id="wizardCard">
+
+      <div class="wizard-header">
+        <div class="wizard-eyebrow">
+          Passo <span id="stepNumber">1</span> di <span id="totalSteps">0</span>
+        </div>
+        <h2 class="wizard-title" id="wizardTitle">Avvio</h2>
+
+        <div class="step-progress">
+          <div class="step-progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+
+      <div class="wizard-layout">
+        <div class="agente-chat-container">
+
+          <div id="wizardBanner" class="wizard-banner" hidden></div>
+
+          <div id="agentMessage" class="agent-message">
+            🛡️ <strong>Agente OFI:</strong> <span id="agentText">Ti guiderò passo dopo passo.</span>
+          </div>
+
+          <div class="step-field-wrapper"></div>
+
+          <div id="stepHelper" class="step-helper"></div>
+          <div id="stepError" class="step-error"></div>
+
+          <div class="step-buttons">
+            <button class="btn-soft" id="btnBack" disabled>Indietro</button>
+            <button class="btn-primary" id="btnNext">Avanti</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <section class="wizard-footer">
+      <div class="wizard-footer-left">
+        La creazione del Luogo della Memoria è un atto <strong>unico</strong>.
+        OFI applica controlli anti-doppione e può richiedere verifiche in caso di incongruenze.
+      </div>
+      <div class="wizard-footer-right">
+        <div class="agente-ofi-badge">
+          <i class="fa-solid fa-shield-heart"></i>
+          Custodia familiare • Visibilità pubblica
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- Overlay attesa -->
+<div id="aiLoadingOverlay" class="ai-loading" hidden>
+  <div class="ai-loading-card" role="status" aria-live="polite">
+    <div class="ai-loading-title">Agente OFI al lavoro…</div>
+    <div class="ai-loading-sub" id="aiLoadingText">Preparazione…</div>
+    <div class="ai-loading-bar">
+      <div class="ai-loading-bar-fill" id="aiLoadingBar"></div>
+    </div>
+    <div class="ai-loading-pct" id="aiLoadingPct">0%</div>
+  </div>
+
+</div>
+
+<!-- =============================== -->
+<!-- RISULTATO: LUOGO CREATO (WOW)   -->
+<!-- =============================== -->
+<div id="resultModal" class="result-modal" aria-hidden="true">
+  <div class="result-modal-content" role="dialog" aria-modal="true" aria-label="Luogo creato">
+    <button class="modal-close" id="resultClose" type="button" aria-label="Chiudi">✕</button>
+
+    <div class="final-preview-shell ofi-luogo-result">
+      <div class="final-preview-header">
+        <h2 id="resultTitle" class="luogo-result-title">Il Luogo della Memoria è nato.</h2>
+        <p id="resultSub" class="luogo-result-sub">Da questo momento è custodito nel Registro OFI.</p>
+      </div>
+
+      <div class="final-preview-card luogo-cover-card">
+  <div class="luogo-cover-top">
+    <div class="final-photo-frame luogo-cover-frame">
+      <img id="resultCoverImg" alt="Copertina Luogo della Memoria" loading="eager" />
+    </div>
+  </div>
+
+  <div class="luogo-cover-body">
+    <div class="luogo-cover-line" aria-hidden="true"></div>
+    <strong id="resultNomeCognome" class="luogo-cover-name">—</strong>
+    <p class="luogo-dedica"><span class="luogo-dedica-text">Un luogo dove il legame continua.</span></p>
+
+    <p class="luogo-meta luogo-meta--cover">
+      <span id="resultPlaceShort">—</span>
+      <span class="sep">•</span>
+      <span id="resultDataMorteFmt">—</span>
+    </p>
+
+    <div class="luogo-cover-seal">
+      <img src="/images/rosa.png" alt="OFI" class="luogo-cover-seal-img">
+      <div class="luogo-cover-seal-text">
+        <strong>Registro OFI</strong>
+        Creazione verificabile • custodia familiare
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="final-preview-controls luogo-controls">
+  <div class="final-actions luogo-actions">
+    <a class="final-action-btn primary" id="resultVisitBtn" href="#" aria-label="Visita il Luogo creato">Visita il Luogo</a>
+    <a class="final-action-btn soft" id="resultManageBtn" href="#" aria-label="Apri gestione privata del Luogo">Gestione privata</a>
+  </div>
+  <a class="final-action-link" id="resultLaterBtn" href="#" aria-label="Torna al Luogo della Memoria">Torna al Luogo della Memoria</a>
+</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Google Places (autocomplete) -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&loading=async"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, updateDoc, getDocs, query, where, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  // ✅ usa la stessa config del progetto (qui ho messo quella che usi nel wizard necrologio)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+  
+  const LOGIN_URL = "/cittadini/login-cittadino.html"; // ✅ come mi hai detto: "login-cittadino"
+  const HUB_URL   = "/cittadini/luogo-memoria.html";
+
+  // DOM
+  const wizardTitle = document.getElementById("wizardTitle");
+  const progressBar = document.getElementById("progressBar");
+  const stepHelper  = document.getElementById("stepHelper");
+  const stepError   = document.getElementById("stepError");
+  const fieldWrapper = document.querySelector(".step-field-wrapper");
+  const agentTextEl = document.getElementById("agentText");
+  const btnBack = document.getElementById("btnBack");
+  const btnNext = document.getElementById("btnNext");
+  const stepNumberEl = document.getElementById("stepNumber");
+  const totalStepsEl = document.getElementById("totalSteps");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Loader
+  const aiLoadingOverlay = document.getElementById("aiLoadingOverlay");
+  const aiLoadingText = document.getElementById("aiLoadingText");
+  const aiLoadingBar = document.getElementById("aiLoadingBar");
+  const aiLoadingPct = document.getElementById("aiLoadingPct");
+  function setLoading(on, pct = 0, msg = "Preparazione…") {
+    if (!aiLoadingOverlay) return;
+    aiLoadingOverlay.hidden = !on;
+    if (aiLoadingText) aiLoadingText.textContent = msg;
+    if (aiLoadingPct) aiLoadingPct.textContent = `${Math.max(0, Math.min(100, Number(pct)||0))}%`;
+    if (aiLoadingBar) aiLoadingBar.style.width = `${Math.max(0, Math.min(100, Number(pct)||0))}%`;
+    document.body.style.overflow = on ? "hidden" : "";
+  }
+  // ===== AUTH GATE (stabile, anti “buttate fuori”) =====
+  // Stabilizza la sessione (riduce i "flash" a user=null)
+  setPersistence(auth, browserLocalPersistence).catch(() => {});
+
+  let currentUser = null;
+  let __AUTH_READY__ = false;
+  let __AUTH_REDIRECTED__ = false;
+
+  async function waitForUser(maxMs = 5000){
+    const start = Date.now();
+    while ((Date.now() - start) < maxMs){
+      const u = auth.currentUser;
+      if (u) return u;
+      await new Promise(r => setTimeout(r, 250));
+    }
+    return null;
+  }
+
+  function showAuthWarning() {
+    if (!stepError) return;
+    stepError.textContent = "Accesso non rilevato. Per continuare devi essere loggato.";
+  }
+  function clearAuthWarning() {
+    if (!stepError) return;
+    if ((stepError.textContent || "").includes("Accesso non rilevato")) stepError.textContent = "";
+  }
+
+  let authInitialized = false;
+
+onAuthStateChanged(auth, async (user) => {
+
+  // 1) Primo giro: decidiamo solo qui se mandare al login
+  if (!authInitialized) {
+    authInitialized = true;
+
+    if (!user) {
+      showAuthWarning();
+      const waited = await waitForUser(5000);
+
+      if (!waited) {
+        window.location.replace(LOGIN_URL);
+        return;
+      }
+
+      currentUser = waited;
+      clearAuthWarning();
+      return;
+    }
+
+    currentUser = user;
+    clearAuthWarning();
+    return;
+  }
+
+  // 2) Giri successivi: MAI redirect (evita che la modale sparisca)
+  // Se arriva un null “transitorio”, lo ignoriamo.
+  if (!user) {
+    console.warn("Auth transient null ignored (luogo-wizard)");
+    return;
+  }
+
+  currentUser = user;
+});
+
+// Query (se arrivi da una consegna)
+const params = new URLSearchParams(location.search);
+const necrologioId = (params.get("necrologioId") || params.get("deliveryId") || "").trim();
+
+  // Wizard step data (WORLD-ready + IT aligned)
+  // Nota: IT oggi, ma struttura pronta per espansione globale.
+  const steps = [
+    { id:"nome", title:"Nome della persona.", type:"text", required:true, agent:"Inserisci il nome.", helper:"" },
+    { id:"cognome", title:"Cognome.", type:"text", required:true, agent:"Inserisci il cognome.", helper:"" },
+    {
+      id:"dataMorte",
+      title:"Data di morte (obbligatoria).",
+      type:"date",
+      required:true,
+      agent:"La data di morte è necessaria per creare il Luogo.",
+      helper:"È un dato essenziale per l’unicità e per le ricorrenze future."
+    },
+
+    /* 🌍 Presupposto mondiale: Paese (oggi: Italia, ma già strutturato) */
+    {
+      id:"paese",
+      title:"Paese (per la Mappa dei Ricordi).",
+      type:"country",
+      required:true,
+      agent:"Seleziona il Paese: serve per geolocalizzare correttamente il Luogo.",
+      helper:"Oggi OFI lavora sull’Italia. La struttura è già pronta per l’espansione internazionale."
+    },
+
+    {
+      id:"luogo",
+      title:"Comune / Luogo (per la Mappa dei Ricordi).",
+      type:"place",
+      required:true,
+      agent:"Seleziona un Comune o un luogo per posizionare la luce sulla mappa.",
+      helper:"Usa i suggerimenti: il Luogo deve avere coordinate (lat/lng) per la Mappa dei Ricordi."
+    },
+
+    {
+      id:"foto",
+      title:"Fotografia (consigliata).",
+      type:"photo",
+      required:false,
+      agent:"Se desideri, aggiungi una fotografia: sarà la copertina del Luogo.",
+      helper:"Se arrivi da un necrologio, potresti già trovare una foto precompilata. Puoi mantenerla o sostituirla."
+    },
+
+    /* Frase breve (tipo lapide), non social */
+    {
+      id:"frase",
+      title:"Frase iniziale (facoltativa).",
+      type:"textarea",
+      required:false,
+      agent:"Se vuoi, inserisci una frase breve. Sarà visibile sotto il nome.",
+      helper:"Esempio: “Il legame continua.” (max 300 caratteri)."
+    },
+
+    /* Ruolo (base per gestione globale e verifiche) */
+    {
+      id:"ruolo",
+      title:"Ruolo del richiedente (custodia).",
+      type:"select",
+      required:true,
+      agent:"Indica con quale ruolo stai creando questo Luogo.",
+      helper:"Serve per tutela, verifiche e gestione custodia nel tempo.",
+      options:[
+        { value:"", label:"Seleziona…" },
+        { value:"familiare", label:"Familiare diretto" },
+        { value:"delegato", label:"Delegato familiare" },
+        { value:"impresa", label:"Impresa funebre (con consegna al custode)" },
+        { value:"altro", label:"Altro / preferisco non specificare" }
+      ]
+    },
+
+    /* Visibilità: esplicita e consapevole */
+    {
+      id:"visibilita",
+      title:"Visibilità iniziale del Luogo.",
+      type:"select",
+      required:true,
+      agent:"Scegli la visibilità. Puoi cambiarla in gestione privata.",
+      helper:"Pubblico: visitabile da tutti. Family: solo custodi.",
+      options:[
+        { value:"", label:"Seleziona…" },
+        { value:"public", label:"Pubblico (istituzionale)" },
+        { value:"family", label:"Family (solo custodi)" }
+      ]
+    },
+
+    {
+      id:"consenso",
+      title:"Conferma custodia e unicità.",
+      type:"select",
+      required:true,
+      agent:"Serve una conferma prima della creazione.",
+      helper:"OFI esegue controlli anti-doppione e può richiedere verifiche.",
+      options: [
+        { value:"", label:"Seleziona…" },
+        { value:"ok", label:"Confermo: sono familiare/delegato o incaricato e non esiste già un Luogo per questa persona" }
+      ]
+    }
+  ];
+
+  let currentStepIndex = 0;
+  let answers = {};
+
+    
+  // ==============================
+  // Prefill da necrologio (deliveryId)
+  // ==============================
+  const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+
+  function pickNomeCognome(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    const p = s?.datiPersona || {};
+    const nome = a.nome || p.nome || x.nome || x.nomeDefunto || x.titolo || "";
+    const cognome = a.cognome || p.cognome || x.cognome || "";
+    return {
+      nome: String(nome||"").trim(),
+      cognome: String(cognome||"").trim()
+    };
+  }
+
+  function pickDataMorte(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    const p = s?.datiPersona || {};
+    const candidates = [
+      a.dataMorte, a.dataDecesso, a.dataDiMorte,
+      p.dataMorte, p.dataDecesso, p.dataDiMorte,
+      x.dataMorte, x.dataDecesso, x.dataDiMorte,
+      a.dataNecrologio, s?.chiusura?.dataNecrologio
+    ].filter(Boolean);
+    return String(candidates[0] || "").trim();
+  }
+
+  function pickLuogoLabel(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    const p = s?.datiPersona || {};
+    const candidates = [
+      a.comune, a.luogo, a.citta, a.città, a.paese,
+      p.comune, p.luogo, p.citta, p.città, p.paese,
+      x.comune, x.luogo, x.citta, x.città, x.paese
+    ].filter(Boolean);
+    return String(candidates[0] || "").trim();
+  }
+
+
+  function pickPhotoUrl(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    const p = s?.datiPersona || {};
+
+    const candidates = [
+      a.fotoUrl, a.photoUrl, a.immagineUrl, a.imageUrl,
+      p.fotoUrl, p.photoUrl, p.immagineUrl, p.imageUrl,
+      x.fotoUrl, x.photoUrl, x.immagineUrl, x.imageUrl,
+      s?.fotoUrl, s?.photoUrl, s?.immagineUrl, s?.imageUrl,
+      s?.media?.fotoUrl, s?.media?.photoUrl, s?.media?.immagineUrl, s?.media?.imageUrl,
+      x?.media?.fotoUrl, x?.media?.photoUrl
+    ].filter(Boolean);
+
+    const url = String(candidates[0] || "").trim();
+    return url || "";
+  }
+
+  function setWizardBanner(text){
+    const el = document.getElementById("wizardBanner");
+    if (!el) return;
+    el.textContent = text || "";
+    el.hidden = !text;
+  }
+
+  async function loadDeliveryPrefill(){
+    if (!necrologioId) {
+      setWizardBanner("Avvio da zero: inserisci i dati essenziali per creare un Luogo unico.");
+      answers.paese = answers.paese || { code:"IT", name:"Italia" }; answers.visibilita = answers.visibilita || "public"; answers.ruolo = answers.ruolo || "familiare"; return;
+    }
+
+    setWizardBanner("Avvio da necrologio: alcuni dati sono già pronti. Verifica e prosegui.");
+
+    
+    answers.paese = answers.paese || { code:"IT", name:"Italia" }; answers.visibilita = answers.visibilita || "public"; answers.ruolo = answers.ruolo || "familiare";
+// tentiamo prefill da Firestore
+    try{
+      // aspetta autenticazione se serve (ma non bloccare troppo)
+      let u = currentUser || auth.currentUser;
+      if (!u){
+        u = await waitForUser(3500);
+      }
+
+      // Legge il doc del necrologio pubblicato (id = deliveryId)
+      const snap = await getDoc(doc(db, "necrologi_pubblicati", necrologioId));
+      if (!snap.exists()) return;
+
+      const data = snap.data() || {};
+      const nc = pickNomeCognome(data);
+      const dm = pickDataMorte(data);
+      const luogoLabel = pickLuogoLabel(data);
+      const photoUrl = pickPhotoUrl(data);
+
+      if (nc.nome) answers.nome = nc.nome;
+      if (nc.cognome) answers.cognome = nc.cognome;
+      if (dm) answers.dataMorte = dm;
+
+      // FOTO: prefill (se presente)
+      if (photoUrl) {
+        answers.foto = { photoUrl, source: "necrologio", storageRef: "", removed: false, file: null };
+      }
+
+      // luogo: prefill SOLO testo (da confermare con suggerimento per ottenere lat/lng)
+      if (luogoLabel) {
+        answers.luogo = {
+          label: luogoLabel,
+          lat: null,
+          lng: null,
+          comune: "",
+          provincia: "",
+          regione: "",
+          country: (answers.paese?.code || "IT"),
+          placeId: "",
+          needsConfirm: true
+        };
+      }
+    }catch(e){
+      console.warn("Prefill delivery fallito:", e);
+    }
+  }
+
+
+  function escapeHtml(str){
+    return String(str||"").replace(/[&<>"']/g, (m)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[m]));
+  }
+
+function renderStep(index){
+    currentStepIndex = Math.max(0, Math.min(steps.length - 1, index));
+    const step = steps[currentStepIndex];
+
+    if (wizardTitle) wizardTitle.textContent = step.title;
+    if (stepNumberEl) stepNumberEl.textContent = String(currentStepIndex + 1);
+    if (totalStepsEl) totalStepsEl.textContent = String(steps.length);
+
+    if (progressBar) {
+      const pct = Math.round(((currentStepIndex + 1) / steps.length) * 100);
+      progressBar.style.width = `${pct}%`;
+    }
+
+    if (agentTextEl) agentTextEl.textContent = step.agent || "Ti guiderò passo dopo passo.";
+    if (stepHelper) stepHelper.textContent = step.helper || "";
+    if (stepError) stepError.textContent = "";
+
+    if (btnBack) btnBack.disabled = currentStepIndex === 0;
+    if (btnNext) btnNext.textContent = (currentStepIndex === steps.length - 1) ? "Crea Luogo" : "Avanti";
+
+    if (!fieldWrapper) return;
+    fieldWrapper.innerHTML = "";
+
+    // input
+    const existing = answers[step.id];
+
+
+
+    // COUNTRY (Paese)
+    if (step.type === "country") {
+      const sel = document.createElement("select");
+      sel.id = "stepInput";
+      sel.className = "step-select";
+      const opts = [
+        { value:"IT", label:"Italia" },
+        { value:"CH", label:"Svizzera" },
+        { value:"FR", label:"Francia" },
+        { value:"DE", label:"Germania" },
+        { value:"ES", label:"Spagna" },
+        { value:"GB", label:"Regno Unito" },
+        { value:"US", label:"Stati Uniti" }
+      ];
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = "Seleziona…";
+      sel.appendChild(first);
+
+      opts.forEach(o=>{
+        const opt = document.createElement("option");
+        opt.value = o.value;
+        opt.textContent = o.label;
+        sel.appendChild(opt);
+      });
+
+      const cur = answers.paese?.code || (typeof existing === "string" ? existing : "") || "IT";
+      sel.value = cur;
+
+      sel.addEventListener("change", ()=>{
+        const code = (sel.value || "IT").toUpperCase();
+        const name = opts.find(x=>x.value===code)?.label || "Italia";
+        answers.paese = { code, name };
+        // allinea anche il country del luogo se già impostato
+        if (answers.luogo && typeof answers.luogo === "object"){
+          answers.luogo.country = code;
+          answers.luogo.needsConfirm = true;
+          answers.luogo.lat = null;
+          answers.luogo.lng = null;
+        }
+      });
+
+      fieldWrapper.appendChild(sel);
+      return;
+    }
+
+    // TEXTAREA (Frase iniziale)
+    if (step.type === "textarea") {
+      const ta = document.createElement("textarea");
+      ta.id = "stepInput";
+      ta.className = "step-textarea";
+      ta.maxLength = 300;
+      ta.placeholder = "Scrivi una frase breve (facoltativa)…";
+      ta.value = (typeof existing === "string" ? existing : (existing?.text || "")) || "";
+      ta.addEventListener("input", ()=>{
+        const v = (ta.value || "").slice(0,300);
+        if (ta.value !== v) ta.value = v;
+      });
+      fieldWrapper.appendChild(ta);
+
+      const counter = document.createElement("div");
+      counter.className = "step-counter";
+      const upd = ()=>{ counter.textContent = `${(ta.value||"").length}/300`; };
+      ta.addEventListener("input", upd);
+      upd();
+      fieldWrapper.appendChild(counter);
+      return;
+    }
+
+    // SELECT
+    if (step.type === "select") {
+      const sel = document.createElement("select");
+      sel.id = "stepInput";
+      sel.className = "step-select";
+
+      (step.options || []).forEach(opt => {
+        const o = document.createElement("option");
+        o.value = opt.value;
+        o.textContent = opt.label;
+        sel.appendChild(o);
+      });
+
+      sel.value = (existing ?? "");
+      fieldWrapper.appendChild(sel);
+      return;
+    }
+
+
+    // PHOTO (copertina) – preview + upload
+    if (step.type === "photo") {
+      const wrap = document.createElement("div");
+      wrap.className = "photoStep";
+
+      const existing = answers[step.id] || null;
+
+      const preview = document.createElement("div");
+      preview.className = "photoPreview";
+
+      const img = document.createElement("img");
+      img.className = "photoPreviewImg";
+      img.alt = "Anteprima fotografia";
+      img.loading = "eager";
+
+      const placeholder = document.createElement("div");
+      placeholder.className = "photoPlaceholder";
+      placeholder.innerHTML = `<div class="phTitle">Copertina del Luogo</div><div class="phSub">Puoi aggiungere una foto ora oppure più tardi.</div>`;
+
+      const meta = document.createElement("div");
+      meta.className = "photoMeta";
+
+      const controls = document.createElement("div");
+      controls.className = "photoControls";
+
+      const file = document.createElement("input");
+      file.type = "file";
+      file.accept = "image/*";
+      file.className = "photoFile";
+      file.id = "stepInput";
+
+      const btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "btn-soft";
+      btnRemove.textContent = "Rimuovi foto";
+
+      const btnKeep = document.createElement("button");
+      btnKeep.type = "button";
+      btnKeep.className = "btn-soft";
+      btnKeep.textContent = "Mantieni foto del necrologio";
+
+      function renderPhotoState() {
+        const cur = answers[step.id] || null;
+        const url = cur && !cur.removed ? (cur.photoUrl || "") : "";
+        preview.innerHTML = "";
+        controls.innerHTML = "";
+
+        if (url) {
+          img.src = url;
+          preview.appendChild(img);
+          meta.textContent = cur.source === "necrologio"
+            ? "Foto precompilata dal necrologio (puoi sostituirla)."
+            : "Foto selezionata (puoi sostituirla).";
+          controls.appendChild(file);
+          controls.appendChild(btnRemove);
+        } else {
+          preview.appendChild(placeholder);
+          meta.textContent = "Nessuna foto selezionata. Puoi aggiungerla ora oppure completare in seguito.";
+          controls.appendChild(file);
+          // se esisteva una foto da necrologio ma è stata rimossa, offri “mantieni”
+          if (existing?.source === "necrologio" && existing?.photoUrl) {
+            controls.appendChild(btnKeep);
+          }
+        }
+      }
+
+      file.addEventListener("change", () => {
+        const f = file.files && file.files[0];
+        if (!f) return;
+        // preview immediata (senza upload qui)
+        const url = URL.createObjectURL(f);
+        answers[step.id] = { photoUrl: url, source: "upload_pending", storageRef: "", removed: false, file: f };
+        renderPhotoState();
+      });
+
+      btnRemove.addEventListener("click", () => {
+        const cur = answers[step.id] || {};
+        answers[step.id] = { ...(cur || {}), removed: true, file: null };
+        renderPhotoState();
+      });
+
+      btnKeep.addEventListener("click", () => {
+        if (existing?.photoUrl) {
+          answers[step.id] = { photoUrl: existing.photoUrl, source: "necrologio", storageRef: "", removed: false, file: null };
+          renderPhotoState();
+        }
+      });
+
+      // init
+      if (existing) {
+        answers[step.id] = existing;
+      } else {
+        answers[step.id] = null;
+      }
+
+      wrap.appendChild(preview);
+      wrap.appendChild(meta);
+      wrap.appendChild(controls);
+      fieldWrapper.appendChild(wrap);
+      renderPhotoState();
+      return;
+    }
+
+
+    // PLACE (autocomplete + suggerimenti)
+    if (step.type === "place") {
+      const box = document.createElement("div");
+      box.className = "placeBox";
+
+      const input = document.createElement("input");
+      input.id = "stepInput";
+      input.type = "text";
+      input.className = "placeInput";
+      input.placeholder = "Es. Zingonia, Bergamo / Via Roma 12…";
+      input.autocomplete = "off";
+
+      const meta = document.createElement("div");
+      meta.className = "placeMeta";
+      meta.textContent = "";
+
+      const list = document.createElement("div");
+      list.className = "placeSuggest";
+      list.hidden = true;
+
+      // Stato locale del place
+      let selectedPlace = null;
+
+
+// Preferisci Google Places (gestisce bene frazioni/località: es. Zingonia).
+const hasGooglePlaces = () => !!(window.google && google.maps && google.maps.places);
+
+function pickAddrComp(place, type){
+  return (place?.address_components || []).find(c => (c.types || []).includes(type)) || null;
+}
+
+function normalizePlaceFromGoogle(place){
+  const lat = place?.geometry?.location?.lat?.();
+  const lng = place?.geometry?.location?.lng?.();
+
+  // Comune: prova in ordine (locality → admin_area_level_3 → sublocality → admin_area_level_2)
+  const comune =
+    (pickAddrComp(place, "locality")?.long_name) ||
+    (pickAddrComp(place, "administrative_area_level_3")?.long_name) ||
+    (pickAddrComp(place, "sublocality")?.long_name) ||
+    (pickAddrComp(place, "administrative_area_level_2")?.long_name) || "";
+
+  const provincia = (pickAddrComp(place, "administrative_area_level_2")?.short_name) || "";
+  const regione   = (pickAddrComp(place, "administrative_area_level_1")?.long_name) || "";
+  const country   = (pickAddrComp(place, "country")?.short_name) || "IT";
+
+  const label = place.formatted_address || place.name || "";
+
+  return {
+    label,
+    comune,
+    provincia,
+    regione,
+    country,
+    lat: (Number.isFinite(lat) ? Number(lat) : null),
+    lng: (Number.isFinite(lng) ? Number(lng) : null),
+    placeId: place.place_id || "",
+    source: "google",
+    needsConfirm: false,
+    types: Array.isArray(place.types) ? place.types : []
+  };
+}
+
+function initGoogleAutocomplete(){
+  if (!hasGooglePlaces()) return null;
+  try{
+    const ac = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: ((answers.paese?.code || "IT").toLowerCase()) },
+      // geocode è più permissivo → prende anche frazioni/località e indirizzi
+      types: ["geocode"]
+    });
+
+    ac.addListener("place_changed", ()=>{
+      const place = ac.getPlace();
+      if (!place || !place.geometry) return;
+
+      const normalized = normalizePlaceFromGoogle(place);
+
+     selectedPlace = normalized;
+     answers[step.id] = normalized;
+
+      // Se per qualche motivo non ho coords, tratto come da confermare
+      if (!normalized.lat || !normalized.lng){
+        normalized.needsConfirm = true;
+      }
+
+      selectedPlace = normalized;
+
+      // UI
+      input.value = normalized.label || input.value;
+      meta.classList.remove("warn");
+
+      if (normalized.lat && normalized.lng){
+        meta.textContent = `Coordinate pronte: ${Number(normalized.lat).toFixed(5)}, ${Number(normalized.lng).toFixed(5)}${normalized.comune ? " · " + normalized.comune : ""}${normalized.provincia ? " (" + normalized.provincia + ")" : ""}`;
+      } else {
+        meta.textContent = "Da confermare: seleziona un risultato con coordinate (necessarie per la Mappa).";
+        meta.classList.add("warn");
+      }
+
+      // error UI (se prima avevo mostrato il rosso)
+      if (stepError){
+        stepError.textContent = (normalized.lat && normalized.lng)
+          ? ""
+          : "Seleziona un risultato con coordinate (necessarie per la Mappa).";
+      }
+
+      clearSuggest(); // chiudi eventuale lista custom
+    });
+
+    return ac;
+  }catch(e){
+    console.warn("Google autocomplete init failed:", e);
+    return null;
+  }
+}
+
+      // prefill
+      if (existing && typeof existing === "object") {
+        input.value = existing.label || "";
+        selectedPlace = existing;
+        if (existing.needsConfirm) {
+          meta.textContent = "Da confermare: seleziona un suggerimento per agganciare le coordinate.";
+          meta.classList.add("warn");
+        } else if (existing.lat && existing.lng) {
+          meta.textContent = `Coordinate pronte: ${Number(existing.lat).toFixed(5)}, ${Number(existing.lng).toFixed(5)}`;
+          meta.classList.remove("warn");
+        }
+      }
+
+      // Init Google (se disponibile)
+      const __ac = initGoogleAutocomplete();
+      const googleActive = !!__ac;
+      if (googleActive) {
+        // Evita doppio autocomplete: se Google è attivo, disattiva la lista custom (Mapbox)
+        clearSuggest();
+        list.remove();
+      }
+
+      function clearSuggest(){
+        list.innerHTML = "";
+        list.hidden = true;
+      }
+
+      function setSelected(p){
+        selectedPlace = p;
+        if (stepError) stepError.textContent = "";
+        answers[step.id] = p; // aggiornamento live
+        input.value = p.label || "";
+        clearSuggest();
+        meta.classList.remove("warn");
+        meta.textContent = (p.lat && p.lng)
+          ? `Coordinate pronte: ${Number(p.lat).toFixed(5)}, ${Number(p.lng).toFixed(5)}`
+          : "Seleziona un suggerimento per ottenere le coordinate.";
+      }
+
+      function parseMapboxFeature(f){
+        const label = f.place_name || f.text || "";
+        const [lng, lat] = (f.center || []);
+        let comune = "";
+        let provincia = "";
+        let regione = "";
+        let country = "IT";
+
+        // Mapbox: context contiene region/country, mentre il comune di solito è f.text per type place/locality
+        comune = f.text || "";
+
+        (f.context || []).forEach(c => {
+          if (c.id?.startsWith("region.")) regione = c.text || regione;
+          if (c.id?.startsWith("country.")) country = (c.short_code || c.text || "IT").toUpperCase();
+          if (c.id?.startsWith("district.")) provincia = c.text || provincia;
+          if (c.id?.startsWith("place.")) comune = comune || c.text || comune;
+        });
+
+        return {
+          label,
+          comune,
+          provincia,
+          regione,
+          country,
+          lat: (typeof lat === "number") ? lat : null,
+          lng: (typeof lng === "number") ? lng : null,
+          placeId: f.id || "",
+          source: "mapbox",
+          needsConfirm: false
+        };
+      }
+
+      let t = null;
+      async function searchPlaces(q){
+        if (!q || q.length < 2) { clearSuggest(); return; }
+
+        // Se l'utente modifica il testo, invalida selezione (evita salvataggi senza coords)
+        if (selectedPlace && (selectedPlace.label || "") !== q) {
+          selectedPlace = null;
+          answers[step.id] = { label: q, lat:null, lng:null, comune:"", provincia:"", regione:"", country: (answers.paese?.code || "IT"), placeId:"", source:"manual", needsConfirm:true };
+          meta.classList.add("warn");
+          meta.textContent = "Seleziona un suggerimento per agganciare le coordinate.";
+        }
+
+        const ctry = (answers.paese?.code || "IT").toLowerCase();
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(q)}.json?country=${encodeURIComponent((answers.paese?.code||"IT").toLowerCase())}&language=it&types=place,locality&limit=6&access_token=${encodeURIComponent(MAPBOX_TOKEN)}`;
+        const res = await fetch(url);
+        const js = await res.json();
+        const feats = (js.features || []);
+        list.innerHTML = "";
+        if (!feats.length) {
+          clearSuggest();
+          return;
+        }
+        feats.forEach(f => {
+          const p = parseMapboxFeature(f);
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "placeItem";
+          btn.innerHTML = `<div class="placeItemTitle">${escapeHtml(p.label)}</div>
+                           <div class="placeItemMeta">${escapeHtml([p.comune, p.provincia, p.regione].filter(Boolean).join(" · "))}</div>`;
+          btn.addEventListener("click", () => setSelected(p));
+          list.appendChild(btn);
+        });
+        list.hidden = false;
+      }
+
+      if (!googleActive) {
+      input.addEventListener("input", () => {
+  selectedPlace = null;
+
+  const q = (input.value || "").trim();
+  answers[step.id] = q
+    ? { label: q, lat: null, lng: null, comune:"", provincia:"", regione:"", country: (answers.paese?.code || "IT"), placeId:"", source:"manual", needsConfirm:true }
+    : null;
+
+  if (stepError) stepError.textContent = "";
+  meta.classList.add("warn");
+  meta.textContent = "Usa i suggerimenti: il Luogo deve avere coordinate (lat/lng) per la Mappa dei Ricordi.";
+});
+
+      input.addEventListener("focus", () => {
+        const q = (input.value || "").trim();
+        if (q.length >= 2) searchPlaces(q).catch(()=>{});
+      });
+    } else {
+      // Google attivo: evita doppia lista. Invalida la selezione quando l'utente digita.
+      input.addEventListener("input", () => {
+        selectedPlace = null;
+        if (stepError) stepError.textContent = "";
+        meta.classList.add("warn");
+        meta.textContent = "Usa i suggerimenti: il Luogo deve avere coordinate (lat/lng) per la Mappa dei Ricordi.";
+      });
+    }
+
+      
+      document.addEventListener("click", (ev) => {
+        if (!box.contains(ev.target)) clearSuggest();
+      });
+
+      box.appendChild(input);
+      box.appendChild(meta);
+      box.appendChild(list);
+      fieldWrapper.appendChild(box);
+      return;
+    }
+
+    // TEXT/DATE
+    const input = document.createElement("input");
+    input.id = "stepInput";
+    input.type = step.type === "date" ? "date" : "text";
+    input.placeholder = step.placeholder || "";
+    input.autocomplete = "off";
+    input.value = (existing ?? "");
+    fieldWrapper.appendChild(input);
+  }
+
+  function validateCurrentStep(){
+    const step = steps[currentStepIndex];
+
+    // PLACE: obbligatorio e deve avere lat/lng
+    if (step.type === "place") {
+      const p = answers[step.id];
+      const label = (typeof p === "object") ? (p.label || "") : "";
+      const hasCoords = (typeof p === "object") && (typeof p.lat === "number") && (typeof p.lng === "number");
+      if (step.required && !label.trim()){
+        stepError.textContent = "Questo campo è obbligatorio.";
+        return false;
+      }
+      if (step.required && !hasCoords){
+        stepError.textContent = "Seleziona un suggerimento per agganciare le coordinate (necessarie per la Mappa).";
+        return false;
+      }
+      return true;
+    }
+
+    const input = document.getElementById("stepInput");
+    const value = (input?.value || "").trim();
+
+    if (step.required && !value) {
+      stepError.textContent = "Questo campo è obbligatorio.";
+      return false;
+    }
+
+    if (step.id === "consenso" && value !== "ok") {
+      stepError.textContent = "Devi confermare per procedere.";
+      return false;
+    }
+
+    return true;
+  }
+
+  function saveCurrentStep(){
+    const step = steps[currentStepIndex];
+
+    // PLACE: già gestito live in answers (non sovrascrivere qui)
+    if (step.type === "place") return;
+
+    // PHOTO: gestito live
+    if (step.type === "photo") return;
+
+    const input = document.getElementById("stepInput");
+    const value = (input?.value || "").trim();
+
+    if (step.type === "country"){
+      const code = (value || "IT").toUpperCase();
+      const nameMap = {IT:"Italia",CH:"Svizzera",FR:"Francia",DE:"Germania",ES:"Spagna",GB:"Regno Unito",US:"Stati Uniti"};
+      answers.paese = { code, name: nameMap[code] || code };
+      return;
+    }
+
+    if (step.type === "textarea"){
+      answers[step.id] = (input?.value || "").slice(0,300);
+      return;
+    }
+
+    // DEFAULT (text/date/select)
+    answers[step.id] = value;
+  }
+
+  function normKeyOf(nome, cognome, dataMorte){
+    // base anti-doppione futura: normalizzazione semplice (poi faremo fuzzy + merge admin)
+    const n = (nome || "").toLowerCase().trim().replace(/\s+/g," ");
+    const c = (cognome || "").toLowerCase().trim().replace(/\s+/g," ");
+    const d = (dataMorte || "").trim();
+    return `${c}|${n}|${d}`.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  }
+
+
+  // ==============================
+  // Foto copertina: upload su Storage (se l'utente ha scelto un file)
+  // ==============================
+  async function ensureCoverUploaded(u, luogoId){
+    const c = answers.foto || null;
+    if (!c) return { photoUrl: "", storageRef: "", source: "" };
+
+    // se rimossa
+    if (c.removed) return { photoUrl: "", storageRef: "", source: "removed" };
+
+    // se precompilata dal necrologio (o già url esterna) e non c'è file da caricare
+    if (!c.file && c.photoUrl && c.source !== "upload_pending") {
+      return { photoUrl: c.photoUrl, storageRef: c.storageRef || "", source: c.source || "prefill" };
+    }
+
+    // se è solo preview blob:..., serve upload
+    const file = c.file;
+    if (!file) {
+      // niente file → non carico
+      return { photoUrl: (c.photoUrl || ""), storageRef: "", source: c.source || "" };
+    }
+
+    const safeName = String(file.name || "cover.jpg").replace(/[^a-z0-9._-]/gi, "_");
+    const path = `luoghi_memoria/covers/${u.uid}/${luogoId}/${Date.now()}_${safeName}`;
+    const r = sRef(storage, path);
+    await uploadBytes(r, file, { contentType: file.type || "image/jpeg" });
+    const url = await getDownloadURL(r);
+    return { photoUrl: url, storageRef: path, source: "storage" };
+  }
+
+  function openResultModal({ luogoId, payload }){
+    const modal = document.getElementById("resultModal");
+    if (!modal) return;
+
+    const coverImg = document.getElementById("resultCoverImg");
+    const nomeC = document.getElementById("resultNomeCognome");
+    const dmFmt = document.getElementById("resultDataMorteFmt");
+    const plShort = document.getElementById("resultPlaceShort");
+
+    const visitBtn = document.getElementById("resultVisitBtn");
+    const manageBtn = document.getElementById("resultManageBtn");
+    const laterBtn = document.getElementById("resultLaterBtn");
+
+    const n = [payload?.person?.nome || payload?.nome || "", payload?.person?.cognome || payload?.cognome || ""].filter(Boolean).join(" ").trim();
+    const d = payload?.person?.dataMorte || payload?.dataMorte || "";
+    const placeLabel = payload?.place?.label || payload?.luogo?.label || "";
+
+    if (nomeC) nomeC.textContent = n || "—";
+
+    // Data (visualizzazione IT: gg/mm/aaaa)
+    const formatDateIT = (iso) => {
+      const s = String(iso || "").trim();
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m) return s || "—";
+      return `${m[3]}/${m[2]}/${m[1]}`;
+    };
+
+    // Luogo breve (Comune + Provincia)
+    const comune = payload?.place?.comune || payload?.luogo?.comune || "";
+    const prov = payload?.place?.provincia || payload?.luogo?.provincia || "";
+    const shortPlace = (comune ? `${comune}${prov ? ` (${prov})` : ""}` : placeLabel) || "—";
+
+    if (dmFmt) dmFmt.textContent = d ? formatDateIT(d) : "—";
+    if (plShort) plShort.textContent = shortPlace;
+
+    const urlCover = payload?.cover?.photoUrl || payload?.coverUrl || "";
+    if (coverImg){
+      coverImg.src = urlCover || "/images/rosa.png";
+    }
+
+    const VISIT_URL = `/cittadini/luogo-view.html?id=${encodeURIComponent(luogoId)}`;
+    const MANAGE_URL = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+
+    if (visitBtn) visitBtn.href = VISIT_URL;
+    if (manageBtn) manageBtn.href = MANAGE_URL;
+    if (laterBtn) laterBtn.href = `${HUB_URL}?created=1&id=${encodeURIComponent(luogoId)}`;
+
+const wizard = document.getElementById("wizardCard");
+    if (wizard){
+      wizard.style.opacity = "0";
+      setTimeout(() => { wizard.style.display = "none"; }, 280);
+    }
+
+    modal.classList.add("open");
+
+    // Vibrazione leggera mobile (rituale, discreta)
+    if (navigator.vibrate) { navigator.vibrate(40); }
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeResultModal(){
+    const modal = document.getElementById("resultModal");
+    if (!modal) return;
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+
+  async function createLuogo(){
+    const u = currentUser || auth.currentUser;
+    if (!u) {
+      window.location.replace(LOGIN_URL);
+      return;
+    }
+
+    setLoading(true, 55, "Creazione Luogo della Memoria…");
+    // ✅ Anti-doppione (livello A): se stai creando da necrologio e un Luogo esiste già,
+    // non crearne un altro: porta direttamente alla gestione/visita.
+    if (necrologioId) {
+      try{
+        const q = query(
+          collection(db, "luoghi_memoria"),
+          where("source.necrologioId", "==", necrologioId),
+          limit(1)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const existingId = snap.docs[0].id;
+          // preferiamo portare il custode in gestione (può poi entrare in visita)
+          window.location.replace(`/cittadini/luogo-manage.html?id=${encodeURIComponent(existingId)}`);
+          return;
+        }
+      }catch(e){
+        // Se la query fallisce, non blocchiamo: proseguiamo con la creazione.
+        console.warn("Anti-doppione check fallito, procedo con create:", e);
+      }
+    }
+
+
+    const safeLabel = (s) => String(s||"").trim().slice(0,180);
+
+    const payload = {
+      // Compatibilità (flat, per non rompere nulla)
+      nome: (answers.nome || "").trim(),
+      cognome: (answers.cognome || "").trim(),
+      dataMorte: (answers.dataMorte || "").trim(),
+      luogo: answers.luogo ? {
+        label: safeLabel(answers.luogo.label || ""),
+        comune: answers.luogo.comune || "",
+        provincia: answers.luogo.provincia || "",
+        regione: answers.luogo.regione || "",
+        country: (answers.paese?.code || answers.luogo.country || "IT"),
+        lat: answers.luogo.lat,
+        lng: answers.luogo.lng,
+        placeId: answers.luogo.placeId || "",
+        source: answers.luogo.source || "",
+      } : null,
+
+      // Visibilità compatibilità (serve per lettura pubblica)
+      visibilita: (answers.visibilita || "public"),
+
+      // Struttura definitiva (nested)
+      person: {
+        nome: (answers.nome || "").trim(),
+        cognome: (answers.cognome || "").trim(),
+        dataMorte: (answers.dataMorte || "").trim(),
+        normKey: normKeyOf(answers.nome, answers.cognome, answers.dataMorte)
+      },
+      place: answers.luogo ? {
+        label: safeLabel(answers.luogo.label || ""),
+        comune: answers.luogo.comune || "",
+        provincia: answers.luogo.provincia || "",
+        regione: answers.luogo.regione || "",
+        country: (answers.paese?.code || answers.luogo.country || "IT"),
+        lat: answers.luogo.lat,
+        lng: answers.luogo.lng,
+        placeId: answers.luogo.placeId || "",
+        source: answers.luogo.source || "",
+      } : null,
+      visibility: { mode: (answers.visibilita || "public"), publicFromAt: null, lockReason: null },
+      cover: { photoUrl: "", storageRef: "", source: "" },
+
+      custody: {
+        mainUid: u.uid,
+        coUids: [],
+        createdByUid: u.uid,
+        createdAt: serverTimestamp(),
+        lastUpdatedAt: serverTimestamp(),
+        canManageAlbum: true,
+        canManageThoughts: true
+      },
+
+      scene: { id: "campo_luce", variant: null }, // default OFI (poi lo rendiamo selezionabile in gestione)
+      mapLight: { enabled: true, mode: "standard" },
+      annualCare: { status: "none", untilAt: null },
+
+      createdAt: serverTimestamp(),
+      createdByUid: u.uid,
+
+      mode: necrologioId ? "from_necrologio" : "from_zero",
+      source: necrologioId ? { necrologioId } : null,
+
+      normKey: normKeyOf(answers.nome, answers.cognome, answers.dataMorte),
+      custodePrincipaleUid: u.uid,
+      stato: "active",
+      status: "active"
+    };
+
+    // ✅ salva
+    const ref = await addDoc(collection(db, "luoghi_memoria"), payload);
+
+    // Upload copertina (se presente file) + aggiorna doc
+    try{
+      const cover = await ensureCoverUploaded(u, ref.id);
+      if (cover && cover.photoUrl){
+        await updateDoc(doc(db, "luoghi_memoria", ref.id), {
+          cover: { photoUrl: cover.photoUrl, storageRef: cover.storageRef || "", source: cover.source || "storage" },
+          "custody.lastUpdatedAt": serverTimestamp()
+        });
+        payload.cover = { photoUrl: cover.photoUrl, storageRef: cover.storageRef || "", source: cover.source || "storage" };
+      } else if (cover?.source === "removed") {
+        await updateDoc(doc(db, "luoghi_memoria", ref.id), {
+          cover: { photoUrl: "", storageRef: "", source: "removed" },
+          "custody.lastUpdatedAt": serverTimestamp()
+        });
+        payload.cover = { photoUrl: "", storageRef: "", source: "removed" };
+      }
+    }catch(e){
+      console.warn("Upload copertina fallito (non bloccante):", e);
+    }
+
+    setLoading(true, 95, "Pronto.");
+    await new Promise(r => setTimeout(r, 180));
+    setLoading(false);
+
+    // WOW: mostra copertina + CTA (Visita / Completa ora)
+    openResultModal({ luogoId: ref.id, payload });
+  }
+
+  // Buttons
+  btnNext?.addEventListener("click", async () => {
+    if (!validateCurrentStep()) return;
+    saveCurrentStep();
+
+    if (currentStepIndex < steps.length - 1) {
+      renderStep(currentStepIndex + 1);
+    } else {
+      // ultimo step
+      await createLuogo().catch((e)=>{
+        console.error(e);
+        setLoading(false);
+        alert("Errore nella creazione del Luogo. Riprova.");
+      });
+    }
+  });
+
+  btnBack?.addEventListener("click", () => {
+    saveCurrentStep();
+    if (currentStepIndex > 0) renderStep(currentStepIndex - 1);
+  });
+
+
+  // Result modal handlers
+  document.getElementById("resultClose")?.addEventListener("click", closeResultModal);
+  document.getElementById("resultModal")?.addEventListener("click", (e)=>{
+    if (e.target && e.target.id === "resultModal") closeResultModal();
+  });
+
+
+  // Logout
+  logoutBtn?.addEventListener("click", async () => {
+    try{
+      await signOut(auth);
+      window.location.href = LOGIN_URL;
+    }catch(e){
+      console.error(e);
+      alert("Errore durante il logout. Riprova.");
+    }
+  });
+
+  // Init
+  await loadDeliveryPrefill();
+  // se prefill ha impostato luogo senza coords, lo faremo confermare nello step Luogo
+  renderStep(0);
+</script>
+
+<script src="/js/menu.js" defer></script>
+</body>
+</html>

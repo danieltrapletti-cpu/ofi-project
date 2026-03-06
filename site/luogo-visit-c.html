@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Luogo della Memoria — Visita | OFI</title>
+  <meta name="description" content="Luogo della Memoria OFI: uno spazio sobrio e istituzionale per visitare e lasciare ricordi. Nessuna dinamica social." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/luogo-view.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  <script>
+    // A/B Tema per VISITA (pubblica)
+    // URL: ?theme=auto | dark | light
+    function ofiApplyVisitTheme(){
+      const p = new URLSearchParams(location.search);
+      const t = (p.get("theme") || "auto").toLowerCase();
+
+      document.body.classList.remove("theme-dark", "theme-light");
+
+      if (t === "dark") {
+        document.body.classList.add("theme-dark");
+        document.documentElement.setAttribute("data-theme","dark");
+        return;
+      }
+      if (t === "light") {
+        document.body.classList.add("theme-light");
+        document.documentElement.setAttribute("data-theme","light");
+        return;
+      }
+
+      document.documentElement.setAttribute("data-theme","auto");
+    }
+
+    ofiApplyVisitTheme();
+    window.addEventListener("DOMContentLoaded", () => {
+      ofiApplyVisitTheme();
+      setTimeout(ofiApplyVisitTheme, 0);
+    });
+  </script>
+
+  <!-- HEADER (coerente) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="menu-callout" href="/cittadini/dashboard-cittadino.html">DASHBOARD</a></li>
+        <li><a class="menu-callout" href="/cittadini/luogo-memoria.html">HUB LUOGO</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- appare solo se custode -->
+        <li id="manageNavItem" hidden><a class="menu-callout" id="manageNavLink" href="#">GESTISCI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="wrap fadeIn" aria-label="Luogo della Memoria — Interno">
+
+      <!-- HERO -->
+      <div class="hero" aria-label="Ingresso Luogo">
+        <div class="heroInner">
+          <div class="kicker" id="kicker">Luogo della Memoria</div>
+          <h1 class="heroName" id="heroName">Caricamento…</h1>
+
+          <div class="portraitWrap" id="portraitWrap" hidden>
+            <img class="portrait" id="portraitImg" src="" alt="Ritratto" loading="lazy">
+          </div>
+
+          <div class="portraitWrap" id="portraitEmpty">
+            <div class="portraitEmpty">
+              Nessuna fotografia disponibile.
+            </div>
+          </div>
+
+          <p class="heroMeta" id="heroMeta">—</p>
+
+          <div class="heroActions">
+            <a class="btn" id="btnCover" href="#">Copertina</a>
+            <a class="btn" href="/cittadini/luogo-memoria.html">HUB</a>
+            <a class="btn primary" id="btnManage" href="#" hidden>Gestisci</a>
+            <button class="btn primary" id="btnLeaveOpen" type="button">Lascia un ricordo</button>
+            <button class="btn" id="btnAlbumOpen" type="button">Apri album</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RICORDI -->
+      <div class="section" aria-label="Ricordi">
+        <div class="sectionHead">
+          <div>
+            <div class="sectionTitle">Ricordi</div>
+            <div class="sectionSub" id="memSub">Parole firmate, sobrie, verificabili.</div>
+          </div>
+          <div class="sectionSub" id="memCount">—</div>
+        </div>
+        <div class="sectionBody">
+          <div class="note" id="accessHint" style="margin-bottom:.8rem; display:none;"></div>
+
+          <div class="memList" id="memList"></div>
+
+          <div class="pager" id="pager" style="display:none;">
+            <button class="btn" id="btnPrev" type="button">‹ Indietro</button>
+            <div class="pagerInfo" id="pagerInfo">—</div>
+            <button class="btn primary" id="btnNext" type="button">Avanti ›</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALBUM -->
+      <div class="section" aria-label="Album">
+        <div class="sectionHead">
+          <div>
+            <div class="sectionTitle">Album</div>
+            <div class="sectionSub">Foto e video caricati dal custode.</div>
+          </div>
+          <div class="sectionSub" id="albumCount">—</div>
+        </div>
+        <div class="sectionBody">
+          <div class="gridAlbum" id="albumPreview"></div>
+          <p class="note" id="albumEmpty" style="display:none; margin-top:.8rem;">
+            <strong>Nessun contenuto</strong><br>Il custode non ha ancora caricato foto o video.
+          </p>
+        </div>
+      </div>
+
+      <div class="footerNote">
+        OFI — Luogo della Memoria. Tutela, unicità e custodia. Questo non è un social e non sostituisce documenti ufficiali.
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Overlay: Album completo -->
+  <div class="overlay" id="albumOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Album del Luogo">
+      <div class="overlayHead">
+        <div class="overlayTitle">Album</div>
+        <button class="overlayClose" id="btnAlbumClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="gridAlbum" id="albumGrid"></div>
+        <p class="note" id="albumEmpty2" style="display:none; margin-top:.8rem;">
+          <strong>Nessun contenuto</strong><br>Il custode non ha ancora caricato foto o video.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay: Accesso riservato -->
+  <div class="overlay" id="lockOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Accesso riservato">
+      <div class="overlayHead">
+        <div class="overlayTitle">Accesso riservato</div>
+        <button class="overlayClose" id="btnLockClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="note" id="lockText">
+          <strong>Questo Luogo è in modalità FAMILY.</strong><br>
+          Per visitarlo devi essere custode ed effettuare l’accesso.
+        </div>
+        <div style="display:flex; gap:.55rem; flex-wrap:wrap; margin-top:.85rem;">
+          <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn" href="/cittadini/luogo-memoria.html">Torna al HUB</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay: Lascia un ricordo -->
+  <div class="overlay" id="leaveOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Lascia un ricordo">
+      <div class="overlayHead">
+        <div class="overlayTitle">Lascia un ricordo</div>
+        <button class="overlayClose" id="btnLeaveClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="note" id="leaveHint">
+          <strong>Firma richiesta.</strong><br>
+          I ricordi sono pubblicati con nome e cognome visibili, in modo sobrio e verificabile.
+        </div>
+
+        <div class="formGrid">
+          <div class="formRow2">
+            <input id="sigNome" class="inputLike" placeholder="Nome" maxlength="60">
+            <input id="sigCognome" class="inputLike" placeholder="Cognome" maxlength="60">
+          </div>
+
+          <textarea id="thoughtText" class="textareaLike" maxlength="1600" placeholder="Scrivi qualcosa che senti…"></textarea>
+
+          <div style="display:flex; gap:.55rem; flex-wrap:wrap;">
+            <button class="btn primary" id="btnPublish" type="button">Pubblica</button>
+            <a class="btn" id="btnLoginToLeave" href="/cittadini/login-cittadino.html" hidden>Accedi per pubblicare</a>
+          </div>
+
+          <div class="note" id="leaveStatus" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+
+    const $ = (id)=>document.getElementById(id);
+
+    /* -------------------------
+       Utils
+    ------------------------- */
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl", "cover.photoURL"], ""));
+
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita", "visibilityMode"], "family")) || "family";
+      const custody = raw.custody || {};
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(custody.coUids) ? custody.coUids.map(safeStr).filter(Boolean) : (Array.isArray(raw.coUids) ? raw.coUids.map(safeStr).filter(Boolean) : []);
+
+      return {
+        nome, cognome, dataMorte,
+        placeLabel, coverUrl,
+        visibilityMode: (visibilityMode === "pubblico" ? "public" : visibilityMode),
+        mainUid, coUids
+      };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function escapeHtml(str){
+      return String(str||"").replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
+    }
+
+    /* -------------------------
+       Overlays
+    ------------------------- */
+    const albumOverlay = $("albumOverlay");
+    const lockOverlay = $("lockOverlay");
+    const leaveOverlay = $("leaveOverlay");
+
+    function openOverlay(el){
+      if (!el) return;
+      el.classList.add("open");
+      el.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(el){
+      if (!el) return;
+      el.classList.remove("open");
+      el.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+
+    $("btnAlbumOpen")?.addEventListener("click", ()=>openOverlay(albumOverlay));
+    $("btnAlbumClose")?.addEventListener("click", ()=>closeOverlay(albumOverlay));
+    albumOverlay?.addEventListener("click", (e)=>{ if (e.target === albumOverlay) closeOverlay(albumOverlay); });
+
+    $("btnLockClose")?.addEventListener("click", ()=>closeOverlay(lockOverlay));
+    lockOverlay?.addEventListener("click", (e)=>{ if (e.target === lockOverlay) closeOverlay(lockOverlay); });
+
+    $("btnLeaveOpen")?.addEventListener("click", ()=>openOverlay(leaveOverlay));
+    $("btnLeaveClose")?.addEventListener("click", ()=>closeOverlay(leaveOverlay));
+    leaveOverlay?.addEventListener("click", (e)=>{ if (e.target === leaveOverlay) closeOverlay(leaveOverlay); });
+
+    window.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape"){
+        closeOverlay(albumOverlay);
+        closeOverlay(lockOverlay);
+        closeOverlay(leaveOverlay);
+      }
+    });
+
+    /* -------------------------
+       Stato + rendering
+    ------------------------- */
+    const state = {
+      luogo: null,
+      isCustode: false,
+      userUid: null,
+      words: [], // {authorLabel, text}
+      album: [], // {type,url,caption}
+      page: 0
+    };
+
+    const SIG_KEY = "ofi_luogo_signature";
+    function loadSig(){
+      try{
+        const s = JSON.parse(localStorage.getItem(SIG_KEY) || "{}");
+        $("sigNome").value = safeStr(s.nome);
+        $("sigCognome").value = safeStr(s.cognome);
+      }catch{}
+    }
+    function saveSig(){
+      const nome = safeStr($("sigNome").value);
+      const cognome = safeStr($("sigCognome").value);
+      localStorage.setItem(SIG_KEY, JSON.stringify({ nome, cognome }));
+      return { nome, cognome };
+    }
+
+    function renderWords(){
+      const list = $("memList");
+      const pager = $("pager");
+      const info = $("pagerInfo");
+      const prev = $("btnPrev");
+      const next = $("btnNext");
+
+      const total = state.words.length;
+      $("memCount").textContent = total ? `${total}` : "0";
+
+      if (!total){
+        list.innerHTML = `
+          <div class="note">
+            <strong>Nessun ricordo ancora</strong><br>
+            Se lo desideri, lascia una parola: resterà qui in modo sobrio e firmato.
+          </div>
+        `;
+        pager.style.display = "none";
+        return;
+      }
+
+      const pageSize = 6;
+      const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
+      state.page = Math.min(state.page, maxPage);
+
+      const start = state.page * pageSize;
+      const end = Math.min(total, start + pageSize);
+      const slice = state.words.slice(start, end);
+
+      list.innerHTML = slice.map((t)=>`
+        <div class="memCard">
+          <div class="memMeta">
+            <span>${escapeHtml(t.authorLabel || "—")}</span>
+            <span>Ricordo</span>
+          </div>
+          <p class="memText">${escapeHtml(t.text || "")}</p>
+        </div>
+      `).join("");
+
+      pager.style.display = (maxPage > 0) ? "flex" : "none";
+      info.textContent = `Pagina ${state.page + 1} di ${maxPage + 1}`;
+      prev.disabled = (state.page <= 0);
+      next.disabled = (state.page >= maxPage);
+    }
+
+    $("btnPrev")?.addEventListener("click", ()=>{
+      state.page = Math.max(0, state.page - 1);
+      renderWords();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    $("btnNext")?.addEventListener("click", ()=>{
+      const pageSize = 6;
+      const maxPage = Math.max(0, Math.ceil(state.words.length / pageSize) - 1);
+      state.page = Math.min(maxPage, state.page + 1);
+      renderWords();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    async function loadAlbum(){
+      const prev = $("albumPreview");
+      const grid = $("albumGrid");
+      const empty = $("albumEmpty");
+      const empty2 = $("albumEmpty2");
+
+      prev.innerHTML = "";
+      grid.innerHTML = "";
+
+      const count = state.album.length;
+      $("albumCount").textContent = count ? `${count}` : "0";
+      empty.style.display = count ? "none" : "block";
+      empty2.style.display = count ? "none" : "block";
+
+      const makeTile = (m)=>{
+        const tile = document.createElement("div");
+        tile.className = "mediaTile";
+
+        if (m.type === "video"){
+          const v = document.createElement("video");
+          v.src = m.url;
+          v.controls = true;
+          v.preload = "metadata";
+          tile.appendChild(v);
+        } else {
+          const img = document.createElement("img");
+          img.src = m.url;
+          img.alt = m.caption ? m.caption : "Foto";
+          img.loading = "lazy";
+          tile.appendChild(img);
+        }
+
+        if (m.caption){
+          const c = document.createElement("div");
+          c.className = "mediaCap";
+          c.textContent = m.caption;
+          tile.appendChild(c);
+        }
+
+        return tile;
+      };
+
+      // preview in pagina: max 6
+      state.album.slice(0, 6).forEach((m)=> prev.appendChild(makeTile(m)));
+      // overlay: tutti
+      state.album.forEach((m)=> grid.appendChild(makeTile(m)));
+    }
+
+    function setAccessHint(){
+      const hint = $("accessHint");
+
+      // FAMILY: accesso solo custodi
+      if (state.luogo?.visibilityMode !== "public"){
+        hint.style.display = "block";
+        hint.innerHTML = `<strong>FAMILY</strong><br>Questo Luogo è riservato alla famiglia (solo custodi).`;
+        return;
+      }
+
+      // PUBBLICO
+      hint.style.display = "block";
+      if (!state.userUid){
+        hint.innerHTML = `<strong>Pubblico</strong><br>Puoi visitare. Per lasciare un ricordo devi essere registrato.`;
+      } else {
+        hint.innerHTML = `<strong>Pubblico</strong><br>Se lo desideri, puoi lasciare un ricordo firmato.`;
+      }
+    }
+
+    async function fetchSubcollections(){
+      // Album
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), orderBy("createdAt","desc"), limit(60));
+      const snapA = await getDocs(qA).catch(()=>null);
+      state.album = [];
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          if (!url) return;
+          state.album.push({
+            type: safeStr(m.type || "photo"),
+            url,
+            caption: safeStr(m.caption || "")
+          });
+        });
+      }
+
+      // Ricordi (pensieri pubblici)
+      const qT = query(collection(db, "luoghi_memoria", luogoId, "pensieri"), orderBy("createdAt","desc"), limit(120));
+      const snapT = await getDocs(qT).catch(()=>null);
+      state.words = [];
+      if (snapT && !snapT.empty){
+        snapT.forEach(d=>{
+          const t = d.data() || {};
+          const text = safeStr(t.text);
+          if (!text) return;
+
+          const vis = safeStr(t.visibility || "");
+          if (vis && vis !== "public") return;
+
+          const an = t.author || {};
+          const authorLabel = [safeStr(an.nome), safeStr(an.cognome)].filter(Boolean).join(" ").trim() || "—";
+
+          state.words.push({ authorLabel, text });
+        });
+      }
+    }
+
+    /* -------------------------
+       Pubblica ricordo
+    ------------------------- */
+    const btnPublish = $("btnPublish");
+    const btnLoginToLeave = $("btnLoginToLeave");
+    const leaveStatus = $("leaveStatus");
+
+    function setLeaveStatus(ok, msg){
+      leaveStatus.style.display = "block";
+      leaveStatus.className = "note";
+      leaveStatus.innerHTML = ok
+        ? `<strong>Pubblicato.</strong><br>${escapeHtml(msg||"")}`
+        : `<strong>Attenzione.</strong><br>${escapeHtml(msg||"")}`;
+    }
+
+    async function publishThought(){
+      leaveStatus.style.display = "none";
+
+      if (!state.userUid){
+        btnLoginToLeave.hidden = false;
+        setLeaveStatus(false, "Per pubblicare devi accedere come cittadino.");
+        return;
+      }
+
+      if (state.luogo?.visibilityMode !== "public"){
+        setLeaveStatus(false, "Questo Luogo è in modalità FAMILY.");
+        return;
+      }
+
+      const sig = saveSig();
+      if (!sig.nome || !sig.cognome){
+        setLeaveStatus(false, "Inserisci Nome e Cognome (firma).");
+        return;
+      }
+
+      const text = safeStr($("thoughtText").value);
+      if (!text){
+        setLeaveStatus(false, "Scrivi un ricordo.");
+        return;
+      }
+
+      try{
+        btnPublish.disabled = true;
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "pensieri"), {
+          text,
+          visibility: "public",
+          author: { nome: sig.nome, cognome: sig.cognome, uid: state.userUid },
+          createdAt: serverTimestamp()
+        });
+
+        $("thoughtText").value = "";
+        setLeaveStatus(true, "Il tuo ricordo è stato pubblicato.");
+
+        await fetchSubcollections();
+        await loadAlbum();
+        state.page = 0;
+        renderWords();
+
+      }catch(e){
+        console.error(e);
+        setLeaveStatus(false, "Errore pubblicazione. Riprova tra poco.");
+      }finally{
+        btnPublish.disabled = false;
+      }
+    }
+
+    btnPublish?.addEventListener("click", publishThought);
+
+    onAuthStateChanged(auth, (u)=>{
+      const logged = !!u;
+      btnLoginToLeave.hidden = logged;
+    });
+
+    /* -------------------------
+       Load principale
+    ------------------------- */
+    async function load(){
+      loadSig();
+
+      if (!luogoId){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>ID mancante.</strong><br>Torna al HUB e apri un Luogo valido.`;
+        return;
+      }
+
+      // Auth (visita pubblica: non forziamo login)
+      await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          state.userUid = u?.uid || null;
+          unsub();
+          resolve();
+        });
+      });
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>Questo Luogo non esiste</strong><br>Oppure non è più disponibile.`;
+        return;
+      }
+
+      state.luogo = normalizeDoc(snap.data() || {});
+      state.isCustode = !!(state.userUid && (state.userUid === state.luogo.mainUid || state.luogo.coUids.includes(state.userUid)));
+
+      const displayName = [state.luogo.nome, state.luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      const date = fmtDate(state.luogo.dataMorte);
+      const place = state.luogo.placeLabel || "Luogo non specificato";
+
+      $("heroName").textContent = displayName;
+      $("heroMeta").textContent = `${date} · ${place}`;
+
+      // Foto ritratto
+      const url = safeStr(state.luogo.coverUrl);
+      if (url){
+        $("portraitWrap").hidden = false;
+        $("portraitEmpty").style.display = "none";
+        $("portraitImg").src = url;
+        $("portraitImg").alt = `Ritratto di ${displayName}`;
+      } else {
+        $("portraitWrap").hidden = true;
+        $("portraitEmpty").style.display = "block";
+      }
+
+      // Copertina (ritorno)
+      const qCover = new URLSearchParams();
+      qCover.set("id", luogoId);
+      const t = (new URLSearchParams(location.search).get("theme") || "").trim();
+      if (t) qCover.set("theme", t);
+      const coverUrl = `/cittadini/luogo-view.html?${qCover.toString()}`;
+      const btnCover = document.getElementById("btnCover");
+      if (btnCover) btnCover.href = coverUrl;
+
+      // Gestione se custode
+      if (state.isCustode){
+        const manageUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+        $("btnManage").hidden = false;
+        $("btnManage").href = manageUrl;
+        $("manageNavItem").hidden = false;
+        $("manageNavLink").href = manageUrl;
+      }
+
+      // Accesso FAMILY
+      if (state.luogo.visibilityMode !== "public" && !state.isCustode){
+        openOverlay(lockOverlay);
+        setAccessHint();
+        return;
+      }
+
+      // Carica contenuti
+      await fetchSubcollections();
+      await loadAlbum();
+      setAccessHint();
+      renderWords();
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      openOverlay(lockOverlay);
+      $("lockText").innerHTML = `<strong>Errore nel caricamento.</strong><br>Riprova tra poco.`;
+    });
+  </script>
+
+  <script src="/js/menu.js" defer></script>
+</body>
+</html>

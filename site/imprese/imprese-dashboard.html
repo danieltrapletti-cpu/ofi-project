@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Dashboard Impresa — OFI</title>
+  <meta name="description" content="Area riservata imprese — Marchio di Affidabilità Nazionale OFI">
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+
+  <!-- Mapbox -->
+  <link href="../vendor/mapbox-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="./imprese-dashboard.css?v=1.1">
+
+  <!-- JS globale coerente con accesso -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+  <script defer src="../js/pensiero.js?v=1"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="dashToggle" class="hamburger" aria-label="Apri menu dashboard" aria-expanded="false"><span></span><span></span><span></span></button>
+    <ul id="menuPanel" class="menu" role="menu"></ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<div class="dash">
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar" aria-label="Menu dashboard">
+    <div class="sb-head">
+      <div class="sb-brand"><img id="sbLogo" src="../images/rosa.png" alt=""><span class="sb-name" id="sbName">Impresa</span></div>
+    </div>
+    <div class="sb-profile">
+      <div class="sb-meta">
+        <div><strong>ID:</strong> <span id="sbOFI">—</span></div>
+        <div><strong>Email:</strong> <span id="sbEmail">—</span></div>
+        <div><strong>Punti:</strong> <span id="sbPunti">—</span></div>
+      </div>
+      <div class="sb-actions">
+        <a class="btn-ghost" id="linkProfilo" href="#" target="_blank" rel="noopener">Vedi profilo</a>
+        <a class="btn" href="./imprese-profilo.html">Vai all’editor</a>
+      </div>
+    </div>
+
+    <div class="group">
+      <h4>Attività</h4>
+      <nav>
+        <a href="#sec-notifiche" data-panel="notifiche">Notifiche</a>
+        <a href="#sec-preventivi" data-panel="preventivi">Preventivi ricevuti</a>
+        <a href="#sec-punti" data-panel="punti">Punti & Stelle</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Contenuti</h4>
+      <nav>
+        <a href="#sec-necrologi" data-panel="necrologi">Necrologi</a>
+        <a href="#sec-contatta" data-panel="contatta">Contatta un’altra impresa</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Reputazione & Documenti</h4>
+      <nav>
+        <a href="#sec-marchio" data-panel="marchio">Marchio di Affidabilità</a>
+        <a href="#sec-certificato" data-panel="certificato">Certificato di Adesione</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Supporto</h4>
+      <nav>
+        <a href="#sec-faq" data-panel="faq">FAQ & Regole</a>
+        <a href="#sec-agente" data-panel="agente">Agente OFI</a>
+      </nav>
+    </div>
+
+    <div class="group">
+      <h4>Impostazioni</h4>
+      <nav>
+        <a href="#" id="logoutBtn">Esci</a>
+      </nav>
+    </div>
+  </aside>
+  <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+  <!-- PANNELLO DESTRO -->
+  <aside id="sidepanel" class="sidepanel" aria-live="polite" aria-hidden="true">
+    <header class="sp-head">
+      <div class="sp-title"><span class="ico" id="spIcon">📄</span><span id="spTitle">Titolo sezione</span></div>
+      <button class="sp-close" id="spClose" type="button">✕ Chiudi</button>
+    </header>
+    <div class="sp-body" id="spBody"></div>
+  </aside>
+
+  <!-- CONTENUTO CENTRALE -->
+  <main class="container">
+    <h2 class="page-title">Dashboard Impresa</h2>
+
+    <section class="hero-dashboard">
+      <figure class="logo-wrap"><img id="logoImg" src="../images/rosa.png" alt="Logo Impresa" onerror="this.onerror=null; this.src='../images/rosa.png';"></figure>
+      <h1 id="nomeImpresa">Impresa</h1>
+      <div class="hero-meta">
+        <span id="stelleWrap" class="stars" aria-label="Valutazione"></span>
+        <span id="abboBadge" class="badge badge-blue abbo-chip">Verifica abbonamento…</span>
+      </div>
+      <!-- PUNTI VISIBILI SUBITO -->
+      <div class="hero-kpi">
+        <button
+          id="puntiTotali"
+          class="badge badge-gold"
+          type="button"
+          title="Apri dettagli Punti &amp; Stelle"
+        >
+          0 punti
+        </button>
+
+        <!-- Piccolo toggle per i dettagli avanzati -->
+        <button
+          id="kpiDetailsToggle"
+          class="kpi-details-toggle"
+          type="button"
+        >
+          Dettagli Punti &amp; Stelle
+        </button>
+      </div>
+
+      <!-- DETTAGLI NASCOSTI (potenziale / periodo / link spiegazione) -->
+      <div class="hero-subkpi small" id="heroSubkpi" hidden>
+        <span
+          id="potStarsChip"
+          class="chip"
+          title="Le stelle che il tuo profilo può raggiungere se è curato al meglio. È il tuo potenziale massimo, non scende mai."
+        >
+          Potenziale massimo: —
+        </span>
+
+        <span
+          id="lockChip"
+          class="chip"
+          title="Per un periodo iniziale le stelle non possono scendere sotto il tuo potenziale massimo. Alla fine di questo periodo seguono i tuoi punti attivi."
+        >
+          Periodo iniziale: —
+        </span>
+
+        <!-- Chip informativa che apre il pannello Punti & Stelle -->
+        <a
+          href="#sec-punti"
+          data-panel="punti"
+          id="whyStarsChip"
+          class="chip chip-ghost"
+          title="Apri la spiegazione completa su Punti, Stelle e Reputazione"
+        >
+          Come funzionano Punti &amp; Stelle?
+        </a>
+      </div>
+
+      <div class="hero-actions">
+        <button class="notif-bell" id="notifBtn" title="Notifiche">🔔 <span class="notif-badge" id="notifCount" hidden>0</span></button>
+      </div>
+    </section>
+
+    <section class="cards">
+      <!-- Pensiero del giorno -->
+      <article class="card thought-card" id="thoughtCard">
+        <div class="thought-head">
+          <div class="thought-left">
+            <h2 class="thought-title">Pensiero del giorno</h2>
+            <span class="thought-chip" id="thoughtPointsChip"></span>
+          </div>
+          <button class="info-btn" id="pensieroInfo" type="button" aria-expanded="false" aria-controls="pensieroTip">
+  ⓘ Perché conta?
+</button>
+<div class="tooltip" id="pensieroTip" role="dialog" aria-live="polite" aria-label="Informazioni">
+  <p><b>Perché condividerlo?</b><br>
+    Un pensiero gentile, ogni giorno, ricorda alle famiglie che <strong>ci sei anche nei momenti “vuoti”</strong>,
+    non solo quando c’è un servizio.
+  </p>
+
+  <p class="small">
+    Ogni condivisione del <strong>Pensiero del giorno</strong> registrata da OFI assegna
+    <strong>+5 punti</strong> alla tua impresa (una volta al giorno).
+    Non devi fare nulla a mano: il sistema si occupa di tutto.
+  </p>
+
+  <p class="small">
+    Questi punti aiutano a mantenere vivo il tuo profilo nel tempo e contribuiscono,
+    insieme a necrologi, preventivi e recensioni, al livello complessivo delle tue
+    <strong>stelle</strong>.
+  </p>
+</div>
+        </div>
+        <p id="pensieroTxt" class="thought-quote">“Oggi abito il silenzio con gratitudine. Ogni ricordo è una luce gentile che non si spegne.”</p>
+        <p id="pensieroAutore" class="small"></p>
+        <div class="thought-cta">
+          <button class="btn-primary" id="sharePensiero" type="button">Condividi</button>
+          <button class="btn-ghost-w" id="copyPensiero" type="button">Copia testo</button>
+        </div>
+        <p class="thought-status" id="pensieroStatus" aria-live="polite"></p>
+      </article>
+
+      <article class="card">
+  <h2>Le tue sedi</h2>
+  <div id="mappaSedi" class="mapbox-stage"></div>
+
+  <!-- Mini lista sotto la mappa -->
+  <div id="sediList" class="sedi-list" aria-label="Elenco sedi"></div>
+</article>
+
+    </section>
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODALE GUIDA PUNTI & CREDITI -->
+<div id="puntiModal" class="dash-modal" aria-hidden="true">
+  <div class="dash-modal-backdrop"></div>
+
+  <section class="dash-modal-inner" role="dialog"
+           aria-modal="true" aria-labelledby="puntiModalTitle">
+    <header class="dash-modal-head">
+      <h2 id="puntiModalTitle">Guida Punti, Stelle &amp; Crediti</h2>
+      <button type="button" id="puntiModalClose" class="dash-modal-close">
+        ✕
+      </button>
+    </header>
+
+    <div class="dash-modal-body">
+      <iframe src="./punti-crediti.html?embed=1"
+        title="Guida Punti, Stelle &amp; Crediti OFI"></iframe>
+    </div>
+  </section>
+</div>
+
+<!-- Modale CONVERSIONE PUNTI → CREDITI -->
+<div id="convertModal" class="dash-modal" aria-hidden="true">
+  <div class="dash-modal-backdrop"></div>
+
+  <section class="dash-modal-inner dash-modal-inner-sm" role="dialog" aria-modal="true">
+    <header class="dash-modal-head">
+      <h2>Converti punti in crediti</h2>
+      <button type="button" id="convertModalClose" class="dash-modal-close">
+        ✕
+      </button>
+    </header>
+
+    <div class="dash-modal-body convert-body">
+      <p class="small">
+        Hai <strong id="convSaldoLabel">0</strong> punti disponibili.
+        Ogni <strong>100 punti</strong> = <strong>1 credito OFI</strong>.
+      </p>
+
+      <div class="convert-quick">
+        <span class="small">Scelta rapida:</span>
+        <div class="convert-chips" id="convertChips">
+          <!-- bottoni generati via JS -->
+        </div>
+      </div>
+
+      <div class="convert-input-row">
+        <label class="small" for="convertInput">
+          Oppure inserisci un multiplo di 100:
+        </label>
+        <div class="convert-input-wrap">
+          <input id="convertInput" type="number" min="100" step="100" inputmode="numeric" />
+          <span class="convert-input-hint">pt</span>
+        </div>
+        <p class="convert-error" id="convertError"></p>
+      </div>
+
+            <div class="convert-actions">
+        <button type="button" id="convertConfirm" class="btn-primary">
+          Converti
+        </button>
+        <button type="button" id="convertCancel" class="btn-ghost-w">
+          Annulla
+        </button>
+      </div>
+
+      <!-- Nota fissa: irreversibile -->
+      <p class="small" style="margin-top:.6rem; opacity:.9;">
+        ⚠️ <strong>Attenzione:</strong> i punti che converti in crediti vengono
+        <strong>tolti dal saldo in modo definitivo</strong>.
+        I crediti ottenuti <strong>non possono essere riconvertiti in punti</strong>.
+      </p>
+<!-- Nota dinamica: consigli su quanta parte convertire -->
+      <p id="convertStarsNote" class="small muted" style="margin-top:.15rem;">
+        Il sistema aggiornerà le tue stelle in automatico dopo la conversione.
+      </p>
+
+      <!-- Riepilogo dopo la conversione -->
+      <div id="convertResult" class="convert-result" hidden></div>
+    </div> 
+ </section>
+</div>
+
+
+
+<!-- Load Mapbox (classic script, non-module) -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<!-- Firebase + Logica (ES Module) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, query, where, limit, getDocs,
+    setDoc, updateDoc, addDoc, serverTimestamp, runTransaction, onSnapshot,
+    orderBy, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const functions = getFunctions(app, 'europe-west1');
+
+  Object.assign(window, { app, auth, db, doc, setDoc, updateDoc, collection, getDoc, serverTimestamp, runTransaction, query, where, orderBy, limit, getDocs, deleteDoc });
+  console.log('[OFI] Firebase pronto');
+
+  const $  = (s,sc=document)=>sc.querySelector(s);
+  const $$ = (s,sc=document)=>Array.from(sc.querySelectorAll(s));
+
+  /* ===== Helpers UI ===== */
+  function renderStars(n){
+    n = Math.max(0, Math.min(5, Number(n)||0));
+    return n ? `<span class="starline" aria-hidden="true">${'★'.repeat(n)}</span><span class="sr-only">${n} stelle</span>` : '';
+  }
+  function activeTheme(){
+    const t=document.documentElement.getAttribute('data-theme')||'auto';
+    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
+    return t==='dark'||(t==='auto'&&prefersDark) ? 'dark' : 'light';
+  }
+
+  /* ===== Sidebar / Panel refs ===== */
+  const sidebar      = $('#sidebar');
+  const dashOverlay  = $('#dashOverlay');
+  const menuBtn      = $('#dashToggle');
+  const sidepanel    = $('#sidepanel');
+  const spClose      = $('#spClose');
+  const spIcon       = $('#spIcon');
+  const spTitle      = $('#spTitle');
+  const spBody       = $('#spBody');
+
+  function openSidebar(){
+    sidebar?.classList.add('open');
+    dashOverlay?.classList.add('show');
+    dashOverlay.hidden=false;
+    menuBtn?.setAttribute('aria-expanded','true');
+    document.documentElement.classList.add('no-scroll');
+  }
+  function closeSidebar(){
+    sidebar?.classList.remove('open');
+    dashOverlay?.classList.remove('show');
+    dashOverlay.hidden=true;
+    menuBtn?.setAttribute('aria-expanded','false');
+    document.documentElement.classList.remove('no-scroll');
+  }
+
+  menuBtn?.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const isOpen = sidebar?.classList.contains('open');
+    isOpen ? closeSidebar() : openSidebar();
+  });
+  dashOverlay?.addEventListener('click', ()=>{
+    if (sidepanel?.classList.contains('open')) closePanel();
+    closeSidebar();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape'){
+      if (sidepanel?.classList.contains('open')) closePanel();
+      if (sidebar?.classList.contains('open')) closeSidebar();
+    }
+  });
+
+  /* ===== Drawer destro ===== */
+  let currentPanelKey = null;
+  const PANEL_META = {
+    notifiche: { icon:'🔔', title:'Notifiche' },
+    preventivi:{ icon:'📬', title:'Preventivi ricevuti' },
+    punti:     { icon:'✨', title:'Punti & Stelle' },
+    necrologi: { icon:'🕯️', title:'Necrologi' },
+    contatta:  { icon:'🤝', title:'Contatta un’altra impresa' },
+    marchio:   { icon:'🏅', title:'Marchio di Affidabilità' },
+    certificato:{icon:'📄', title:'Certificato di Adesione' },
+    faq:       { icon:'❓', title:'FAQ & Regole' },
+    agente:    { icon:'🧭', title:'Agente OFI' },
+  };
+
+  function openPanel(key, html){
+    const meta = PANEL_META[key] || { icon:'📄', title:'Sezione' };
+    spIcon.textContent  = meta.icon;
+    spTitle.textContent = meta.title;
+    spBody.innerHTML    = html || '<p class="small muted">Contenuto in caricamento…</p>';
+    sidepanel.classList.add('open');
+    sidepanel.setAttribute('aria-hidden','false');
+    currentPanelKey = key;
+  }
+  function closePanel(){
+    sidepanel.classList.remove('open');
+    sidepanel.setAttribute('aria-hidden','true');
+    currentPanelKey = null;
+  }
+  spClose.addEventListener('click', closePanel);
+
+  sidebar?.addEventListener('click', (e)=>{
+    const a = e.target.closest('a[data-panel]'); if(!a) return;
+    e.preventDefault();
+    const key = a.getAttribute('data-panel');
+    $$('#sidebar a[data-panel]').forEach(x=>x.classList.toggle('active', x===a));
+    if (currentPanelKey === key){
+      closePanel();
+      a.classList.remove('active');
+      return;
+    }
+
+    let html = '';
+      if (key === 'certificato'){
+      const emailImpresa = _USER_EMAIL || '';
+      const hrefCert = `./certificato-ofi-adesione.html?id=${encodeURIComponent(emailImpresa)}`;
+
+      html = `
+        <section class="sp-section">
+          <h3>Certificato di Adesione OFI</h3>
+
+          <p class="small muted">
+            Questo è il certificato istituzionale della tua impresa.
+            Puoi scaricarlo in qualsiasi momento, anche senza abbonamento attivo.
+          </p>
+
+          <div class="panel-cta" style="margin-top:1.4rem; text-align:center;">
+            <a class="btn-primary"
+               href="${hrefCert}"
+               target="_blank"
+               rel="noopener">
+              Scarica il certificato personalizzato
+            </a>
+          </div>
+        </section>
+      `;
+    } else if (key === 'marchio'){
+
+      html = `<article class="card">
+        <h3>🏅 Marchio di Affidabilità</h3>
+        <p class="small">Scarica e condividi il tuo marchio ufficiale.</p>
+        <div id="marchioWrap">—</div>
+      </article>`;
+    } else if (key === 'preventivi'){
+      html = `<article class="card">
+        <h3>📬 Preventivi ricevuti</h3>
+        <p class="small">Validità 7 giorni. Rispondere dal modulo assegna <strong>+10 punti</strong>.</p>
+        <div id="prevList">—</div>
+      </article>`;
+    } else if (key === 'punti'){
+      html = `<article class="card punti-card">
+        <h3>✨ Punti & Stelle</h3>
+        <p class="small">
+          Più usi OFI in modo corretto, più <strong>punti</strong> accumuli.
+          I punti, insieme alla tua <strong>reputazione</strong>, alimentano le <strong>stelle</strong> che i cittadini vedono.
+        </p>
+        <div id="puntiWrap" class="punti-wrap">—</div>
+      </article>`;
+    } else if (key === 'necrologi'){
+      html = `
+        <article class="card">
+          <h3>🕯️ Necrologi & anniversari</h3>
+          <p class="small">
+            Pubblica necrologi e anniversari per conto dei cittadini.
+            Ogni pubblicazione registrata tramite OFI assegna
+            <strong>+${POINTS.NECROLOGIO} punti</strong>, senza limiti giornalieri fissi:
+            se segui molte famiglie, il sistema lo riconosce.
+          </p>
+
+          <div class="grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1rem">
+            <a class="card" style="padding:1rem;text-decoration:none" href="../necrologi/scelta-necrologio.html">
+              <div style="display:flex;align-items:center;gap:.75rem">
+                <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.35)">📝</div>
+                <div>
+                  <strong>Nuovo necrologio</strong><br>
+                  <span class="small muted">Scegli modalità: Tradizionale o Editor AI</span>
+                </div>
+              </div>
+            </a>
+
+            <button id="btnMyNecrologi" class="card" type="button" style="padding:1rem;text-align:left">
+              <div style="display:flex;align-items:center;gap:.75rem">
+                <div style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)">📚</div>
+                <div>
+                  <strong>I miei necrologi</strong><br>
+                  <span class="small muted">Vedi, gestisci, elimina</span>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <div id="necrologiWrap" class="small" style="margin-top:1rem"></div>
+        </article>
+      `;
+    } else if (key === 'contatta'){
+      html = `<article class="card">
+        <h3>🤝 Contatta un’altra impresa</h3>
+        <div class="cta-wrap">
+          <input id="searchImpresa" class="input" placeholder="Cerca per nome o città" style="width:100%;max-width:380px">
+        </div>
+        <div id="contattaWrap" class="small muted">Digita per cercare…</div>
+      </article>`;
+    } else if (key === 'faq'){
+      html = `<article class="card">
+        <h3>❓ FAQ & Regole</h3>
+        <a class="btn" href="../faq.html" target="_blank" rel="noopener">Apri FAQ</a>
+      </article>`;
+    } else if (key === 'agente'){
+      html = `<article class="card">
+        <h3>🧭 Agente OFI</h3>
+        <p class="small">Scrivi “marchio”, “preventivi”, “profilo” per aprire le sezioni giuste.</p>
+      </article>`;
+    }
+    openPanel(key, html);
+    if (key === 'punti') loadPuntiPanel();
+    if (key === 'marchio') mountMarchioUI();
+    if (key === 'preventivi') loadPreventivi();
+    if (key === 'necrologi') loadNecrologiPanel();
+  });
+
+  /* ===== MAPPA ===== */
+  function initMap(){
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+    const style = activeTheme()==='dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+    window.map = new mapboxgl.Map({
+      container: 'mappaSedi',
+      style,
+      center:[12.4964,41.9028],
+      zoom:4.6,
+      attributionControl:false
+    });
+    window.map.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+    window.map.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'bottom-right');
+  }
+  
+  function mapLinkFor(s){
+    const addr = [s.indirizzo, s.cap, s.comune, s.provincia, s.regione].filter(Boolean).join(' ');
+    if (!addr) return '';
+    const q = encodeURIComponent(addr);
+    return `https://www.google.com/maps/search/?api=1&query=${q}`;
+  }
+
+  function popupHtmlFor(s){
+    const titolo = s.label || s.titolo || s.tipo || 'Sede OFI';
+    const addr = [s.indirizzo, s.cap, s.comune].filter(Boolean).join(', ');
+    const link = mapLinkFor(s);
+    const linkHtml = link
+      ? `<a href="${link}" target="_blank" rel="noopener" class="ofi-popup-btn">Apri in Google Maps</a>`
+      : '';
+    return `<div class="ofi-popup-inner">
+      <strong>${titolo}</strong><br>
+      <span>${addr || 'Indirizzo non disponibile'}</span><br>
+      ${linkHtml}
+    </div>`;
+  }
+
+  function svgPin(g1='#FFD46A', g2='#CAA85A', ring='#B78927'){
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${g1}"/><stop offset="1" stop-color="${g2}"/>
+      </linearGradient></defs>
+      <path d="M17 43C17 43 32 27.8 32 17C32 8.163 24.837 1 16 1S0 8.163 0 17c0 10.8 17 26 17 26Z" fill="url(#g)"/>
+      <circle cx="16.5" cy="16.5" r="5.9" fill="none" stroke="${ring}" stroke-opacity=".85" stroke-width="1.6"/>
+      <circle cx="16.5" cy="14.8" r="2.9" fill="#ffffff" fill-opacity=".9"/>
+    </svg>`;
+    return `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+  }
+
+  function makeMarkerEl(variant='gold'){
+    const el = document.createElement('div');
+    el.style.width = '34px';
+    el.style.height = '44px';
+    el.style.backgroundImage = (variant === 'gold')
+      ? svgPin('#FFD46A','#CAA85A','#B78927')
+      : svgPin('#6FD1FF','#0EA5E9','#1777B7');
+    el.style.backgroundSize = 'contain';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.transform = 'translateY(-2px)';
+    return el;
+  }
+
+  function plotSediDash(sedi){
+  if (!window.map) initMap();
+  if (!window.secMarkers) window.secMarkers = [];
+
+  // pulizia marker secondari esistenti
+  window.secMarkers.forEach(m => { try{ m.remove(); }catch{} });
+  window.secMarkers = [];
+
+  // salvo il riferimento globale alle sedi
+  window.ofiSedi = sedi;
+
+  const pts = [];
+  const sp = sedi.find(
+    s => s._type === 'principale' &&
+         typeof s.lat === 'number' &&
+         typeof s.lng === 'number'
+  );
+
+  // Marker sede principale
+  if (sp){
+    if (!window.mainMarker) {
+      window.mainMarker = new mapboxgl.Marker({ element: makeMarkerEl('gold') });
+    }
+    window.mainMarker
+      .setLngLat([sp.lng, sp.lat])
+      .setPopup(
+        new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' })
+          .setHTML(popupHtmlFor(sp))
+      )
+      .addTo(window.map);
+
+    // collego il marker alla sede (per la lista)
+    sp._marker = window.mainMarker;
+    pts.push([sp.lng, sp.lat]);
+  }
+
+  // Marker sedi distaccate / secondarie
+  sedi
+    .filter(s => s._type === 'dist' &&
+                 typeof s.lat === 'number' &&
+                 typeof s.lng === 'number')
+    .forEach(s => {
+      const m = new mapboxgl.Marker({ element: makeMarkerEl('blue') })
+        .setLngLat([s.lng, s.lat])
+        .setPopup(
+          new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' })
+            .setHTML(popupHtmlFor(s))
+        )
+        .addTo(window.map);
+
+      s._marker = m;           // collego il marker alla sede
+      window.secMarkers.push(m);
+      pts.push([s.lng, s.lat]);
+    });
+
+  // adatto la vista
+  if (pts.length === 1){
+    window.map.flyTo({ center: pts[0], zoom: 13 });
+  } else if (pts.length > 1){
+    const bounds = pts.reduce(
+      (bb, c) => bb.extend(c),
+      new mapboxgl.LngLatBounds(pts[0], pts[0])
+    );
+    window.map.fitBounds(bounds, { padding: 60 });
+  }
+}
+
+function renderSediList(sedi){
+  const list = document.getElementById('sediList');
+  if (!list) return;
+
+  if (!sedi || !sedi.length){
+    list.innerHTML = '<p class="small muted">Nessuna sede impostata.</p>';
+    return;
+  }
+
+  // principale per prima, poi le altre
+  const ordered = [...sedi].sort((a,b)=>{
+    if (a._type === 'principale' && b._type !== 'principale') return -1;
+    if (b._type === 'principale' && a._type !== 'principale') return 1;
+    return 0;
+  });
+
+  list.innerHTML = '';
+
+  ordered.forEach((s, idx)=>{
+    if (typeof s.lat !== 'number' || typeof s.lng !== 'number') return;
+
+    const label = s.label || s.titolo ||
+      (s._type === 'principale'
+        ? 'Sede principale'
+        : `Sede ${idx}`);
+
+    const city = s.comune || s.citta || '';
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'sedi-pill';
+    btn.innerHTML = `
+      <span class="sedi-pill-main">${label}</span>
+      ${city ? `<span class="sedi-pill-city">${city}</span>` : ''}
+      ${s._type === 'principale'
+          ? '<span class="sedi-pill-tag">Principale</span>'
+          : ''}
+    `;
+
+    btn.addEventListener('click', ()=>{
+      // centra la mappa su quella sede
+      if (window.map){
+        window.map.flyTo({ center:[s.lng,s.lat], zoom: 13 });
+      }
+
+      // apre il popup relativo, se abbiamo il marker
+      if (s._marker && typeof s._marker.togglePopup === 'function'){
+        try { s._marker.togglePopup(); } catch {}
+      } else if (window.map){
+        // popup di fallback
+        try{
+          new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' })
+            .setLngLat([s.lng, s.lat])
+            .setHTML(popupHtmlFor(s))
+            .addTo(window.map);
+        }catch{}
+      }
+    });
+
+    list.appendChild(btn);
+  });
+
+  if (!list.childElementCount){
+    list.innerHTML = '<p class="small muted">Le sedi non hanno ancora una posizione geolocalizzata.</p>';
+  }
+}
+
+
+/* ===== Abbonamento ===== */
+
+  // Helper: qualunque cosa arrivi (Timestamp, Date, stringa, numero) → millis
+  function toMillisSafe(value){
+  if (!value) return null;
+
+  // 1) Firestore Timestamp "vivo" (ha il metodo toMillis)
+  if (typeof value.toMillis === 'function') {
+    return value.toMillis();
+  }
+
+  // 2) Oggetto plain { seconds, nanoseconds } (ad es. dopo JSON, o alcune serializzazioni)
+  if (typeof value === 'object' && value !== null && typeof value.seconds === 'number') {
+    return value.seconds * 1000;
+  }
+
+  // 3) Date JS
+  if (value instanceof Date) {
+    return value.getTime();
+  }
+
+  // 4) Numero già in millisecondi
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  // 5) Stringa: provo a fare il parse
+  if (typeof value === 'string') {
+    const t = Date.parse(value);
+    return Number.isFinite(t) ? t : null;
+  }
+
+  return null;
+}
+
+    function getAbboState(abbo){
+  const now = Date.now();
+
+  // Nessun abbonamento → consideriamo scaduto
+  if (!abbo || typeof abbo !== 'object') {
+    return {
+      state: 'expired',
+      daysLeft: null,
+      trialEnd: null,
+      periodEnd: null
+    };
+  }
+
+  // NUOVO SCHEMA (pulito):
+  // - trialEndsAt  = fine dei 2 mesi gratuiti
+  // - periodEndAt  = fine del periodo pagato corrente
+  //
+  // Per compatibilità "soft" consideriamo anche renEwsAt se presente,
+  // ma ignoriamo del tutto i vecchi campi (abbonamento_end, renewAtMs, ecc.)
+  const rawTrialEnd   = abbo.trialEndsAt || null;
+  const rawPeriodEnd  = abbo.periodEndAt || abbo.renewsAt || null;
+
+  const trialEndMs  = toMillisSafe(rawTrialEnd);
+  const periodEndMs = toMillisSafe(rawPeriodEnd);
+
+  const trialActive = !!trialEndMs  && trialEndMs  > now;
+  const paidActive  = !!periodEndMs && periodEndMs > now;
+
+  let state    = 'expired';
+  let daysLeft = null;
+
+  if (paidActive) {
+    state    = 'active';
+    daysLeft = Math.max(0, Math.ceil((periodEndMs - now) / 86400000));
+  } else if (trialActive) {
+    state    = 'active_trial';
+    daysLeft = Math.max(0, Math.ceil((trialEndMs - now) / 86400000));
+  }
+
+  const result = {
+    state,
+    daysLeft,
+    trialEnd: trialEndMs  || null,
+    periodEnd: periodEndMs || null
+  };
+
+  console.log('[OFI] getAbboState (NEW)', {
+    abbo,
+    now,
+    trialEndMs,
+    periodEndMs,
+    result
+  });
+
+  return result;
+}
+
+  function renderAbboBadge(abbo){
+    const s = getAbboState(abbo);
+    const el = $('#abboBadge'); 
+    if (!el) return;
+
+    // reset classi base
+    el.className = 'badge abbo-chip';
+
+    if (s.state === 'active') {
+      el.classList.add('badge-green');
+      if (typeof s.daysLeft === 'number') {
+        el.textContent = s.daysLeft > 1
+          ? `Piano attivo — ${s.daysLeft} giorni al rinnovo`
+          : 'Piano attivo — rinnovo domani';
+      } else {
+        el.textContent = 'Piano attivo';
+      }
+    } else if (s.state === 'active_trial') {
+      el.classList.add('badge-blue');
+
+      if (typeof s.daysLeft === 'number') {
+        if (s.daysLeft <= 3) {
+          el.textContent = `Prova OFI: ultimi ${s.daysLeft} giorni`;
+        } else {
+          el.textContent = `Prova OFI attiva — ${s.daysLeft} giorni rimanenti`;
+        }
+      } else {
+        el.textContent = 'Prova OFI attiva';
+      }
+    } else {
+      el.classList.add('badge-red');
+      el.textContent = 'Abbonamento scaduto — attiva ora';
+      // in futuro: link alla pagina abbonamenti
+      // el.addEventListener('click', () => location.href = './abbonamenti.html');
+    }
+  }
+
+  function canUseSeal(abbo){
+    const s = getAbboState(abbo);
+    // Marchio visibile sia in prova sia con abbonamento attivo
+    return (s.state === 'active' || s.state === 'active_trial');
+  }
+
+  // ==== MARCHIO OFI PERSONALIZZATO (SVG) ===========================
+  function updateSealSvg({ nome, codice, stelle }) {
+    const svg = document.getElementById('sealSvg');
+    if (!svg) return;
+
+    const codeText = svg.querySelector('#sealCodeText');
+    const starsText = svg.querySelector('#sealStarsText');
+    const nameArc   = svg.querySelector('#sealNameArcText');
+    const namePath  = svg.querySelector('#sealNameArcText textPath');
+
+    // Codice OFI (testo centrale)
+    if (codeText) {
+      if (codice && codice !== '—') {
+        codeText.textContent = `ID ${codice}`;
+      } else {
+        codeText.textContent = '';
+      }
+    }
+
+    // Stelle (1–5)
+    const n = Math.max(1, Math.min(5, Number(stelle) || 1));
+    if (starsText) {
+      starsText.textContent = '★★★★★'.slice(0, n);
+    }
+
+    // Nome impresa in arco inferiore (maiuscolo + adattamento font-size)
+    if (namePath && nameArc) {
+      const raw = (nome || '').trim();
+      const nomeClean = raw.toUpperCase();
+
+      // font-size dinamico semplice in base alla lunghezza
+      let size = 18;
+      if (nomeClean.length > 26) size = 16;
+      if (nomeClean.length > 34) size = 14;
+      if (nomeClean.length > 42) size = 13;
+
+      nameArc.setAttribute('font-size', size);
+      namePath.textContent = nomeClean || '';
+    }
+  }
+
+    function mountMarchioUI(){
+    const wrap = $('#marchioWrap');
+    if (!wrap) return;
+
+    const abbo = window._OFI_ABBO || {};
+    if (!canUseSeal(abbo)) {
+      // Marchio BLOCCATO se non trial/active
+      wrap.innerHTML = `
+        <p class="small">
+          Per utilizzare il Marchio di Affidabilità Nazionale OFI
+          è necessario avere la prova o l’abbonamento attivo.
+        </p>`;
+      return;
+    }
+
+    const d = _IMPRESA_DOC || {};
+    const nome   = d.nomeImpresa || d.nome || ($('#nomeImpresa')?.textContent || 'Impresa senza nome');
+    const codice = d.codiceOFI || d.codice_ofi || ($('#sbOFI')?.textContent || '—');
+
+    // Calcolo stelle con la stessa logica del profilo/dashboard
+    let stelle = calcolaStelleCorrenti({
+      profilo_score: Number(d.profilo_score ?? 0),
+      punti_saldo: Number(d.punti_saldo ?? 0),
+      fattore_reputazione: Number(d.fattore_reputazione ?? 1),
+      stelle_lock_until: d.stelle_lock_until || null
+    });
+
+    // fallback se i dati non ci sono ancora
+    if (!Number.isFinite(stelle) || stelle <= 0) {
+      if (typeof d.stelle_correnti === 'number') {
+        stelle = d.stelle_correnti;
+      } else if (typeof d.stelle === 'number') {
+        stelle = d.stelle;
+      } else {
+        stelle = 1;
+      }
+    }
+
+    // Markup SVG identico a profilo.html (sigillo personalizzato)
+    wrap.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+        <svg id="sealSvg" viewBox="0 0 400 400"
+             style="max-width:180px;display:block;margin:0 auto .8rem;"
+             aria-hidden="true">
+          <defs>
+            <path id="arcTop"
+                  d="M 40,200 A 160,160 0 0 1 360,200" />
+            <path id="arcBottom"
+                  d="M 25,200 A 175,175 0 0 0 375,200" />
+          </defs>
+
+          <circle cx="200" cy="200" r="190"
+                  fill="#0e2638"
+                  stroke="#caa85a"
+                  stroke-width="12" />
+
+          <!-- Clip circolare -->
+          <clipPath id="logoClip">
+            <circle cx="200" cy="200" r="150" />
+          </clipPath>
+
+          <!-- PNG base -->
+          <image href="/images/sigillo-ofi-base.png"
+                 x="50" y="50"
+                 width="300" height="300"
+                 clip-path="url(#logoClip)" />
+
+          <!-- Testo superiore -->
+          <text fill="#ffd46a"
+                font-family="Noto Serif, serif"
+                font-size="20"
+                letter-spacing="3">
+            <textPath href="#arcTop"
+                      startOffset="50%"
+                      text-anchor="middle">
+              MARCHIO DI AFFIDABILITÀ NAZIONALE
+            </textPath>
+          </text>
+
+          <!-- Stelle -->
+          <text id="sealStarsText"
+                x="200" y="120"
+                text-anchor="middle"
+                fill="#ffd46a"
+                font-family="Noto Serif, serif"
+                font-size="32">
+            ★★★★★
+          </text>
+
+          <!-- Codice OFI -->
+          <text id="sealCodeText"
+                x="200" y="292"
+                text-anchor="middle"
+                fill="#ffd46a"
+                font-family="Source Sans 3, system-ui, sans-serif"
+                font-size="16"
+                letter-spacing="2">
+            ID OFI-000000
+          </text>
+
+          <!-- Nome impresa in arco inferiore -->
+          <text id="sealNameArcText"
+                fill="#ffffff"
+                font-family="Noto Serif, serif"
+                font-size="18"
+                letter-spacing="2">
+            <textPath href="#arcBottom"
+                      startOffset="50%"
+                      text-anchor="middle"
+                      dy="12">
+              NOME IMPRESA
+            </textPath>
+          </text>
+        </svg>
+
+                <div class="cta-wrap"
+             style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.4rem;">
+          <button type="button" class="btn" id="btnDownloadSeal">
+            Scarica marchio (SVG)
+          </button>
+          <button type="button" class="btn" id="btnDownloadSealPng">
+            Scarica marchio (PNG)
+          </button>
+          <button type="button" class="btn-ghost" id="btnShareSeal">
+            Condividi
+          </button>
+        </div>
+
+<p style="text-align:center;font-size:0.88rem;margin-top:0.4rem;max-width:420px;margin-left:auto;margin-right:auto;
+           color:#C9A44A;font-weight:500;letter-spacing:0.3px;">
+  ℹ️ <span style="color:#C9A44A;">
+    <strong>Consiglio OFI:</strong> il formato <strong>PNG</strong> è ideale per social, email e web.  
+    Il formato <strong>SVG</strong> offre la massima qualità per grafica professionale e stampe.
+  </span>
+</p>
+
+        <p class="small muted" style="margin-top:.6rem">
+          Il Marchio personalizzato è disponibile solo con prova o abbonamento attivo.
+        </p>
+      </div>
+    `;
+
+    // Personalizzo il sigillo con i dati reali
+    updateSealSvg({ nome, codice, stelle });
+
+        // Helper: incorpora la PNG di base dentro l'SVG (così i file scaricati sono completi)
+    async function inlineSealBaseImage(svgEl){
+      if (!svgEl) return;
+      const imgNode =
+        svgEl.querySelector('image') ||
+        svgEl.querySelector('image, image[xlink\\:href]');
+      if (!imgNode) return;
+
+      const currentHref =
+        imgNode.getAttribute('href') ||
+        imgNode.getAttribute('xlink:href');
+
+      if (!currentHref || currentHref.startsWith('data:')) {
+        // già incorporata o niente da fare
+        return;
+      }
+
+      const resp = await fetch(currentHref);
+      const blob = await resp.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      imgNode.setAttribute('href', dataUrl);
+      imgNode.removeAttribute('xlink:href');
+    }
+
+    // Download SVG personalizzato
+    const downloadBtn = document.getElementById('btnDownloadSeal');
+    downloadBtn?.addEventListener('click', async () => {
+      const svgEl = document.getElementById('sealSvg');
+      if (!svgEl) return;
+
+      await inlineSealBaseImage(svgEl);
+
+      const serializer = new XMLSerializer();
+      const src = serializer.serializeToString(svgEl);
+      const blob = new Blob([src], { type: 'image/svg+xml;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `marchio-ofi-${(codice || 'impresa').replace(/\s+/g,'-')}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+
+    // Download PNG (versione consigliata per social / email)
+    const downloadPngBtn = document.getElementById('btnDownloadSealPng');
+    downloadPngBtn?.addEventListener('click', async () => {
+      const svgEl = document.getElementById('sealSvg');
+      if (!svgEl) return;
+
+      // ci assicuriamo che anche qui la PNG di base sia incorporata
+      await inlineSealBaseImage(svgEl);
+
+      const serializer = new XMLSerializer();
+      const src = serializer.serializeToString(svgEl);
+      const svgBlob = new Blob([src], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl  = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.onload = () => {
+        const size = 2000; // 2000x2000 px: buona qualità per social e stampa base
+        const canvas = document.createElement('canvas');
+        canvas.width  = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, size, size);
+
+        // l'SVG originale è 400x400, lo scaliamo al canvas
+        ctx.drawImage(img, 0, 0, size, size);
+
+        URL.revokeObjectURL(svgUrl);
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `marchio-ofi-${(codice || 'impresa').replace(/\s+/g,'-')}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }, 'image/png');
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(svgUrl);
+        alert('Impossibile generare il PNG del Marchio. Riprova più tardi.');
+      };
+
+      img.src = svgUrl;
+    });
+
+    // Condivisione: link al profilo pubblico
+    const shareBtn = document.getElementById('btnShareSeal');
+
+    shareBtn?.addEventListener('click', async () => {
+      const shareUrl = `${location.origin}/imprese/profilo.html?id=${encodeURIComponent(_USER_EMAIL || '')}`;
+      const text = `Marchio di Affidabilità Nazionale OFI — ${nome}`;
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Marchio OFI',
+            text,
+            url: shareUrl
+          });
+        } catch (e) {
+          console.warn('Share annullata', e);
+        }
+      } else {
+        window.open(
+          'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl),
+          '_blank'
+        );
+      }
+    });
+  }
+
+
+  /* ===== PUNTI/STELLE/CREDITI — costanti e helper ===== */
+  const POINTS = {
+    THOUGHT: 5,           // pensiero del giorno
+    NECROLOGIO: 10,       // necrologi / anniversari pubblicati tramite OFI
+    PREVENTIVO_REPLY: 10, // risposta a preventivo dal modulo OFI
+    PROFILE_UPDATE: 5     // miglioramenti significativi del profilo
+  };
+
+// Ultimo documento profilo caricato (usato anche per simulare le stelle in conversione)
+let _puntiDoc = null;
+let _IMPRESA_DOC = null; // documento completo dell'impresa (riuso per marchio/certificato)
+
+  const CAPS = {
+    DAILY_ACTIONS: 20,
+    MONTHLY_ACTIONS: 80,
+    CREDITS_PER_MONTH: 10
+  };
+
+  function daysAgoDate(n){ const d=new Date(); d.setDate(d.getDate()-n); return d; }
+  function cutoff30(){ return daysAgoDate(30); }
+
+    // === LOGICA UFFICIALE — MASTER ===
+  function mappaStellePotenziale(profilo_score){
+    const s = Number(profilo_score||0);
+    if (s >= 95) return 5;
+    if (s >= 80) return 4;
+    if (s >= 50) return 3;
+    if (s >= 20) return 2;
+    return 1;
+  }
+
+  function stelleDaPunti(punti_saldo, fattore_reputazione=1){
+    const p = Number.isFinite(+punti_saldo) ? +punti_saldo : 0;
+    const r = (Number.isFinite(+fattore_reputazione) && +fattore_reputazione>0)
+      ? +fattore_reputazione : 1;
+    const eff = p * r;
+    if (eff >= 600) return 5;
+    if (eff >= 300) return 4;
+    if (eff >= 150) return 3;
+    if (eff >= 50)  return 2;
+    return 1;
+  }
+
+  // Converte sia stringhe che Timestamp Firestore in Date
+  function toDateMaybe(v){
+    if (!v) return null;
+    // Timestamp Firestore (ha il metodo toDate)
+    if (typeof v === 'object' && typeof v.toDate === 'function'){
+      return v.toDate();
+    }
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function calcolaStelleCorrenti({profilo_score, punti_saldo, fattore_reputazione=1, stelle_lock_until}){
+  const pot  = mappaStellePotenziale(profilo_score||0);
+  const byPts = stelleDaPunti(punti_saldo||0, fattore_reputazione||1);
+  const now  = new Date();
+  const lock = toDateMaybe(stelle_lock_until);
+
+  // Durante il periodo protetto: mai sotto il potenziale
+  if (lock && now <= lock) {
+    return Math.max(pot, byPts);
+  }
+
+  // Dopo il periodo protetto:
+  // le stelle seguono i punti, ma NON scendono sotto il potenziale
+  return Math.max(pot, byPts);
+}
+
+  function giorniRimanentiLock(stelle_lock_until){
+    const lock = toDateMaybe(stelle_lock_until);
+    if (!lock) return 0;
+    const ms = lock.getTime() - Date.now();
+    return ms>0 ? Math.ceil(ms/86400000) : 0;
+  }
+
+
+// Calcola quanti punti può convertire SENZA perdere stelle (a blocchi di 100)
+function maxConvertibleWithoutLosingStars(doc){
+  if (!doc) return 0;
+
+  const base  = Number(doc.profilo_score ?? 0);
+  const saldo = Number(doc.punti_saldo ?? 0);
+  const repF  = Number(doc.fattore_reputazione ?? 1);
+  const lockU = doc.stelle_lock_until || null;
+
+  if (saldo < 100) return 0;
+
+  const stelleAttuali = calcolaStelleCorrenti({
+    profilo_score: base,
+    punti_saldo: saldo,
+    fattore_reputazione: repF,
+    stelle_lock_until: lockU
+  });
+
+  let maxConv   = 0;
+  let testSaldo = saldo;
+
+  // Scendiamo a blocchi di 100 punti e vediamo fin dove le stelle restano uguali
+  while (testSaldo - 100 >= 0){
+    testSaldo -= 100;
+
+    const stelleAfter = calcolaStelleCorrenti({
+      profilo_score: base,
+      punti_saldo: testSaldo,
+      fattore_reputazione: repF,
+      stelle_lock_until: lockU
+    });
+
+    if (stelleAfter < stelleAttuali){
+      break; // ci fermeremmo a un livello stelle più basso
+    }
+    maxConv += 100;
+  }
+
+  return maxConv; // 0 = anche 100 pt farebbero scendere le stelle
+}
+
+  // (Solo per anteprime locali, NON per lo stato reale)
+  function computeVisibilityScore(profiloScore, puntiSaldo, fattoreRep=1.0){
+    return Number(profiloScore || 0) +
+      (Number(puntiSaldo||0) * 0.05) * Number(fattoreRep||1);
+  }
+
+  // Mostra stelle calcolate (con fattore_reputazione & lock)
+  async function refreshStarsUIFromDoc(d){
+    const base  = Number(d.profilo_score ?? 0);
+    const saldo = Number(d.punti_saldo ?? 0);
+    const repF  = Number(d.fattore_reputazione ?? 1);
+    const lockU = d.stelle_lock_until || null;
+    const pot   = mappaStellePotenziale(base);
+    const stars = calcolaStelleCorrenti({
+      profilo_score: base,
+      punti_saldo: saldo,
+      fattore_reputazione: repF,
+      stelle_lock_until: lockU
+    });
+    $('#stelleWrap').innerHTML = renderStars(stars);
+    $('#potStarsChip').textContent = `Potenziale: ${pot}★`;
+    const left = giorniRimanentiLock(lockU);
+    $('#lockChip').textContent = left>0
+      ? `Periodo iniziale: ${left} gg`
+      : 'Periodo iniziale: terminato';
+  }
+
+
+  /* ===== Modale Guida Punti & Crediti ===== */
+  const puntiModal      = document.getElementById('puntiModal');
+  const puntiModalClose = document.getElementById('puntiModalClose');
+
+  function openPuntiModal(){
+    if (!puntiModal) return;
+    puntiModal.classList.add('open');
+    puntiModal.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('no-scroll');
+  }
+
+  function closePuntiModal(){
+    if (!puntiModal) return;
+    puntiModal.classList.remove('open');
+    puntiModal.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('no-scroll');
+  }
+
+  puntiModalClose?.addEventListener('click', closePuntiModal);
+
+  puntiModal?.addEventListener('click', (e) => {
+    if (e.target.classList.contains('dash-modal-backdrop')) {
+      closePuntiModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && puntiModal?.classList.contains('open')) {
+      closePuntiModal();
+    }
+  });
+
+  /* ===== Modale CONVERSIONE PUNTI → CREDITI ===== */
+  const convertModal       = document.getElementById('convertModal');
+  const convertModalClose  = document.getElementById('convertModalClose');
+  const convertCancelBtn   = document.getElementById('convertCancel');
+  const convertConfirmBtn  = document.getElementById('convertConfirm');
+  const convertInput       = document.getElementById('convertInput');
+  const convertError       = document.getElementById('convertError');
+  const convertSaldoLabel  = document.getElementById('convSaldoLabel');
+  const convertChipsWrap   = document.getElementById('convertChips');
+  const convertStarsNote   = document.getElementById('convertStarsNote');
+  const convertResultBox   = document.getElementById('convertResult');
+
+  const CONVERT_STEP = 100;
+  let _convertSaldo = 0;
+
+  function openConvertModal(saldo){
+    if (!convertModal) return;
+    _convertSaldo = Math.max(0, Number(saldo||0));
+
+    const maxDaSaldo = Math.floor(_convertSaldo / CONVERT_STEP) * CONVERT_STEP;
+    if (maxDaSaldo < CONVERT_STEP){
+      alert('Per convertire servono almeno 100 punti di saldo.');
+      return;
+    }
+
+    if (convertSaldoLabel) convertSaldoLabel.textContent = _convertSaldo;
+    if (convertError) convertError.textContent = '';
+
+    // genera bottoni rapidi (100 / 200 / 300 / 500 / 1000)
+    if (convertChipsWrap){
+      convertChipsWrap.innerHTML = '';
+      const possibili = [100,200,300,500,1000].filter(v => v <= maxDaSaldo);
+      possibili.forEach(v=>{
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'convert-chip';
+        b.textContent = `${v} pt`;
+        b.dataset.value = String(v);
+        b.addEventListener('click', ()=>{
+          $$('.convert-chip', convertChipsWrap).forEach(x=>x.classList.remove('active'));
+          b.classList.add('active');
+          if (convertInput) convertInput.value = String(v);
+          if (convertError) convertError.textContent = '';
+        });
+        convertChipsWrap.appendChild(b);
+      });
+      // seleziona di default il primo, se presente
+      const first = convertChipsWrap.querySelector('.convert-chip');
+      if (first){
+        first.classList.add('active');
+        if (convertInput) convertInput.value = first.dataset.value || '';
+      }
+    }
+
+    if (convertInput){
+      convertInput.value = convertInput.value || String(Math.min(maxDaSaldo, CONVERT_STEP));
+    }
+
+    // Messaggio di consiglio su quanti punti convertire
+    if (convertStarsNote){
+      if (!_puntiDoc){
+        convertStarsNote.textContent =
+          'Il sistema aggiornerà le tue stelle in automatico dopo la conversione.';
+      } else {
+        const base   = Number(_puntiDoc.profilo_score ?? 0);
+        const saldoDoc = Number(_puntiDoc.punti_saldo ?? 0);
+        const repF   = Number(_puntiDoc.fattore_reputazione ?? 1);
+        const lockU  = _puntiDoc.stelle_lock_until || null;
+
+        const stelleAttuali = calcolaStelleCorrenti({
+          profilo_score: base,
+          punti_saldo: saldoDoc,
+          fattore_reputazione: repF,
+          stelle_lock_until: lockU
+        });
+
+        const suggerito = maxConvertibleWithoutLosingStars(_puntiDoc);
+
+        if (suggerito >= 100){
+          convertStarsNote.innerHTML =
+            `Ora sei a <strong>${stelleAttuali}★</strong>.<br>` +
+            `Per mantenere questo livello ti consigliamo di non convertire più di ` +
+            `<strong>${suggerito} punti</strong>.`;
+        } else {
+          convertStarsNote.innerHTML =
+            `Ora sei a <strong>${stelleAttuali}★</strong>.<br>` +
+            `Anche una piccola conversione potrebbe ridurre il numero di stelle: ` +
+            `valuta se ti conviene convertire adesso.`;
+        }
+      }
+    }
+
+    // pulisco il riepilogo eventuale della conversione precedente
+    if (convertResultBox) {
+      convertResultBox.hidden = true;
+      convertResultBox.innerHTML = '';
+    }
+
+    convertModal.classList.add('open');
+    convertModal.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('no-scroll');
+
+    // piccolo delay per garantire il focus
+    setTimeout(()=>{ convertInput?.focus(); }, 50);
+  }
+
+  function closeConvertModal(){
+    if (!convertModal) return;
+    convertModal.classList.remove('open');
+    convertModal.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('no-scroll');
+  }
+
+  convertModalClose?.addEventListener('click', closeConvertModal);
+  convertCancelBtn?.addEventListener('click', closeConvertModal);
+
+  convertModal?.addEventListener('click', (e)=>{
+    if (e.target.classList.contains('dash-modal-backdrop')) {
+      closeConvertModal();
+    }
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if (e.key === 'Escape' && convertModal?.classList.contains('open')) {
+      closeConvertModal();
+    }
+  });
+
+  async function performConversion(){
+    if (!auth.currentUser){
+      alert('Devi essere loggato per convertire i punti.');
+      return;
+    }
+    if (!convertInput) return;
+
+    let amount = parseInt(convertInput.value, 10);
+    const maxDaSaldo = Math.floor(_convertSaldo / CONVERT_STEP) * CONVERT_STEP;
+
+    if (!Number.isFinite(amount) || amount <= 0){
+      convertError.textContent = 'Inserisci un numero valido.';
+      return;
+    }
+
+    amount = Math.floor(amount / CONVERT_STEP) * CONVERT_STEP;
+
+    if (amount < CONVERT_STEP){
+      convertError.textContent = 'Devi convertire almeno 100 punti.';
+      return;
+    }
+    if (amount > maxDaSaldo){
+      convertError.textContent = 'Non hai abbastanza punti per questa conversione.';
+      return;
+    }
+
+    convertError.textContent = '';
+    convertConfirmBtn.disabled = true;
+    convertConfirmBtn.textContent = 'Conversione in corso…';
+
+    try{
+      const convertPuntiFn = httpsCallable(functions, 'convertPunti');
+      const res = await convertPuntiFn({ punti_da_convertire: amount });
+      const out = res.data || {};
+
+            if (out.ok){
+        // Mostra un riepilogo elegante dentro la modale
+        if (convertResultBox){
+          convertResultBox.hidden = false;
+          convertResultBox.innerHTML = `
+            <span class="convert-result-title">Conversione completata ✅</span>
+            <p>
+              Punti usati: <strong>${out.punti_usati}</strong><br>
+              Crediti aggiunti: <strong>${out.crediti_aggiunti}</strong><br>
+              Nuovo saldo punti: <strong>${out.punti_saldo}</strong><br>
+              Stelle attuali: <strong>${out.stelle_correnti}/5</strong>
+            </p>
+            <p class="small" style="margin-top:.2rem;opacity:.9;">
+              La dashboard è stata aggiornata. Puoi chiudere questa finestra quando vuoi.
+            </p>
+          `;
+        }
+
+        // ricarico il pannello punti per vedere subito il nuovo saldo/stelle
+        await loadPuntiPanel();
+      } else {
+
+        convertError.textContent = 'Impossibile convertire i punti: ' + (out.reason || 'errore generico');
+      }
+    } catch(err){
+      console.error('convertPunti error', err);
+      convertError.textContent = 'Errore durante la conversione dei punti.';
+    } finally {
+      convertConfirmBtn.disabled = false;
+      convertConfirmBtn.textContent = 'Converti';
+    }
+  }
+
+  convertConfirmBtn?.addEventListener('click', performConversion);
+
+
+  /* ===== Dati dashboard ===== */
+  let _USER_EMAIL = null;
+
+  async function loadDashboard(userEmail){
+    const id = (userEmail||'').trim();
+    if (!id) return;
+    _USER_EMAIL = id;
+
+    try {
+      const testSnap = await getDoc(doc(db,'imprese_registrate', _USER_EMAIL));
+      console.log('[OFI] Doc impresa esiste?', _USER_EMAIL, testSnap.exists());
+    } catch(e) {
+      console.warn('[OFI] Verifica doc impresa fallita', e);
+    }
+
+    const ref = doc(db, 'imprese_registrate', id);
+    const snap = await getDoc(ref).catch(()=>null);
+    const d = snap && snap.exists() ? snap.data() : {};
+
+// salvo il doc completo per riutilizzarlo nel pannello Marchio
+_IMPRESA_DOC = d;
+
+    const nome   = d.nomeImpresa || d.nome || (id.split('@')[0]);
+    const codice = d.codiceOFI || d.codice_ofi || '—';
+    const logo   = d.logoUrl || d.logo_url || d.logo || '';
+    const sede   = d.sede_principale || null;
+
+    // Hero + Sidebar
+    $('#nomeImpresa').textContent = nome;
+    if (logo) $('#logoImg').src   = logo;
+    $('#sbName').textContent  = nome;
+    $('#sbOFI').textContent   = codice;
+    $('#sbEmail').textContent = id;
+    if (logo) $('#sbLogo').src = logo;
+    $('#linkProfilo').href = `./profilo.html?id=${encodeURIComponent(id)}`;
+
+    // Abbonamento
+    window._OFI_ABBO = d.abbonamento || {};
+    renderAbboBadge(window._OFI_ABBO);
+
+    // Punti totali visivi
+    const base  = Number(d.profilo_score ?? 0);
+    const saldo = Number(d.punti_saldo ?? 0);
+    const total = Math.max(0, base + saldo);
+    $('#puntiTotali').textContent = `${total} punti`;
+    $('#sbPunti').textContent = String(total);
+
+    // Stelle UI (calcolo client coerente col MASTER)
+    await refreshStarsUIFromDoc(d);
+
+    // Realtime
+    try {
+      const profRefLive = doc(db, 'imprese_registrate', id);
+      if (window._unsubScore) {
+        try { window._unsubScore(); } catch{}
+      }
+      window._unsubScore = onSnapshot(profRefLive, (snap)=>{
+        if (!snap.exists()) return;
+        const dd = snap.data() || {};
+        const baseLive  = Number(dd.profilo_score ?? 0);
+        const extraLive = Number(dd.punti_saldo ?? 0);
+        const totalLive = Math.max(0, baseLive + extraLive);
+
+        // UI punti
+        $('#puntiTotali').textContent = `${totalLive} punti`;
+        $('#sbPunti').textContent = totalLive;
+
+        // UI stelle (ricalcolo usando fattore_reputazione & lock)
+        refreshStarsUIFromDoc(dd);
+      });
+    } catch(e){
+      console.warn('onSnapshot score error', e);
+    }
+
+    // click sul badge dorato = apri pannello "Punti & Stelle"
+    $('#puntiTotali')?.addEventListener('click', ()=>{
+      document.querySelector('#sidebar a[data-panel="punti"]')?.click();
+    });
+
+    // Notifiche placeholder
+    try{
+      const qRef = query(
+        collection(db, 'preventivi'),
+        where('stato','==','approvato'),
+        where('destinatari','array-contains', id),
+        limit(20)
+      );
+      const qsnap = await getDocs(qRef);
+      const count = qsnap.size || 0;
+      const badge = $('#notifCount');
+      badge.hidden = count<=0;
+      if (count>0) badge.textContent = count;
+    }catch{}
+
+    // Mappa — tutte le sedi con popup
+    if (!window.map) initMap();
+
+    const sedePrincipale = d.sede_principale || null;
+    const sediDist       = Array.isArray(d.sedi_distaccate) ? d.sedi_distaccate : [];
+    const sediVecchie    = Array.isArray(d.sedi) ? d.sedi : (Array.isArray(d.sediSecondarie) ? d.sediSecondarie : []);
+
+    const sediTot = (sedePrincipale ? [{ ...sedePrincipale, _type: 'principale' }] : [])
+  .concat(
+    (sediDist || []).map(s => ({ ...s, _type: 'dist' })),
+    (sediVecchie || []).map(s => ({ ...s, _type: 'dist' }))
+  );
+
+if (sediTot.length){
+  plotSediDash(sediTot);
+  renderSediList(sediTot);
+} else {
+  renderSediList([]); // mostra messaggio "nessuna sede"
+}
+
+    // Pensiero del giorno
+    await loadDailyThought();
+    await updateThoughtStatusUI();
+  }
+
+  /* ===== Preventivi panel ===== */
+  async function loadPreventivi(){
+    const id = $('#sbEmail')?.textContent || '';
+    const mount = $('#prevList'); if (!mount || !id) return;
+    mount.innerHTML = '<p class="small muted">Caricamento…</p>';
+    try{
+      const qRef = query(
+        collection(db,'preventivi'),
+        where('impresa_destinataria','==', id),
+        where('stato','in',['approvato','risposto'])
+      );
+      const qs = await getDocs(qRef);
+      if (qs.empty){
+        mount.innerHTML = '<p class="muted">Nessun preventivo al momento.</p>';
+        return;
+      }
+      let html = '';
+      qs.forEach(docu=>{
+        const p = docu.data();
+        html += `<div class="card" style="margin-bottom:.6rem">
+          <p><strong>👤</strong> ${p.nome||'-'} — <strong>📧</strong> ${p.email||'-'}</p>
+          <p><strong>📍</strong> ${p.comune||'-'} — <strong>📝</strong> ${p.servizio||'-'}</p>
+          <p class="small">${(p.messaggio||'').slice(0,220)}</p>
+          <div class="cta-wrap" style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <a class="btn" href="#rispondi">Rispondi ( +10 pt )</a>
+            <a class="btn-ghost" href="#dettagli">Dettagli</a>
+          </div>
+        </div>`;
+      });
+      mount.innerHTML = html;
+    }catch(e){
+      mount.innerHTML = '<p class="error">Errore lettura preventivi.</p>';
+    }
+  }
+
+  /* ===== Necrologi panel =====
+     Obiettivo: far vedere all'impresa i necrologi pubblicati (e permettere eliminazione).
+     Nota: la collezione può variare nelle versioni del progetto.
+     Qui gestiamo in modo robusto: proviamo più collezioni note e usiamo il primo match.
+  */
+  async function loadNecrologiPanel(){
+    const mount = document.getElementById('necrologiWrap');
+    const btn = document.getElementById('btnMyNecrologi');
+    const email = (_USER_EMAIL || '').trim();
+    if (!mount) return;
+
+    // UI base
+    mount.innerHTML = '<div class="small muted">Seleziona <strong>“I miei necrologi”</strong> per vedere la lista.</div>';
+
+    if (btn){
+      btn.onclick = async ()=>{
+        if (!email){
+          mount.innerHTML = '<div class="small error">Devi essere loggato come impresa per vedere i necrologi.</div>';
+          return;
+        }
+
+        btn.disabled = true;
+        btn.style.opacity = '.7';
+        mount.innerHTML = '<div class="small muted">Caricamento necrologi…</div>';
+
+        try{
+          const results = await fetchMyNecrologi(email);
+          renderNecrologiList(mount, results);
+        }catch(e){
+          console.warn('loadNecrologiPanel error', e);
+          mount.innerHTML = '<div class="small error">Errore nel caricamento dei necrologi.</div>';
+        }finally{
+          btn.disabled = false;
+          btn.style.opacity = '';
+        }
+      };
+    }
+  }
+
+  async function fetchMyNecrologi(email){
+    // Proviamo in ordine: collezioni più probabili nel progetto
+    const candidates = [
+      { name:'necrologi_pubblicati', field:'impresa_email' },
+      { name:'necrologi', field:'impresa_email' },
+      { name:'necrologi', field:'impresaId' },
+      { name:'necrologi_pubblicati', field:'impresaId' }
+    ];
+
+    for (const c of candidates){
+      try{
+        const qRef = query(
+          collection(db, c.name),
+          where(c.field, '==', email),
+          orderBy('createdAt','desc'),
+          limit(50)
+        );
+        const qs = await getDocs(qRef);
+        if (!qs.empty){
+          return qs.docs.map(d => ({ id:d.id, ...d.data(), _collection:c.name }));
+        }
+      }catch(e){
+        // 1) se manca l'indice orderBy o il campo, riprova senza orderBy
+        try{
+          const qRef2 = query(
+            collection(db, c.name),
+            where(c.field, '==', email),
+            limit(50)
+          );
+          const qs2 = await getDocs(qRef2);
+          if (!qs2.empty){
+            return qs2.docs.map(d => ({ id:d.id, ...d.data(), _collection:c.name }));
+          }
+        }catch{}
+      }
+    }
+    return [];
+  }
+
+  function pickNecroTitle(n){
+    const nome = (n.nomeDefunto || n.nome || '').toString().trim();
+    const cogn = (n.cognomeDefunto || n.cognome || '').toString().trim();
+    const full = `${nome} ${cogn}`.trim();
+    return full || (n.titolo || n.title || 'Necrologio');
+  }
+
+  function pickNecroMeta(n){
+    const eta = n.eta || n.anni || '';
+    const luogo = (n.comune || n.luogo || n.citta || '').toString().trim();
+    const data = (n.dataMorte || n.data || n.dataEvento || '').toString().trim();
+    const chunks = [eta ? `${eta} anni` : '', luogo, data].filter(Boolean);
+    return chunks.join(' · ');
+  }
+
+  function renderNecrologiList(mount, list){
+    if (!Array.isArray(list) || list.length === 0){
+      mount.innerHTML = `
+        <div class="card" style="padding:1rem">
+          <strong>Nessun necrologio trovato</strong>
+          <div class="small muted" style="margin-top:.25rem">
+            Quando pubblichi un necrologio, qui vedrai lo storico.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    const rows = list.map(n=>{
+      const title = escapeHtml(pickNecroTitle(n));
+      const meta  = escapeHtml(pickNecroMeta(n));
+
+      // Link pubblico: se esiste un url/slug lo usiamo, altrimenti fallback su necrologi-risultati con query id
+      const publicUrl = (n.publicUrl || n.urlPubblica || '').toString().trim();
+      const hrefPub = publicUrl || `../necrologi/necrologio.html?id=${encodeURIComponent(n.id)}`;
+
+      return `
+        <div class="card" style="padding:1rem;margin-top:.6rem">
+          <div style="display:flex;justify-content:space-between;gap:.75rem;align-items:flex-start;flex-wrap:wrap">
+            <div>
+              <div style="font-weight:800">${title}</div>
+              <div class="small muted">${meta || '—'}</div>
+              <div class="small muted" style="margin-top:.35rem">ID: <code>${escapeHtml(n.id)}</code></div>
+            </div>
+            <div class="cta-wrap" style="display:flex;gap:.5rem;flex-wrap:wrap">
+              <a class="btn-ghost" target="_blank" rel="noopener" href="${hrefPub}">Apri</a>
+              <button class="btn" type="button" data-del-necro="${escapeHtml(n.id)}" data-col="${escapeHtml(n._collection||'necrologi')}">Elimina</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    mount.innerHTML = `
+      <div class="small muted">Trovati <strong>${list.length}</strong> necrologi.</div>
+      ${rows}
+    `;
+
+    // bind delete
+    mount.querySelectorAll('button[data-del-necro]')?.forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = btn.getAttribute('data-del-necro');
+        const col = btn.getAttribute('data-col') || 'necrologi';
+        if (!id) return;
+        const ok = confirm('Vuoi eliminare definitivamente questo necrologio?');
+        if (!ok) return;
+        try{
+          btn.disabled = true;
+          await deleteDoc(doc(db, col, id));
+          btn.closest('.card')?.remove();
+        }catch(e){
+          console.warn('delete necro error', e);
+          alert('Errore: non riesco a eliminare il necrologio (permessi o rete).');
+        }finally{
+          btn.disabled = false;
+        }
+      });
+    });
+  }
+
+  function escapeHtml(s){
+    return (s ?? '').toString()
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+  }
+
+    /* ===== Pannello Punti & Stelle (vista semplice) ===== */
+  async function loadPuntiPanel(){
+    const ref = doc(db, 'imprese_registrate', _USER_EMAIL);
+    const snap = await getDoc(ref).catch(()=>null);
+    const d = snap && snap.exists() ? snap.data() : {};
+
+    // Salvo il documento per usarlo nelle simulazioni di conversione
+    _puntiDoc = d;
+
+    const base   = Number(d.profilo_score ?? 0);
+    const saldo  = Number(d.punti_saldo ?? 0);        // saldo tecnico punti
+    const punti  = Math.max(0, base + saldo);         // punti totali visivi
+    const repF   = Number(d.fattore_reputazione ?? 1);
+    const pot    = mappaStellePotenziale(base);
+    const lockU  = d.stelle_lock_until || null;
+    const curr   = calcolaStelleCorrenti({
+      profilo_score: base,
+      punti_saldo: saldo,
+      fattore_reputazione: repF,
+      stelle_lock_until: lockU
+    });
+    const att30  = Number(d.attivita_30gg || 0);
+    const rep    = Number(d.reputazione_media || d.reputazione_score || 0);
+    const cred   = Number(d.crediti ?? 0); // assegnato dal backend
+    const left   = giorniRimanentiLock(lockU);
+
+    const mount = document.getElementById('puntiWrap');
+    if (!mount) return;
+
+    const starsVis = '★'.repeat(Math.max(0, Math.min(5, curr))) || '—';
+
+    mount.innerHTML = `
+      <section class="punti-summary">
+        <h4>Il tuo stato oggi</h4>
+        <div class="ps-row">
+          <span class="ps-label">Stelle visibili:</span>
+          <span class="ps-value">${starsVis} <span class="small">(${curr}/5)</span></span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-label">Potenziale dal profilo:</span>
+          <span class="ps-value">${pot}★</span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-label">Punti totali:</span>
+          <span class="ps-value">${punti}</span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-label">Attività ultimi 30 giorni:</span>
+          <span class="ps-value">${att30} pt</span>
+        </div>
+        <div class="ps-row">
+          <span class="ps-label">Crediti disponibili:</span>
+          <span class="ps-value">${cred}</span>
+        </div>
+        ${left>0 ? `<p class="small ps-hint">
+          Stelle protette ancora per <strong>${left} giorni</strong>:
+          non possono scendere sotto il tuo potenziale.
+        </p>` : ''}
+        <p class="small ps-hint">
+          In sintesi: <strong>azioni utili → punti</strong> ·
+          <strong>punti + reputazione → stelle</strong> ·
+          più stelle = <strong>più visibilità</strong> nel tempo.
+        </p>
+      </section>
+
+      <section class="punti-actions">
+        <h4>Cosa puoi fare oggi</h4>
+        <ul class="small">
+          <li>
+            <strong>Condividi il Pensiero del giorno</strong>
+            (+${POINTS.THOUGHT} punti, una volta al giorno).
+          </li>
+          <li>
+            <strong>Pubblica necrologi e anniversari tramite OFI</strong>
+            (+${POINTS.NECROLOGIO} punti per ogni pubblicazione, senza limiti giornalieri fissi).
+          </li>
+          <li>
+            <strong>Rispondi ai preventivi tramite il modulo OFI</strong>
+            (+${POINTS.PREVENTIVO_REPLY} punti per risposta tracciata).
+          </li>
+          <li>
+            <strong>Aggiorna e completa il profilo impresa</strong>
+            (+${POINTS.PROFILE_UPDATE} punti quando migliori le sezioni).
+          </li>
+        </ul>
+      </section>
+
+      <section class="punti-crediti small">
+        <h4>Crediti OFI</h4>
+        <p>
+          Ogni <strong>100 punti</strong> possono diventare <strong>1 credito OFI</strong>.
+          I crediti ti aiutano a risparmiare sui servizi OFI (in genere fino al <strong>50% del prezzo</strong>).
+        </p>
+        <div class="cta-wrap" style="margin-top:.7rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button id="openFullGuide" class="btn-primary" type="button">
+            Guida completa Punti, Stelle &amp; Crediti
+          </button>
+        </div>
+
+                <section class="punti-convert small" style="margin-top:1rem;">
+          <h4>Converti punti in crediti</h4>
+          <p>
+            Hai <strong>${saldo}</strong> punti disponibili (saldo tecnico).
+            <br>Da questi potresti ottenere fino a <strong>${Math.floor(saldo / 100)}</strong> crediti OFI.
+          </p>
+          <p class="small" style="opacity:.9;">
+            ⚠️ <strong>Attenzione:</strong> quando trasformi i punti in crediti,
+            quei punti vengono <strong>rimossi in modo definitivo</strong> dal saldo.
+            I <strong>crediti non possono essere riconvertiti in punti</strong>.
+          </p>
+          <p class="small" style="opacity:.9;">
+            Il sistema aggiorna in automatico le tue stelle: se dopo la conversione
+            scendi sotto alcune soglie, il livello di stelle potrà diminuire
+            (il potenziale del profilo <strong>resta invariato</strong>).
+          </p>
+          ${
+            saldo >= 300
+              ? '<button id="convertBtn" class="btn-ghost-w" type="button">Converti ora una parte dei punti</button>'
+              : '<p class="small muted">Per convertire servono almeno 300 punti di saldo.</p>'
+          }
+        </section>
+      </section>
+
+      <details class="punti-tech small">
+        <summary>Voglio qualche dettaglio in più</summary>
+        <p>
+          Il sistema considera: <strong>completezza del profilo</strong>,
+          <strong>attività negli ultimi mesi</strong>
+          e <strong>media delle recensioni</strong>. In base a questo,
+          le stelle crescono in modo graduale e calano lentamente se
+          l’impresa smette di essere attiva per molto tempo.
+        </p>
+        <p>
+          Gli aspetti tecnici (soglie, formule, decadimento automatico)
+          sono già gestiti da OFI: tu pensa solo a mantenere vivo il profilo,
+          pubblicare i necrologi/anniversari e rispondere ai cittadini.
+        </p>
+      </details>
+    `;
+
+    // Bottone per aprire la guida completa nel modale
+    const guideBtn = document.getElementById('openFullGuide');
+    if (guideBtn) {
+      guideBtn.addEventListener('click', () => {
+        openPuntiModal();
+      });
+    }
+
+        // Bottone per aprire la MODALE di conversione punti → crediti
+    const convertBtn = document.getElementById('convertBtn');
+    if (convertBtn) {
+      convertBtn.addEventListener('click', () => {
+        openConvertModal(saldo);
+      });
+    }
+
+}
+
+
+  /* ===== Pensiero del giorno ===== */
+  const THOUGHT_POINTS = POINTS.THOUGHT;
+  document.getElementById('thoughtPointsChip').textContent = `+${THOUGHT_POINTS} punti / giorno`;
+
+  function dayOfYear(d=new Date()){
+    const start = new Date(d.getFullYear(),0,0);
+    const diff = d - start;
+    return Math.floor(diff/86400000);
+  }
+  function todayKey(){
+    const d=new Date(); const y=d.getFullYear();
+    const m=String(d.getMonth()+1).padStart(2,'0');
+    const dd=String(d.getDate()).padStart(2,'0');
+    return `${y}${m}${dd}`;
+  }
+
+  async function loadDailyThought(){
+    await window.OFIThought.mountDailyThought({
+      jsonUrl: '/data/pensieri_2025.json',
+      targetQuoteId: 'pensieroTxt',
+      targetAuthorId: 'pensieroAutore',
+      addFancyQuotes: true
+    });
+  }
+
+  function giornoKeyISO(){ return new Date().toISOString().slice(0,10); } // 'YYYY-MM-DD'
+
+  async function alreadySharedToday(){
+    if (!_USER_EMAIL) return false;
+    try{
+      const gk = giornoKeyISO();
+      const qRef = query(
+        collection(db, 'azioni_log'),
+        where('impresa_email', '==', _USER_EMAIL),
+        where('tipo', '==', 'pensiero'),
+        where('giorno_key', '==', gk),
+        limit(1)
+      );
+      const qs = await getDocs(qRef);
+      return !qs.empty;
+    }catch{
+      return false;
+    }
+  }
+
+  // Log append-only (le Functions si occupano di punti, caps, stelle)
+  async function awardPointsOncePerDay() {
+    if (!_USER_EMAIL) return { ok: false, reason: 'NO_USER' };
+    console.log('[OFI] awardPointsOncePerDay for', _USER_EMAIL, 'auth=', auth.currentUser?.email);
+
+    const pensieroId = dayOfYear();
+    const gk = giornoKeyISO();
+
+    // 1) blocco "una volta al giorno" lato client
+    if (await alreadySharedToday()) return { ok:false, reason:'ALREADY_TODAY' };
+
+    // 2) scrivo SOLO il log top-level (campi ammessi dalle regole)
+    try{
+      await addDoc(collection(db, 'azioni_log'), {
+        impresa_email: _USER_EMAIL,
+        tipo: 'pensiero',
+        giorno_key: gk,
+        ref_tipo: 'pensiero',
+        ref_id: String(pensieroId),
+        created_at: serverTimestamp()
+      });
+      return { ok:true };
+    } catch(e){
+      console.error('LOG CREATE FAILED', e);
+      return { ok:false, reason:'LOG_CREATE_FAILED' };
+    }
+  }
+
+  async function updateThoughtStatusUI(){
+    const status = $('#pensieroStatus');
+    const btn = $('#sharePensiero');
+    const shared = await alreadySharedToday();
+    if (shared){
+      status.textContent = 'Hai già condiviso oggi questo pensiero. Torna domani per altri punti.';
+      btn.disabled = true; btn.textContent = 'Condiviso oggi';
+    } else {
+      status.textContent = 'Condividi una volta al giorno per aumentare i tuoi punti in modo corretto.';
+      btn.disabled = false; btn.textContent = 'Condividi';
+    }
+  }
+
+  $('#pensieroInfo')?.addEventListener('click', (e)=>{
+    const tip = $('#pensieroTip');
+    const expanded = e.currentTarget.getAttribute('aria-expanded') === 'true';
+    e.currentTarget.setAttribute('aria-expanded', String(!expanded));
+    tip.classList.toggle('show', !expanded);
+    const close = (ev)=>{
+      if (!tip.contains(ev.target) && ev.target!==e.currentTarget){
+        tip.classList.remove('show');
+        e.currentTarget.setAttribute('aria-expanded','false');
+        document.removeEventListener('click', close);
+      }
+    };
+    setTimeout(()=>document.addEventListener('click', close),0);
+  });
+
+  async function performShare(){
+    const tObj = window.OFIThought?.getToday?.() || {
+      full: $('#pensieroTxt')?.textContent?.replace(/^“|”$/g,'') || ''
+    };
+    const text = tObj.full.trim();
+    const author = ($('#pensieroAutore')?.textContent || '').trim().replace(/^—\s*/, '');
+    const d = new Date();
+    const dateStr = d.toISOString().slice(0,10);
+    const url = `${location.origin}/p/${dateStr}?t=${encodeURIComponent(text)}${author ? `&a=${encodeURIComponent(author)}`:''}`;
+
+    try{
+      if (navigator.share){
+        await navigator.share({ title: 'Pensiero del giorno — OFI', text, url });
+      } else {
+        const wa = `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
+        window.open(wa, '_blank');
+      }
+    }catch{
+      return;
+    }
+  }
+
+  async function handleSharePensiero() {
+    const status = $('#pensieroStatus');
+    status.textContent = 'Condivisione in corso...';
+
+    try {
+      await performShare();                    // 1) condivisione
+      const res = await awardPointsOncePerDay(); // 2) log per accredito (server-side)
+
+      if (res.ok) {
+        status.textContent = 'Grazie! Condivisione registrata. I punti verranno accreditati a breve.';
+      } else if (res.reason === 'ALREADY_TODAY') {
+        status.textContent = 'Hai già condiviso oggi. I nuovi punti saranno disponibili domani.';
+      } else if (res.reason === 'DAILY_CAP') {
+        status.textContent = 'Hai raggiunto il limite giornaliero di punti per le azioni.';
+      } else if (res.reason === 'MONTHLY_CAP') {
+        status.textContent = 'Hai raggiunto il limite mensile di punti da azioni.';
+      } else {
+        status.textContent = 'Condivisione completata. (Nota: non sono riuscito a registrare i punti in questo momento.)';
+      }
+
+      await updateThoughtStatusUI(); // refresh bottone
+    } catch (err) {
+      console.error('Errore durante la condivisione o l’accredito punti:', err);
+      status.textContent = 'Si è verificato un errore durante la condivisione.';
+    }
+  }
+  $('#sharePensiero')?.addEventListener('click', handleSharePensiero);
+
+  $('#copyPensiero')?.addEventListener('click', async ()=>{
+    const t = window.OFIThought?.getToday?.() || {
+      full: $('#pensieroTxt')?.textContent?.replace(/^“|”$/g,'') || ''
+    };
+    try{ await navigator.clipboard.writeText(t.full); }catch{}
+    $('#pensieroStatus').textContent = 'Testo copiato. Puoi incollarlo dove preferisci.';
+  });
+
+  /* ===== Dettagli Punti & Stelle nella hero (toggle) ===== */
+  const heroSubkpi = document.getElementById('heroSubkpi');
+  const kpiDetailsToggle = document.getElementById('kpiDetailsToggle');
+
+  if (heroSubkpi && kpiDetailsToggle) {
+    // chiusa all'avvio
+    heroSubkpi.hidden = true;
+    heroSubkpi.classList.remove('open');
+    kpiDetailsToggle.textContent = 'Dettagli Punti & Stelle';
+
+    kpiDetailsToggle.addEventListener('click', () => {
+      const open = !heroSubkpi.classList.contains('open');
+      heroSubkpi.classList.toggle('open', open);
+      heroSubkpi.hidden = !open;
+      kpiDetailsToggle.textContent = open
+        ? 'Nascondi dettagli Punti & Stelle'
+        : 'Dettagli Punti & Stelle';
+    });
+  }
+
+  /* ===== Chip "Come funzionano Punti & Stelle?" → apre pannello destro ===== */
+  const whyChip = document.getElementById('whyStarsChip');
+  if (whyChip) {
+    whyChip.addEventListener('click', (e) => {
+      e.preventDefault();
+      const link = document.querySelector('#sidebar a[data-panel="punti"]');
+      if (link) {
+        link.click();
+      }
+    });
+  }
+
+  // Auth gate
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+      location.replace('./login-imprese.html?redirect=imprese-dashboard');
+      return;
+    }
+    const email = user.email.toLowerCase();
+    await loadDashboard(email);
+  });
+
+  // Tema → mappa
+  function applyMapStyle(){
+    try{
+      if (!window.map) return;
+      const style = activeTheme()==='dark'
+        ? 'mapbox://styles/mapbox/dark-v11'
+        : 'mapbox://styles/mapbox/light-v11';
+      window.map.setStyle(style);
+    }catch{}
+  }
+  document.addEventListener('ofi-theme-changed', applyMapStyle);
+  $('#themeToggle')?.addEventListener('click', ()=> setTimeout(applyMapStyle,30));
+
+  // Logout
+  $('#logoutBtn')?.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    try{ await signOut(auth);}catch{}
+    location.href='login-imprese.html';
+  });
+</script>
+
+<!-- Agente OFI (fab) -->
+<button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+  <img src="../images/agente-ofi.png" alt="Agente OFI" />
+</button>
+<section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+  <header class="agent-top">
+    <div class="agent-id">
+      <img src="../images/agente-ofi.png" alt="">
+      <div>
+        <strong>Agente OFI</strong><br>
+        <small>Sono qui per aiutarti</small>
+      </div>
+    </div>
+    <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+  </header>
+  <div id="agentChat" class="agent-chat">
+    <div class="msg msg-in">
+      <p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p>
+    </div>
+    <div class="suggest" role="list">
+      <button class="chip" role="listitem">Marchio di Affidabilità</button>
+      <button class="chip" role="listitem">Preventivi</button>
+      <button class="chip" role="listitem">Necrologi</button>
+    </div>
+  </div>
+  <form id="agentForm" class="agent-form" autocomplete="off">
+    <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+    <button class="btn btn-primary" type="submit">Invia</button>
+  </form>
+  <p class="agent-note small">
+    Suggerimento: scrivi parole semplici (es. “marchio”, “preventivi”, “profilo”).
+  </p>
+</section>
+</body>
+</html>

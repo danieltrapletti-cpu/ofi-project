@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Verifica Email — Imprese OFI</title>
+  <meta name="description" content="Verifica la tua email. Dopo la verifica, lo stato resta in attesa finché l’amministratore non approva.">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <style>
+    .wrap{max-width:980px;margin:0 auto;padding:2rem 1rem}
+    .card{padding:1.2rem;border-radius:16px;border:1px solid var(--card-brd);background:var(--card-bg);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+    .list{margin:.6rem 0;padding-left:1.1rem}
+    .list li{margin:.25rem 0}
+    .cta-row{display:flex;gap:.6rem;flex-wrap:wrap}
+    .status{margin:.5rem 0 .2rem;font-weight:800}
+    .muted{opacity:.8}
+    .agent{margin-top:14px;padding:.9rem;border:1px dashed rgba(202,168,90,.5);border-radius:14px;background:linear-gradient(180deg,rgba(202,168,90,.08),transparent)}
+    .agent .title{font-weight:800;margin:0 0 .25rem}
+    .btn{height:44px;border-radius:14px;font-weight:800}
+    @media (max-width:760px){ .cta-row{flex-direction:column;align-items:flex-start} }
+
+    /* Fix leggibilità tema scuro */
+    :root[data-theme="dark"] .card,
+    :root[data-theme="dark"] .status,
+    :root[data-theme="dark"] .list,
+    :root[data-theme="dark"] .list strong { color: var(--surface-text); }
+    :root[data-theme="dark"] .card { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); }
+    :root[data-theme="dark"] .status,
+    :root[data-theme="dark"] .list,
+    :root[data-theme="dark"] .list strong,
+    :root[data-theme="dark"] .agent,
+    :root[data-theme="dark"] .agent .title { color: var(--surface-text); }
+    :root[data-theme="dark"] .btn,
+    :root[data-theme="dark"] .btn.btn-outline { color: var(--surface-text); border-color: rgba(255,255,255,0.35); background: transparent; }
+    :root[data-theme="dark"] a.link,
+    :root[data-theme="dark"] a.btn-ghost { color: var(--surface-text); text-decoration: underline; }
+  </style>
+  <script src="/ofi.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head"><img src="/images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="/vision.html">Visione di OFI</a></li>
+            <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="/index.html#pensieri">Pensieri</a></li>
+            <li><a href="/articoli/articoli.html">Articoli</a></li>
+            <li><a href="/index.html#ricordi">Ricordi</a></li>
+            <li><a href="/index.html#mappa">Vicino a te</a></li>
+            <li><a href="/index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="/imprese/login-imprese.html">Accedi</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1 class="section-title">Verifica email & stato impresa</h1>
+      <p class="section-sub">Dopo la verifica, lo <strong>stato resta “in attesa”</strong> finché non arriva l’approvazione.</p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <article class="card">
+      <p id="stateLine" class="status">Controllo dello stato…</p>
+      <ul class="list">
+        <li>Email verificata: <strong id="emailFlag">—</strong></li>
+        <li>Stato impresa: <strong id="statoFlag">—</strong></li>
+      </ul>
+
+      <div class="cta-row" style="margin-top:.6rem">
+        <button id="resendBtn" class="btn btn-outline" type="button" hidden>Reinvia email di verifica</button>
+        <a class="btn" href="/imprese/login-imprese.html">Accedi</a>
+        <a class="btn btn-outline" href="/imprese/registrazione-imprese.html">Torna alla registrazione</a>
+        <a class="btn btn-ghost" href="https://mail.google.com/" target="_blank" rel="noopener">Apri Gmail</a>
+        <a class="btn btn-ghost" href="https://outlook.live.com/mail/0/inbox" target="_blank" rel="noopener">Apri Outlook</a>
+        <!-- 👉 nuovo: pulsante manuale per entrare nel benvenuto -->
+        <a id="btnBenvenuto" class="btn btn-primary" href="/imprese/benvenuto-impresa.html" hidden>Vai al benvenuto</a>
+      </div>
+
+      <div class="agent">
+        <div class="title">Serve una mano? Agente OFI</div>
+        <p class="small muted">Possiamo verificare i tuoi dati e velocizzare i passi iniziali. Scrivici pure: <a class="link" href="mailto:agente@onoranzefunebritalia.it">agente@onoranzefunebritalia.it</a></p>
+      </div>
+
+      <p class="small muted" style="margin-top:.6rem">La pagina si aggiorna automaticamente ogni pochi secondi.</p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce cittadini e imprese in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/imprese/login-imprese.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain:"ofi2025-51ba9.firebaseapp.com",
+  projectId:"ofi2025-51ba9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+auth.languageCode = 'it';
+
+const $ = (id)=>document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const mode   = params.get('mode');
+const oob    = params.get('oobCode');
+const emailParam = (params.get('email') || '').toLowerCase();
+
+const resendBtn     = $('resendBtn');
+const btnBenvenuto  = $('btnBenvenuto');
+
+function normEmail(e){ return (e || '').trim().toLowerCase(); }
+
+function draw(emailVerified, stato, msgKind='default'){
+  if (msgKind === 'verifiedNow'){
+    $('stateLine').innerHTML = '✅ Verifica completata. <strong>Stato impresa:</strong> ' + (stato || '—') + '.';
+  } else if (emailVerified && stato === 'approvata'){
+    $('stateLine').innerHTML = '✅ Impresa approvata. Puoi proseguire al benvenuto.';
+  } else if (emailVerified){
+    $('stateLine').innerHTML = '✅ Email verificata. <strong>Stato: in attesa</strong> di approvazione da parte di OFI.';
+  } else {
+    $('stateLine').textContent = 'Controlla la tua casella per completare la verifica dell’email.';
+  }
+  $('emailFlag').textContent = emailVerified ? 'Sì' : 'No';
+  $('statoFlag').textContent = stato || '—';
+
+  const hasUser = !!auth.currentUser;
+  resendBtn.hidden = !(hasUser && !emailVerified);
+
+  // Mostra il pulsante "Vai al benvenuto" solo quando è tutto pronto
+  btnBenvenuto.hidden = !(emailVerified && stato === 'approvata');
+
+  // passa l'email nell'URL del benvenuto per gating lato pagina successiva
+  const uMail = normEmail(auth.currentUser?.email) || emailParam || '';
+  btnBenvenuto.href = '/imprese/benvenuto-impresa.html' + (uMail ? ('?email=' + encodeURIComponent(uMail)) : '');
+}
+
+async function loadStatoByEmail(email){
+  if (!email) return '—';
+  const ref = doc(db, 'imprese_registrate', email);
+  const snap = await getDoc(ref);
+  return snap.exists() ? (snap.data()?.stato || '—') : '—';
+}
+
+// Gestisce subito il link di verifica (oobCode) e usa l'email contenuta nel codice
+async function handleOobIfAny(){
+  if (mode !== 'verifyEmail' || !oob) return false;
+
+  try{
+    // checkActionCode restituisce info con l'email
+    const { checkActionCode } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    const info = await checkActionCode(auth, oob);
+    const verifiedEmail = normEmail(info?.data?.email) || emailParam;
+
+    // Applica il codice
+    const { applyActionCode } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    await applyActionCode(auth, oob);
+
+    // Se l'utente è loggato, forza token fresco + reload; altrimenti prosegui con l'email del codice
+    if (auth.currentUser) {
+      await auth.currentUser.getIdToken(true).catch(()=>{});
+      await auth.currentUser.reload().catch(()=>{});
+    }
+
+    const stato = await loadStatoByEmail(verifiedEmail);
+    draw(true, stato, 'verifiedNow');
+    return true;
+  }catch(e){
+    console.error('verifyEmail oob error', e);
+    $('stateLine').innerHTML = '⚠️ Link di verifica non valido o scaduto. Richiedi un nuovo invio dal login o dalla registrazione.';
+    resendBtn.hidden = true;
+    return true;
+  }
+}
+
+async function refreshStatusOnce(){
+  // forza aggiornamento credenziali e profilo (fondamentale al rientro da Mail)
+  const u = auth.currentUser;
+  let emailVerified = false;
+  let emailForLookup = emailParam;
+
+  if (u){
+    try{
+      await u.getIdToken(true);
+      await u.reload();
+    }catch{}
+    emailVerified = !!u.emailVerified;
+    emailForLookup = normEmail(u.email) || emailParam;
+  }
+
+  const stato = await loadStatoByEmail(emailForLookup);
+  draw(emailVerified, stato);
+}
+
+onAuthStateChanged(auth, refreshStatusOnce);
+
+// refresh automatico ogni 6s SOLO se c'è un utente
+let timer = setInterval(async ()=>{
+  if (!auth.currentUser) return;
+  await refreshStatusOnce();
+}, 6000);
+
+// Quando torni dall’app Mail, aggiorna subito
+document.addEventListener('visibilitychange', ()=>{
+  if (document.visibilityState === 'visible') refreshStatusOnce();
+});
+
+// Reinvia verifica → usa sempre il dominio corrente
+resendBtn.addEventListener('click', async ()=>{
+  const u = auth.currentUser;
+  if (!u){ alert('Effettua l’accesso per reinviare la verifica.'); return; }
+  try{
+    const { sendEmailVerification } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+    const actionCodeSettings = {
+      url: location.origin + '/imprese/verifica-email.html?email=' + encodeURIComponent(normEmail(u.email)),
+      handleCodeInApp: false
+    };
+    await sendEmailVerification(u, actionCodeSettings);
+    resendBtn.textContent = 'Inviata! Controlla la posta';
+    resendBtn.disabled = true;
+  }catch(e){
+    console.error(e);
+    alert(e?.code === 'auth/too-many-requests'
+      ? 'Hai richiesto troppi invii ravvicinati. Attendi qualche minuto e usa l’ultimo link ricevuto.'
+      : 'Non sono riuscito a reinviare la verifica. Riprova tra poco.');
+  }
+});
+
+// Boot
+(async ()=>{
+  const handled = await handleOobIfAny();
+  if (!handled) await refreshStatusOnce();
+})();
+</script>
+</body>
+</html>

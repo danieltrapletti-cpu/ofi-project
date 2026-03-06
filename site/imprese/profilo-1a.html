@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Profilo Impresa — OFI</title>
+  <meta name="description" content="Profilo pubblico dell'impresa — Marchio di Affidabilità Nazionale OFI">
+
+  <!-- Favicon + Stili globali OFI (root-relative) -->
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/imprese/profilo.css">
+
+  <!-- Mapbox -->
+  <link href="/vendor/mapbox-gl.css" rel="stylesheet">
+
+  <!-- JS globale (root-relative) -->
+  <script defer src="/ofi.js"></script>
+</head>
+<body>
+
+<!-- HEADER — allineato al menu di accesso.html -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="/vision.html">Visione di OFI</a></li>
+          <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="/index.html#pensieri">Pensieri</a></li>
+          <li><a href="/articoli/articoli.html">Articoli</a></li>
+          <li><a href="/index.html#ricordi">Ricordi</a></li>
+          <li><a href="/index.html#mappa">Vicino a te</a></li>
+          <li><a href="/index.html#video">Video</a></li>
+        </ul>
+      </li>
+
+      <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay"></div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="profile-hero">
+    <div class="profile-hero__panel profile-hero--center">
+      <figure class="logo-wrap logo-wrap--free">
+        <!-- default: rosa OFI; se il logo reale non esiste o 404 -> fallback -->
+        <img id="logoImg"
+             src="/images/rosa.png"
+             alt="Logo Impresa"
+             onerror="this.onerror=null; this.src='/images/rosa.png';" />
+      </figure>
+
+      <h1 id="nomeImpresa" class="hero-title">Impresa</h1>
+
+      <div class="hero-meta">
+        <span id="stelleWrap" class="stars" aria-label="Valutazione"></span>
+        <span class="id-ofi" id="idOFI">ID <span id="codiceOFI">—</span></span>
+      </div>
+
+      <!-- Sigillo / Marchio -->
+      <div id="heroSeal" class="hero-seal" hidden>
+        <a href="./preventivo/marchio.html" title="Scopri il Marchio di Affidabilità Nazionale OFI">
+          <img src="/images/sigillo-ofi.png" alt="Marchio di Affidabilità Nazionale OFI">
+        </a>
+      </div>
+
+      <div class="hero-badges">
+        <span id="badgeCertificato" class="badge soft" hidden>Certificato di Adesione</span>
+      </div>
+
+      <div id="repRow" class="hero-meta" hidden>
+        <span id="repLabel" class="badge gold" style="border-radius:12px"></span>
+        <span id="repStars" class="stars"></span>
+      </div>
+
+      <!-- Contatti rapidi -->
+      <div id="heroContacts" class="hero-contacts" hidden>
+        <!-- pill dinamiche -->
+      </div>
+
+      <!-- CTA primaria -->
+      <div class="cta-top">
+        <a id="btnPreventivo" class="btn btn-primary" href="#" role="button">Richiedi un preventivo</a>
+      </div>
+
+      <p id="bioShort" class="bio-short" hidden></p>
+      <button id="toggleBio" class="link-ghost" hidden>Leggi tutto</button>
+
+      <!-- Share + dashboard (solo owner) -->
+      <div class="hero-share">
+        <button id="shareBtn" class="btn-ghost">Condividi profilo</button>
+        <a id="vaiDashboard" href="/imprese/imprese-dashboard.html" class="btn-ghost" hidden>Vai alla dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENUTO -->
+  <section class="section container">
+
+    <!-- Chi siamo + Servizi -->
+    <article class="card">
+      <h2>Chi siamo</h2>
+      <div class="grid grid-2 gap">
+        <div>
+          <p id="bio" class="mb-0">—</p>
+        </div>
+        <div>
+          <h3 class="h3-soft">Servizi</h3>
+          <ul id="serviziList" class="servizi-list"></ul>
+          <p class="small muted" id="verificaTxt" style="margin-top:.6rem">Profilo verificato su OFI. Aggiornato —.</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Sedi + mappa -->
+    <article class="card">
+      <header class="card-head">
+        <h2>Le nostre sedi operative</h2>
+      </header>
+
+      <div id="mappaSedi" class="mapbox-stage"></div>
+      <ul id="sediList" class="sedi"></ul>
+    </article>
+
+    <!-- Galleria -->
+    <article class="card">
+      <header class="card-head">
+        <h2>Galleria fotografica</h2>
+        <nav class="gallery-nav" aria-label="Controlli galleria" hidden>
+          <button class="g-btn" type="button" id="gPrev" aria-label="Precedente">‹</button>
+          <button class="g-btn" type="button" id="gNext" aria-label="Successivo">›</button>
+        </nav>
+      </header>
+
+      <div class="gallery-rail" id="galleryRail" tabindex="0" aria-label="Galleria immagini"></div>
+      <div class="gallery-dots" id="galleryDots" role="tablist" aria-label="Pagine galleria"></div>
+    </article>
+
+    <!-- Video -->
+    <article class="card" id="videoBlock" hidden>
+      <h2>Video</h2>
+      <div class="ratio-16x9">
+        <video id="video" controls playsinline preload="metadata"></video>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="/articoli/articoli.html">Articoli</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- JS Mapbox (globale) -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+
+<!-- Firebase + Logica profilo -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, limit, getDocs,
+           addDoc, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const qs = new URLSearchParams(location.search);
+  const impresaId = (qs.get('id') || '').toLowerCase();
+  const $  = s => document.querySelector(s);
+
+  let currentUserEmail = null;
+  let isOwnerCurrent = false;
+
+
+  function renderStarsByScore(score){
+    if (typeof score !== 'number') return '';
+    const n = Math.max(0, Math.min(5, Math.round(score/20)));
+    return n ? `<span class="starline" aria-hidden="true">${'★'.repeat(n)}</span><span class="sr-only">${n} stelle</span>` : '';
+  }
+  function renderStars(n){
+    n = Math.max(0, Math.min(5, Number(n)||0));
+    return n ? `<span class="starline" aria-hidden="true">${'★'.repeat(n)}</span><span class="sr-only">${n} stelle</span>` : '';
+  }
+  const nl2br = s => (s||'').toString().replace(/\n/g,'<br>');
+  function onlyOwnerUI(show){
+  // Il bottone "Condividi profilo" resta SEMPRE visibile
+  $('#vaiDashboard')?.toggleAttribute('hidden', !show);
+}
+
+  function cameFromSearch(){
+    const src = (qs.get('src')||'').toLowerCase();
+    const ref = document.referrer || '';
+    if (src === 'auto' || src === 'automatica' || src === 'manuale' || src === 'manual') return true;
+    return /richiedi-preventivo|ricerca|selezione-imprese/i.test(ref);
+  }
+
+  async function canShareToday(docId){
+    const key = `shareProfile:${docId}:${new Date().toDateString()}`;
+    if (localStorage.getItem(key)) return false;
+    try{
+      const since = Timestamp.fromMillis(Date.now() - 24*60*60*1000);
+      const qRef = query(
+        collection(db, 'imprese_registrate', docId, 'logAzioni'),
+        where('tipo','==','share_profile'),
+        where('ts','>=', since),
+        limit(1)
+      );
+      const snap = await getDocs(qRef);
+      return snap.empty;
+    }catch{ return true }
+  }
+  async function logShare(docId){
+    try{
+      await addDoc(collection(db, 'imprese_registrate', docId, 'logAzioni'), {
+        tipo: 'share_profile',
+        ts: serverTimestamp()
+      });
+    }catch(e){ console.warn('Log share fallito:', e); }
+    localStorage.setItem(`shareProfile:${docId}:${new Date().toDateString()}`, '1');
+  }
+
+  async function getPublicOrOwnerData(id){
+    const vis = await getDoc(doc(db, 'imprese_visibili', id));
+    if (vis.exists()) return { data: vis.data(), source: 'public' };
+
+    return new Promise(resolve=>{
+      onAuthStateChanged(auth, async user=>{
+        const isOwner = !!user && (user.email?.toLowerCase() === id);
+        if (!isOwner) return resolve(null);
+        const reg = await getDoc(doc(db, 'imprese_registrate', id)).catch(()=>null);
+        resolve(reg && reg.exists() ? { data: reg.data(), source: 'owner' } : null);
+      });
+    });
+  }
+
+  /* Galleria */
+  function setupGallery(urls){
+    const rail = document.getElementById('galleryRail');
+    const dots = document.getElementById('galleryDots');
+    const nav  = document.querySelector('.gallery-nav');
+
+    rail.innerHTML = ''; dots.innerHTML = '';
+    if (!urls || !urls.length){ nav.hidden = true; return; }
+
+    urls.slice(0,18).forEach((u,i)=>{
+      const fig = document.createElement('figure');
+      fig.className = 'g-item';
+      fig.innerHTML = `<img loading="lazy" src="${u}" alt="Foto ${i+1}" data-idx="${i}">`;
+      rail.appendChild(fig);
+
+      const dot = document.createElement('button');
+      dot.type='button'; dot.setAttribute('role','tab');
+      dot.setAttribute('aria-selected', i===0 ? 'true':'false');
+      dot.addEventListener('click',()=> rail.scrollTo({left: fig.offsetLeft - rail.offsetLeft, behavior:'smooth'}));
+      dots.appendChild(dot);
+    });
+
+    nav.hidden = false;
+
+    const items = [...rail.children];
+    const selectNearest = ()=>{
+      const center = rail.scrollLeft + rail.clientWidth/2;
+      let idx = 0, best = Infinity;
+      items.forEach((el,i)=>{
+        const mid = el.offsetLeft + el.clientWidth/2;
+        const d = Math.abs(mid - center);
+        if (d < best){best = d; idx = i;}
+      });
+      [...dots.children].forEach((b,j)=> b.setAttribute('aria-selected', j===idx ? 'true':'false'));
+    };
+    rail.addEventListener('scroll', ()=>{ requestAnimationFrame(selectNearest); }, {passive:true});
+    selectNearest();
+
+    document.getElementById('gPrev').onclick = ()=>{
+      const i = [...dots.children].findIndex(b=>b.getAttribute('aria-selected')==='true');
+      const n = Math.max(0, i-1); dots.children[n].click();
+    };
+    document.getElementById('gNext').onclick = ()=>{
+      const i = [...dots.children].findIndex(b=>b.getAttribute('aria-selected')==='true');
+      const n = Math.min(dots.children.length-1, i+1); dots.children[n].click();
+    };
+
+    rail.addEventListener('click', (e)=>{
+      const img = e.target.closest('img'); if(!img) return;
+      openLightbox(urls, Number(img.dataset.idx)||0);
+    });
+  }
+
+  /* MAPPA */
+  let map=null, mainMarker=null, secMarkers=[];
+  function prefersDark(){ return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches; }
+
+  new MutationObserver(()=>syncMapStyle()).observe(
+    document.documentElement,
+    { attributes:true, attributeFilter:['data-theme'] }
+  );
+
+  function activeTheme(){
+    const t=document.documentElement.getAttribute('data-theme')||'auto';
+    return t==='dark'||(t==='auto'&&prefersDark()) ? 'dark' : 'light';
+  }
+
+  function syncHtmlThemeClass(){
+    const t = activeTheme();
+    document.documentElement.classList.toggle('theme-dark', t==='dark');
+    document.documentElement.classList.toggle('theme-light', t==='light');
+  }
+
+  function initMap(){
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+    const style = activeTheme()==='dark' ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+    map = new mapboxgl.Map({
+      container: 'mappaSedi',
+      style, center:[12.4964,41.9028], zoom:4.7, attributionControl:false
+    });
+    map.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+    map.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'bottom-right');
+  }
+
+  function syncMapStyle(){
+    if (!map) return;
+    try{
+      map.setStyle(activeTheme()==='dark' ? 'mapbox://styles/mapbox/dark-v11'
+                                          : 'mapbox://styles/mapbox/light-v11');
+    }catch(e){ console.warn(e); }
+    syncHtmlThemeClass();
+  }
+
+  function mapLinkFor(s){
+    const q = encodeURIComponent([s.indirizzo, s.cap, s.comune, s.provincia, s.regione].filter(Boolean).join(' '));
+    return `https://www.google.com/maps/search/?api=1&query=${q}`;
+  }
+  function popupHtmlFor(s){
+    const addr = [s.indirizzo, s.cap, s.comune].filter(Boolean).join(', ');
+    return `<div style="min-width:220px">
+      <strong>${s.label || s.titolo || s.tipo || 'Sede OFI'}</strong><br>
+      <span>${addr || 'Indirizzo non disponibile'}</span><br>
+      <a href="${mapLinkFor(s)}" target="_blank" rel="noopener" class="btn btn-ghost" style="margin-top:.35rem">Apri su Google Maps</a>
+    </div>`;
+  }
+
+  /* Marker OFI personalizzati */
+  function svgPin(g1='#ffd46a', g2='#caa85a', ring='#b78927'){
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${g1}"/>
+          <stop offset="1" stop-color="${g2}"/>
+        </linearGradient>
+        <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="b"/>
+          <feOffset dy="2" result="o"/>
+          <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M17 43C17 43 32 27.8 32 17C32 8.163 24.837 1 16 1S0 8.163 0 17c0 10.8 17 26 17 26Z" fill="url(#g)" filter="url(#sh)"/>
+      <circle cx="16.5" cy="16.5" r="8.7" fill="white" fill-opacity=".14" />
+      <circle cx="16.5" cy="16.5" r="5.9" fill="none" stroke="${ring}" stroke-opacity=".8" stroke-width="1.6"/>
+      <circle cx="16.5" cy="14.8" r="2.9" fill="#ffffff" fill-opacity=".85"/>
+    </svg>`;
+    return `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+  }
+  function makeMarkerEl(variant='gold'){
+    const el = document.createElement('div');
+    el.style.width='34px'; el.style.height='44px';
+    el.style.backgroundImage = (variant==='gold')
+      ? svgPin('#FFD46A','#CAA85A','#B78927')
+      : svgPin('#6FD1FF','#0EA5E9','#1777b7');
+    el.style.backgroundSize='contain';
+    el.style.backgroundRepeat='no-repeat';
+    el.style.transform='translateY(-2px)';
+    return el;
+  }
+
+  function plotSedi(sedi){
+    if (!map) initMap();
+    secMarkers.forEach(m=>{try{m.remove()}catch{}}); 
+    secMarkers = [];
+
+    const pts = [];
+    const sp = sedi.find(s => s._type === 'principale' && typeof s.lat === 'number' && typeof s.lng === 'number');
+    if (sp){
+      if (!mainMarker) mainMarker = new mapboxgl.Marker({ element: makeMarkerEl('gold') });
+      mainMarker
+        .setLngLat([sp.lng, sp.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' }).setHTML(popupHtmlFor(sp)))
+        .addTo(map);
+      pts.push([sp.lng, sp.lat]);
+    }
+    sedi
+      .filter(s => s._type === 'dist' && typeof s.lat === 'number' && typeof s.lng === 'number')
+      .forEach(s => {
+        const m = new mapboxgl.Marker({ element: makeMarkerEl('blue') })
+          .setLngLat([s.lng, s.lat])
+          .setPopup(new mapboxgl.Popup({ offset: 12, className: 'ofi-popup' }).setHTML(popupHtmlFor(s)))
+          .addTo(map);
+        secMarkers.push(m);
+        pts.push([s.lng, s.lat]);
+      });
+
+    if (pts.length === 1){
+      map.flyTo({ center: pts[0], zoom: 14 });
+    } else if (pts.length > 1){
+      const b = pts.reduce((bb, c) => bb.extend(c), new mapboxgl.LngLatBounds(pts[0], pts[0]));
+      map.fitBounds(b, { padding: 60, duration: 700 });
+    }
+  }
+
+  /* Lightbox minimal */
+  function ensureLightboxRoot(){
+    if (document.querySelector('.lb')) return document.querySelector('.lb');
+    const lb = document.createElement('div');
+    lb.className='lb'; lb.innerHTML = `
+      <button class="lb-close" aria-label="Chiudi">✕</button>
+      <button class="lb-prev" aria-label="Precedente">‹</button>
+      <img alt="Anteprima immagine galleria">
+      <button class="lb-next" aria-label="Successivo">›</button>`;
+    document.body.appendChild(lb);
+    return lb;
+  }
+  function openLightbox(urls, index=0){
+    const lb = ensureLightboxRoot();
+    const img = lb.querySelector('img');
+    let i = index;
+
+    function show(k){ i = (k+urls.length)%urls.length; img.src = urls[i]; }
+    function close(){ lb.classList.remove('open'); lb.removeEventListener('click',onClick); document.removeEventListener('keydown',onKey); }
+    function onClick(e){
+      if (e.target.classList.contains('lb-close') || e.target === lb) close();
+      if (e.target.classList.contains('lb-prev')) show(i-1);
+      if (e.target.classList.contains('lb-next')) show(i+1);
+    }
+    function onKey(e){
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(i-1);
+      if (e.key === 'ArrowRight') show(i+1);
+    }
+
+    lb.addEventListener('click', onClick);
+    document.addEventListener('keydown', onKey);
+    show(i);
+    lb.classList.add('open');
+  }
+
+  function renderVideo(url){
+    const wrap = document.getElementById('videoBlock');
+    const vtag = document.getElementById('video');
+    if (!url || typeof url !== 'string'){ wrap.hidden = true; return; }
+
+    const u = url.trim();
+
+    // File (mp4/webm/ogg)
+    if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(u)){
+      vtag.src = u;
+      vtag.hidden = false;
+      wrap.hidden = false;
+      return;
+    }
+
+    // YouTube
+    const yt = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);
+    if (yt){
+      const id = yt[1];
+      const iframe = document.createElement('iframe');
+      iframe.width = '560';
+      iframe.height = '315';
+      iframe.setAttribute('allowfullscreen','');
+      iframe.setAttribute('loading','lazy');
+      iframe.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      iframe.src = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+      const slot = wrap.querySelector('.ratio-16x9');
+      slot.innerHTML = ''; slot.appendChild(iframe);
+      vtag.hidden = true;
+      wrap.hidden = false;
+      return;
+    }
+
+    // Vimeo
+    const vm = u.match(/vimeo\.com\/(\d+)/i);
+    if (vm){
+      const id = vm[1];
+      const iframe = document.createElement('iframe');
+      iframe.width = '560';
+      iframe.height = '315';
+      iframe.setAttribute('allowfullscreen','');
+      iframe.setAttribute('loading','lazy');
+      iframe.src = `https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0`;
+      const slot = wrap.querySelector('.ratio-16x9');
+      slot.innerHTML = ''; slot.appendChild(iframe);
+      vtag.hidden = true;
+      wrap.hidden = false;
+      return;
+    }
+
+    // Non riconosciuto → nascondi
+    wrap.hidden = true;
+  }
+
+  /* RENDER */
+  function toArrayMaybe(v){
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    // stringa separata da • o , o ;
+    return v.split(/•|,|;/).map(s=>s.trim()).filter(Boolean);
+  }
+
+  async function loadProfile(){
+    if (!impresaId){ $('#nomeImpresa').textContent = 'Profilo non disponibile'; return; }
+
+    const payload = await getPublicOrOwnerData(impresaId);
+    if (!payload){ $('#nomeImpresa').textContent = 'Profilo non disponibile'; return; }
+    const d = payload.data || {};
+
+    const nome    = d.nomeImpresa || d.nome || 'Impresa senza nome';
+    const codice  = d.codiceOFI || d.codice_ofi || '—';
+    const logo    = d.logoUrl || d.logo_url || d.logo || '';
+    const telefono = d.telefono || d.telefono_1 || d.tel || '';
+    const email    = d.email_op || d.email || '';
+
+    // Stelle
+    const stelle  = (typeof d.stelle==='number' ? d.stelle : (typeof d.profilo_score==='number' ? Math.round(d.profilo_score/20) : 0));
+
+    const certOK  = (d.stato === 'approved' || d.approvato === true || !!d.certificatoUrl || !!d.certificato_url);
+    const abStat  = (d.abbonamento?.stato) || d.abbonamento_stato || '';
+    const marchio = ['active','trial','free','pro','premium'].includes(String(abStat).toLowerCase());
+
+    const bio     = d.descrizioneBio || d.bio || d.descrizione || '—';
+    const serviziArr = toArrayMaybe(d.servizi).concat(toArrayMaybe(d.serviziAltro || d.altro_servizi || d.altroServizi));
+    const updRaw  = d.updatedAt?.toDate?.() || d.updatedAt || d.dataAggiornamento || d.aggiornato_il || null;
+
+    const gal = Array.isArray(d.galleriaUrls) ? d.galleriaUrls
+              : Array.isArray(d.gallery_urls) ? d.gallery_urls
+              : Array.isArray(d.galleria)     ? d.galleria
+              : [];
+    const videoUrl = d.videoUrl || d.video_url || '';
+
+    const sedePrincipale = d.sede_principale || null;
+    const sediDist       = Array.isArray(d.sedi_distaccate) ? d.sedi_distaccate : [];
+    const sediVecchie    = Array.isArray(d.sedi) ? d.sedi : (Array.isArray(d.sediSecondarie) ? d.sediSecondarie : []);
+    const sediTot = (sedePrincipale ? [{...sedePrincipale, _type:'principale'}] : [])
+                      .concat((sediDist||[]).map(s=>({...s,_type:'dist'})),
+                              (sediVecchie||[]).map(s=>({...s,_type:'dist'})));
+
+    // HERO
+    $('#nomeImpresa').textContent = nome;
+    $('#codiceOFI').textContent   = codice;
+    const logoEl = document.getElementById('logoImg');
+    if (logo && typeof logo === 'string') logoEl.src = logo;
+
+    $('#stelleWrap').innerHTML    = Number.isFinite(stelle) && stelle>0 ? renderStars(stelle) : renderStarsByScore(d.profilo_score);
+    $('#badgeCertificato').hidden = !certOK;
+    document.getElementById('heroSeal').hidden = !marchio;
+
+    // Contatti: pill dinamiche
+    const contacts = [];
+    if (telefono) contacts.push(`<a class="contact-pill" href="tel:${telefono.replace(/\s+/g,'')}">📞 ${telefono}</a>`);
+    if (email)    contacts.push(`<a class="contact-pill" href="mailto:${email}">✉️ ${email}</a>`);
+    contacts.push(`<a class="contact-pill" href="#mappaSedi">📍 Vedi sedi</a>`);
+    const heroContacts = document.getElementById('heroContacts');
+    heroContacts.innerHTML = contacts.join('');
+    heroContacts.hidden = false;
+
+    // CTA preventivo (in alto): nascondi se arrivo da ricerca/selezione
+    const btnPrev = document.getElementById('btnPreventivo');
+    btnPrev.href  = `/richiedi-preventivo.html?impresa=${encodeURIComponent(impresaId)}`;
+    btnPrev.hidden = cameFromSearch();
+
+    // Bio breve + toggle
+    const fullBio = (bio||'').trim();
+    const short = fullBio.length > 180 ? fullBio.slice(0,180).trim()+'…' : fullBio;
+    const bioShort = document.getElementById('bioShort');
+    const tgl = document.getElementById('toggleBio');
+    if (fullBio){
+      bioShort.textContent = short; bioShort.hidden = false;
+      if (fullBio.length > 180){
+        tgl.hidden = false;
+        tgl.onclick = ()=>{ document.getElementById('bio')?.scrollIntoView({behavior:'smooth', block:'start'}); };
+      }
+    }
+
+    // Chi siamo + Servizi
+    $('#bio').innerHTML           = nl2br(fullBio || '—');
+    const ul = $('#serviziList');
+    function beautify(s){
+      return String(s||'')
+        .replace(/_/g,' ')
+        .replace(/\s+/g,' ')
+        .trim()
+        .toLowerCase()
+        .replace(/\b([a-zà-ù])/g, m => m.toUpperCase());
+    }
+    ul.innerHTML = (serviziArr.length ? serviziArr : ['—'])
+      .map(s => `<li>${beautify(s)}</li>`).join('');
+
+    $('#verificaTxt').textContent = `Profilo verificato su OFI. Aggiornato ${updRaw ? new Date(updRaw).toLocaleDateString('it-IT') : '—'}.`;
+
+    // Galleria
+    setupGallery((gal || []).filter(Boolean));
+
+    // Video
+    renderVideo(videoUrl);
+
+    // Lista sedi
+    const sediList = $('#sediList');
+    const safeSedi = (sediTot.length ? sediTot : [{ indirizzo: d.indirizzo, comune: d.comune, cap: d.cap }])
+      .filter(s => s && (s.indirizzo || s.comune));
+
+    const items = safeSedi.map((s, i)=>{
+      const addrTxt = [s.indirizzo, s.comune].filter(Boolean).join(', ') + (s.cap ? ' · ' + s.cap : '');
+      const link = mapLinkFor(s);
+      const label = s.label || s.titolo || s.tipo || (s._type==='principale' ? 'Sede Principale' : 'Sede');
+      const labelNice = beautify(label);
+      const badge = s._type==='principale' ? `<span class="sede-badge">Principale</span>` : '';
+      const extra = s.has_casa_funeraria || s.has_casa_commiato ? `<span class="sede-tag">${s.has_casa_funeraria?'Casa funeraria':''} ${s.has_casa_commiato?'· Sala commiato':''}</span>` : '';
+      return `
+        <li class="sede-item">
+          <div class="sede-col">
+            <div class="sede-head">
+              <strong>${labelNice}</strong> ${badge}
+            </div>
+            <div class="sede-text">${addrTxt || 'Indirizzo non disponibile'}</div>
+            ${extra ? `<div class="sede-extra">${extra}</div>` : ''}
+          </div>
+          <a class="btn-map" href="${link}" target="_blank" rel="noopener">Apri su Google Maps</a>
+        </li>`;
+    });
+
+    sediList.innerHTML = items.length ? items.join('') : '<li class="sede-item"><div class="sede-text">—</div></li>';
+
+    // Mappa
+    initMap();
+    syncHtmlThemeClass();
+    plotSedi(safeSedi);
+
+    // Owner extras
+    onAuthStateChanged(auth, (user)=>{
+  currentUserEmail = user?.email?.toLowerCase() || null;
+  isOwnerCurrent = !!user && currentUserEmail === impresaId;
+  onlyOwnerUI(isOwnerCurrent);
+});
+
+    // Share
+    document.getElementById('shareBtn')?.addEventListener('click', async ()=>{
+  const shareUrl = `${location.origin}/imprese/profilo.html?id=${encodeURIComponent(impresaId)}`;
+
+  try{
+    if (navigator.share){
+      await navigator.share({ title: nome, text: 'Scopri il profilo di questa impresa su OFI', url: shareUrl });
+    } else {
+      await navigator.clipboard.writeText(shareUrl);
+      alert('Link copiato. Grazie per la condivisione!');
+    }
+  }catch(e){
+    console.warn(e);
+    // Se l'utente ha annullato la share esco senza messaggi
+    return;
+  }
+
+  // Se NON è l'impresa proprietaria: nessun log, ma ringrazio
+  if (!isOwnerCurrent){
+    if (!navigator.share){
+      // abbiamo già mostrato l'alert "link copiato"
+    } else {
+      alert('Grazie per aver condiviso questo profilo.');
+    }
+    return;
+  }
+
+  // Se è l'impresa: verifico se oggi può ricevere punti
+  if (await canShareToday(impresaId)){
+    await logShare(impresaId);
+    alert('Grazie! Questa condivisione ti ha assegnato punti sul tuo profilo OFI.');
+  } else {
+    alert('Grazie per la condivisione! Le condivisioni successive di oggi non assegnano punti aggiuntivi.');
+  }
+});
+
+    loadProfile().catch(err=>{
+    console.error(err);
+    document.querySelector('#nomeImpresa').textContent = 'Profilo non disponibile';
+  });
+</script>
+
+<!-- Lightbox styles minimal -->
+<style>
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:9999}
+  .lb.open{display:flex}
+  .lb img{max-width:92vw;max-height:88vh;border-radius:14px}
+  .lb-close,.lb-prev,.lb-next{position:absolute;border:none;background:rgba(255,255,255,.12);backdrop-filter:blur(4px);border-radius:999px;width:44px;height:44px;color:#fff;font-size:20px;cursor:pointer}
+  .lb-close{top:18px;right:18px}
+  .lb-prev{left:18px}
+  .lb-next{right:18px}
+</style>
+
+<!-- JS del menù -->
+<script src="/js/menu.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard Impresa | OFI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #002c5d;
+    }
+    header {
+      background: #002c5d;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .box {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .field {
+      margin-bottom: 1rem;
+    }
+    .label {
+      font-weight: 600;
+      color: #003366;
+    }
+    .value {
+      color: #222;
+    }
+    .badge {
+      display: inline-block;
+      background: #ffecb3;
+      color: #8c6d1f;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    .map-container {
+      width: 100%;
+      height: 400px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .in-attesa {
+      background: #fff3cd;
+      color: #856404;
+      padding: 1rem;
+      border-left: 6px solid #856404;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎖 Dashboard Impresa Registrata</h1>
+    <p>Benvenuto su Onoranze Funebri Italia</p>
+  </header>
+  <div class="container">
+
+    <div class="in-attesa" id="boxAttesa" style="display:none;">
+      🔒 Il tuo profilo è attualmente in attesa di approvazione da parte dell'amministratore. Riceverai una notifica appena sarà attivo.
+    </div>
+
+    <div class="box">
+      <h2>📌 Dati Registrazione</h2>
+      <div class="field"><span class="label">Nome impresa:</span> <span class="value" id="valNome">-</span></div>
+      <div class="field"><span class="label">Email:</span> <span class="value" id="valEmail">-</span></div>
+      <div class="field"><span class="label">Partita IVA:</span> <span class="value" id="valPIVA">-</span></div>
+      <div class="field"><span class="label">Provincia:</span> <span class="value" id="valProvincia">-</span></div>
+      <div class="field"><span class="label">Stato profilo:</span> <span class="badge" id="valStato">-</span></div>
+    </div>
+
+    <div class="box">
+      <h2>🗺 Posizione approssimativa</h2>
+      <div class="map-container" id="map"></div>
+    </div>
+  </div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+
+    // SIMULAZIONE DATI (fase test) – questi verranno presi dinamicamente da Firebase in futuro
+    const impresa = {
+      nome: "Serenità e Onore Srl",
+      email: "serenita@email.it",
+      piva: "01234567890",
+      provincia: "Milano",
+      stato: "in attesa"
+    };
+
+    // Popolamento HTML
+    document.getElementById("valNome").textContent = impresa.nome;
+    document.getElementById("valEmail").textContent = impresa.email;
+    document.getElementById("valPIVA").textContent = impresa.piva;
+    document.getElementById("valProvincia").textContent = impresa.provincia;
+    document.getElementById("valStato").textContent = impresa.stato;
+
+    if (impresa.stato === "in attesa") {
+      document.getElementById("boxAttesa").style.display = "block";
+    }
+
+    // Geolocalizzazione base sulla provincia (placeholder semplificato)
+    const provinceCoord = {
+      "Milano": [9.19, 45.46],
+      "Roma": [12.5, 41.9],
+      "Bergamo": [9.67, 45.7]
+    };
+    const centro = provinceCoord[impresa.provincia] || [12.5, 42.5];
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/navigation-night-v1',
+      center: centro,
+      zoom: 10
+    });
+
+    new mapboxgl.Marker({ color: "#c62828" })
+      .setLngLat(centro)
+      .setPopup(new mapboxgl.Popup().setText(impresa.nome))
+      .addTo(map);
+  </script>
+</body>
+</html>

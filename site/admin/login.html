@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0f1420">
+
+<!-- Meta Apple per PWA su iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/images/icons/icon-192.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Accesso Amministratore — OFI</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Area riservata amministrazione OFI.">
+
+  <!-- Font set coerente -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <script src="/ofi.js" defer></script>
+
+  <style>
+    /* UI coerente con login cittadini/imprese */
+    .auth-wrap{display:grid;place-items:center;padding:2.2rem 0;}
+    .auth-card{max-width:760px;width:100%;padding:1.6rem;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--surface-text)}
+    .auth-title{font-size:1.05rem;margin:0 0 .8rem;font-weight:800;letter-spacing:.2px;color:var(--surface-text)}
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .auth-grid .full{grid-column:1/-1}
+    .auth-field label{display:block;font-size:.95rem;margin:0 0 .35rem;font-weight:700;color:var(--surface-text)}
+    .auth-field input[type="text"],
+    .auth-field input[type="email"],
+    .auth-field input[type="password"]{width:100%;height:46px;border-radius:12px;padding:0 .9rem;outline:none;transition:box-shadow .15s, border-color .15s;border:1px solid rgba(202,168,90,.35);background:transparent;color:var(--surface-text)}
+    .auth-field input::placeholder{color:var(--muted)}
+    .auth-field input:focus{box-shadow:0 0 0 3px rgba(202,168,90,.32);border-color:var(--gold)}
+    .auth-actions{display:flex;gap:12px;align-items:center;margin-top:.4rem}
+    .auth-actions .btn{flex:1;height:46px;border-radius:14px;font-weight:800}
+    .oauth{width:100%;height:46px;border-radius:14px;margin-bottom:14px;border:1px solid var(--gold);background:transparent;color:var(--surface-text);font-weight:800}
+    .oauth:hover{background:rgba(202,168,90,.10)}
+    .hint{font-size:.95rem}
+    .error{color:#ffb3b3;font-weight:800}
+    .success{color:#3cc482;font-weight:800}
+    .small{font-size:.9rem}
+    @media (max-width:760px){ .auth-grid{grid-template-columns:1fr} }
+  </style>
+
+  <!-- reCAPTCHA v3 (coerente con le altre pagine) -->
+  <script>
+    window.RECAPTCHA_SITE_KEY = "6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb";
+    window.recaptchaReady = new Promise((resolve) => {
+      var s = document.createElement('script');
+      s.src = 'https://www.google.com/recaptcha/api.js?render=' + window.RECAPTCHA_SITE_KEY;
+      s.async = true;
+      s.onload = function(){ grecaptcha.ready(resolve); };
+      document.head.appendChild(s);
+    });
+  </script>
+</head>
+<body>
+  <!-- HEADER coerente -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head"><img src="/images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="/vision.html">Visione di OFI</a></li>
+            <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="/index.html#pensieri">Pensieri</a></li>
+            <li><a href="/articoli/articoli.html">Articoli</a></li>
+            <li><a href="/index.html#ricordi">Ricordi</a></li>
+            <li><a href="/index.html#mappa">Vicino a te</a></li>
+            <li><a href="/index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><span class="btn btn-ghost" aria-disabled="true">Area Admin</span></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1 class="section-title" style="text-align:center">Accesso Amministratore</h1>
+        <p class="section-sub" style="text-align:center">Area riservata. Se non sei autorizzato, interrompi qui.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container auth-wrap">
+        <div class="auth-card" role="form" aria-labelledby="titAdmin">
+          <div class="auth-title" id="titAdmin">Accedi con email e password</div>
+
+          <button id="googleBtn" class="oauth" type="button" aria-label="Accedi con Google">↪ Accedi con Google</button>
+
+          <form id="loginForm" class="auth-grid" novalidate>
+            <div class="auth-field full">
+              <label for="email">Email amministratore</label>
+              <input id="email" type="email" required placeholder="nome@email.it" autocomplete="username" inputmode="email">
+            </div>
+
+            <div class="auth-field full">
+              <label for="password">Password</label>
+              <input id="password" type="password" required placeholder="••••••••" autocomplete="current-password">
+              <div class="small" style="margin-top:.3rem">
+                <button type="button" id="togglePwd" class="btn btn-ghost small" style="height:auto;padding:.2rem .5rem" aria-controls="password" aria-label="Mostra o nascondi password">Mostra/Nascondi</button>
+              </div>
+            </div>
+
+            <!-- reCAPTCHA v3 -->
+            <input type="hidden" id="recaptchaToken" name="recaptchaToken"/>
+
+            <div id="msg" class="hint full" aria-live="polite"></div>
+
+            <div class="auth-actions full">
+              <button class="btn btn-primary" type="submit">Accedi</button>
+              <button class="btn btn-outline" id="reset" type="button">Password dimenticata</button>
+            </div>
+          </form>
+
+          <p class="small hint" style="margin-top:.8rem">
+            Questa pagina è protetta da reCAPTCHA; si applicano la
+            <a class="link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> e i
+            <a class="link" href="https://policies.google.com/terms" target="_blank" rel="noopener">Termini di Google</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase + login logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const $ = (id)=>document.getElementById(id);
+    const msg = $('msg');
+
+    function uiInfo(text, cls='hint'){ msg.className = cls; msg.textContent = text; }
+
+    /* ✅ Fallback temporaneo: dopo un login riuscito vai alla dashboard admin.
+       In futuro qui richiameremo la Netlify Function che verifica/assegna il claim "admin". */
+    async function ensureAdminClaim(user){
+      try {
+        // TODO: chiamata a /.netlify/functions/admin-ensure-claim
+        // Per ora reindirizziamo direttamente:
+        window.location.href = "/admin/";
+      } catch(e){
+        console.error(e);
+        uiInfo("Accesso riuscito ma non riesco a verificare il ruolo. Contatta l'amministratore.", "error");
+      }
+    }
+
+    // reCAPTCHA helper: non blocca l’accesso se lo script è filtrato dalla CSP
+    async function verifyRecaptcha(action){
+      const TIMEOUT_MS = 1500;
+      if(!window.RECAPTCHA_SITE_KEY){ return { ok:true, reason:'no_site_key' }; }
+      const waitReady = new Promise((resolve)=> {
+        if (window.grecaptcha && window.grecaptcha.execute) return resolve('ready');
+        let done = false;
+        window.recaptchaReady?.then(()=>{ if(!done) { done=true; resolve('ready'); }});
+        setTimeout(()=>{ if(!done) { done=true; resolve('timeout'); }}, TIMEOUT_MS);
+      });
+      const state = await waitReady;
+      if (state !== 'ready') return { ok:true, reason:'recaptcha_unavailable' };
+      try{
+        const token = await grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action });
+        const res = await fetch('/.netlify/functions/recaptcha-verify', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ token, action })
+        });
+        return await res.json();
+      }catch{
+        return { ok:true, reason:'verify_failed' };
+      }
+    }
+
+    // Toggle password
+    $('togglePwd').addEventListener('click', ()=>{
+      const el = $('password');
+      el.type = (el.type === 'password') ? 'text' : 'password';
+    });
+
+    // Reset password
+    $('reset').addEventListener('click', async ()=>{
+      const email = $('email').value.trim();
+      if(!email){ uiInfo("Inserisci prima l'email per reimpostare la password."); return; }
+      try{
+        await sendPasswordResetEmail(auth, email);
+        uiInfo("Email di reset inviata. Controlla la tua casella.", 'success');
+      }catch(e){
+        uiInfo("Impossibile inviare l'email di reset. Verifica l'indirizzo.", 'error');
+      }
+    });
+
+    // Email+password
+    document.getElementById('loginForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      uiInfo("Verifica credenziali…");
+      const email = $('email').value.trim();
+      const pass  = $('password').value;
+      if(!email || !pass){ uiInfo("Inserisci email e password."); return; }
+      const check = await verifyRecaptcha('admin_login');
+      if(!check.ok){ uiInfo("Verifica anti-bot non superata. Riprova.", 'error'); return; }
+
+      try{
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        uiInfo("Accesso riuscito. Controllo ruolo…");
+        await ensureAdminClaim(cred.user);
+      }catch(err){
+        console.error(err);
+        let friendly = "Credenziali errate o account non abilitato.";
+        if (err?.code === 'auth/invalid-email') friendly = "Email non valida.";
+        else if (err?.code === 'auth/user-disabled') friendly = "Account disabilitato.";
+        else if (err?.code === 'auth/user-not-found') friendly = "Utente non trovato.";
+        else if (err?.code === 'auth/wrong-password') friendly = "Password errata.";
+        uiInfo(friendly, 'error');
+      }
+    });
+
+    // Google
+    $('googleBtn').addEventListener('click', async ()=>{
+      uiInfo("Apertura Google…");
+      const check = await verifyRecaptcha('admin_google_login');
+      if(!check.ok){ uiInfo("Verifica anti-bot non superata. Riprova.", 'error'); return; }
+      try{
+        const cred = await signInWithPopup(auth, provider);
+        uiInfo("Accesso riuscito. Controllo ruolo…");
+        await ensureAdminClaim(cred.user);
+      }catch(err){
+        console.error(err);
+        uiInfo("Accesso Google non riuscito.", 'error');
+      }
+    });
+  </script>
+
+  <!-- Chiusura sottomenù mobile come altrove -->
+  <script>
+    document.addEventListener('click', function(e){
+      const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+      const menu = document.getElementById('menuPanel');
+      if(trigger){
+        e.preventDefault();
+        const li = trigger.parentElement;
+        const isOpen = li.classList.toggle('open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }else if(menu && !menu.contains(e.target)){
+        document.querySelectorAll('.has-sub.open').forEach(li => {
+          li.classList.remove('open');
+          const a = li.querySelector('a[aria-haspopup="true"]');
+          if(a) a.setAttribute('aria-expanded','false');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

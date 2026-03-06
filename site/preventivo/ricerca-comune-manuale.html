@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+
+  <title>Indica il luogo del servizio funebre — OFI</title>
+  <meta name="description" content="Inserisci il luogo in cui desideri ricevere assistenza funebre. OFI ti mostrerà le imprese disponibili nella zona, con rispetto e professionalità.">
+
+  <meta property="og:title" content="Indica il luogo del servizio funebre — OFI">
+  <meta property="og:description" content="Scegli il luogo e lascia che OFI selezioni le imprese funebri più vicine a te.">
+  <meta property="og:image" content="https://www.onoranzefunebritalia.it/images/og-ofi.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.onoranzefunebritalia.it/preventivo/ricerca-comune-manuale.html">
+  <link rel="canonical" href="https://www.onoranzefunebritalia.it/preventivo/ricerca-comune-manuale.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stili e script globali OFI -->
+  <link rel="stylesheet" href="/ofi.css">
+  <script src="/ofi.js?v=3" defer></script>
+
+  <!-- Google Places Autocomplete -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places"></script>
+
+  <style>
+    /* ===== Tocchi locali (eredita il resto da ofi.css) ===== */
+    .container.narrow{
+      max-width:880px;
+    }
+
+    .intro-seo{
+      margin:1.25rem auto 0;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    .howto{
+      background:#f5f9ff;
+      border-left:5px solid var(--gold);
+      border-radius:12px;
+      padding:1rem;
+      margin:1.25rem 0 1.75rem;
+      font-size:.98rem;
+    }
+
+    .manual-box{
+      margin:1.5rem 0 2rem;
+      padding:1.5rem;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid color-mix(in oklab, #000, #fff 90%);
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+    }
+
+    .manual-box h2{
+      margin-top:0;
+      margin-bottom:.75rem;
+    }
+
+    .field-label{
+      display:block;
+      font-weight:600;
+      margin-bottom:.35rem;
+    }
+
+    .field-help{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-bottom:.85rem;
+    }
+
+    /* Campo indirizzo: leggibile sempre */
+    #autocomplete{
+      width:100%;
+      padding:1rem 1.1rem;
+      font-size:1.05rem;
+      border-radius:12px;
+      border:2px solid var(--gold);
+      outline:none;
+      transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+      background:#fff;
+      color:var(--text);
+      text-shadow:none;
+      -webkit-text-fill-color:currentColor;
+    }
+
+    #autocomplete:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(207,163,73,.25);
+      background:#fff;
+      color:var(--text);
+      -webkit-text-fill-color:currentColor;
+    }
+
+    #autocomplete::placeholder{
+      color:var(--muted);
+    }
+
+    .hint{
+      font-size:.95rem;
+      color:var(--muted);
+      margin-top:.75rem;
+    }
+
+    .valori-ofi{
+      display:flex;
+      flex-wrap:wrap;
+      gap:1rem;
+      margin-top:2rem;
+    }
+
+    /* CARD: sempre scura, sempre testo bianco (anche in chiaro) */
+    .valore-card{
+      flex:1 1 230px;
+      background:#0b1520 !important;            /* fondo scuro fisso */
+      border-left:5px solid var(--gold);
+      border-radius:12px;
+      padding:1rem;
+      font-size:.95rem;
+      box-shadow:0 2px 8px rgba(0,0,0,.25);
+      color:#ffffff !important;                 /* testo bianco fisso */
+    }
+
+    .valore-card strong{
+      color:#ffffff !important;
+    }
+
+    .valore-card span.emoji{
+      font-size:1.35rem;
+      margin-right:.35rem;
+      filter:brightness(1.2);
+    }
+
+    html[data-theme="dark"] .valore-card,
+    html[data-theme="auto"][data-current-theme="dark"] .valore-card{
+      background:#0b1520 !important;
+      color:#ffffff !important;
+    }
+
+    .actions-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      margin-top:1.5rem;
+      justify-content:flex-end;
+    }
+
+    .btn-ghost{
+      background:transparent;
+      border:1px solid color-mix(in oklab, #000, #fff 85%);
+      color:var(--muted);
+    }
+    .btn-ghost:hover{
+      background:color-mix(in oklab, var(--ofi-blue) 8%, #fff 92%);
+      color:var(--text);
+    }
+
+    /* ===========================
+       TEMA SCURO — preferenza sistema (auto)
+       =========================== */
+    @media (prefers-color-scheme: dark){
+      html[data-theme="auto"] .howto{
+        background:#0b1520 !important;
+        color:#f8fbff !important;
+        border-left-color:var(--gold) !important;
+      }
+
+      html[data-theme="auto"] .manual-box{
+        background:#0f1b2e !important;
+        border:1px solid rgba(255,255,255,.22) !important;
+        box-shadow:0 8px 24px rgba(0,0,0,.6) !important;
+        color:#f8fbff !important;
+      }
+
+      html[data-theme="auto"] .manual-box h2,
+      html[data-theme="auto"] .manual-box p,
+      html[data-theme="auto"] .manual-box label,
+      html[data-theme="auto"] .manual-box strong{
+        color:#f8fbff !important;
+      }
+
+      html[data-theme="auto"] #autocomplete{
+        background:#0c1626 !important;
+        border-color:var(--gold) !important;
+        color:#ffffff !important;
+        -webkit-text-fill-color:#ffffff !important;
+      }
+
+      html[data-theme="auto"] #autocomplete::placeholder{
+        color:#c7d4ea !important;
+      }
+
+      html[data-theme="auto"] .hint,
+      html[data-theme="auto"] .field-help{
+        color:#e4ecf9 !important;
+      }
+      /* le card sono già forzate sopra */
+    }
+
+    /* ===========================
+       TEMA SCURO — forzato da toggle (data-theme="dark")
+       =========================== */
+    html[data-theme="dark"] .howto{
+      background:#0b1520 !important;
+      color:#f8fbff !important;
+      border-left-color:var(--gold) !important;
+    }
+
+    html[data-theme="dark"] .manual-box{
+      background:#0f1b2e !important;
+      border:1px solid rgba(255,255,255,.22) !important;
+      box-shadow:0 8px 24px rgba(0,0,0,.6) !important;
+      color:#f8fbff !important;
+    }
+
+    html[data-theme="dark"] .manual-box h2,
+    html[data-theme="dark"] .manual-box p,
+    html[data-theme="dark"] .manual-box label,
+    html[data-theme="dark"] .manual-box strong{
+      color:#f8fbff !important;
+    }
+
+    html[data-theme="dark"] #autocomplete{
+      background:#0c1626 !important;
+      border-color:var(--gold) !important;
+      color:#ffffff !important;
+      -webkit-text-fill-color:#ffffff !important;
+    }
+
+    html[data-theme="dark"] #autocomplete::placeholder{
+      color:#c7d4ea !important;
+    }
+
+    html[data-theme="dark"] .hint,
+    html[data-theme="dark"] .field-help{
+      color:#e4ecf9 !important;
+    }
+
+    @media (max-width:520px){
+      .actions-row{
+        justify-content:center;
+      }
+    }
+
+/* === FIX DEFINITIVO SAFARI DARK MODE === */
+/* Rende scuri anche i box superiori */
+.howto,
+.manual-box {
+  background:#0b1520 !important;
+  color:#ffffff !important;
+  border-left-color: var(--gold) !important;
+  border:1px solid rgba(255,255,255,.22) !important;
+}
+
+.howto strong,
+.manual-box h2,
+.manual-box p,
+.manual-box label,
+.manual-box .field-help,
+.manual-box .hint {
+  color:#ffffff !important;
+}
+
+#autocomplete {
+  background:#0c1626 !important;
+  border-color:var(--gold) !important;
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+}
+
+/* ===========================================================
+   FIX DEFINITIVO CONTRASTI iPHONE (Safari) – Modalità Scura
+   =========================================================== */
+
+/* Tema scuro – FORZATO dal toggle */
+html[data-theme="dark"] .impresa-card {
+  background:#1b2e4a !important;
+  border-color:rgba(255,255,255,.18) !important;
+  color:#ffffff !important;
+}
+
+html[data-theme="dark"] .impresa-meta span,
+html[data-theme="dark"] .impresa-card h3,
+html[data-theme="dark"] .impresa-card .small,
+html[data-theme="dark"] .impresa-card .badge {
+  color:#ffffff !important;
+}
+
+html[data-theme="dark"] .chip,
+html[data-theme="dark"] .chip.ofi,
+html[data-theme="dark"] .chip.check {
+  background:rgba(255,255,255,.10) !important;
+  border-color:rgba(255,255,255,.25) !important;
+  color:#ffffff !important;
+}
+
+/* Tema scuro – AUTOMATICO secondo sistema (iPhone) */
+html[data-theme="auto"][data-current-theme="dark"] .impresa-card {
+  background:#1b2e4a !important;
+  border-color:rgba(255,255,255,.18) !important;
+  color:#ffffff !important;
+}
+
+html[data-theme="auto"][data-current-theme="dark"] .impresa-meta span,
+html[data-theme="auto"][data-current-theme="dark"] .impresa-card h3,
+html[data-theme="auto"][data-current-theme="dark"] .impresa-card .small,
+html[data-theme="auto"][data-current-theme="dark"] .impresa-card .badge {
+  color:#ffffff !important;
+}
+
+html[data-theme="auto"][data-current-theme="dark"] .chip,
+html[data-theme="auto"][data-current-theme="dark"] .chip.ofi,
+html[data-theme="auto"][data-current-theme="dark"] .chip.check {
+  background:rgba(255,255,255,.10) !important;
+  border-color:rgba(255,255,255,.25) !important;
+  color:#ffffff !important;
+}
+
+/* Pulsanti dentro la card */
+html[data-theme="dark"] .seleziona-impresa span,
+html[data-theme="auto"][data-current-theme="dark"] .seleziona-impresa span,
+html[data-theme="dark"] .link-profilo,
+html[data-theme="auto"][data-current-theme="dark"] .link-profilo {
+  color:#ffffff !important;
+}
+
+
+  </style>
+</head>
+<body>
+
+<!-- HEADER — coerente con scelta-preventivo -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <!-- Testata menù mobile -->
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <!-- Voci SLIM -->
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+      <li><a href="/cittadini/dashboard-cittadino.html">Dashboard Cittadino</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- Fascia blu coerente -->
+<section class="page-hero">
+  <div class="container">
+    <h1 class="section-title">Indica dove hai bisogno del servizio funebre</h1>
+    <p class="section-sub">Scegli il luogo e ti mostreremo le imprese disponibili in quella zona.</p>
+  </div>
+</section>
+
+<main>
+  <section class="container narrow">
+    <p class="intro-seo">
+      Puoi inserire una <strong>città</strong>, un <strong>indirizzo preciso</strong>, una
+      <strong>struttura sanitaria</strong> o un <strong>luogo simbolico</strong>. OFI userà questo punto
+      per individuare le <strong>imprese funebri più vicine</strong>, sempre nel massimo rispetto.
+    </p>
+
+    <div class="howto" role="note" aria-label="Come funziona">
+      <strong>Come funziona</strong><br>
+      1) Digita il luogo che preferisci · 2) Seleziona una voce dai suggerimenti · 3) Verrai accompagnato
+      nella scelta delle imprese a cui inviare la richiesta di preventivo
+    </div>
+
+    <div class="manual-box">
+      <h2>📍 Scegli tu il punto di riferimento</h2>
+      <label for="autocomplete" class="field-label">Luogo del servizio funebre</label>
+      <p class="field-help">
+        Puoi scrivere ad esempio: <em>“Bergamo, Via XX Settembre 30”</em>, <em>“Ospedale Niguarda Milano”</em>,
+        oppure il nome di un <em>paese o frazione</em>.
+      </p>
+
+      <input id="autocomplete"
+             type="text"
+             placeholder="Es. Milano, Via Verdi 10 – Ospedale"/>
+
+      <p class="hint">
+        Seleziona un luogo dai suggerimenti che compaiono mentre digiti. Dopo la conferma ti mostreremo
+        le imprese disponibili in quell’area, rispettando sempre i tempi e la sensibilità del momento.
+      </p>
+
+      <div class="actions-row">
+        <a href="scelta-preventivo.html" class="btn btn-ghost">Annulla e torna alla scelta modalità</a>
+      </div>
+    </div>
+
+    <div class="valori-ofi">
+      <article class="valore-card">
+        <span class="emoji">🛡️</span>
+        <strong>Imprese selezionate con cura</strong><br>
+        Il sistema privilegia imprese presenti su OFI e verificate, dove possibile, per offrirti un quadro più chiaro.
+      </article>
+      <article class="valore-card">
+        <span class="emoji">📍</span>
+        <strong>Scelta basata sul luogo</strong><br>
+        La selezione avviene a partire dal punto che indichi, così puoi valutare chi è davvero raggiungibile.
+      </article>
+      <article class="valore-card">
+        <span class="emoji">⏱️</span>
+        <strong>Risposta entro 7 giorni</strong><br>
+        Una volta approvata, la tua richiesta potrà ricevere riscontro dalle imprese entro 7 giorni.
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">
+          OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e
+          professionisti in un luogo sicuro.
+        </p>
+      </div>
+      <div class="f-links">
+        <a href="/articoli/articoli.html">Articoli</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Agente OFI + back-to-top -->
+<button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+  <img src="/images/agente-ofi.png" alt="">
+</button>
+
+<section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+  <header class="agent-top">
+    <div class="agent-id">
+      <img src="/images/agente-ofi.png" alt="">
+      <div>
+        <strong>Agente OFI</strong><br>
+        <small>Sono qui per aiutarti</small>
+      </div>
+    </div>
+    <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+  </header>
+  <div id="agentChat" class="agent-chat">
+    <div class="msg msg-in">
+      <p>Ciao, posso aiutarti a scegliere il luogo e le imprese a cui inviare la richiesta.</p>
+    </div>
+  </div>
+  <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+    <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+    <button class="btn btn-primary">Invia</button>
+  </form>
+  <div class="agent-note small">
+    Per risposte approfondite ti aprirò la guida dedicata.
+  </div>
+</section>
+
+<button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+<script>
+  function initAutocomplete() {
+    const input = document.getElementById("autocomplete");
+    if (!input) return;
+
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ["geocode"],
+      componentRestrictions: { country: "it" }
+    });
+
+    autocomplete.addListener("place_changed", function () {
+      const place = autocomplete.getPlace();
+      if (!place.geometry || !place.geometry.location) {
+        alert("⚠️ Seleziona un luogo valido dai suggerimenti.");
+        return;
+      }
+
+      const lat = place.geometry.location.lat();
+      const lon = place.geometry.location.lng();
+      const comune = place.name || "Località";
+
+      const url = `selezione-imprese-manuale.html?modalita=manuale&lat=${lat}&lon=${lon}&comune=${encodeURIComponent(comune)}`;
+      window.location.href = url;
+    });
+  }
+
+  window.addEventListener('load', initAutocomplete);
+</script>
+
+<!-- Menù globale -->
+<script src="/js/menu.js?v=2" defer></script>
+</body>
+</html>

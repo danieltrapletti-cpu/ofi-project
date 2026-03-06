@@ -1,0 +1,113 @@
+[
+  {
+    "nome": "Serenità Funebre Srl",
+    "comune": "Seriate",
+    "lat": 45.683,
+    "lng": 9.743,
+    "descrizione": "Servizio completo 24h, personalizzazione e rispetto.",
+    "logo": "logo1.png",
+    "copertina": "cover1.jpg",
+    "id": "serenita-funebre-srl"
+  },
+  {
+    "nome": "Impresa Funebre Test Ufficiale",
+    "comune": "Presezzo",
+    "lat": 45.692,
+    "lng": 9.576,
+    "descrizione": "Impresa test ufficiale per simulazioni.",
+    "logo": "logo-test.png",
+    "copertina": "cover-test.jpg",
+    "id": "impresa-test-ofi",
+    "email": "impresa.test@ofi.it"
+  },
+  {
+    "nome": "Pace Eterna Snc",
+    "comune": "Gorle",
+    "lat": 45.7,
+    "lng": 9.76,
+    "descrizione": "Accoglienza e discrezione in ogni momento.",
+    "logo": "logo2.png",
+    "copertina": "cover2.jpg",
+    "id": "pace-eterna-snc"
+  },
+  {
+    "nome": "Memoria Viva",
+    "comune": "Bergamo",
+    "lat": 45.695,
+    "lng": 9.67,
+    "descrizione": "Esperienza ventennale al servizio delle famiglie.",
+    "logo": "logo3.png",
+    "copertina": "cover3.jpg",
+    "id": "memoria-viva"
+  },
+  {
+    "nome": "Tranquillità Servizi Funebri",
+    "comune": "Bergamo",
+    "lat": 45.695,
+    "lng": 9.67,
+    "descrizione": "Servizi discreti, con attenzione e umanità.",
+    "logo": "logo4.png",
+    "copertina": "cover4.jpg",
+    "id": "tranquillita-servizi-funebri"
+  },
+  {
+    "nome": "Oltre il Tempo",
+    "comune": "Torre Boldone",
+    "lat": 45.708,
+    "lng": 9.706,
+    "descrizione": "Cerimonie personalizzate, consulenza continua.",
+    "logo": "logo5.png",
+    "copertina": "cover5.jpg",
+    "id": "oltre-il-tempo"
+  },
+  {
+    "nome": "Eterna Memoria",
+    "comune": "Albano Sant'Alessandro",
+    "lat": 45.694,
+    "lng": 9.797,
+    "descrizione": "Vicini con professionalità e sensibilità.",
+    "logo": "logo6.png",
+    "copertina": "cover6.jpg",
+    "id": "eterna-memoria"
+  },
+  {
+    "nome": "Luce del Ricordo",
+    "comune": "Pedrengo",
+    "lat": 45.704,
+    "lng": 9.731,
+    "descrizione": "Servizi eleganti, pensati su misura.",
+    "logo": "logo7.png",
+    "copertina": "cover7.jpg",
+    "id": "luce-del-ricordo"
+  },
+  {
+    "nome": "Onoranze Bergamasche",
+    "comune": "Bergamo",
+    "lat": 45.696,
+    "lng": 9.669,
+    "descrizione": "Tradizione bergamasca al servizio delle famiglie.",
+    "logo": "logo8.png",
+    "copertina": "cover8.jpg",
+    "id": "onoranze-bergamasche"
+  },
+  {
+    "nome": "Domus Requiem",
+    "comune": "Scanzo",
+    "lat": 45.71,
+    "lng": 9.735,
+    "descrizione": "Cura dei dettagli e massima discrezione.",
+    "logo": "logo9.png",
+    "copertina": "cover9.jpg",
+    "id": "domus-requiem"
+  },
+  {
+    "nome": "Angeli Custodi",
+    "comune": "Bergamo",
+    "lat": 45.695,
+    "lng": 9.671,
+    "descrizione": "Sostegno concreto in ogni momento del lutto.",
+    "logo": "logo10.png",
+    "copertina": "cover10.jpg",
+    "id": "angeli-custodi"
+  }
+]

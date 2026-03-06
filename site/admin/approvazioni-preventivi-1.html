@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OFI · Approvazioni · Preventivi</title>
+
+  <!-- Stili admin -->
+  <link rel="stylesheet" href="/ofi-admin.css">
+  <link rel="stylesheet" href="/ofi-admin-fix.css">
+
+  <!-- Firebase v10 (modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onIdTokenChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // --- CONFIG PROGETTO OFI (stessa di dashboard) ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    // --- INIT ---
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- UTILS ---
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+    function fmtTS(ts){
+      if(!ts) return "—";
+      try {
+        const d = ts.toDate ? ts.toDate() : new Date(ts);
+        return d.toLocaleString();
+      } catch { return "—"; }
+    }
+    function in7Days(from=new Date()){
+      const d = new Date(from);
+      d.setDate(d.getDate() + 7);
+      return d;
+    }
+
+    async function requireAdmin(user){
+      // Se hai già una tua funzione globale, usa quella.
+      // Fallback semplice: consenti se loggato.
+      return !!user;
+    }
+
+    // --- RENDER LISTA ---
+    async function loadInbox(){
+      const wrap = $("#cardsWrap");
+      wrap.innerHTML = `<div class="loading">Carico preventivi in attesa…</div>`;
+
+      const q = query(
+        collection(db, "preventivi"),
+        where("stato", "==", "in_attesa"),
+        orderBy("dataRicezione", "desc")
+      );
+      const snap = await getDocs(q);
+
+      // Contatori
+      $("#countTot").textContent = snap.size;
+      $("#countAttesa").textContent = snap.size;
+
+      if (snap.empty){
+        wrap.innerHTML = `<div class="empty">Nessun preventivo in attesa.</div>`;
+        return;
+      }
+
+      const term = $("#search").value?.trim().toLowerCase();
+      const frag = document.createDocumentFragment();
+
+      snap.forEach(docu => {
+        const d = docu.data();
+        // Filtro client by search
+        const searchable = [
+          d.nomeCognome, d.email, d.telefono, d.comune, d.provincia, d.note, docu.id
+        ].filter(Boolean).join(" ").toLowerCase();
+        if (term && !searchable.includes(term)) return;
+
+        const card = document.createElement("div");
+        card.className = "card item";
+        card.innerHTML = `
+          <div class="item-head">
+            <h3 class="item-title">Preventivo · <span class="muted">${docu.id}</span></h3>
+            <div class="chip chip-wait">in_attesa</div>
+          </div>
+
+          <div class="item-body">
+            <div class="row">
+              <div><b>Richiedente</b>: ${d.nomeCognome || "—"}</div>
+              <div><b>Email</b>: ${d.email || "—"}</div>
+              <div><b>Telefono</b>: ${d.telefono || "—"}</div>
+            </div>
+            <div class="row">
+              <div><b>Luogo</b>: ${d.comune || "—"} ${d.provincia ? `(${d.provincia})` : ""}</div>
+              <div><b>Ricevuto</b>: ${fmtTS(d.dataRicezione)}</div>
+            </div>
+            ${d.note ? `<div class="row"><div class="multiline"><b>Note</b>: ${d.note}</div></div>` : ""}
+          </div>
+
+          <div class="item-actions">
+            <button class="btn btn-success" data-approve="${docu.id}">Approva</button>
+            <button class="btn btn-danger" data-reject="${docu.id}">Rifiuta</button>
+          </div>
+        `;
+        frag.appendChild(card);
+      });
+
+      wrap.innerHTML = "";
+      wrap.appendChild(frag);
+
+      // Bind azioni
+      $$("#cardsWrap [data-approve]").forEach(btn=>{
+        btn.addEventListener("click", () => approve(btn.dataset.approve));
+      });
+      $$("#cardsWrap [data-reject]").forEach(btn=>{
+        btn.addEventListener("click", () => reject(btn.dataset.reject));
+      });
+    }
+
+    // --- ACTIONS ---
+    async function approve(id){
+      try {
+        const ref = doc(db, "preventivi", id);
+        await updateDoc(ref, {
+          stato: "approvato",
+          dataApprovazione: serverTimestamp(),
+          dataScadenza: in7Days()
+        });
+
+        // (Opzionale) invio email alle imprese via Netlify Function già prevista nel progetto:
+        // try {
+        //   await fetch("/.netlify/functions/sendPreventivo", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ preventivoId: id })
+        //   });
+        // } catch(e){ console.warn("Invio email non riuscito (function).", e); }
+
+        toast("Preventivo approvato. Spostato in Gestione Preventivi.");
+        await loadInbox();
+      } catch(e){
+        console.error(e);
+        toast("Errore: impossibile approvare il preventivo.");
+      }
+    }
+
+    async function reject(id){
+      try {
+        const ref = doc(db, "preventivi", id);
+        await updateDoc(ref, {
+          stato: "rifiutato",
+          dataRifiuto: serverTimestamp()
+        });
+        toast("Preventivo rifiutato.");
+        await loadInbox();
+      } catch(e){
+        console.error(e);
+        toast("Errore: impossibile rifiutare il preventivo.");
+      }
+    }
+
+    // --- TOAST MINIMO ---
+    function toast(msg){
+      const t = $("#ofiToast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 2200);
+    }
+
+    // --- AUTH GUARD + LOAD ---
+    onIdTokenChanged(auth, async (user) => {
+      if (!user) { location.replace("/admin/login.html"); return; }
+      const ok = await requireAdmin(user); if (!ok) return;
+      $("#adminEmail").textContent = user.email || "—";
+      await loadInbox();
+    });
+
+    // --- SEARCH ---
+    window.addEventListener("DOMContentLoaded", () => {
+      $("#search").addEventListener("input", ()=>loadInbox());
+    });
+  </script>
+  <style>
+    .headerbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .chips{display:flex;gap:8px;align-items:center}
+    .chip{padding:.25rem .5rem;border-radius:999px;font-size:.85rem}
+    .chip-wait{background:#3b82f626;border:1px solid #3b82f6;color:#dbeafe}
+    .muted{opacity:.8}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .search{min-width:260px}
+    .item{margin-bottom:12px}
+    .item-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .item-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .loading,.empty{opacity:.75;padding:12px}
+    #ofiToast{position:fixed;right:16px;bottom:16px;background:#0ea5e9;color:#fff;padding:.6rem .8rem;border-radius:.75rem;opacity:0;transform:translateY(8px);transition:.2s}
+    #ofiToast.show{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body class="ofi-admin">
+  <!-- Sidebar + Header coerenti alla tua dashboard -->
+  <aside class="sidebar">
+    <div class="brand">OFI</div>
+    <nav class="nav">
+      <div class="nav-section">APPROVAZIONI</div>
+      <a href="/admin/approvazioni-registrazioni.html" class="nav-link">Registrazioni</a>
+      <a href="/admin/approvazioni-preventivi.html" class="nav-link active">Preventivi</a>
+      <a href="/admin/approvazioni-necrologi.html" class="nav-link">Necrologi</a>
+
+      <div class="nav-section">REGISTRI</div>
+      <a href="/admin/imprese-admin.html" class="nav-link">Anagrafiche</a>
+
+      <div class="nav-section">CONTENUTI</div>
+      <a href="/admin/preventivi-admin.html" class="nav-link">Preventivi (gestione)</a>
+      <a href="/admin/necrologi-admin.html" class="nav-link">Necrologi (storico)</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="left">
+        <h1>Approvazioni · Preventivi</h1>
+        <p class="muted">Questa pagina mostra <b>solo</b> i preventivi con <b>stato: in_attesa</b>. Dopo l’approvazione li gestisci nella pagina <i>Preventivi (gestione)</i>.</p>
+      </div>
+      <div class="right">
+        <span id="adminEmail" class="admin-email">—</span>
+        <a class="btn" href="/admin/login.html">Logout</a>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="headerbar">
+        <div class="toolbar">
+          <input id="search" class="input search" placeholder="Cerca per nome, email, comune, ID…" />
+        </div>
+        <div class="chips">
+          <div class="chip">Tot: <span id="countTot">0</span></div>
+          <div class="chip chip-wait">In attesa: <span id="countAttesa">0</span></div>
+        </div>
+      </div>
+
+      <div id="cardsWrap" class="cards-list"></div>
+    </section>
+  </main>
+
+  <div id="ofiToast"></div>
+</body>
+</html>

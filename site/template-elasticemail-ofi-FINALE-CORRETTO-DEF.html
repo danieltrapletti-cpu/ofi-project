@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nuova richiesta di preventivo</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0; }
+    .container { max-width: 640px; margin: auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.05); }
+    .header { background-color: #0d3b66; padding: 20px; text-align: center; }
+    .header img { max-width: 260px; }
+    .intro { text-align: center; font-size: 0.95em; color: #555; padding: 10px 30px; }
+    .sigillo { text-align: center; margin: 25px 0 10px; }
+    .sigillo img { max-width: 110px; filter: drop-shadow(0 0 6px rgba(0,0,0,0.25)); }
+    h2 { text-align: center; color: #0d3b66; margin-top: 15px; }
+    .info { text-align: center; font-size: 1.1em; margin-top: 10px; }
+    .main { padding: 0 30px 30px; }
+    .cta { text-align: center; margin: 30px 0; }
+    .cta a {
+      background-color: #0d3b66;
+      color: #fff;
+      padding: 14px 26px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1.05em;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+      display: inline-block;
+    }
+    .footer {
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #555;
+    }
+    .firma {
+      font-style: italic;
+      color: #333;
+      font-size: 1em;
+      margin-top: 30px;
+      text-align: center;
+    }
+    .video {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .video img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <img src="https://api.smtprelay.co/userfile/a7420ae0-3eb0-4c7d-a752-ce6cdbaf0551/OFI-Logo-Light.png" alt="Onoranze Funebri Italia">
+    </div>
+
+    <div class="intro">
+      Hai ricevuto una richiesta ufficiale dal Portale Nazionale Onoranze Funebri Italia.
+    </div>
+
+    <div class="sigillo">
+      <img src="https://api.smtprelay.co/userfile/a7420ae0-3eb0-4c7d-a752-ce6cdbaf0551/cera-preventivo.png" alt="Sigillo Preventivo Ricevuto">
+    </div>
+
+    <h2>Hai ricevuto una nuova richiesta di preventivo</h2>
+    <p class="info">📍 <strong>{{merge_luogo}}</strong> – 🕊️ <strong>{{merge_servizio}}</strong> – ⏳ <strong>7 giorni per rispondere</strong></p>
+
+    <div class="main">
+      <p>Gentile Impresa,</p>
+      <p>un cittadino ha scelto <strong>{{merge_nomeImpresa}}</strong> per richiedere un preventivo funebre tramite il <strong>Portale Nazionale Onoranze Funebri Italia</strong>.</p>
+
+      <p>Ti invitiamo a rispondere entro <strong>7 giorni</strong>, accedendo alla tua area riservata.</p>
+
+      <div class="cta">
+        <a href="https://www.onoranzefunebritalia.it/imprese-dashboard.html" target="_blank">🔐 Rispondi ora al preventivo</a>
+      </div>
+
+      <div class="video">
+        <a href="https://youtu.be/iyKTbfzBgpw?si=jEYqIwi-HhEzHYe7" target="_blank">
+          <img src="https://img.youtube.com/vi/iyKTbfzBgpw/0.jpg" alt="Video Invito OFI">
+        </a>
+        <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Guarda il breve video ufficiale con invito alla risposta</p>
+      </div>
+
+      <p><strong>📌 Perché è importante rispondere rapidamente?</strong></p>
+      <ul>
+        <li>Le famiglie valutano anche la prontezza nella risposta</li>
+        <li>Le imprese attive ricevono visibilità prioritaria nel Portale Nazionale</li>
+      </ul>
+
+      <p><strong>📌 A cosa serve questo sistema?</strong></p>
+      <ul>
+        <li>Garantire trasparenza e correttezza nei contatti</li>
+        <li>Rafforzare una rete seria, affidabile e coordinata</li>
+      </ul>
+
+      <p class="firma">Onoranze Funebri Italia<br/>Servizio Nazionale per Imprese e Cittadini</p>
+    </div>
+
+    <div class="footer">
+      Onoranze Funebri Italia – Portale Nazionale<br/>
+      Per assistenza: <a href="mailto:info@onoranzefunebritalia.it">info@onoranzefunebritalia.it</a>
+    </div>
+
+  </div>
+</body>
+</html>

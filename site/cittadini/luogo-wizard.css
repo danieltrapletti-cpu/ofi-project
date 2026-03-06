@@ -1,0 +1,2211 @@
+:root {
+  --bg-body: #020617;
+  --accent-gold-soft: rgba(202,168,90,0.16);
+  --border-soft: rgba(148,163,184,0.45);
+  --shadow-strong: 0 26px 70px rgba(0,0,0,0.75);
+  --radius-card: 24px;
+  --transition-fast: 0.18s ease;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* ================================
+   TEMI / SFONDO
+   ================================ */
+
+main.ofi-main {
+  padding-top: 5.8rem;
+  padding-bottom: 4rem;
+}
+
+/* ================================
+   HERO EMOZIONALE NECROLOGIO
+   ================================ */
+
+.necro-hero {
+  max-width: 1120px;
+  margin: 0 auto 2.1rem;
+  padding: 5.4rem 1.1rem 0;
+}
+
+.necro-hero-inner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  padding: 2.1rem 2.2rem 1.9rem;
+  background:
+    radial-gradient(circle at top left, rgba(202,168,90,0.10), transparent 55%),
+    var(--surface);
+  box-shadow: var(--shadow-strong);
+  color: var(--surface-text);
+}
+
+/* Variante in tema scuro */
+[data-theme="dark"] .necro-hero-inner {
+  background:
+    radial-gradient(circle at top left, rgba(248,250,252,0.06), transparent 55%),
+    #020617;
+  color: #f9fafb;
+}
+
+.necro-hero-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(248,250,252,0.12), transparent 60%);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.necro-hero-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) auto;
+  gap: 2rem;
+  align-items: center;
+}
+
+.necro-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #fde68a;
+  margin-bottom: 0.45rem;
+  opacity: 0.9;
+}
+
+.necro-hero-eyebrow::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #facc15);
+}
+
+.necro-hero-text h1 {
+  font-size: 2.15rem;
+  margin: 0 0 0.7rem;
+  letter-spacing: 0.02em;
+}
+
+.necro-hero-text p {
+  margin: 0.2rem 0;
+  font-size: 0.98rem;
+  max-width: 640px;
+  color: var(--surface-text);
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .necro-hero-text p {
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+.necro-hero-highlight {
+  margin-top: 0.9rem;
+  font-size: 0.86rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(15,23,42,0.85);
+  border: 1px solid rgba(202,168,90,0.75);
+  color: #fefce8;
+  box-shadow: 0 18px 42px rgba(0,0,0,0.6);
+}
+
+.necro-hero-highlight .icon { font-size: 0.95rem; }
+
+/* Ribbon tricolore */
+.necro-hero-tricolore {
+  margin-top: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 1.05rem;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at top left, rgba(248,250,252,0.12), transparent 55%),
+    rgba(15,23,42,0.96);
+  border: 1px solid rgba(252,211,77,0.8);
+  box-shadow:
+    0 0 0 1px rgba(15,23,42,1),
+    0 18px 42px rgba(0,0,0,0.8);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+}
+
+.necro-hero-flag {
+  width: 50px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #15803d, #f9fafb, #b91c1c);
+  box-shadow: 0 0 8px rgba(248,250,252,0.6);
+}
+
+.necro-hero-tricolore-label { white-space: nowrap; opacity: 0.97; }
+
+/* Agente OFI */
+.necro-hero-agent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.necro-hero-agent-photo{
+  width: 168px;
+  height: 168px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  /* cornice oro più “pulita” */
+  border: 2px solid rgba(202,168,90,0.78);
+
+  /* fondo scuro pieno (niente gradiente che “sporca” il sigillo) */
+  background: rgba(2,6,23,0.96);
+
+  /* ZERO padding: il sigillo deve riempire */
+  padding: 0;
+
+  /* ombre più pulite e meno “nebbia” */
+  box-shadow:
+    0 0 0 6px rgba(15,23,42,0.96),
+    0 18px 44px rgba(0,0,0,0.55),
+    0 0 28px rgba(202,168,90,0.35);
+}
+
+.necro-hero-agent-photo img{
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  /* riempi il cerchio */
+  object-fit: cover;
+
+  /* nitidezza */
+  image-rendering: auto;
+  -webkit-transform: translateZ(0); /* anti-blur su alcuni browser */
+  transform: translateZ(0);
+
+  /* niente drop-shadow: rende “impastato” un PNG con dettagli fini */
+  filter: none;
+}
+
+.necro-hero-inner:hover .necro-hero-agent-photo img { transform: translateZ(0); }
+
+.necro-hero-agent-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #fde68a;
+}
+
+.necro-hero-agent-phrase {
+  font-size: 0.87rem;
+  font-style: italic;
+  color: var(--surface-text);
+  opacity: 0.65;
+  text-align: center;
+  max-width: 200px;
+}
+
+[data-theme="dark"] .necro-hero-agent-phrase { color: #e5e7eb; opacity: 0.9; }
+
+/* ================================
+   WIZARD CARD
+   ================================ */
+
+.wizard-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 1.1rem 3.2rem;
+}
+
+.wizard-card {
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: 0 18px 46px rgba(0,0,0,0.22);
+  padding: 1.8rem 1.9rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(202,168,90,0.35);
+  color: var(--surface-text);
+}
+
+[data-theme="dark"] .wizard-card {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: rgba(55,65,81,0.9);
+}
+
+.wizard-header {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.1rem;
+}
+
+.wizard-eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #cfa349;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.wizard-title {
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--surface-text);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+[data-theme="dark"] .wizard-title { color: #f9fafb; }
+
+/* Barra avanzamento */
+.step-progress {
+  margin-top: 0.8rem;
+  margin-bottom: 0.2rem;
+  width: 100%;
+  max-width: 380px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148,163,184,0.3);
+  overflow: hidden;
+}
+
+.step-progress-bar {
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #caa85a, #facc15);
+  box-shadow: 0 0 12px rgba(250,204,21,0.7);
+  transition: width 220ms ease-out;
+}
+
+/* Layout / Input */
+.wizard-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 0.4rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.agente-chat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-height: 200px;
+}
+
+/* Messaggio Agente OFI */
+.agent-message {
+  background: rgba(255,255,255,0.05);
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  font-size: 0.92rem;
+  color: var(--surface-text);
+  border-left: 3px solid #caa85a;
+}
+
+[data-theme="dark"] .agent-message {
+  background: rgba(255,255,255,0.04);
+  color: #f9fafb;
+}
+
+.step-field-wrapper input,
+.step-field-wrapper textarea,
+.step-field-wrapper select {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #f9fafb;
+  transition:
+    box-shadow 140ms ease-out,
+    border-color 140ms ease-out,
+    background-color 140ms ease-out,
+    transform 80ms ease-out;
+}
+
+.step-field-wrapper textarea { min-height: 90px; resize: vertical; }
+
+.step-field-wrapper input:focus,
+.step-field-wrapper textarea:focus,
+.step-field-wrapper select:focus {
+  border-color: #cfa349;
+  box-shadow: 0 0 0 2px rgba(207,163,73,0.18);
+  outline: none;
+  background-color: #fffdf9;
+  transform: translateY(-1px);
+}
+
+/* INPUT FILE – sempre leggibile */
+.step-field-wrapper input[type="file"] {
+  cursor: pointer;
+  padding: 0.45rem 0.75rem;
+  background: #f9fafb !important;
+  color: #111827 !important;
+  border: 1px solid #cbd5e1;
+  border-radius: 14px;
+}
+
+.step-field-wrapper input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  border: 1px solid #cbd5e1;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+[data-theme="dark"] .step-field-wrapper input[type="file"],
+[data-theme="dark"] .step-field-wrapper input[type="file"]::file-selector-button {
+  background: #f9fafb !important;
+  color: #111827 !important;
+  border-color: #cbd5e1;
+}
+
+[data-theme="dark"] .step-field-wrapper input,
+[data-theme="dark"] .step-field-wrapper textarea,
+[data-theme="dark"] .step-field-wrapper select {
+  background: #020617;
+  color: #e5e7eb;
+  border-color: #1f2937;
+}
+
+.step-helper { font-size: 0.8rem; color: var(--muted); }
+.step-error  { font-size: 0.8rem; color: #b91c1c; }
+
+/* Bottoni step */
+.step-buttons {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.step-buttons .btn-soft,
+.step-buttons .btn-primary {
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.55rem 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 42px;
+}
+
+.btn-soft {
+  background: #e5e7eb;
+  color: #111827;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .btn-soft {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #caa85a, #e3c470);
+  color: #111827;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(202,168,90,0.5);
+}
+
+.btn-primary[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ================================
+   ANTEPRIMA NECROLOGIO (nascosta)
+   ================================ */
+
+.preview-shell {
+  margin-top: 1.8rem;
+  position: relative;
+  z-index: 1;
+  display: none;
+}
+
+.preview-card {
+  border-radius: 22px;
+  border: 1px solid rgba(202,168,90,0.32);
+  background:
+    radial-gradient(circle at top left, rgba(248,250,252,0.40), transparent 60%),
+    #f9fafb;
+  padding: 1.25rem 1.35rem 1.15rem;
+  box-shadow: 0 16px 38px rgba(15,23,42,0.18);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.6fr);
+  gap: 1.1rem;
+  align-items: flex-start;
+}
+
+[data-theme="dark"] .preview-card {
+  background:
+    radial-gradient(circle at top left, rgba(248,250,252,0.06), transparent 60%),
+    #020617;
+  box-shadow: 0 22px 50px rgba(0,0,0,0.75);
+}
+
+.preview-header {
+  grid-column: 1 / -1;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #6b7280;
+  margin-bottom: -0.2rem;
+}
+
+[data-theme="dark"] .preview-header { color: #9ca3af; }
+
+.preview-photo { display: flex; justify-content: center; }
+
+.preview-photo-frame {
+  width: 120px;
+  height: 150px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 2px solid rgba(202,168,90,0.68);
+  background: #0f172a;
+  box-shadow: 0 14px 30px rgba(15,23,42,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-photo-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.preview-text { min-height: 120px; }
+
+.preview-hint {
+  font-size: 0.83rem;
+  color: #6b7280;
+  margin: 0 0 0.35rem;
+}
+
+[data-theme="dark"] .preview-hint { color: #9ca3af; }
+
+.preview-body {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "Noto Serif", "Times New Roman", serif;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: #111827;
+}
+
+[data-theme="dark"] .preview-body { color: #e5e7eb; }
+
+/* ================================
+   FOOTER WIZARD + FOOTER PAGINA
+   ================================ */
+
+.wizard-footer {
+  max-width: 1120px;
+  margin: 1.9rem auto 0;
+  padding: 1.15rem 1.1rem 0;
+  border-top: 1px solid rgba(148,163,184,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.wizard-footer-left {
+  font-size: 0.8rem;
+  color: var(--muted);
+  max-width: 360px;
+}
+
+.wizard-footer-right {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Badge Agente OFI */
+.agente-ofi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: rgba(202,168,90,0.12);
+  color: #854d0e;
+  border: 1px solid rgba(202,168,90,0.7);
+}
+
+.agente-ofi-badge i { font-size: 0.85rem; }
+
+[data-theme="dark"] .agente-ofi-badge {
+  background: rgba(250,250,250,0.06);
+  color: #fef9c3;
+  border-color: rgba(250,204,21,0.85);
+  box-shadow: 0 0 12px rgba(250,204,21,0.35);
+}
+
+.necro-footer {
+  max-width: 1120px;
+  margin: 2.1rem auto 0;
+  padding: 0 1.1rem 2.5rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ================================
+   MODALE / PAGINA RISULTATI FINALI
+   ================================ */
+
+.result-modal {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(148,163,184,0.25), transparent 55%),
+    #020617;
+  display: none;
+  align-items: stretch;
+  justify-content: center;
+  z-index: 60;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.result-modal.open { display: flex; }
+
+.result-modal-content {
+  max-width: 1120px;
+  width: 100%;
+  margin: auto;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .result-modal-content { background: transparent; }
+
+/* Bottone chiudi */
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.8rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: rgba(15,23,42,0.85);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f9fafb;
+  z-index: 2;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.7);
+}
+
+[data-theme="dark"] .modal-close { background: rgba(15,23,42,0.9); }
+
+/* Shell anteprima finale */
+.final-preview-shell {
+  padding: 2.8rem 1.1rem 1.8rem;
+  color: #e5e7eb;
+}
+
+.final-preview-header {
+  max-width: 820px;
+  margin: 0 auto 1.6rem;
+  text-align: center;
+}
+
+.final-preview-header h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.7rem;
+  letter-spacing: 0.04em;
+}
+
+.final-preview-header p {
+  margin: 0;
+  font-size: 0.94rem;
+  color: #cbd5f5;
+  opacity: 0.9;
+}
+
+/* Card finale (RIPRISTINATA: grid + cornice + padding) */
+.final-preview-card{
+  border-radius: 26px;
+  border: 1px solid rgba(202,168,90,0.55);
+  box-shadow: 0 30px 90px rgba(0,0,0,.78);
+  padding: 1.7rem 1.6rem;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: start;
+
+  background:
+    radial-gradient(circle at 12% 18%, rgba(202,168,90,0.16), transparent 55%),
+    radial-gradient(circle at 88% 22%, rgba(96,165,250,0.10), transparent 60%),
+    radial-gradient(circle at 50% 120%, rgba(248,250,252,0.06), transparent 55%),
+    linear-gradient(180deg, #06122a 0%, #020617 100%);
+}
+
+/* Foto finale */
+.final-preview-photo { display: flex; justify-content: center; }
+
+.final-photo-frame {
+  width: 170px;
+  height: 220px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 2px solid rgba(202,168,90,0.92);
+  background:
+    radial-gradient(circle at top, rgba(248,250,252,0.12), transparent 50%),
+    #020617;
+  box-shadow:
+    0 0 0 5px rgba(15,23,42,1),
+    0 26px 60px rgba(0,0,0,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.final-photo-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+/* Ornamento (immagine) */
+.final-ornament{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  min-height: 48px;
+}
+
+.final-ornament .ornament-img{
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: .95;
+}
+
+/* Testo finale */
+.final-preview-body {
+  min-height: 140px;
+  max-width: 640px;
+}
+
+.final-preview-text {
+  font-family: "Noto Serif", "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #f9fafb;
+}
+
+.final-preview-text p { margin: 0.15rem 0 0.6rem; }
+.final-preview-text p + p { margin-top: 0.55rem; }
+
+/* Nome e cognome (robusto) */
+.final-preview-text strong {
+  display: block;
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin-bottom: 0.25rem;
+}
+
+/* Citazione iniziale */
+.final-preview-text p:first-child em {
+  display: block;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba(202,168,90,0.7);
+  color: #e5e7eb;
+}
+
+/* Corsivi */
+.final-preview-text p em {
+  font-size: 0.97rem;
+  color: #e5e7eb;
+  opacity: 0.92;
+}
+
+/* Riga finale */
+.final-preview-text p:last-child {
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* Separatore elegante */
+.final-preview-text .section-break{
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(202,168,90,0.22); /* più leggero */
+}
+
+/* Controlli sotto la card */
+.final-preview-controls {
+  max-width: 900px;
+  margin: 1.6rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.final-variants,
+.final-ornament-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem 1rem;
+}
+
+.final-variants-label,
+.final-ornament-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #e5e7eb;
+  opacity: 0.8;
+}
+
+.final-variants-buttons,
+.final-ornament-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.final-variant-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,0.7);
+  background: rgba(15,23,42,0.8);
+  padding: 0.3rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #fefce8;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.final-variant-btn.active {
+  background: linear-gradient(135deg, #caa85a, #facc15);
+  color: #0f172a;
+  box-shadow: 0 0 18px rgba(250,204,21,0.6);
+}
+
+.ornament-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.85);
+  background: rgba(15,23,42,0.95);
+  padding: 0.25rem 0.9rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.ornament-btn.active {
+  border-color: rgba(202,168,90,0.95);
+  background: linear-gradient(135deg, #caa85a, #facc15);
+  color: #0f172a;
+  box-shadow: 0 0 18px rgba(250,204,21,0.6);
+}
+
+.final-edit-block {
+  border-radius: 18px;
+  border: 1px solid rgba(148,163,184,0.7);
+  background: rgba(15,23,42,0.75);
+  padding: 0.8rem 0.9rem;
+}
+
+.final-edit-toggle {
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.9);
+  background: rgba(15,23,42,0.95);
+  padding: 0.25rem 0.9rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.final-edit-container {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.final-edit-label { font-size: 0.8rem; color: #d1d5db; }
+
+.final-edit-area {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #4b5563;
+  padding: 0.7rem 0.85rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: #020617;
+  color: #f9fafb;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.final-edit-area:focus {
+  outline: none;
+  border-color: #caa85a;
+  box-shadow: 0 0 0 2px rgba(202,168,90,0.35);
+}
+
+.final-edit-apply {
+  align-self: flex-start;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  padding: 0.35rem 1rem;
+  background: linear-gradient(135deg, #caa85a, #e3c470);
+  color: #111827;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(202,168,90,0.6);
+}
+
+/* Azioni finali */
+.final-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.7rem;
+}
+
+.final-action-btn {
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.85);
+  padding: 0.45rem 1.1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.final-action-btn.soft {
+  background: rgba(15,23,42,0.95);
+  color: #e5e7eb;
+}
+
+.final-action-btn.primary {
+  background: linear-gradient(135deg, #caa85a, #facc15);
+  color: #0f172a;
+  border-color: rgba(202,168,90,0.95);
+  font-weight: 700;
+  box-shadow: 0 14px 32px rgba(202,168,90,0.7);
+}
+
+.final-hidden-variants { display: none; }
+.hidden { display: none; }
+
+/* Box istituzionale "Nota OFI" */
+.ofi-note{
+  margin-top: 12px;
+  border: 1px solid rgba(250, 204, 107, .45);
+  background: rgba(10, 25, 55, .35);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+:root[data-theme="light"] .ofi-note{ background: rgba(250, 204, 107, .10); }
+.ofi-note-title{ font-weight: 700; letter-spacing: .2px; margin-bottom: 8px; }
+.ofi-note-list{ margin: 0; padding-left: 18px; line-height: 1.4; }
+.ofi-note-list li{ margin: 6px 0; }
+
+/* ================================
+   RESPONSIVE (FIX GRAFFE)
+   ================================ */
+@media (max-width: 860px) {
+  .necro-hero-content{
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .final-preview-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .final-preview-photo{
+    justify-content: center;
+  }
+
+  .final-photo-frame{
+    width: 165px;
+    height: 215px;
+    margin: 0 auto;
+  }
+
+  .final-preview-body{
+    max-width: 100%;
+  }
+
+  .final-preview-text{
+    font-size: 1.02rem;
+  }
+
+  .final-preview-shell {
+    padding-top: 2.2rem;
+  }
+
+  .final-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .final-action-btn {
+    justify-content: center;
+  }
+}
+
+/* ================================
+   LOADER AI (overlay)
+   ================================ */
+
+.ai-loading{
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,.72);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+  padding: 18px;
+  backdrop-filter: blur(6px);
+}
+
+.ai-loading-card{
+  width: min(520px, 92vw);
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.55);
+  background: radial-gradient(circle at top left, rgba(202,168,90,.14), transparent 55%), #020617;
+  box-shadow: 0 30px 90px rgba(0,0,0,.8);
+  padding: 18px 18px 14px;
+  color: #f9fafb;
+  text-align: center;
+}
+
+.ai-loading-title{
+  font-weight: 800;
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+}
+
+.ai-loading-sub{
+  opacity: .9;
+  font-size: .95rem;
+  margin-bottom: 12px;
+}
+
+.ai-loading-bar{
+  height: 10px;
+  background: rgba(148,163,184,.22);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.ai-loading-bar-fill{
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #caa85a, #facc15);
+  transition: width 220ms ease;
+}
+
+.ai-loading-pct{
+  margin-top: 8px;
+  font-weight: 700;
+  color: #fde68a;
+}
+
+.ai-loading[hidden] {
+  display: none !important;
+}
+
+/* ============================= */
+/* Sigillo editoriale OFI        */
+/* ============================= */
+
+.ofi-editorial-seal{
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0.9;
+  font-size: 0.70rem; /* testo leggermente più piccolo */
+  line-height: 1.15;
+  max-width: 260px;
+  text-align: right;
+  color: rgba(202,168,90,0.92);
+}
+
+.ofi-editorial-seal img{
+  width: 44px; /* sigillo più grande */
+  height: auto;
+  filter: none;
+  opacity: 0.95;
+  filter: drop-shadow(0 6px 14px rgba(202,168,90,0.35));
+}
+
+.ofi-editorial-seal-text strong {
+  display: block;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin-bottom: 2px;
+}
+
+.ofi-editorial-seal-wrapper{
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: none; /* non “cattura” click o selezioni */
+}
+
+.final-edit-top-preview{
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  line-height: 1.55;
+}
+.final-edit-top-preview p{ margin: 0 0 8px 0; }
+.final-edit-top-preview p:last-child{ margin-bottom: 0; }
+
+.final-edit-top-preview{
+  margin: 14px 0 10px;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+}
+
+.top-edit-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+@media (max-width: 720px){
+  .top-edit-grid{ grid-template-columns: 1fr; }
+}
+
+.top-edit-row{ display:flex; flex-direction:column; gap:6px; }
+
+.mini-label{
+  font-size: .85rem;
+  opacity: .9;
+}
+
+.mini-input, .mini-textarea{
+  width: 100%;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.25);
+  color: inherit;
+  outline: none;
+}
+
+.mini-input:focus, .mini-textarea:focus{
+  border-color: rgba(212,175,55,.55);
+}
+
+.top-lock-hint{
+  margin-top: 10px;
+  font-size: .85rem;
+  opacity: .75;
+}
+
+/* OFI: nel Necrologio Nuovo (AI) NON esiste modifica libera */
+.ofi-necro-ai .final-edit-block,
+.ofi-necro-ai #finalEditContainer,
+.ofi-necro-ai #toggleEditBtn {
+  display: none !important;
+}
+
+/* Spazio extra sotto per footer badge + sigillo */
+.final-preview-card{
+  position: relative;
+  padding-bottom: 120px; /* aumenta un filo lo spazio sotto */
+}
+
+/* Footer dentro la card: sinistra impresa + destra sigillo */
+.final-card-footer{
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none; /* evita selezioni “strane” sul layout */
+}
+
+/* Impresa (opzionale) */
+.final-impresa-badge{
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(250,204,21,0.28);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  text-decoration: none;
+  color: inherit;
+  max-width: 62%;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.final-impresa-badge:hover{
+  transform: translateY(-1px);
+  border-color: rgba(250,204,21,0.55);
+  background: rgba(255,255,255,0.09);
+}
+
+.final-impresa-logo{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  object-fit: contain;
+  padding: 6px;
+  background: rgba(2,6,23,0.45);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+}
+
+.final-impresa-label{
+  font-size: .76rem;
+  opacity: .78;
+  line-height: 1.1;
+}
+
+.final-impresa-name{
+  font-weight: 900;
+  letter-spacing: .2px;
+  line-height: 1.1;
+}
+
+/* Sigillo in basso a destra (sempre) */
+.ofi-editorial-seal--corner{
+  pointer-events: none;
+  margin: 0;
+  max-width: 42%;
+  text-align: left;
+}
+
+/* Di default (desktop): foto mobile nascosta */
+.final-mobile-photo{ display: none; }
+
+/* Mobile: nascondi foto “desktop” a sinistra e mostra foto dentro il testo */
+@media (max-width: 860px){
+  .final-preview-photo{ display: none; }
+  .final-mobile-photo{
+    display: block;
+    margin: 12px auto 10px;
+    max-width: 360px;
+  }
+}
+
+/* =========================
+   FIX FOOTER MOBILE (Impresa + Sigillo)
+   ========================= */
+@media (max-width: 860px){
+
+  /* niente footer "incastrato" assoluto */
+  .final-preview-card{
+    padding-bottom: 24px !important;
+  }
+
+  .final-card-footer{
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    pointer-events: auto; /* così il badge è sempre cliccabile */
+  }
+
+  /* Badge impresa: centrato e “pulito” */
+  .final-impresa-badge{
+    width: 100%;
+    max-width: 420px;
+    justify-content: center;
+    text-align: left;
+    padding: 12px 14px;
+  }
+
+  .final-impresa-logo{
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .final-impresa-meta{
+    flex: 1;
+  }
+
+  /* Sigillo: centrato, leggibile, non storto */
+  .ofi-editorial-seal--corner{
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ofi-editorial-seal-img{
+    width: 40px;
+    height: 40px;
+    display: block;
+  }
+
+  .ofi-editorial-seal-text{
+    font-size: 0.86rem;
+    line-height: 1.25;
+    opacity: 0.92;
+  }
+}
+
+.ornament-img{
+  display: block;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important; 
+}
+
+
+/* =========================
+   FIX iOS Safari: PNG trasparenti + filter => box bianco
+   ========================= */
+
+/* targeting iOS Safari */
+@supports (-webkit-touch-callout: none) {
+
+  /* niente drop-shadow sull'IMG: evita il riquadro bianco */
+  .ornament-img{
+    filter: none !important;
+    -webkit-filter: none !important;
+    background: transparent !important;
+    display: block;
+  }
+
+  /* ombra alternativa sul contenitore (non rompe la trasparenza) */
+  .final-ornament{
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+    -webkit-filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+  }
+}
+
+
+
+
+
+
+
+
+/* ==============================
+   Luogo (autocomplete)
+   ============================== */
+.wizard-banner{
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.92);
+  font-weight: 650;
+}
+body:not(.theme-dark) .wizard-banner{
+  background: rgba(255,255,255,.78);
+  border-color: rgba(0,0,0,.10);
+  color: rgba(0,0,0,.78);
+}
+
+.placeBox{ width: 100%; display: grid; gap: 10px; }
+.placeInput{
+  width: 100%;
+  padding: 14px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color: #fff;
+  outline: none;
+}
+body:not(.theme-dark) .placeInput{
+  background: rgba(255,255,255,.86);
+  border-color: rgba(0,0,0,.12);
+  color: #111827;
+}
+.placeMeta{
+  font-size: .92rem;
+  opacity: .9;
+}
+.placeMeta.warn{
+  opacity: 1;
+  color: #fde68a;
+}
+body:not(.theme-dark) .placeMeta.warn{
+  color: #7c5a00;
+}
+
+.placeSuggest{
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.22);
+  max-height: 260px;
+  overflow: auto;
+}
+body:not(.theme-dark) .placeSuggest{
+  background: rgba(255,255,255,.92);
+  border-color: rgba(0,0,0,.10);
+}
+.placeItem{
+  text-align: left;
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  cursor: pointer;
+}
+.placeItem:hover{
+  transform: translateY(-1px);
+  border-color: rgba(253,230,138,.45);
+  background: rgba(253,230,138,.10);
+}
+body:not(.theme-dark) .placeItem{
+  background: rgba(0,0,0,.03);
+  border-color: rgba(0,0,0,.08);
+  color: #111827;
+}
+body:not(.theme-dark) .placeItem:hover{
+  border-color: rgba(217,119,6,.35);
+  background: rgba(217,119,6,.10);
+}
+.placeItemTitle{ font-weight: 750; }
+.placeItemMeta{ font-size: .86rem; opacity: .85; margin-top: 2px; }
+
+/* ==========================================
+   FIX AUTOCOMPLETE: testo sempre leggibile
+   (nero su sfondo chiaro anche in tema dark)
+   ========================================== */
+
+.step-field-wrapper input.placeInput{
+  background: rgba(255,255,255,0.92) !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border-color: rgba(202,168,90,0.45) !important;
+}
+
+.step-field-wrapper input.placeInput::placeholder{
+  color: rgba(17,24,39,0.55) !important;
+  -webkit-text-fill-color: rgba(17,24,39,0.55) !important;
+}
+
+/* autofill Chrome (evita testo chiaro / sfondi strani) */
+.step-field-wrapper input.placeInput:-webkit-autofill,
+.step-field-wrapper input.placeInput:-webkit-autofill:hover,
+.step-field-wrapper input.placeInput:-webkit-autofill:focus{
+  -webkit-text-fill-color: #111827 !important;
+  box-shadow: 0 0 0px 1000px rgba(255,255,255,0.92) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+
+
+/* ==============================
+   LUOGO WIZARD – STEP FOTO
+   ============================== */
+.photoStep{ display: grid; gap: 10px; }
+.photoPreview{
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: radial-gradient(circle at top left, rgba(202,168,90,.10), transparent 55%), rgba(0,0,0,.10);
+  overflow: hidden;
+  min-height: 190px;
+  display: grid;
+  place-items: center;
+}
+body:not(.theme-dark) .photoPreview{
+  background: radial-gradient(circle at top left, rgba(202,168,90,.10), transparent 55%), rgba(255,255,255,.92);
+  border-color: rgba(0,0,0,.10);
+}
+.photoPreviewImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.photoPlaceholder{
+  padding: 18px 16px;
+  text-align: center;
+  color: rgba(255,255,255,.92);
+}
+body:not(.theme-dark) .photoPlaceholder{ color: rgba(0,0,0,.78); }
+.photoPlaceholder .phTitle{ font-weight: 900; letter-spacing: .04em; margin-bottom: 6px; }
+.photoPlaceholder .phSub{ opacity: .85; font-size: .95rem; }
+
+.photoMeta{
+  font-size: .88rem;
+  opacity: .9;
+  color: rgba(255,255,255,.85);
+}
+body:not(.theme-dark) .photoMeta{ color: rgba(0,0,0,.72); }
+
+.photoControls{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.photoFile{
+  flex: 1;
+  min-width: 220px;
+}
+
+/* ==============================
+   LUOGO – RESULT MODAL TWEAKS
+   ============================== */
+.ofi-luogo-result .luogo-meta{
+  margin: 0.35rem 0 0.55rem;
+  opacity: .9;
+  font-size: .92rem;
+  letter-spacing: .02em;
+}
+.ofi-luogo-result .luogo-meta .dot{ margin: 0 8px; opacity: .6; }
+
+.luogo-cover-frame{
+  width: 210px;
+  height: 260px;
+}
+
+@media (max-width: 860px){
+  .luogo-cover-frame{ width: 190px; height: 240px; }
+}
+
+/* ==============================
+   LUOGO WIZARD – STEP FOTO (DEFINITIVO) — FIX
+   ============================== */
+
+.photoPreview{
+  width: 100%;
+  max-width: 380px;      
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border: 1px solid rgba(202,168,90,.35);
+  background: radial-gradient(circle at top left, rgba(202,168,90,.10), transparent 55%), rgba(0,0,0,.10);
+}
+
+.photoPreviewImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+/* ==========================================
+   LUOGO – COPERTINA (mobile-first) + FIX UI
+   ========================================== */
+
+/* Card “copertina libro” */
+.ofi-luogo-result .luogo-cover-card{
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 22px 18px 18px;
+}
+
+/* Top cover */
+.ofi-luogo-result .luogo-cover-top{
+  display: flex;
+  justify-content: center;
+}
+
+/* Foto: sempre visibile (anche su mobile) */
+.ofi-luogo-result .final-preview-photo{ display: flex !important; justify-content: center; }
+
+.ofi-luogo-result .luogo-cover-frame,
+.ofi-luogo-result .final-photo-frame.luogo-cover-frame{
+  width: 190px;
+  height: 240px;
+  border-radius: 22px;
+}
+
+/* Nome in copertina */
+.ofi-luogo-result .luogo-cover-body strong{
+  font-size: 1.55rem;
+  letter-spacing: .08em;
+  margin-bottom: 6px;
+}
+
+/* Dedica */
+.ofi-luogo-result .luogo-dedica{
+  margin: 0 auto 12px;
+  max-width: 520px;
+}
+
+/* Meta cover (luogo + data) */
+.luogo-meta--cover{
+  margin: 0 0 14px;
+  opacity: .92;
+  font-size: .98rem;
+  color: rgba(229,231,235,.92);
+}
+.luogo-meta--cover .sep{ margin: 0 10px; opacity: .65; }
+
+/* Sigillo “copertina” */
+.luogo-cover-seal{
+  margin: 14px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(6px);
+  max-width: 520px;
+}
+.luogo-cover-seal-img{
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: none;
+  opacity: .95;
+}
+.luogo-cover-seal-text{
+  font-size: .86rem;
+  line-height: 1.25;
+  opacity: .95;
+  text-align: left;
+}
+.luogo-cover-seal-text strong{
+  display:block;
+  font-size: .92rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin-bottom: 2px;
+}
+
+/* Azioni: stile “finale” più pulito */
+.luogo-controls{ max-width: 720px; margin: 18px auto 0; }
+.luogo-actions{ justify-content: center; gap: 10px; }
+.final-action-link{
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  color: rgba(229,231,235,.85);
+  text-decoration: underline;
+  opacity: .85;
+}
+.final-action-link:hover{ opacity: 1; }
+
+/* FIX: niente particelle davanti al testo (mobile) */
+@media (max-width: 860px){
+  .result-modal::after{ display: none !important; }
+
+  .ofi-luogo-result .final-photo-frame.luogo-cover-frame{
+    width: 175px;
+    height: 225px;
+  }
+
+  .ofi-luogo-result .luogo-cover-card{
+    padding: 18px 14px 16px;
+  }
+}
+/* Override particelle (desktop): più discrete */
+.result-modal::after{
+  opacity: 0.035 !important;
+  filter: blur(0.6px);
+}
+
+
+/* === PATCH MOBILE COVER (2026-02-20) === */
+
+.final-action-btn, .final-action-link{ text-decoration:none !important; }
+
+@media (max-width: 860px){
+
+  /* meno aria sopra: più “copertina” */
+  .final-preview-shell{
+    padding: 1.85rem 0.95rem 1.2rem !important;
+  }
+
+  .final-preview-header{
+    margin: 0 auto 1.05rem !important;
+  }
+  .final-preview-header h2{
+    font-size: 1.55rem !important;
+    line-height: 1.14 !important;
+    letter-spacing: 0.04em !important;
+  }
+  .final-preview-header p{
+    font-size: 0.95rem !important;
+    line-height: 1.35 !important;
+    opacity: 0.92 !important;
+  }
+
+  /* card più compatta e “libro” */
+  .final-preview-card{
+    padding: 1.25rem 1.15rem !important;
+    gap: 1.0rem !important;
+    border-radius: 24px !important;
+  }
+
+  /* foto sempre visibile e proporzionata */
+  .final-preview-photo{ display: flex !important; justify-content: center !important; }
+  .final-photo-frame,
+  .luogo-cover-frame{
+    width: 180px !important;
+    height: 230px !important;
+    margin: 0 auto 0.2rem !important;
+  }
+
+  /* Nome e dedica: più “copertina” */
+  .final-preview-text strong{
+    font-size: 1.28rem !important;
+    letter-spacing: 0.07em !important;
+  }
+  .luogo-dedica{
+    margin-bottom: 10px !important;
+  }
+
+  /* Sigillo: meno “mattoncino” */
+  .luogo-cover-seal{
+    margin-top: 14px !important;
+    padding: 12px 12px !important;
+    border-radius: 18px !important;
+  }
+  .luogo-cover-seal-img{ width: 46px !important; }
+
+  /* CTA: ordine corretto (Gestione sopra, Visita sotto), no underline */
+  .luogo-actions{
+    display:flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  #resultManageBtn{ order: 1; }
+  #resultVisitBtn{ order: 2; }
+
+  .final-action-btn{
+    width: 100% !important;
+    justify-content: center !important;
+    height: 54px !important;
+    border-radius: 999px !important;
+  }
+  .final-action-btn.soft{
+    background: rgba(15,23,42,0.75) !important;
+    border: 1px solid rgba(148,163,184,0.55) !important;
+    color: #e5e7eb !important;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.35) !important;
+  }
+
+  /* link finale più pulito */
+  .final-action-link{
+    display:block !important;
+    text-align:center !important;
+    padding: 10px 0 2px !important;
+    opacity: 0.86 !important;
+  }
+}
+
+
+
+/* ==========================================================
+   LUOGO – RESULT MODAL (COVER) — REFINEMENT v2 (2026-02-20)
+   Obiettivi:
+   - Copertina più “Registro” (profondità + ordine)
+   - FIX: il <strong> del sigillo non deve ereditare lo stile del nome
+   - Mobile: tipografia più armoniosa + sigillo meno “grosso”
+   ========================================================== */
+
+.ofi-luogo-result .luogo-cover-card{
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+
+  padding: 32px 28px 26px;
+
+  border-radius: 28px;
+  border: 1px solid rgba(202,168,90,0.60);
+
+  background:
+    radial-gradient(circle at 15% 15%, rgba(202,168,90,0.18), transparent 55%),
+    radial-gradient(circle at 85% 10%, rgba(96,165,250,0.10), transparent 60%),
+    radial-gradient(circle at 50% 125%, rgba(248,250,252,0.06), transparent 55%),
+    linear-gradient(180deg, #07152d 0%, #020617 100%);
+
+  box-shadow:
+    0 40px 110px rgba(0,0,0,0.85),
+    0 0 0 1px rgba(15,23,42,1);
+}
+
+/* Header (titolo + sottotitolo) più “rituale” */
+.ofi-luogo-result .final-preview-header h2{
+  font-size: 1.9rem;
+  letter-spacing: 0.06em;
+}
+.ofi-luogo-result .final-preview-header p{
+  opacity: 0.90;
+}
+
+
+/* FIX EREDITÀ: in questa vista non usare strong "generico" come titolo */
+.ofi-luogo-result .luogo-cover-body strong{
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: none;
+  color: inherit;
+  margin: 0;
+  display: inline;
+}
+
+/* Linea oro sopra il nome (micro-dettaglio) */
+.luogo-cover-line{
+  width: 86px;
+  height: 2px;
+  margin: 0 auto 18px;
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,0.95), transparent);
+  opacity: 0.85;
+}
+
+/* Foto copertina: più “incastonata” */
+.ofi-luogo-result .luogo-cover-frame,
+.ofi-luogo-result .final-photo-frame.luogo-cover-frame{
+  width: 210px;
+  height: 270px;
+  border-radius: 24px;
+
+  border: 2px solid rgba(202,168,90,0.95);
+
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 60%),
+    #020617;
+
+  box-shadow:
+    0 0 0 6px rgba(15,23,42,1),
+    0 28px 65px rgba(0,0,0,0.95);
+}
+
+/* Nome: SOLO questo deve essere “grande” */
+.ofi-luogo-result .luogo-cover-name{
+  display: block;
+  font-size: 1.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin: 0 0 6px;
+}
+
+/* Dedica */
+.ofi-luogo-result .luogo-dedica{
+  margin: 0 auto 12px;
+  max-width: 560px;
+  font-size: 1.02rem;
+  opacity: 0.92;
+}
+
+/* Meta (luogo + data) */
+.ofi-luogo-result .luogo-meta--cover{
+  margin: 0 0 16px;
+  font-size: 0.98rem;
+  opacity: 0.92;
+  color: rgba(229,231,235,0.92);
+}
+.ofi-luogo-result .luogo-meta--cover .sep{ margin: 0 10px; opacity: 0.65; }
+
+/* Sigillo: più compatto + FIX font del titolo “REGISTRO OFI” */
+.ofi-luogo-result .luogo-cover-seal{
+  margin: 16px auto 0;
+  max-width: 560px;
+
+  padding: 14px 16px;
+  border-radius: 20px;
+
+  border: 1px solid rgba(202,168,90,0.55);
+  background:
+    radial-gradient(circle at top left, rgba(202,168,90,0.12), transparent 60%),
+    rgba(15,23,42,0.82);
+  box-shadow: 0 18px 45px rgba(0,0,0,0.60);
+}
+
+.ofi-luogo-result .luogo-cover-seal-img{
+  width: 40px;
+  height: 40px;
+  opacity: 0.95;
+}
+
+/* IMPORTANTISSIMO: questo strong NON deve prendere lo stile del nome */
+.ofi-luogo-result .luogo-cover-seal-text strong{
+  display:block;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin-bottom: 2px;
+}
+
+.ofi-luogo-result .luogo-cover-seal-text{
+  font-size: 0.90rem;
+  line-height: 1.25;
+  opacity: 0.95;
+  text-align: left;
+}
+
+/* CTA: un filo più “premium” */
+.ofi-luogo-result .final-action-btn{
+  height: 54px;
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+}
+.ofi-luogo-result .final-action-btn.primary{
+  box-shadow: 0 16px 36px rgba(202,168,90,0.65);
+}
+.ofi-luogo-result .final-action-btn.soft{
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+}
+
+/* Mobile tuning */
+@media (max-width: 860px){
+
+  .ofi-luogo-result .final-preview-shell{
+    padding: 1.75rem 0.95rem 1.15rem !important;
+  }
+
+  .ofi-luogo-result .final-preview-header{
+    margin: 0 auto 1.05rem !important;
+  }
+
+  .ofi-luogo-result .final-preview-header h2{
+    font-size: 1.55rem;
+    letter-spacing: 0.05em;
+    line-height: 1.12;
+  }
+
+  .ofi-luogo-result .final-preview-header p{
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .ofi-luogo-result .luogo-cover-card{
+    padding: 22px 18px 20px;
+    border-radius: 26px;
+  }
+
+  .ofi-luogo-result .luogo-cover-frame,
+  .ofi-luogo-result .final-photo-frame.luogo-cover-frame{
+    width: 182px;
+    height: 235px;
+  }
+
+  .luogo-cover-line{ margin-bottom: 14px; }
+
+  .ofi-luogo-result .luogo-cover-name{
+    font-size: 1.32rem;
+    letter-spacing: 0.10em;
+  }
+
+  .ofi-luogo-result .luogo-dedica{
+    font-size: 0.98rem;
+    margin-bottom: 10px;
+  }
+
+  .ofi-luogo-result .luogo-meta--cover{
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+  }
+
+  .ofi-luogo-result .luogo-cover-seal{
+    padding: 12px 14px;
+    border-radius: 18px;
+  }
+
+  .ofi-luogo-result .luogo-cover-seal-img{
+    width: 38px;
+    height: 38px;
+  }
+
+  .ofi-luogo-result .luogo-cover-seal-text strong{
+    font-size: 0.92rem !important;
+    letter-spacing: 0.10em;
+  }
+
+  .ofi-luogo-result .luogo-cover-seal-text{
+    font-size: 0.88rem;
+  }
+}
+
+
+
+/* =========================================================
+   WOW RESULT MODAL – REFINEMENT (titolo + nome + respiro)
+   ========================================================= */
+.ofi-luogo-result .final-preview-header{
+  text-align:center;
+  margin: 0 auto 22px;
+  max-width: 920px;
+}
+.ofi-luogo-result .luogo-result-title{
+  font-weight: 900;
+  letter-spacing: .02em;
+  line-height: 1.05;
+  margin: 0 0 10px;
+  font-size: clamp(1.55rem, 1.2rem + 1.6vw, 2.55rem);
+
+  /* Oro elegante (testo “magico” ma sobrio) */
+  background: linear-gradient(180deg, #fff6d8 0%, #f2d08a 40%, #caa85a 75%, #9b7a2f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 10px 28px rgba(0,0,0,.55),
+    0 1px 0 rgba(255,255,255,.08);
+  position: relative;
+}
+.ofi-luogo-result .luogo-result-title::after{
+  content:"";
+  display:block;
+  width: min(220px, 72vw);
+  height: 1px;
+  margin: 14px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,.85), transparent);
+  opacity:.9;
+}
+.ofi-luogo-result .luogo-result-sub{
+  margin: 0 auto;
+  opacity: .86;
+  max-width: 42rem;
+  font-size: clamp(.98rem, .92rem + .4vw, 1.12rem);
+}
+
+/* Cover card: più respiro */
+.luogo-cover-card{
+  padding: clamp(18px, 2.3vw, 26px) !important;
+}
+.luogo-cover-body{
+  padding-top: 8px;
+}
+.luogo-cover-name{
+  display:block;
+  margin: 10px auto 8px;
+  font-size: clamp(1.55rem, 1.05rem + 1.25vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: .02em;
+
+  background: linear-gradient(180deg, #fff4cf 0%, #f2cf85 45%, #caa85a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  text-shadow:
+    0 14px 30px rgba(0,0,0,.55),
+    0 1px 0 rgba(255,255,255,.08);
+}
+
+/* Dedica come “sottotitolo di libro” */
+.luogo-dedica{
+  margin: 0 auto 14px;
+  max-width: 36rem;
+}
+.luogo-dedica .luogo-dedica-text{
+  display:block;
+  font-size: clamp(.98rem, .92rem + .35vw, 1.12rem);
+  font-weight: 500;
+  letter-spacing: .01em;
+  opacity: .86;
+  font-style: italic;
+}
+
+/* Meta più leggibile ma secondaria */
+.luogo-meta--cover{
+  margin-top: 2px;
+  opacity: .78;
+  font-size: clamp(.92rem, .88rem + .25vw, 1.02rem);
+}
+
+/* Registro OFI: più piccolo e “staccato” */
+.luogo-cover-seal{
+  margin: 18px auto 0 !important;
+  padding: 14px 14px !important;
+  max-width: 520px;
+  border-radius: 18px;
+  gap: 12px !important;
+}
+.luogo-cover-seal-img{
+  width: 40px !important;
+  height: 40px !important;
+  opacity: .95;
+}
+.luogo-cover-seal-text strong{
+  font-size: .95rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.luogo-cover-seal-text{
+  font-size: .98rem;
+  opacity: .92;
+}
+
+/* CTA: un filo più distanziate dal blocco */
+.final-preview-controls.luogo-controls{
+  margin-top: 22px;
+}
+
+/* Mobile fine-tuning */
+@media (max-width: 520px){
+  .ofi-luogo-result .final-preview-header{ margin-bottom: 18px; }
+  .luogo-cover-seal{
+    max-width: 100%;
+    margin-top: 16px !important;
+    padding: 12px 12px !important;
+  }
+  .luogo-cover-seal-img{ width: 36px !important; height: 36px !important; }
+  .luogo-cover-seal-text strong{ font-size: .88rem; }
+  .luogo-cover-seal-text{ font-size: .95rem; }
+  .final-preview-controls.luogo-controls{ margin-top: 18px; }
+}
+
+
+/* ===== Wizard textarea (frase) ===== */
+.step-textarea{
+  width:100%;
+  min-height: 120px;
+  resize: vertical;
+  border-radius: 16px;
+  border: 1px solid rgba(202,168,90,.28);
+  padding: .85rem .95rem;
+  outline: none;
+  line-height: 1.55;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* ===== DARK (default) ===== */
+body.theme-dark .step-textarea{
+  background: rgba(15,23,42,.75);   /* blu scuro OFI */
+  color: rgba(255,255,255,.92);
+  border-color: rgba(202,168,90,.35);
+}
+
+body.theme-dark .step-textarea::placeholder{
+  color: rgba(255,255,255,.45);
+}
+
+/* ===== LIGHT ===== */
+body.theme-light .step-textarea{
+  background: rgba(255,255,255,.95);
+  border-color: rgba(15,23,42,.12);
+  color: rgba(15,23,42,.92);
+}
+
+body.theme-light .step-textarea::placeholder{
+  color: rgba(15,23,42,.45);
+}
+
+/* counter */
+.step-counter{
+  margin-top: .35rem;
+  text-align: right;
+  font-size: .82rem;
+}
+
+body.theme-dark .step-counter{
+  color: rgba(255,255,255,.62);
+}
+
+body.theme-light .step-counter{
+  color: rgba(15,23,42,.55);
+}

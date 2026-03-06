@@ -1,0 +1,2538 @@
+    :root{
+      --ofi-blue-950:#041A33;
+      --ofi-blue-900:#052441;
+      --ofi-gold:#CAA85A;
+      --ofi-gold-2: rgba(202,168,90,.82);
+      --ofi-ink:#0B1220;
+      --ofi-text-primary: #052441;
+      --ofi-text-secondary: rgba(5,36,65,.75);
+    }
+
+    main.ofi-main{ padding-top: var(--ofi-header-offset, 96px); }
+
+    
+
+    /* Palette testo (tema) */
+    html[data-theme="dark"]{
+      --ofi-text-primary: rgba(255,255,255,.92);
+      --ofi-text-secondary: rgba(226,232,240,.78);
+    }
+
+    /* ✅ Compatibilità robusta: html[data-theme] deve SEMPRE avere priorità sulle classi del body */
+html[data-theme="dark"],
+body[data-theme="dark"],
+body.theme-dark,
+.theme-dark{
+  --ofi-text-primary: rgba(255,255,255,.92);
+  --ofi-text-secondary: rgba(226,232,240,.78);
+}
+
+html[data-theme="light"],
+body[data-theme="light"],
+body.theme-light,
+.theme-light{
+  --ofi-text-primary: #052441;
+  --ofi-text-secondary: rgba(5,36,65,.75);
+}
+
+/* ✅ Se per errore rimane theme-light mentre html è dark → forza comunque i colori dark */
+html[data-theme="dark"] body.theme-light,
+html[data-theme="dark"] .theme-light{
+  --ofi-text-primary: rgba(255,255,255,.92) !important;
+  --ofi-text-secondary: rgba(226,232,240,.78) !important;
+}
+
+/* HERO istituzionale */
+    .page-hero{
+      position: relative;
+      padding: 34px 14px 18px;
+      isolation:isolate;
+    }
+    .page-hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      height: 290px;
+      /* ✅ Upgrade: luce morbida anche verso destra (non “riempie”, dà presenza) */
+      background:
+        radial-gradient(circle at 22% 8%, rgba(202,168,90,.16), transparent 55%),
+        radial-gradient(circle at 78% 50%, rgba(96,165,250,.18), transparent 62%),
+        linear-gradient(180deg, #062241 0%, #0b2d50 72%, rgba(11,45,80,0) 100%);
+      z-index:0;
+      pointer-events:none;
+    }
+
+    /* ✅ Upgrade: più respiro su desktop */
+    .wrap{ max-width: 1200px; margin: 0 auto; position:relative; z-index:1; }
+
+    .hero-panel{
+      border-radius: 22px;
+      border: 1px solid rgba(5,36,65,.10);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(202,168,90,.10), transparent 55%),
+        radial-gradient(circle at 88% 22%, rgba(96,165,250,.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.99));
+      box-shadow: 0 18px 60px rgba(0,0,0,.08);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+    }
+
+    .kicker-row{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px 10px;
+    }
+    .kicker{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      color:#052441;
+      font-size: .86rem;
+      opacity:.92;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    /* Seconda parte più "soft" (brand) */
+    .kicker span:last-child{
+      font-weight: 700;
+      opacity: .78;
+      letter-spacing: .02em;
+      text-transform: none;
+    }
+    .kicker .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: rgba(202,168,90,.95);
+      box-shadow: 0 0 0 4px rgba(202,168,90,.18);
+    }
+    .kicker .sep{ opacity:.55; }
+    .seal{
+      width: 38px; height: 38px; border-radius: 12px;
+      border: 1px solid rgba(202,168,90,.35);
+      background: rgba(5,36,65,.04);
+      display:grid; place-items:center;
+    }
+    .seal img{ width: 28px; height: 28px; object-fit:contain; opacity:.95; }
+
+    .goldline{
+      height: 1px;
+      margin: 0 18px;
+      background: linear-gradient(90deg, transparent, rgba(202,168,90,.70), transparent);
+    }
+
+    .hero-body{
+      padding: 16px 18px 18px;
+      display:flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    /* ✅ NO FOTO NEL HERO */
+    .photo{ display:none !important; }
+
+    .titles{ flex:1; min-width: 240px; }
+    .title{
+      margin: 0;
+      font-family: "Cinzel", serif;
+      font-weight: 650;
+      letter-spacing: .04em;
+      font-size: 2.05rem;
+      color:#052441;
+    }
+    .sub{
+      margin: 6px 0 0;
+      color: rgba(5,36,65,.80);
+      font-size: 1rem;
+    }
+
+    .cta{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-left:auto;
+      padding-top: 2px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid rgba(5,36,65,.16);
+      background: rgba(5,36,65,.04);
+      color:#052441;
+      text-decoration:none;
+      font-weight: 650;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      white-space: nowrap;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(202,168,90,.60);
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+    }
+    .btn.primary{
+      border-color: rgba(202,168,90,.55);
+      background: linear-gradient(180deg, rgba(202,168,90,.20), rgba(202,168,90,.06));
+    }
+
+    /* HERO: navigazione minimale (al posto dei bottoni sopra) */
+    .hero-nav{
+      margin-left:auto;
+      padding-top: 6px;
+      display:flex;
+      justify-content:flex-end;
+    }
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(5,36,65,.14);
+      background: rgba(5,36,65,.03);
+      color: #052441;
+      text-decoration: none;
+      font-weight: 750;
+      letter-spacing: .01em;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease, background .12s ease;
+      white-space: nowrap;
+    }
+    .back-link:hover{
+      transform: translateY(-1px);
+      border-color: rgba(202,168,90,.55);
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
+      background: rgba(202,168,90,.08);
+    }
+
+    /* Condivisione dopo la lettura */
+    .share-after{
+      max-width: 1080px;
+      margin: 18px auto 0;
+      border-radius: 18px;
+      border: 1px solid rgba(5,36,65,.10);
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 10px 28px rgba(0,0,0,.06);
+      padding: 14px 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .share-title{
+      font-family:"Cinzel", serif;
+      font-size: 1.02rem;
+      letter-spacing: .04em;
+      color:#052441;
+      margin-right: auto;
+    }
+    .share-actions{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    @media (max-width: 520px){
+      .share-after{ justify-content: center; text-align:center; }
+      .share-title{ width: 100%; }
+      .share-actions{ justify-content:center; width:100%; }
+    }
+
+    /* Dark: contrasti HERO + bottoni */
+    html[data-theme="dark"] .kicker,
+    body[data-theme="dark"] .kicker,
+    .theme-dark .kicker{
+      color: rgba(255,255,255,.84);
+      opacity: 1;
+    }
+    html[data-theme="dark"] .kicker .sep,
+    body[data-theme="dark"] .kicker .sep,
+    .theme-dark .kicker .sep{ opacity:.6; }
+
+    html[data-theme="dark"] .btn,
+    body[data-theme="dark"] .btn,
+    .theme-dark .btn{
+      color: rgba(255,255,255,.90);
+      border-color: rgba(202,168,90,.22);
+      background: rgba(255,255,255,.06);
+    }
+    html[data-theme="dark"] .btn:hover,
+    body[data-theme="dark"] .btn:hover,
+    .theme-dark .btn:hover{
+      border-color: rgba(202,168,90,.55);
+      box-shadow: 0 16px 44px rgba(0,0,0,.45);
+    }
+
+    html[data-theme="dark"] .back-link,
+    body[data-theme="dark"] .back-link,
+    .theme-dark .back-link{
+      color: rgba(255,255,255,.92);
+      border-color: rgba(202,168,90,.20);
+      background: rgba(255,255,255,.05);
+    }
+
+    html[data-theme="dark"] .share-after,
+    body[data-theme="dark"] .share-after,
+    .theme-dark .share-after{
+      background: rgba(6,24,46,.72);
+      border-color: rgba(202,168,90,.12);
+      box-shadow: 0 16px 44px rgba(0,0,0,.50);
+    }
+    html[data-theme="dark"] .share-title,
+    body[data-theme="dark"] .share-title,
+    .theme-dark .share-title{
+      color: rgba(255,255,255,.92);
+    }
+
+
+    /* ✅ NASCONDI "A cura di" NEL HERO */
+    .publisher{ display:none !important; }
+
+    /* CONTENUTO */
+    .content{
+      padding: 16px 14px 26px;
+    }
+
+    .legal{
+      text-align:center;
+      margin-top: 1rem;
+      font-size: .86rem;
+      color: var(--ofi-text-secondary);
+    }
+
+    /* REAZIONI + COMMENTI */
+    .social{
+      max-width: 860px;
+      margin: 14px auto 0;
+      display:grid;
+      gap: 12px;
+    }
+
+    /* Barra vicinanza (più piccola della vecchia card "Reazioni") */
+    .comfort-bar{
+      border-radius: 18px;
+      border: 1px solid rgba(5,36,65,.10);
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 10px 28px rgba(0,0,0,.06);
+      padding: 12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .comfort-left{
+      display:flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 220px;
+    }
+    .comfort-title{
+      font-family:"Cinzel", serif;
+      font-size: .98rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--ofi-text-primary);
+    }
+    .comfort-hint{
+      font-size: .92rem;
+      color: var(--ofi-text-secondary);
+    }
+    .comfort-actions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-left:auto;
+    }
+
+    /* Conteggio cuore: un solo indicatore (niente doppio cuore) */
+    .heart-count{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 54px;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(202,168,90,.35);
+      background: rgba(5,36,65,.04);
+      font-weight: 900;
+      color: var(--ofi-text-primary);
+    }
+
+
+
+    .social-card{
+      border-radius: 18px;
+      border: 1px solid rgba(5,36,65,.10);
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 10px 28px rgba(0,0,0,.06);
+      padding: 14px 14px;
+    }
+
+    .social-head{
+      display:flex; align-items:center; justify-content: space-between;
+      gap: 10px; flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .social-head h2{
+      margin: 0;
+      font-family:"Cinzel", serif;
+      font-size: 1.02rem;
+      letter-spacing: .04em;
+      color: var(--ofi-text-primary);
+    }
+    .hint{
+      font-size: .86rem;
+      color: var(--ofi-text-secondary);
+    }
+
+    .heart-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .heart-btn{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  justify-content: space-between;
+  border-radius: 999px;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid rgba(202,168,90,.45);
+  background: linear-gradient(180deg, rgba(202,168,90,.16), rgba(202,168,90,.06));
+  color: var(--ofi-text-primary);
+  font-weight: 850;
+  font-family: "Cinzel", serif;
+  letter-spacing: .06em;
+  cursor:pointer;
+  user-select:none;
+  min-height: 42px;
+}
+.heart-btn i{ margin-right: 2px; }
+.heart-label{
+  letter-spacing: .04em;
+  text-transform: none;
+  font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-weight: 800;
+  font-size: .95rem;
+}
+.heart-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 46px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: rgba(5,36,65,.04);
+  font-weight: 900;
+  color: var(--ofi-text-primary);
+}
+    .heart-btn.is-on{
+      border-color: rgba(220,38,38,.40);
+      background: linear-gradient(180deg, rgba(220,38,38,.10), rgba(202,168,90,.06));
+    }
+    .heart-count{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      font-weight: 800;
+      color: var(--ofi-text-primary);
+      opacity:.92;
+    }
+
+    .comments-list{
+      display:grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .comment{
+      border-radius: 16px;
+      border: 1px solid rgba(5,36,65,.10);
+      background: rgba(5,36,65,.03);
+      padding: 10px 12px;
+    }
+    .comment .meta{
+      display:flex;
+      gap: 10px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      color: rgba(5,36,65,.70);
+      font-size: .86rem;
+      margin-bottom: 6px;
+    }
+    .comment .who{ font-weight: 850; color: var(--ofi-text-primary); }
+    .comment .text{
+      font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-size: .98rem;
+      color: var(--ofi-text-primary);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .comment-form{
+      display:grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .comment-form textarea{
+  width:100%;
+  min-height: 64px;      /* parte compatto */
+  max-height: 220px;     /* limite (evita mega-box) */
+  resize: none;          /* niente trascinamento */
+  overflow: hidden;      /* evita scrollbar mentre cresce */
+  border-radius: 16px;
+  border: 1px solid rgba(5,36,65,.18);
+  padding: 12px 12px;
+  font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255,255,255,.92);
+}
+
+    .comment-form textarea:focus{
+      border-color: rgba(202,168,90,.65);
+      box-shadow: 0 0 0 4px rgba(202,168,90,.16);
+    }
+    .comment-form .row{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    .mini{
+      font-size: .85rem;
+      color: var(--ofi-text-secondary);
+    }
+    .btn-send{
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid rgba(202,168,90,.55);
+      background: linear-gradient(180deg, rgba(202,168,90,.22), rgba(202,168,90,.08));
+      color:#052441;
+      font-weight: 900;
+      cursor:pointer;
+    }
+
+    .err{
+      padding: 1rem;
+      text-align:center;
+      color:#6c7480;
+    }
+
+    /* Dark */
+    html[data-theme="dark"] .hero-panel,
+    body[data-theme="dark"] .hero-panel,
+    .theme-dark .hero-panel{
+      background:
+        radial-gradient(circle at 12% 18%, rgba(202,168,90,.10), transparent 55%),
+        radial-gradient(circle at 88% 22%, rgba(96,165,250,.08), transparent 60%),
+        linear-gradient(180deg, rgba(6,24,46,.92), rgba(4,18,35,.98));
+      border-color: rgba(202,168,90,.18);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+    html[data-theme="dark"] .title,
+    body[data-theme="dark"] .title,
+    .theme-dark .title{ color: rgba(255,255,255,.92); }
+    html[data-theme="dark"] .sub,
+    body[data-theme="dark"] .sub,
+    .theme-dark .sub{ color: rgba(226,232,240,.80); }
+
+    
+
+    html[data-theme="dark"] .comfort-bar,
+    body[data-theme="dark"] .comfort-bar,
+    .theme-dark .comfort-bar{
+      background: rgba(6,24,46,.72);
+      border-color: rgba(202,168,90,.12);
+      box-shadow: 0 16px 44px rgba(0,0,0,.50);
+    }
+    html[data-theme="dark"] .heart-count,
+    body[data-theme="dark"] .heart-count,
+    .theme-dark .heart-count{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(202,168,90,.20);
+      color: rgba(255,255,255,.92);
+    }
+html[data-theme="dark"] .social-card,
+    body[data-theme="dark"] .social-card,
+    .theme-dark .social-card{
+      background: rgba(6,24,46,.72);
+      border-color: rgba(202,168,90,.12);
+      box-shadow: 0 16px 44px rgba(0,0,0,.50);
+    }
+    html[data-theme="dark"] .social-head h2,
+    body[data-theme="dark"] .social-head h2,
+    .theme-dark .social-head h2{ color: rgba(255,255,255,.92); }
+    html[data-theme="dark"] .hint,
+    body[data-theme="dark"] .hint,
+    .theme-dark .hint{ color: rgba(226,232,240,.75); }
+
+    html[data-theme="dark"] .comment,
+    body[data-theme="dark"] .comment,
+    .theme-dark .comment{
+      background: rgba(255,255,255,.04);
+      border-color: rgba(202,168,90,.12);
+    }
+    html[data-theme="dark"] .comment .who,
+    body[data-theme="dark"] .comment .who,
+    .theme-dark .comment .who{ color: rgba(255,255,255,.90); }
+    html[data-theme="dark"] .comment .text,
+    body[data-theme="dark"] .comment .text,
+    .theme-dark .comment .text{ color: rgba(226,232,240,.90); }
+
+    @media (max-width: 520px){
+      .title{ font-size: 1.55rem; }
+      /* Mobile: evita testo superfluo nel kicker */
+      .kicker .sep,
+      .kicker span:last-child{ display:none; }
+    }
+
+    /* ============================
+       OFI NECRO CARD (SHARED)
+       ============================ */
+
+.final-preview-card{
+  /* ✅ Upgrade: card protagonista ma sempre elegante */
+  max-width: 1080px;
+  margin: 0 auto;
+
+  border-radius: 26px;
+  border: 1px solid rgba(202,168,90,0.55);
+  box-shadow: 0 30px 90px rgba(0,0,0,.78);
+  padding: 1.7rem 1.6rem;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 1.4rem;
+  align-items: start;
+
+  background:
+    radial-gradient(circle at 12% 18%, rgba(202,168,90,0.16), transparent 55%),
+    radial-gradient(circle at 88% 22%, rgba(96,165,250,0.10), transparent 60%),
+    radial-gradient(circle at 50% 120%, rgba(248,250,252,0.06), transparent 55%),
+    linear-gradient(180deg, #06122a 0%, #020617 100%);
+}
+
+/* Foto finale */
+.final-preview-photo { display: flex; justify-content: center; }
+
+.final-photo-frame {
+  width: 170px;
+  height: 220px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 2px solid rgba(202,168,90,0.92);
+  background:
+    radial-gradient(circle at top, rgba(248,250,252,0.12), transparent 50%),
+    #020617;
+  box-shadow:
+    0 0 0 5px rgba(15,23,42,1),
+    0 26px 60px rgba(0,0,0,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.final-photo-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+/* Ornamento (immagine) */
+.final-ornament{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.6rem 0 0.9rem;
+  min-height: 56px;
+  max-height: 96px;
+  overflow: hidden;
+}
+
+.final-ornament .ornament-img{
+  max-width: 72px;
+  max-height: 72px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.92;
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* Testo finale */
+.final-preview-body {
+  min-height: 140px;
+  /* ✅ Upgrade: più ampiezza interna ma lettura sempre controllata */
+  max-width: 680px;
+}
+
+.final-preview-text {
+  font-family: "Noto Serif", "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #f9fafb;
+
+  /* ✅ Upgrade: line-length editoriale */
+  max-width: 680px;
+}
+
+.final-preview-text p { margin: 0.15rem 0 0.6rem; }
+.final-preview-text p + p { margin-top: 0.55rem; }
+
+/* Nome e cognome (robusto) */
+.final-preview-text strong {
+  display: block;
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #facc6b;
+  margin-bottom: 0.25rem;
+}
+
+/* Citazione iniziale */
+.final-preview-text p:first-child em {
+  display: block;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  padding-left: 0.9rem;
+  border-left: 2px solid rgba(202,168,90,0.7);
+  color: #e5e7eb;
+}
+
+/* Corsivi */
+.final-preview-text p em {
+  font-size: 0.97rem;
+  color: #e5e7eb;
+  opacity: 0.92;
+}
+
+/* Riga finale */
+.final-preview-text p:last-child {
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+/* Separatore elegante */
+.final-preview-text .section-break{
+  margin-top: 1.25rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(202,168,90,0.22);
+}
+
+.final-hidden-variants { display: none; }
+.hidden { display: none; }
+
+/* Box istituzionale "Nota OFI" */
+.ofi-note{
+  margin-top: 12px;
+  border: 1px solid rgba(250, 204, 107, .45);
+  background: rgba(10, 25, 55, .35);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+:root[data-theme="light"] .ofi-note{ background: rgba(250, 204, 107, .10); }
+.ofi-note-title{ font-weight: 700; letter-spacing: .2px; margin-bottom: 8px; }
+.ofi-note-list{ margin: 0; padding-left: 18px; line-height: 1.4; }
+.ofi-note-list li{ margin: 6px 0; }
+
+/* ================================
+   RESPONSIVE (FIX)
+   ================================ */
+@media (max-width: 860px) {
+  .final-preview-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .final-preview-photo{
+    justify-content: center;
+  }
+
+  .final-photo-frame{
+    width: 165px;
+    height: 215px;
+    margin: 0 auto;
+  }
+
+  .final-preview-body{
+    max-width: 100%;
+  }
+
+  .final-preview-text{
+    font-size: 1.02rem;
+    max-width: 100%;
+  }
+}
+
+/* ============================= */
+/* Sigillo editoriale OFI        */
+/* ============================= */
+
+.ofi-editorial-seal{
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0.9;
+  font-size: 0.70rem;
+  line-height: 1.15;
+  max-width: 260px;
+  text-align: right;
+  color: rgba(202,168,90,0.92);
+}
+
+.ofi-editorial-seal img{
+  width: 44px;
+  height: auto;
+  opacity: 0.95;
+  filter: drop-shadow(0 6px 14px rgba(202,168,90,0.35));
+}
+
+/* Spazio extra sotto per footer badge + sigillo */
+.final-preview-card{
+  position: relative;
+  padding-bottom: 120px;
+}
+
+/* Footer dentro la card: sinistra impresa + destra sigillo */
+.final-card-footer{
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+}
+
+/* Impresa (opzionale) */
+.final-impresa-badge{
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(250,204,21,0.28);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  text-decoration: none;
+  color: inherit;
+  max-width: 62%;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.final-impresa-badge:hover{
+  transform: translateY(-1px);
+  border-color: rgba(250,204,21,0.55);
+  background: rgba(255,255,255,0.09);
+}
+
+.final-impresa-logo{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  object-fit: contain;
+  padding: 6px;
+  background: rgba(2,6,23,0.45);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+}
+
+.final-impresa-label{
+  font-size: .76rem;
+  opacity: .78;
+  line-height: 1.1;
+}
+
+.final-impresa-name{
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ofi-gold);
+  line-height: 1.1;
+}
+
+/* Sigillo in basso a destra (sempre) */
+.ofi-editorial-seal--corner{
+  pointer-events: none;
+  margin: 0;
+  max-width: 42%;
+  text-align: left;
+}
+
+/* Di default (desktop): foto mobile nascosta */
+.final-mobile-photo{ display: none; }
+
+/* Mobile: nascondi foto “desktop” a sinistra e mostra foto dentro il testo */
+@media (max-width: 860px){
+  .final-preview-photo{ display: none; }
+  .final-mobile-photo{
+    display: block;
+    margin: 12px auto 10px;
+    max-width: 360px;
+  }
+}
+
+/* =========================
+   FIX FOOTER MOBILE
+   ========================= */
+@media (max-width: 860px){
+
+  .final-preview-card{
+    padding-bottom: 24px !important;
+  }
+
+  .final-card-footer{
+    position: static !important;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+  }
+
+  .final-impresa-badge{
+    width: 100%;
+    max-width: 420px;
+    justify-content: center;
+    text-align: left;
+    padding: 12px 14px;
+  }
+
+  .final-impresa-logo{
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+  }
+
+  .final-impresa-meta{
+    flex: 1;
+  }
+
+  .ofi-editorial-seal--corner{
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ofi-editorial-seal-img{
+    width: 40px;
+    height: 40px;
+    display: block;
+  }
+
+  .ofi-editorial-seal-text{
+    font-size: 0.86rem;
+    line-height: 1.25;
+    opacity: 0.92;
+  }
+}
+
+.ornament-img{
+  display: block;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* =========================
+   FIX iOS Safari: PNG trasparenti + filter => box bianco
+   ========================= */
+@supports (-webkit-touch-callout: none) {
+
+  .ornament-img{
+    filter: none !important;
+    -webkit-filter: none !important;
+    background: transparent !important;
+    display: block;
+  }
+
+  .final-ornament{
+    filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+    -webkit-filter: drop-shadow(0 10px 22px rgba(0,0,0,.55));
+  }
+}
+
+@media (max-width: 860px){
+  .final-ornament{
+    margin: 0.4rem 0 0.7rem;
+    min-height: 46px;
+    max-height: 72px;
+  }
+
+  .final-ornament .ornament-img,
+  .final-ornament > img{
+    max-width: 56px;
+    max-height: 56px;
+  }
+}
+
+
+/* Chiusura istituzionale (post social) */
+.ofi-closure{
+  margin-top: 2.5rem;
+  font-family: "Cinzel", serif;
+  letter-spacing: .12em;
+  opacity: .55;
+}
+
+
+/* =========================
+   FIX LEGGIBILITÀ TEMA SCURO (sezioni cuore/commenti)
+   ========================= */
+html[data-theme="dark"] .comfort-title,
+body.theme-dark .comfort-title,
+.theme-dark .comfort-title{
+  color: rgba(255,255,255,.92) !important;
+}
+
+html[data-theme="dark"] .comfort-bar .hint,
+body.theme-dark .comfort-bar .hint,
+.theme-dark .comfort-bar .hint{
+  color: rgba(226,232,240,.78) !important;
+}
+
+html[data-theme="dark"] .heart-btn,
+body.theme-dark .heart-btn,
+.theme-dark .heart-btn{
+  color: rgba(255,255,255,.92) !important;
+  border-color: rgba(202,168,90,.45);
+  background: rgba(255,255,255,.06);
+}
+
+html[data-theme="dark"] .mini,
+body.theme-dark .mini,
+.theme-dark .mini{
+  color: rgba(226,232,240,.78) !important;
+}
+
+html[data-theme="dark"] #loginToComment a,
+body.theme-dark #loginToComment a,
+.theme-dark #loginToComment a{
+  color: rgba(202,168,90,.95) !important;
+  text-decoration-color: rgba(202,168,90,.75) !important;
+}
+
+
+/* ✅ Dark: badge e label sempre leggibili (anche se il tema viene applicato al body) */
+html[data-theme="dark"] .heart-badge,
+body[data-theme="dark"] .heart-badge,
+body.theme-dark .heart-badge,
+.theme-dark .heart-badge{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(202,168,90,.20);
+  color: rgba(255,255,255,.92);
+}
+
+html[data-theme="dark"] .heart-label,
+body[data-theme="dark"] .heart-label,
+body.theme-dark .heart-label,
+.theme-dark .heart-label{
+  color: rgba(255,255,255,.92);
+}
+
+html[data-theme="dark"] .comfort-hint,
+body[data-theme="dark"] .comfort-hint,
+body.theme-dark .comfort-hint,
+.theme-dark .comfort-hint{
+  color: rgba(226,232,240,.78) !important;
+}
+
+/* ✅ FIX: tasto Pubblica leggibile in tema scuro */
+html[data-theme="dark"] .btn-send,
+body[data-theme="dark"] .btn-send,
+body.theme-dark .btn-send,
+.theme-dark .btn-send{
+  color: rgba(255,255,255,.92) !important;
+  border-color: rgba(202,168,90,.45);
+  background: linear-gradient(180deg, rgba(202,168,90,.20), rgba(255,255,255,.06)) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.35);
+}
+
+html[data-theme="dark"] .btn-send:hover,
+body.theme-dark .btn-send:hover,
+.theme-dark .btn-send:hover{
+  border-color: rgba(202,168,90,.70);
+  transform: translateY(-1px);
+}
+
+/* =========================
+   COMMENTI — AZIONI & RISPOSTE (OFI)
+   ========================= */
+
+.comment-actions{
+  display:flex;
+  gap:10px;
+  margin-top: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.action-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.28);
+  background: rgba(5,36,65,.02);
+  cursor: pointer;
+  user-select:none;
+  font-weight: 800;
+  font-size: .88rem;
+  color: var(--ofi-text-primary);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+
+.action-link:hover{
+  transform: translateY(-1px);
+  border-color: rgba(202,168,90,.55);
+  background: rgba(202,168,90,.08);
+}
+
+.replies{
+  margin-top: 10px;
+  display:grid;
+  gap: 8px;
+  padding-left: 10px;
+  border-left: 2px solid rgba(202,168,90,.20);
+}
+
+.reply{
+  border-radius: 14px;
+  border: 1px solid rgba(5,36,65,.08);
+  background: rgba(255,255,255,.55);
+  padding: 10px 12px;
+}
+
+.reply .meta{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  font-size: .84rem;
+  color: rgba(5,36,65,.70);
+  margin-bottom: 6px;
+}
+
+.reply .who{
+  font-weight: 900;
+  color: var(--ofi-text-primary);
+}
+
+.reply .text{
+  font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size: .98rem;
+  color: var(--ofi-text-primary);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.reply-form{
+  margin-top: 10px;
+  display:none;
+  gap: 10px;
+}
+
+.reply-form.is-open{
+  display:grid;
+}
+
+.reply-form textarea{
+  width:100%;
+  min-height: 78px;
+  resize: none;
+  overflow: hidden;
+  max-height: 220px;
+  border-radius: 14px;
+  border: 1px solid rgba(5,36,65,.18);
+  padding: 10px 12px;
+  font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255,255,255,.92);
+}
+
+.reply-form textarea:focus{
+  border-color: rgba(202,168,90,.65);
+  box-shadow: 0 0 0 4px rgba(202,168,90,.14);
+}
+
+.reply-row{
+  display:flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.btn-reply{
+  border-radius: 999px;
+  padding: 9px 14px;
+  border: 1px solid rgba(202,168,90,.55);
+  background: linear-gradient(180deg, rgba(202,168,90,.20), rgba(202,168,90,.06));
+  color:#052441;
+  font-weight: 900;
+  cursor:pointer;
+}
+
+/* Dark */
+html[data-theme="dark"] .reply,
+body.theme-dark .reply,
+.theme-dark .reply{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(202,168,90,.12);
+}
+
+html[data-theme="dark"] .reply .who,
+body.theme-dark .reply .who,
+.theme-dark .reply .who{
+  color: rgba(255,255,255,.90);
+}
+
+html[data-theme="dark"] .reply .text,
+body.theme-dark .reply .text,
+.theme-dark .reply .text{
+  color: rgba(226,232,240,.90);
+}
+
+html[data-theme="dark"] .action-link,
+body.theme-dark .action-link,
+.theme-dark .action-link{
+  color: rgba(255,255,255,.92);
+  border-color: rgba(202,168,90,.20);
+  background: rgba(255,255,255,.04);
+}
+
+html[data-theme="dark"] .btn-reply,
+body.theme-dark .btn-reply,
+.theme-dark .btn-reply{
+  color: rgba(255,255,255,.92);
+  border-color: rgba(202,168,90,.45);
+  background: linear-gradient(180deg, rgba(202,168,90,.20), rgba(255,255,255,.06));
+  box-shadow: 0 12px 28px rgba(0,0,0,.30);
+}
+
+/* =========================
+   OFI — EDIT / REMOVE (commenti)
+   ========================= */
+
+.action-link.danger{
+  border-color: rgba(220,38,38,.18);
+}
+.action-link.danger:hover{
+  border-color: rgba(220,38,38,.45);
+  background: rgba(220,38,38,.08);
+}
+
+.edit-form{
+  margin-top: 10px;
+  display:none;
+  gap: 10px;
+}
+
+.edit-form.is-open{
+  display:grid;
+}
+
+.edit-form textarea{
+  width:100%;
+  min-height: 88px;
+  resize: none;
+  overflow: hidden;
+  max-height: 220px;
+  border-radius: 14px;
+  border: 1px solid rgba(5,36,65,.18);
+  padding: 10px 12px;
+  font-family: "Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  font-size: 1rem;
+  outline: none;
+  background: rgba(255,255,255,.92);
+}
+.edit-form textarea:focus{
+  border-color: rgba(202,168,90,.65);
+  box-shadow: 0 0 0 4px rgba(202,168,90,.14);
+}
+
+.edit-row{
+  display:flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+/* Dark */
+html[data-theme="dark"] .edit-form textarea,
+body.theme-dark .edit-form textarea,
+.theme-dark .edit-form textarea{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(202,168,90,.20);
+  color: rgba(226,232,240,.92);
+}
+
+/* =========================
+   FIX: Data/Ora commenti (tema scuro)
+   ========================= */
+html[data-theme="dark"] .comment .meta,
+body[data-theme="dark"] .comment .meta,
+body.theme-dark .comment .meta,
+.theme-dark .comment .meta{
+  color: rgba(226,232,240,.78) !important;
+}
+
+html[data-theme="dark"] .reply .meta,
+body[data-theme="dark"] .reply .meta,
+body.theme-dark .reply .meta,
+.theme-dark .reply .meta{
+  color: rgba(226,232,240,.78) !important;
+}
+
+/* =========================================
+   OFI Luxury — Commenti: chip + sigillo dot
+   ========================================= */
+
+.comment .meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom: 6px;
+}
+
+.comment .who{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.ofi-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(202,168,90,.95) 45%, rgba(202,168,90,.25) 75%);
+  box-shadow: 0 0 0 3px rgba(202,168,90,.10);
+  flex: 0 0 auto;
+}
+
+.time-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.28);
+  background: rgba(255,255,255,.06);
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: .15px;
+}
+
+.edited-chip{
+  display:inline-flex;
+  align-items:center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.18);
+  background: rgba(202,168,90,.08);
+  font-size: .86rem;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+/* Azioni più sobrie: appaiono su hover (desktop) */
+.comment-actions{
+  margin-top: 10px;
+  gap: 10px;
+}
+.comment-actions .action-link{
+  font-size: .95rem;
+  padding: 8px 12px;
+  border-radius: 999px;
+  opacity: .70;
+  transition: opacity .2s ease, transform .2s ease, background .2s ease, border-color .2s ease;
+}
+.comment:hover .comment-actions .action-link{
+  opacity: 1;
+}
+.comment-actions .action-link:hover{
+  transform: translateY(-1px);
+}
+
+/* Su mobile (niente hover): sempre visibili */
+@media (hover: none){
+  .comment-actions .action-link{
+    opacity: 1;
+  }
+}
+
+/* Paginazione "Visualizza altri" */
+.comments-pager{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.comments-count{
+  font-size: .95rem;
+  opacity: .80;
+}
+
+.btn-more{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: rgba(255,255,255,.06);
+  padding: 10px 14px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  cursor:pointer;
+}
+.btn-more:hover{
+  background: rgba(202,168,90,.10);
+  border-color: rgba(202,168,90,.55);
+}
+
+/* Tema scuro: chip leggibile */
+html[data-theme="dark"] .time-chip,
+body.theme-dark .time-chip,
+.theme-dark .time-chip{
+  background: rgba(255,255,255,.05);
+  color: rgba(226,232,240,.88);
+}
+
+html[data-theme="dark"] .edited-chip,
+body.theme-dark .edited-chip,
+.theme-dark .edited-chip{
+  color: rgba(226,232,240,.88);
+}
+
+/* =========================
+   OFI — COMMENTO RECENTE (featured) — SOBRIO
+   ========================= */
+
+.comment--featured{
+  border-color: rgba(202,168,90,.40) !important;
+  background: rgba(5,36,65,.035) !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.10);
+}
+
+/* Chip "Recente" super discreta (non deve dominare) */
+.recent-chip{
+  display:inline-flex;
+  align-items:center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.18);
+  background: rgba(202,168,90,.06);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .15px;
+  opacity: .78;
+}
+
+/* Chip data più piccola (così il messaggio pesa di più) */
+.time-chip{
+  padding: 3px 9px;
+  font-size: .80rem;
+  opacity: .80;
+}
+
+/* Chip "rivisto" ancora più soft */
+.edited-chip{
+  padding: 3px 9px;
+  font-size: .76rem;
+  opacity: .70;
+}
+
+/* ✅ Il testo del messaggio deve essere protagonista */
+.comment .text{
+  font-size: 1.05rem;       /* prima era un filo piccolo */
+  line-height: 1.62;
+  margin-top: 4px;
+}
+
+/* un po’ più respiro tra i commenti */
+.comments-list{
+  gap: 12px;
+}
+
+/* Dark mode: featured sempre sobrio */
+html[data-theme="dark"] .comment--featured,
+body.theme-dark .comment--featured,
+.theme-dark .comment--featured{
+  background: rgba(255,255,255,.045) !important;
+  border-color: rgba(202,168,90,.22) !important;
+  box-shadow: 0 16px 38px rgba(0,0,0,.45);
+}
+
+html[data-theme="dark"] .recent-chip,
+body.theme-dark .recent-chip,
+.theme-dark .recent-chip{
+  color: rgba(226,232,240,.90);
+  background: rgba(202,168,90,.08);
+  border-color: rgba(202,168,90,.18);
+  opacity: .78;
+}
+
+/* =========================
+   OFI — Microlinea oro (sotto meta)
+   ========================= */
+
+/* la meta deve poter “contenere” la linea */
+.comment .meta{
+  position: relative;
+  padding-bottom: 8px; /* spazio per la linea */
+  margin-bottom: 6px;  /* aria prima del testo */
+}
+
+/* la microlinea: corta, sottile, elegante */
+.comment .meta::after{
+  content:"";
+  position:absolute;
+  left: 0;
+  bottom: 0;
+  width: 72px;              /* corta: guida l’occhio, non decora */
+  height: 1px;
+  background: linear-gradient(90deg, rgba(202,168,90,.75), rgba(202,168,90,0));
+  opacity: .55;
+}
+
+/* sul commento "featured" la linea è appena più presente */
+.comment--featured .meta::after{
+  width: 86px;
+  opacity: .70;
+}
+
+/* Dark mode: sempre leggibile */
+html[data-theme="dark"] .comment .meta::after,
+body.theme-dark .comment .meta::after,
+.theme-dark .comment .meta::after{
+  opacity: .60;
+}
+
+
+
+/* =========================================================
+   OFI — Commenti: nome elegante + menu "tre puntini"
+   ========================================================= */
+
+.comment .c-name{
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  letter-spacing: .06em;
+  font-size: .95rem;
+  color: var(--ofi-gold);
+  text-decoration: none;
+}
+.comment .c-name:hover{ text-decoration: underline; text-decoration-color: rgba(202,168,90,.55); }
+
+.reply .r-name{
+  font-family: "Cinzel", serif;
+  font-weight: 600;
+  letter-spacing: .05em;
+  font-size: .85rem;
+  color: var(--ofi-gold-2);
+  text-decoration: none;
+}
+
+.comment .text::first-letter{
+  color: var(--ofi-gold);
+  font-size: 1.15em;
+  font-weight: 600;
+}
+
+/* Header riga commento: menu a destra */
+.c-head{
+  display:flex;
+  gap: 12px;
+  align-items:flex-start;
+}
+.c-meta{ flex: 1; min-width: 0; }
+
+/* Menu ··· */
+.c-tools{
+  position: relative;
+  margin-left: auto;
+  flex: 0 0 auto;
+  display:flex;
+  align-items:flex-start;
+}
+
+.menu-btn{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.22);
+  background: rgba(255,255,255,.06);
+  color: var(--ofi-text-secondary);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease, opacity .12s ease;
+  opacity: .86;
+}
+.menu-btn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(202,168,90,.45);
+  background: rgba(202,168,90,.08);
+  opacity: 1;
+}
+
+.menu-panel{
+  position:absolute;
+  right: 0;
+  top: 44px;
+  min-width: 168px;
+  display:none;
+  flex-direction: column;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(202,168,90,.22);
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 18px 44px rgba(0,0,0,.16);
+  z-index: 30;
+}
+.menu-panel.is-open{ display:flex; }
+
+.menu-panel button{
+  appearance:none;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor:pointer;
+  font-weight: 800;
+  color: var(--ofi-text-primary);
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.menu-panel button:hover{
+  background: rgba(202,168,90,.10);
+}
+.menu-panel .danger{
+  color: rgba(220,38,38,.92);
+}
+.menu-panel .danger:hover{
+  background: rgba(220,38,38,.10);
+}
+
+/* Dark mode */
+html[data-theme="dark"] .menu-panel,
+body[data-theme="dark"] .menu-panel,
+body.theme-dark .menu-panel,
+.theme-dark .menu-panel{
+  background: rgba(6,24,46,.94);
+  border-color: rgba(202,168,90,.18);
+  box-shadow: 0 22px 54px rgba(0,0,0,.55);
+}
+html[data-theme="dark"] .menu-panel button,
+body.theme-dark .menu-panel button,
+.theme-dark .menu-panel button{
+  color: rgba(226,232,240,.92);
+}
+html[data-theme="dark"] .menu-btn,
+body.theme-dark .menu-btn,
+.theme-dark .menu-btn{
+  background: rgba(255,255,255,.04);
+  border-color: rgba(202,168,90,.18);
+  color: rgba(226,232,240,.82);
+}
+
+/* Mobile: menu più facile da tappare */
+@media (max-width: 520px){
+  .menu-btn{ width: 42px; height: 42px; }
+  .menu-panel{ min-width: 190px; }
+}
+
+/* Riga nome + menu (puntini) */
+.comment .c-toprow{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+/* I tre puntini non devono occupare righe extra */
+.comment .c-tools{
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: 10px;
+  transform: translateY(-2px);
+}
+
+.comment .menu-btn{
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.22);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.85);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+.comment .menu-btn:hover{
+  background: rgba(202,168,90,.10);
+  border-color: rgba(202,168,90,.35);
+}
+
+/* Pannello menu: chiuso */
+.comment .menu-panel{
+  position: absolute;
+  right: 0;
+  top: 40px;
+  display: block;               /* lo teniamo "pronto" */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(.98);
+  transform-origin: top right;
+  transition: opacity .16s ease, transform .16s ease;
+
+  background: rgba(6,24,46,.94);
+  border: 1px solid rgba(202,168,90,.25);
+  border-radius: 14px;
+  min-width: 170px;
+  z-index: 50;
+  overflow:hidden;
+}
+
+/* Aperto */
+.comment .menu-panel.is-open{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Voci */
+.comment .menu-panel button{
+  width:100%;
+  border:0;
+  background:none;
+  color:#fff;
+  padding: 10px 12px;
+  text-align:left;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  cursor:pointer;
+}
+.comment .menu-panel button:hover{
+  background: rgba(202,168,90,.12);
+}
+.comment .menu-panel .danger{
+  color: #f87171;
+}
+
+/* =========================================================
+   OFI — Commenti: avatar + nome sempre visibili e collegati
+   (spostato da necrologio.html per evitare conflitti)
+   ========================================================= */
+
+/* Header commento: avatar + meta */
+.comment .c-head{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin-bottom:6px;
+}
+
+/* Avatar */
+.comment .c-avatar{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(202,168,90,.35);
+  background: rgba(255,255,255,.10);
+  display:grid;
+  place-items:center;
+  text-decoration:none;
+  position:relative;
+}
+.comment .c-avatar img{ width:100%; height:100%; object-fit:cover; display:none; }
+.comment .c-avatar .c-initials{
+  font-weight:900;
+  font-size:.92rem;
+  letter-spacing:.02em;
+  color: rgba(255,255,255,.88);
+}
+
+/* Meta colonna */
+.comment .c-meta{
+  min-width:0;
+  display:grid;
+  gap:2px;
+}
+
+/* Nome sempre visibile: oro istituzionale */
+.comment .c-name{
+  font-family: "Cinzel", serif;
+  font-weight: 650;
+  letter-spacing: .06em;
+  font-size: .95rem;
+  color: var(--ofi-gold);
+  text-decoration:none;
+  line-height:1.15;
+}
+.comment .c-name:hover{
+  text-decoration:underline;
+  text-decoration-color: rgba(202,168,90,.55);
+  text-underline-offset: 3px;
+}
+
+/* Sub-meta (data/ora + chip) sempre leggibile su sfondi scuri */
+.comment .c-submeta{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  color: rgba(226,232,240,.72);
+  font-size:.82rem;
+}
+.comment .c-time{ opacity:.95; }
+.comment .c-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:3px 8px;
+  border-radius:999px;
+  border:1px solid rgba(202,168,90,.28);
+  background: rgba(202,168,90,.10);
+  font-weight:800;
+  color: rgba(226,232,240,.90);
+}
+.comment .c-badge--recent{ border-color: rgba(202,168,90,.42); background: rgba(202,168,90,.14); }
+.comment .c-badge--edited{ border-color: rgba(96,165,250,.25); background: rgba(96,165,250,.10); }
+
+/* Riduci “rumore” meta vecchia (usa la nuova) */
+.comment .meta{ display:none !important; }
+
+/* Replies: mini-avatar + nome */
+.reply .r-head{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin-bottom:4px;
+}
+.reply .r-avatar{
+  width:26px;
+  height:26px;
+  flex:0 0 26px;
+  border-radius:999px;
+  overflow:hidden;
+  border:1px solid rgba(202,168,90,.25);
+  background: rgba(255,255,255,.10);
+  display:grid;
+  place-items:center;
+  text-decoration:none;
+}
+.reply .r-avatar img{ width:100%; height:100%; object-fit:cover; display:none; }
+.reply .r-avatar .r-initials{
+  font-weight:900;
+  font-size:.78rem;
+  color: rgba(255,255,255,.82);
+}
+.reply .r-name{
+  font-family: "Cinzel", serif;
+  font-weight: 650;
+  letter-spacing: .05em;
+  font-size: .85rem;
+  color: var(--ofi-gold-2);
+  text-decoration:none;
+}
+.reply .r-name:hover{
+  text-decoration:underline;
+  text-decoration-color: rgba(202,168,90,.45);
+  text-underline-offset: 3px;
+}
+.reply .r-time{
+  font-size:.78rem;
+  color: rgba(226,232,240,.62);
+}
+
+/* Micro-fix: collega nome e avatar (meno distanza + più “unità”) */
+.comment .c-avatar + .c-meta{ margin-left: 2px; }
+
+/* =========================================
+   FIX TEMA CHIARO: meta/chip/iniziali leggibili
+   (prima erano forzati “chiari” e sparivano)
+   ========================================= */
+html[data-theme="light"] .comment .c-submeta,
+body.theme-light .comment .c-submeta{
+  color: rgba(5,36,65,.72) !important;
+}
+
+html[data-theme="light"] .reply .r-time,
+body.theme-light .reply .r-time{
+  color: rgba(5,36,65,.62) !important;
+}
+
+html[data-theme="light"] .comment .c-badge,
+body.theme-light .comment .c-badge{
+  color: rgba(5,36,65,.88) !important;
+  background: rgba(202,168,90,.14) !important;
+  border-color: rgba(202,168,90,.35) !important;
+  opacity: 1 !important;
+}
+
+html[data-theme="light"] .recent-chip,
+body.theme-light .recent-chip{
+  color: rgba(5,36,65,.85) !important;
+  background: rgba(202,168,90,.14) !important;
+  border-color: rgba(202,168,90,.30) !important;
+  opacity: .92 !important;
+}
+
+html[data-theme="light"] .time-chip,
+body.theme-light .time-chip,
+html[data-theme="light"] .edited-chip,
+body.theme-light .edited-chip{
+  color: rgba(5,36,65,.75) !important;
+  background: rgba(5,36,65,.04) !important;
+  border-color: rgba(5,36,65,.10) !important;
+}
+
+/* Avatar/iniziali: in chiaro non devono essere bianche su sfondo chiaro */
+html[data-theme="light"] .comment .c-avatar,
+body.theme-light .comment .c-avatar{
+  background: rgba(5,36,65,.06) !important;
+}
+
+html[data-theme="light"] .comment .c-avatar .c-initials,
+body.theme-light .comment .c-avatar .c-initials,
+html[data-theme="light"] .reply .r-avatar .r-initials,
+body.theme-light .reply .r-avatar .r-initials{
+  color: rgba(5,36,65,.88) !important;
+}
+
+/* Opzionale: testo ancora più protagonista (micro) */
+.comment .text{
+  font-size: 1.07rem;
+  line-height: 1.65;
+}
+
+/* FIX: bottone "Mostra altri messaggi" leggibile in tema scuro */
+html[data-theme="dark"] .btn-more,
+body.theme-dark .btn-more,
+.theme-dark .btn-more{
+  background: linear-gradient(
+    180deg,
+    rgba(202,168,90,.22),
+    rgba(255,255,255,.06)
+  );
+  color: rgba(255,255,255,.95);
+  border-color: rgba(202,168,90,.55);
+  box-shadow: 0 12px 28px rgba(0,0,0,.45);
+}
+
+html[data-theme="dark"] .btn-more:hover,
+body.theme-dark .btn-more:hover,
+.theme-dark .btn-more:hover{
+  background: linear-gradient(
+    180deg,
+    rgba(202,168,90,.35),
+    rgba(255,255,255,.10)
+  );
+  border-color: rgba(202,168,90,.75);
+}
+
+/* Commento più recente: guida l'occhio */
+.comment--featured{
+  border-color: rgba(202,168,90,.55) !important;
+  box-shadow: 0 14px 34px rgba(202,168,90,.18);
+}
+
+.comment--featured .c-name{
+  color: #facc6b;
+}
+
+@media (hover: none){
+  .btn-more{
+    padding: 12px 18px;
+    font-size: 1rem;
+  }
+}
+
+.btn-less{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-radius:999px;
+  border:1px solid rgba(202,168,90,.22);
+  background: rgba(255,255,255,.04);
+  padding: 9px 12px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  cursor:pointer;
+  opacity:.88;
+}
+
+.btn-less:hover{
+  background: rgba(202,168,90,.08);
+  border-color: rgba(202,168,90,.45);
+  transform: translateY(-1px);
+}
+
+/* Dark: perfettamente leggibile */
+html[data-theme="dark"] .btn-less,
+body.theme-dark .btn-less,
+.theme-dark .btn-less{
+  color: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.04);
+  border-color: rgba(202,168,90,.20);
+}
+
+/* ================================
+   PAGER COMMENTI (Mostra altri / Mostra meno)
+   ================================ */
+
+.comments-pager{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.pager-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+/* Bottone "Mostra altri" - assicurati che il testo sia sempre leggibile */
+.btn-more{
+  color: rgba(255,255,255,.90);
+}
+.btn-more i{ opacity:.9; }
+
+/* Tema scuro: rendilo più chiaro (il tuo problema “troppo scuro”) */
+html[data-theme="dark"] .btn-more,
+body.theme-dark .btn-more,
+.theme-dark .btn-more{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(202,168,90,.50);
+  color: rgba(255,255,255,.92);
+}
+html[data-theme="dark"] .btn-more:hover,
+body.theme-dark .btn-more:hover,
+.theme-dark .btn-more:hover{
+  background: rgba(202,168,90,.16);
+  border-color: rgba(202,168,90,.70);
+}
+
+/* Bottone "Mostra meno" (mancava proprio) */
+.btn-less{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-radius:999px;
+  border: 1px solid rgba(226,232,240,.20);
+  background: rgba(255,255,255,.05);
+  padding: 10px 14px;
+  font-weight: 900;
+  letter-spacing: .2px;
+  cursor:pointer;
+  color: rgba(226,232,240,.92);
+}
+.btn-less:hover{
+  background: rgba(255,255,255,.09);
+  border-color: rgba(226,232,240,.32);
+}
+
+/* Mobile: bottoni a tutta larghezza, ordinati */
+@media (max-width: 520px){
+  .pager-actions{ width:100%; }
+  .btn-more, .btn-less{ width:100%; justify-content:center; }
+}
+
+/* =========================
+   REAZIONI a commenti/risposte
+   ========================= */
+.react-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top: 10px;
+}
+
+.react-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-radius:999px;
+  padding: 8px 12px;
+  border: 1px solid rgba(202,168,90,.28);
+  background: rgba(255,255,255,.05);
+  cursor:pointer;
+  user-select:none;
+  font-weight: 900;
+  color: var(--ofi-text-primary);
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+
+.react-btn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(202,168,90,.55);
+  background: rgba(202,168,90,.10);
+}
+
+.react-btn .badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 42px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.22);
+  background: rgba(5,36,65,.04);
+  font-weight: 900;
+}
+
+.react-btn .badge[data-action="open-reactors"]{
+  cursor: pointer;
+}
+
+.react-btn.is-on{
+  border-color: rgba(220,38,38,.40);
+  background: linear-gradient(180deg, rgba(220,38,38,.10), rgba(202,168,90,.06));
+}
+
+/* =========================
+   MODALE lista reazioni
+   ========================= */
+.reactors-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+}
+
+.reactors-modal.is-open{ display:block; }
+
+.reactors-backdrop{
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+}
+
+.reactors-panel{
+  position: relative;
+  width: min(520px, calc(100% - 28px));
+  max-height: min(70vh, 560px);
+  overflow: hidden;
+  margin: 9vh auto 0;
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.25);
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 20px 60px rgba(0,0,0,.28);
+}
+
+html[data-theme="dark"] .reactors-panel,
+body.theme-dark .reactors-panel,
+.theme-dark .reactors-panel{
+  background: rgba(10,14,20,.92);
+}
+
+.reactors-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  padding: 14px 14px;
+  border-bottom: 1px solid rgba(202,168,90,.18);
+}
+
+.reactors-head .title{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  font-weight: 900;
+}
+
+.reactors-close{
+  border: 1px solid rgba(202,168,90,.22);
+  background: transparent;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor:pointer;
+  color: inherit;
+}
+
+.reactors-body{
+  padding: 10px 14px 14px;
+  overflow:auto;
+  max-height: min(70vh, 560px);
+}
+
+.reactors-list{
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+}
+
+.reactor-item{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(202,168,90,.16);
+  background: rgba(5,36,65,.04);
+}
+
+html[data-theme="dark"] .reactor-item,
+body.theme-dark .reactor-item,
+.theme-dark .reactor-item{
+  background: rgba(255,255,255,.06);
+}
+
+.reactor-avatar{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  overflow:hidden;
+  border: 1px solid rgba(202,168,90,.22);
+  flex: 0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+}
+
+.reactor-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+.reactor-meta{
+  display:flex;
+  flex-direction:column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.reactor-name{
+  font-weight: 900;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reactor-sub{
+  font-size: 13px;
+  opacity: .75;
+}
+
+.comment .react-row{
+  margin-top: 8px;
+  opacity: .85;
+}
+.comment:hover .react-row{
+  opacity: 1;
+}
+
+/* Reazioni: presenti ma discrete (stile OFI) */
+.comment .react-row,
+.reply .react-row{
+  margin-top: 8px;
+  opacity: .82;
+}
+
+.comment:hover .react-row{
+  opacity: 1;
+}
+
+@media (hover: none){
+  .comment .react-row,
+  .reply .react-row{
+    opacity: 1;
+  }
+}
+
+/* Badge conteggio: visibile SOLO se > 0 */
+.react-btn .badge.is-zero{
+  display:none;
+}
+
+/* =========================================
+   THEME: menu ⋯ + badge reazioni (commenti/risposte)
+   ========================================= */
+
+/* Tema chiaro */
+html[data-theme="light"] .comment .menu-btn,
+body.theme-light .comment .menu-btn{
+  color: rgba(5,36,65,.85) !important;
+  background: rgba(5,36,65,.04) !important;
+  border-color: rgba(5,36,65,.12) !important;
+}
+
+/* Tema scuro */
+html[data-theme="dark"] .comment .menu-btn,
+body.theme-dark .comment .menu-btn,
+.theme-dark .comment .menu-btn{
+  color: rgba(255,255,255,.88) !important;
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(202,168,90,.22) !important;
+}
+
+/* Badge contatore (0,1,2...) nel bottone “Vicinanza” */
+html[data-theme="light"] .react-btn .badge,
+body.theme-light .react-btn .badge{
+  background: rgba(5,36,65,.05) !important;
+  color: rgba(5,36,65,.85) !important;
+  border-color: rgba(5,36,65,.12) !important;
+}
+
+html[data-theme="dark"] .react-btn .badge,
+body.theme-dark .react-btn .badge,
+.theme-dark .react-btn .badge{
+  background: rgba(255,255,255,.06) !important;
+  color: rgba(255,255,255,.92) !important;
+  border-color: rgba(202,168,90,.22) !important;
+}
+
+/* ✅ Hard override: chip/meta sempre leggibili in dark anche con classi miste */
+html[data-theme="dark"] .comment .c-submeta,
+html[data-theme="dark"] .reply .r-time{
+  color: rgba(226,232,240,.78) !important;
+}
+
+html[data-theme="dark"] .comment .c-badge{
+  color: rgba(226,232,240,.92) !important;
+  background: rgba(202,168,90,.10) !important;
+  border-color: rgba(202,168,90,.28) !important;
+}
+
+html[data-theme="dark"] .react-btn{
+  color: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(202,168,90,.22) !important;
+}
+
+html[data-theme="dark"] .react-btn .badge{
+  color: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(202,168,90,.22) !important;
+}
+
+/* =====================================================
+   TEMA SCURO – FIX LEGGIBILITÀ TESTI E CHIP
+===================================================== */
+
+/* supporta sia body.theme-dark che data-theme */
+.theme-dark,
+html[data-theme="dark"] {
+
+  /* --- TESTI GENERICI --- */
+  --text-primary: #f1f4f8;
+  --text-secondary: #cfd6e1;
+  --text-muted: #9aa4b2;
+
+  /* --- ACCENTI OFI --- */
+  --ofi-gold: #e6c87a;
+  --ofi-gold-soft: rgba(230, 200, 122, 0.18);
+
+  /* --- SUPERFICI --- */
+  --surface-card: #0f1c2d;
+  --surface-soft: #13243a;
+  --border-soft: rgba(255,255,255,.08);
+}
+
+/* ---------- CARD COMMENTI ---------- */
+.theme-dark .comment,
+html[data-theme="dark"] .comment {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border-color: var(--border-soft);
+}
+
+/* testo del commento */
+.theme-dark .comment .text,
+html[data-theme="dark"] .comment .text {
+  color: var(--text-primary);
+}
+
+/* nome autore */
+.theme-dark .c-name,
+html[data-theme="dark"] .c-name {
+  color: var(--ofi-gold);
+}
+
+/* data / orario */
+.theme-dark .c-time,
+html[data-theme="dark"] .c-time {
+  color: var(--text-muted);
+}
+
+/* ---------- CHIP (Recente / Edited / Badge) ---------- */
+.theme-dark .c-badge,
+html[data-theme="dark"] .c-badge {
+  background: var(--ofi-gold-soft);
+  color: var(--ofi-gold);
+  border: 1px solid rgba(230,200,122,.35);
+}
+
+/* ---------- CHIP VICINANZA / REAZIONI ---------- */
+.theme-dark .react-btn,
+html[data-theme="dark"] .react-btn {
+  background: var(--surface-soft);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-soft);
+}
+
+.theme-dark .react-btn i,
+html[data-theme="dark"] .react-btn i {
+  color: var(--ofi-gold);
+}
+
+/* quando attivo */
+.theme-dark .react-btn.is-on,
+html[data-theme="dark"] .react-btn.is-on {
+  background: rgba(230,200,122,.22);
+  color: #fff;
+  border-color: rgba(230,200,122,.55);
+}
+
+/* badge numerico */
+.theme-dark .react-btn .badge,
+html[data-theme="dark"] .react-btn .badge {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+}
+
+/* badge zero */
+.theme-dark .react-btn .badge.is-zero,
+html[data-theme="dark"] .react-btn .badge.is-zero {
+  opacity: .7;
+}
+
+/* ---------- "NESSUNA RISPOSTA ANCORA" ---------- */
+.theme-dark .mini,
+html[data-theme="dark"] .mini {
+  color: var(--text-muted);
+}
+
+/* =====================================================
+   FIX CHIP "RECENTE" IN DARK MODE
+===================================================== */
+.theme-dark .c-badge--recent,
+html[data-theme="dark"] .c-badge--recent {
+  background: rgba(230, 200, 122, 0.22);  /* oro soft */
+  color: #ffffff;                         /* testo chiaro: massima leggibilità */
+  border: 1px solid rgba(230, 200, 122, 0.55);
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+/* se vuoi anche "rivisto" coerente */
+.theme-dark .c-badge--edited,
+html[data-theme="dark"] .c-badge--edited {
+  background: rgba(255,255,255,0.08);
+  color: #e6c87a;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+/* =====================================================
+   HARD OVERRIDE — CHIP "RECENTE" SEMPRE LEGGIBILE IN DARK
+   (serve perché il body resta "theme-light" e le regole light
+   hanno !important)
+===================================================== */
+html[data-theme="dark"] .recent-chip,
+body.theme-dark .recent-chip,
+.theme-dark .recent-chip{
+  color: rgba(226,232,240,.92) !important;
+  background: rgba(202,168,90,.12) !important;
+  border-color: rgba(202,168,90,.26) !important;
+  opacity: .92 !important;
+}
+
+/* Extra: se "Recente" a volte usa la classe badge */
+html[data-theme="dark"] .c-badge--recent,
+body.theme-dark .c-badge--recent,
+.theme-dark .c-badge--recent{
+  color: rgba(255,255,255,.96) !important;
+  background: rgba(202,168,90,.20) !important;
+  border-color: rgba(202,168,90,.45) !important;
+}
+
+/* =====================================================
+   FIX DEFINITIVO: se html è DARK ma body resta theme-light
+   (override più specifico dei !important del tema chiaro)
+===================================================== */
+html[data-theme="dark"] body.theme-light .comment .c-submeta,
+html[data-theme="dark"] body.theme-light .reply .r-time{
+  color: rgba(226,232,240,.78) !important;
+}
+
+html[data-theme="dark"] body.theme-light .comment .c-badge{
+  color: rgba(226,232,240,.92) !important;
+  background: rgba(202,168,90,.12) !important;
+  border-color: rgba(202,168,90,.30) !important;
+}
+
+/* RECENTE: massima leggibilità in dark */
+html[data-theme="dark"] body.theme-light .comment .c-badge--recent{
+  color: rgba(255,255,255,.96) !important;
+  background: rgba(202,168,90,.22) !important;
+  border-color: rgba(202,168,90,.48) !important;
+}
+
+/* RIVISTO coerente e leggibile */
+html[data-theme="dark"] body.theme-light .comment .c-badge--edited{
+  color: rgba(230,200,122,.95) !important;
+  background: rgba(255,255,255,.08) !important;
+  border-color: rgba(255,255,255,.14) !important;
+}
+

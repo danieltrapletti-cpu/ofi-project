@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Scheda Impresa — OFI</title>
+  <meta name="description" content="Scheda informativa automatica dell'impresa, creata da OFI a partire da fonti pubbliche.">
+
+  <!-- Favicon + Stili globali OFI -->
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- FONT allineati a profilo.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/imprese/profilo.css">
+
+  <!-- Mapbox -->
+  <link href="/vendor/mapbox-gl.css" rel="stylesheet">
+
+  <style>
+    /* Nascondo elementi non pertinenti nella versione light */
+    body.page-light .hero-meta,
+    body.page-light #heroSeal,
+    body.page-light .card-reputazione,
+    body.page-light #shareInfoPanel,
+    body.page-light #verificaTxt {
+      display: none !important;
+    }
+
+    body.page-light .profile-hero__panel {
+      max-width: 720px;
+    }
+
+    /* HERO LIGHT: stesso contenitore blu di profilo, layout semplificato */
+    .profile-hero--light .profile-hero__inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 900px) {
+      .profile-hero--light .profile-hero__inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .profile-hero--light .profile-hero__info {
+      display: flex;
+      gap: 1.1rem;
+      align-items: flex-start;
+    }
+
+    .profile-hero--light .logo-pill {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      background: rgba(4, 9, 20, .85);
+      border: 1px solid rgba(255, 255, 255, .14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .55);
+    }
+
+    .profile-hero--light .logo-pill img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .profile-hero--light .headline-block h1 {
+      font-size: 1.6rem;
+      margin: 0 0 .35rem;
+      letter-spacing: .02em;
+      background: linear-gradient(90deg,#ffffff,#f6df9a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @media (min-width: 900px) {
+      .profile-hero--light .headline-block h1 {
+        font-size: 1.9rem;
+      }
+    }
+
+    .profile-hero--light .headline-block .subtitle {
+      font-size: .95rem;
+      opacity: .9;
+      margin: 0;
+    }
+
+    .profile-hero--light .hero-badges {
+      margin-top: .8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+    }
+
+    .profile-hero--light .hero-badges .chip {
+      background: rgba(4, 9, 20, .85);
+      border: 1px solid rgba(255, 255, 255, .14);
+      color: #f9fafb;
+    }
+
+    .profile-hero--light .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      align-items: flex-start;
+      margin-top: .6rem;
+      max-width: 320px;
+    }
+
+    .profile-hero--light .hero-actions .btn-primary {
+      background: var(--ofi-gold-gradient, linear-gradient(90deg, #d6b15b 0, #f6df9a 100%));
+      color: #1c1f24;
+      border: none;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .55);
+    }
+
+    .profile-hero--light .hero-actions .btn-primary[hidden] {
+      display: none !important;
+    }
+
+    .profile-hero--light .hero-actions .hero-note {
+      font-size: .8rem;
+      opacity: .9;
+      max-width: 280px;
+    }
+
+.profile-hero--light .hero-actions .btn-claim {
+  background: transparent;
+  color: #f9fafb;
+  border: 1px solid rgba(249, 250, 251, .5);
+  box-shadow: none;
+  font-size: .85rem;
+}
+
+.profile-hero--light .hero-actions .btn-claim[hidden] {
+  display: none !important;
+}
+
+    /* Layout principale a due colonne, come profilo */
+    .profile-main-light {
+      max-width: 1040px;
+      margin: 2rem auto 3rem;
+      padding: 0 1.2rem;
+      display: grid;
+      gap: 1.6rem;
+    }
+
+    @media (min-width: 900px) {
+      .profile-main-light {
+        grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+        align-items: flex-start;
+      }
+    }
+
+    .card-light {
+      background: var(--surface-level-2, #050b16);
+      border-radius: 18px;
+      padding: 1.6rem 1.7rem;
+      border: 1px solid rgba(255, 255, 255, .06);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .50);
+      color: #f5f5f7;
+    }
+
+    .card-light h2 {
+      margin-top: 0;
+      margin-bottom: .7rem;
+      font-size: 1.22rem;
+      letter-spacing: .02em;
+      font-family: "Source Sans 3", sans-serif;
+      font-weight: 700;
+    }
+
+    .card-light p {
+      margin-top: 0;
+      margin-bottom: .4rem;
+      font-size: .93rem;
+      line-height: 1.5;
+    }
+
+    .card-light .small-muted {
+      font-size: .8rem;
+      opacity: .8;
+    }
+
+    .card-light + .card-light {
+      margin-top: 1rem;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .side-column .card {
+      border-radius: 18px;
+    }
+
+    /* MAPPA – sezione a tutta larghezza sotto le colonne */
+    .card-map {
+      background: var(--surface-level-2, #050b16);
+      border-radius: 18px;
+      padding: 1.6rem 1.7rem 1.4rem;
+      border: 1px solid rgba(255,255,255,.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,.50);
+    }
+
+    @media (min-width: 900px) {
+      .card-map {
+        grid-column: 1 / -1; /* prende tutta la larghezza, come la mappa di selezione automatica */
+      }
+    }
+
+    #mapboxContainer {
+      width: 100%;
+      height: 340px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      margin-bottom: .4rem;
+    }
+
+    #mapboxContainer .mapboxgl-canvas {
+      border-radius: 18px;
+    }
+
+    @media (max-width: 640px) {
+      #mapboxContainer {
+        height: 300px;
+      }
+    }
+
+    .map-legend {
+      margin-top: .6rem;
+      font-size: .78rem;
+      opacity: .86;
+    }
+
+    .map-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      margin-right: 1rem;
+    }
+
+    .map-legend .dot-user,
+    .map-legend .dot-impresa {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .map-legend .dot-user {
+      background: #3b82f6;
+    }
+
+    .map-legend .dot-impresa {
+      background: #facc15;
+    }
+
+    .contact-list {
+      margin: .3rem 0 .4rem;
+    }
+
+    .contact-list ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .contact-list li {
+      margin-bottom: .35rem;
+      font-size: .92rem;
+    }
+
+    .small-muted {
+      color: #a0a7b5;
+      font-size: .85rem;
+    }
+
+    body.page-light .card {
+      background: var(--surface-level-1, #050b16);
+      border-radius: 18px;
+      border-color: rgba(255, 255, 255, .06);
+      color: #f5f5f7;
+    }
+
+    body.page-light {
+      color: inherit;
+    }
+
+    /* Card intro: più istituzionale, con rosa OFI e bordo oro */
+    body.page-light .card-light-intro {
+      position: relative;
+      border-left: 5px solid var(--ofi-gold, #cfa349);
+      background: var(--surface-soft, rgba(8, 19, 40, 0.9));
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .38);
+      padding-left: 2.2rem;
+    }
+
+    body.page-light .card-light-intro::before {
+      content: "";
+      position: absolute;
+      top: 1.4rem;
+      left: .6rem;
+      width: 18px;
+      height: 18px;
+      background: url('/images/rosa.png') center/contain no-repeat;
+      opacity: .9;
+    }
+
+    body.page-light .card-light-intro h2 {
+      margin-top: 0;
+      margin-bottom: .6rem;
+    }
+
+    body.page-light .card-light-intro p {
+      margin-bottom: .5rem;
+    }
+
+    /* Marker impresa: effetto luce senza toccare la transform di Mapbox */
+.mapbox-marker-gold {
+  box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7);
+  animation: pulse-shadow 2.5s infinite ease-out;
+}
+
+@keyframes pulse-shadow {
+  0%   { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+  70%  { box-shadow: 0 0 0 12px rgba(250, 204, 21, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+.map-legend {
+  color: #f5f5f7 !important;
+}
+
+  </style>
+
+  <!-- JS globale -->
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+<body class="page-light">
+
+<!-- HEADER identico a profilo.html -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="/vision.html">Visione di OFI</a></li>
+          <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="/index.html#pensieri">Pensieri</a></li>
+          <li><a href="/articoli/articoli.html">Articoli</a></li>
+          <li><a href="/index.html#ricordi">Ricordi</a></li>
+          <li><a href="/index.html#mappa">Vicina a te</a></li>
+          <li><a href="/index.html#video">Video</a></li>
+        </ul>
+      </li>
+
+      <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- HERO LIGHT -->
+<section class="profile-hero profile-hero--light">
+  <div class="profile-hero__inner">
+    <div class="profile-hero__info">
+      <div class="logo-pill">
+        <img id="heroLogo"
+             src="/images/rosa.png"
+             alt="OFI"
+             onerror="this.onerror=null;this.src='/images/rosa.png';">
+      </div>
+      <div class="headline-block">
+        <h1 id="impresaNome">Impresa funebre</h1>
+        <p class="subtitle" id="impresaLocalita">
+          Località e provincia
+        </p>
+
+        <div class="hero-badges">
+          <span class="chip chip-soft">
+            Impresa presente su OFI
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+  <a id="btnRichiediPreventivo" class="btn btn-primary" href="#">
+    Richiedi un preventivo a questa impresa
+  </a>
+
+  <a id="btnRivendicaProfilo" class="btn btn-claim" href="#">
+    Sei il titolare? Rivendica questa scheda
+  </a>
+
+  <p class="hero-note">
+    Questa scheda ti aiuta a vedere in modo chiaro a quale impresa è collegata la tua richiesta di preventivo.
+  </p>
+</div>
+  </div>
+</section>
+
+<main class="profile-main-light">
+
+  <!-- COLONNA SINISTRA -->
+  <div class="main-column">
+
+    <!-- Scheda light OFI -->
+    <article class="card card-light-intro card-light">
+      <h2>A chi verrà inviata la tua richiesta</h2>
+      <p>
+        Questa è una <strong>scheda informativa generata da OFI</strong> sulla base dei dati territoriali disponibili.
+        Completando il percorso guidato, <strong>OFI invierà la tua richiesta di preventivo direttamente a questa impresa</strong>,
+        che potrà contattarti in base alle informazioni che hai indicato.
+      </p>
+      <p class="small-muted">
+        Questa scheda serve solo ad aiutarti a capire <strong>a chi verrà recapitata la tua richiesta</strong>, senza uscire dal flusso guidato.
+        Non rappresenta una certificazione né una valutazione dell’impresa.
+      </p>
+    </article>
+
+    <!-- Descrizione se presente -->
+    <article class="card card-light" id="cardDescrizione" hidden>
+      <h2>L’impresa in breve</h2>
+      <p id="impresaDescrizione">
+        OFI sta raccogliendo le informazioni principali su questa impresa per mostrarti, in modo semplice,
+        i riferimenti essenziali quando richiedi un preventivo.
+      </p>
+    </article>
+
+    <!-- Servizi principali -->
+    <article class="card card-light" id="cardServizi" hidden>
+      <h2>Servizi principali</h2>
+      <p class="small-muted">
+        Alcuni dei servizi che questa impresa può offrire in ambito funebre e di supporto alla famiglia.
+      </p>
+      <ul id="listaServizi" class="tag-list">
+        <!-- riempito da JS -->
+      </ul>
+    </article>
+
+  </div>
+
+  <!-- COLONNA DESTRA -->
+  <aside class="side-column">
+
+    <!-- Contatti essenziali (senza telefono / email / sito) -->
+    <section class="card">
+      <div class="card-head">
+        <h2>Contatti essenziali</h2>
+      </div>
+      <div class="card-body">
+        <div class="contact-list">
+          <ul id="contactList">
+            <!-- riempito da JS -->
+          </ul>
+        </div>
+        <p class="small-muted">
+          In questa fase i <strong>recapiti diretti non sono mostrati</strong>: OFI inoltra la tua richiesta
+          all’impresa per tuo conto, mantenendo la massima tutela e trasparenza.
+        </p>
+      </div>
+    </section>
+
+    <!-- Social se presenti -->
+    <section class="card" id="cardSocial" hidden>
+      <div class="card-head">
+        <h2>Presenza online</h2>
+      </div>
+      <div class="card-body">
+        <div id="socialLinks" class="social-links"></div>
+        <p class="small-muted">
+          Collegamenti ai canali pubblici dichiarati o rilevati da OFI.
+        </p>
+      </div>
+    </section>
+
+  </aside>
+
+  <!-- MAPPA A TUTTA LARGHEZZA -->
+  <section class="card-map">
+    <div class="card-head">
+      <h2>Dove si trova l’impresa</h2>
+      <p class="small-muted" style="margin-top:-.4rem;margin-bottom:.8rem">
+        Localizza l’impresa e confronta la distanza dalla tua posizione. I dati sono indicativi.
+      </p>
+    </div>
+    <div class="card-body">
+      <div id="mapboxContainer"></div>
+      <p class="map-legend">
+        <span><span class="dot-user"></span> La tua posizione (se consentita)</span>
+        <span><span class="dot-impresa"></span> Sede dell’impresa</span>
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER coerente con profilo -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+        <p class="small">
+          OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.
+        </p>
+      </div>
+      <div class="f-links">
+        <a href="/articoli/articoli.html">Articoli</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © <span id="yearSpan"></span> OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>La presente scheda è informativa e non costituisce certificazione o raccomandazione da parte di OFI.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- JS Mapbox -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<!-- JS menù -->
+<script src="/js/menu.js?v=2" defer></script>
+
+<!-- JS specifico profilo-light -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  const urlParams  = new URLSearchParams(window.location.search);
+const impresaId  = urlParams.get("id");
+const src        = urlParams.get("src") || "";
+const userLatQ   = parseFloat(urlParams.get("lat"));
+const userLonQ   = parseFloat(urlParams.get("lon"));
+
+const heroNomeEl = document.getElementById("impresaNome");
+const heroLocEl  = document.getElementById("impresaLocalita");
+const btnPrev    = document.getElementById("btnRichiediPreventivo");
+const btnClaim   = document.getElementById("btnRivendicaProfilo");
+
+const cardDescrizione = document.getElementById("cardDescrizione");
+const descrizioneEl   = document.getElementById("impresaDescrizione");
+const cardServizi     = document.getElementById("cardServizi");
+const listaServizi    = document.getElementById("listaServizi");
+const contactListEl   = document.getElementById("contactList");
+const cardSocial      = document.getElementById("cardSocial");
+const socialLinksEl   = document.getElementById("socialLinks");
+
+let map;
+let userMarker;
+let impresaMarker;
+
+// coords utente: prima query string, poi localStorage (compatibilità vecchia {lat, lon})
+function getUserCoords() {
+  // 1) Se arrivano da URL (selezione automatica)
+  if (Number.isFinite(userLatQ) && Number.isFinite(userLonQ)) {
+    return { lat: userLatQ, lng: userLonQ };
+  }
+
+  // 2) Altrimenti provo da localStorage
+  const raw = JSON.parse(localStorage.getItem("ofi_user_coords") || "null");
+  if (!raw || typeof raw !== "object") return null;
+
+  const lat = typeof raw.lat === "number"
+    ? raw.lat
+    : parseFloat(raw.lat);
+
+  const lngCandidate =
+    typeof raw.lng === "number"
+      ? raw.lng
+      : (typeof raw.lon === "number"
+          ? raw.lon
+          : parseFloat(raw.lng ?? raw.lon));
+
+  if (!Number.isFinite(lat) || !Number.isFinite(lngCandidate)) return null;
+
+  return { lat, lng: lngCandidate };
+}
+
+const userCoords = getUserCoords();
+
+
+  function prefersDark() {
+    return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+  }
+
+  function activeTheme() {
+    const t = document.documentElement.getAttribute("data-theme") || "auto";
+    return (t === "dark" || (t === "auto" && prefersDark())) ? "dark" : "light";
+  }
+
+  function syncHtmlThemeClass() {
+    const t = activeTheme();
+    document.documentElement.classList.toggle("theme-dark", t === "dark");
+    document.documentElement.classList.toggle("theme-light", t === "light");
+  }
+
+  function syncMapStyle() {
+    if (!map) return;
+    try {
+      map.setStyle(
+        activeTheme() === "dark"
+          ? "mapbox://styles/mapbox/dark-v11"
+          : "mapbox://styles/mapbox/light-v11"
+      );
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
+  new MutationObserver(() => {
+    syncHtmlThemeClass();
+    syncMapStyle();
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"]
+  });
+
+  function svgPin(g1 = "#FFD46A", g2 = "#CAA85A", ring = "#B78927") {
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="34" height="44" viewBox="0 0 34 44">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${g1}"/>
+          <stop offset="1" stop-color="${g2}"/>
+        </linearGradient>
+        <filter id="sh" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="b"/>
+          <feOffset dy="2" result="o"/>
+          <feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M17 43C17 43 32 27.8 32 17C32 8.163 24.837 1 16 1S0 8.163 0 17c0 10.8 17 26 17 26Z" fill="url(#g)" filter="url(#sh)"/>
+      <circle cx="16.5" cy="16.5" r="8.7" fill="white" fill-opacity=".14" />
+      <circle cx="16.5" cy="16.5" r="5.9" fill="none" stroke="${ring}" stroke-opacity=".8" stroke-width="1.6"/>
+      <circle cx="16.5" cy="14.8" r="2.9" fill="#ffffff" fill-opacity=".85"/>
+    </svg>`;
+    return `url('data:image/svg+xml;utf8,${encodeURIComponent(svg)}')`;
+  }
+
+  function makeMarkerEl(variant = "gold") {
+  const el = document.createElement("div");
+  el.style.width = "34px";
+  el.style.height = "44px";
+  el.style.backgroundImage =
+    variant === "gold"
+      ? svgPin("#FFD46A", "#CAA85A", "#B78927")
+      : svgPin("#6FD1FF", "#0EA5E9", "#1777b7");
+  el.style.backgroundSize = "contain";
+  el.style.backgroundRepeat = "no-repeat";
+  el.style.transform = "translateY(-2px)";
+  el.style.pointerEvents = "none";   // 🔥 FIX
+  return el;
+}
+
+  function cameFromPreventivoFlow() {
+    if (!src) return false;
+    const s = src.toLowerCase();
+    return (
+      s === "auto" ||
+      s === "automatica" ||
+      s === "manuale" ||
+      s === "manual" ||
+      s === "preventivo" ||
+      s === "flow"
+    );
+  }
+
+  function renderServizi(servizi) {
+    if (!servizi || !Array.isArray(servizi) || !servizi.length) return;
+    listaServizi.innerHTML = "";
+    servizi.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      listaServizi.appendChild(li);
+    });
+    cardServizi.hidden = false;
+  }
+
+  // Nessun contatto diretto
+  function renderContatti(data) {
+    contactListEl.innerHTML = "";
+
+    const li = document.createElement("li");
+    const parti = [];
+
+    if (data.indirizzo) {
+      parti.push(data.indirizzo);
+    }
+    if (data.cap || data.comune) {
+      parti.push([data.cap, data.comune].filter(Boolean).join(" "));
+    }
+    if (data.provincia) {
+      parti.push(`(${data.provincia})`);
+    }
+
+    const luogo = parti.filter(Boolean).join(" · ");
+
+    li.textContent = luogo
+      ? luogo
+      : "I dati di indirizzo sono in aggiornamento.";
+    contactListEl.appendChild(li);
+  }
+
+  function renderSocial(data) {
+    socialLinksEl.innerHTML = "";
+
+    const addLink = (label, url) => {
+      if (!url) return;
+      if (!url.startsWith("http")) {
+        url = "https://" + url;
+      }
+      const a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.className = "social-link";
+      a.textContent = label;
+      socialLinksEl.appendChild(a);
+    };
+
+    addLink("Sito web", data.sitoWeb);
+    addLink("Facebook", data.facebook);
+    addLink("Instagram", data.instagram);
+    addLink("YouTube", data.youtube);
+
+    if (socialLinksEl.children.length) {
+      cardSocial.hidden = false;
+    }
+  }
+
+  function initMap(data) {
+  // coord impresa: accetto più formati (lat/lon, latitude/longitude, sede_principale)
+  const rawLat =
+    data.lat ??
+    data.latitude ??
+    data.sede_principale?.lat ??
+    data.sede_principale?.latitude;
+
+  const rawLng =
+    data.lng ??
+    data.lon ??
+    data.longitude ??
+    data.sede_principale?.lng ??
+    data.sede_principale?.lon ??
+    data.sede_principale?.longitude;
+
+  const lat = typeof rawLat === "number" ? rawLat : parseFloat(rawLat);
+  const lng = typeof rawLng === "number" ? rawLng : parseFloat(rawLng);
+
+  // Se non ho coordinate impresa non disegno la mappa
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    console.warn("Coordinate impresa mancanti o non valide in profilo-light");
+    return;
+  }
+
+  mapboxgl.accessToken =
+    "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+
+  const style =
+    activeTheme() === "dark"
+      ? "mapbox://styles/mapbox/dark-v11"
+      : "mapbox://styles/mapbox/light-v11";
+
+  map = new mapboxgl.Map({
+    container: "mapboxContainer",
+    style,
+    center: [lng, lat],
+    zoom: 12
+  });
+
+  map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
+
+  // Marker impresa (oro)
+  const impresaEl = makeMarkerEl("gold");
+  impresaEl.classList.add("mapbox-marker-gold");
+  impresaMarker = new mapboxgl.Marker({ element: impresaEl })
+    .setLngLat([lng, lat])
+    .addTo(map);
+
+  // Marker utente (blu) se ho coordinate valide
+  const legendUserSpan = document.querySelector(".map-legend span:nth-child(1)");
+  if (
+    userCoords &&
+    Number.isFinite(userCoords.lat) &&
+    Number.isFinite(userCoords.lng)
+  ) {
+    const userEl = makeMarkerEl("blue");
+    userMarker = new mapboxgl.Marker({ element: userEl })
+      .setLngLat([userCoords.lng, userCoords.lat])
+      .addTo(map);
+
+    // inquadra entrambi nella stessa vista
+    const bounds = new mapboxgl.LngLatBounds();
+    bounds.extend([lng, lat]); // impresa
+    bounds.extend([userCoords.lng, userCoords.lat]); // utente
+    map.fitBounds(bounds, { padding: 60, maxZoom: 14 });
+
+    map.once("idle", () => {
+      try { map.resize(); } catch (_) {}
+    });
+
+    if (legendUserSpan) legendUserSpan.style.display = "inline-flex";
+  } else {
+    // niente coord utente → nascondo la parte "La tua posizione" della legenda
+    if (legendUserSpan) legendUserSpan.style.display = "none";
+  }
+
+  syncHtmlThemeClass();
+}
+
+
+  async function loadImpresa() {
+    if (!impresaId) return;
+
+    const docRef = doc(db, "imprese_non_registrate", impresaId);
+    const snap   = await getDoc(docRef);
+
+    if (!snap.exists()) {
+  heroNomeEl.textContent = "Impresa non trovata";
+  heroLocEl.textContent  = "Potrebbe essere stata rimossa o aggiornata.";
+
+  if (btnPrev)  btnPrev.hidden  = true;
+  if (btnClaim) btnClaim.hidden = true;
+
+  return;
+}
+
+    const data = snap.data();
+
+    const nome      = data.nome || data.ragione_sociale || data.ragioneSociale || "Impresa funebre";
+    const comune    = data.comune || "";
+    const provincia = data.provincia || data.prov || "";
+
+    heroNomeEl.textContent = nome;
+    heroLocEl.textContent  = [comune, provincia].filter(Boolean).join(" · ");
+
+    if (data.descrizione || data.note) {
+      descrizioneEl.textContent = data.descrizione || data.note;
+      cardDescrizione.hidden = false;
+    }
+
+    if (Array.isArray(data.servizi) && data.servizi.length) {
+      renderServizi(data.servizi);
+    }
+
+        renderContatti(data);
+    renderSocial(data);
+    initMap(data);
+
+    // Imposto il link di rivendicazione profilo
+if (btnClaim && impresaId) {
+  // vai direttamente alla REGISTRAZIONE IMPRESE con claimId
+  const baseUrl  = "/imprese/registrazione-imprese.html";
+  const claimId  = `claimId=${encodeURIComponent(impresaId)}`;
+
+  // se esiste già un src nella query, lo riportiamo (non dà fastidio)
+  const srcParam = urlParams.get("src")
+    ? `&src=${encodeURIComponent(urlParams.get("src"))}`
+    : "";
+
+  btnClaim.href = `${baseUrl}?${claimId}${srcParam}`;
+}
+
+    // Nascondo il tasto preventivo se arrivo già dal flusso preventivo
+    if (cameFromPreventivoFlow()) {
+      if (btnPrev)  btnPrev.hidden = true;
+    } else if (btnPrev && impresaId) {
+      btnPrev.href =
+        `/preventivi/richiedi-preventivo-FINALE.html?id=${encodeURIComponent(
+          impresaId
+        )}&src=profilo-light`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const yearSpan = document.getElementById("yearSpan");
+    if (yearSpan) {
+      yearSpan.textContent = new Date().getFullYear();
+    }
+    loadImpresa().catch(console.error);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marchio di Affidabilità Nazionale | Onoranze Funebri Italia</title>
+  <meta name="description" content="Scopri il Marchio di Affidabilità Nazionale di OFI: un simbolo distintivo per le imprese funebri serie, trasparenti e affidabili.">
+  <meta name="keywords" content="Marchio Affidabilità, Onoranze Funebri Italia, imprese funebri affidabili, certificato OFI">
+  <meta name="author" content="Onoranze Funebri Italia">
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    :root {
+      --ofi-blu: #002c5d;
+      --ofi-oro: #d4af37;
+      --ofi-rosso: #b30000;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f8f9fa;
+      color: var(--ofi-blu);
+    }
+    header {
+      background-color: white;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header img {
+      max-height: 50px;
+    }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      color: var(--ofi-blu);
+    }
+    nav {
+      background-color: var(--ofi-blu);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 0;
+      padding: 10px 0;
+      flex-wrap: wrap;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .marchio-hero {
+      background: linear-gradient(to right, #f1f4f9, #ffffff);
+      border-bottom: 4px solid var(--ofi-oro);
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    .marchio-hero img {
+      width: 180px;
+      margin-bottom: 1rem;
+    }
+    .marchio-hero h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .marchio-hero p {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.2rem;
+      color: #444;
+    }
+    .marchio-section {
+      padding: 3rem 1rem;
+      max-width: 1000px;
+      margin: auto;
+      line-height: 1.7;
+    }
+    .marchio-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .marchio-card {
+      background: white;
+      border-radius: 12px;
+      border-left: 6px solid var(--ofi-oro);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: transform 0.3s ease;
+    }
+    .marchio-card:hover {
+      transform: scale(1.01);
+    }
+    .marchio-card ul {
+      padding-left: 1.2rem;
+    }
+    .marchio-card ul li::before {
+      content: "✔";
+      margin-right: 8px;
+      color: #2c7b2f;
+    }
+    .marchio-disclaimer {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: #555;
+      background: #fefefe;
+      padding: 1.5rem;
+      border-left: 4px solid #ccc;
+      border-radius: 8px;
+      margin-top: 2rem;
+    }
+    .marchio-disclaimer strong {
+      color: var(--ofi-rosso);
+    }
+    footer {
+      background-color: var(--ofi-blu);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.95rem;
+    }
+    footer a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: underline;
+    }
+    footer a:hover {
+      text-decoration: none;
+    }
+    footer .footer-links {
+      margin-top: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      nav ul {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        background: var(--ofi-blu);
+      }
+      nav ul.show {
+        display: flex;
+      }
+      header {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header style="justify-content: center !important;">
+    <a href="../index.html" style="display: flex; justify-content: center; width: 100%;">
+      <img src="../images/logo-ofi.png" alt="Logo Onoranze Funebri Italia" style="margin: 0 auto;" />
+    </a>
+    <button class="menu-toggle" onclick="document.querySelector('nav ul').classList.toggle('show')">☰</button>
+  </header>
+  <nav>
+    <ul>
+      <li><a href="../index.html" style="display: flex; justify-content: center; width: 100%;">Home</a></li>
+      <li><a href="../preventivo/preventivo.html">Richiedi Preventivo</a></li>
+      <li><a href="../necrologi.html">Necrologi</a></li>
+      <li><a href="../imprese.html">Imprese Affidabili</a></li>
+      <li><a href="../login.html">Accedi</a></li>
+    </ul>
+  </nav>
+
+  <section class="marchio-hero">
+    <img src="../images/sigillo-ofi.png" alt="Sigillo Marchio OFI" />
+    <h1>Marchio di Affidabilità Nazionale</h1>
+    <p>
+      Un simbolo distintivo assegnato da Onoranze Funebri Italia alle imprese che si contraddistinguono per serietà, trasparenza e affidabilità concreta nel tempo.
+    </p>
+  </section>
+
+  <section class="marchio-section">
+    <div class="marchio-card">
+      <h2>Che cos'è il Marchio di Affidabilità?</h2>
+      <p>
+        Il Marchio di Affidabilità Nazionale di Onoranze Funebri Italia è un riconoscimento simbolico riservato alle imprese che dimostrano impegno reale, rispetto verso i cittadini e una presenza autentica nel proprio territorio.
+      </p>
+      <ul>
+        <li>Profilo impresa completo e pubblico</li>
+        <li>Presenza reale e operativa sul territorio</li>
+        <li>Impegno concreto verso i cittadini</li>
+        <li>Partecipazione attiva alla rete OFI</li>
+      </ul>
+    </div>
+
+    <div class="marchio-card">
+      <h2>Perché è importante?</h2>
+      <p>
+        Questo simbolo aiuta le famiglie a riconoscere facilmente le imprese che operano con trasparenza, empatia e rispetto. 
+        È una guida per chi cerca affidabilità e serenità in un momento delicato.
+      </p>
+    </div>
+
+    <div class="marchio-disclaimer">
+      <p><strong>Nota legale:</strong> Il Marchio di Affidabilità Nazionale OFI è un simbolo distintivo privato, utilizzato da Onoranze Funebri Italia per evidenziare le imprese che rispettano criteri interni di qualità, trasparenza e serietà. Non rappresenta una certificazione pubblica né comporta obblighi legali esterni.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div style="max-width: 1000px; margin: auto;">
+      <p>
+        © 2025 Onoranze Funebri Italia – Tutti i diritti riservati<br/>
+        Portale nazionale per il supporto al cittadino e la valorizzazione delle imprese funebri
+      </p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../contatti.html">Contatti</a>
+        <a href="../faq.html">FAQ</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

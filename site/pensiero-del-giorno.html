@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="it" class="theme-ofi" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pensiero del giorno — OFI</title>
+  <meta name="description" content="Un pensiero di luce e conforto, ogni giorno da OFI.">
+
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Manteniamo ofi.css per coerenza tipografica/footers, ma NON carichiamo menu.js/ofi.js -->
+  <link rel="stylesheet" href="/ofi.css">
+
+  <style>
+    /* ===== Resetti difensivi per lo "shift a destra" su mobile Safari ===== */
+    *,*::before,*::after{ box-sizing:border-box; }
+    html, body{ width:100%; max-width:100%; overflow-x:hidden; }
+    img{ max-width:100%; height:auto; display:block; }
+
+    :root{
+      --gold:#caa85a;
+      --gold-soft:#e8d39a;
+      --blue-dark:#0b1f39;
+      --blue-deep:#071425;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.80);
+      --card:rgba(12,30,46,.92);
+      --card-border:rgba(202,168,90,.28);
+      --shadow:rgba(0,0,0,.35);
+      --padX:clamp(12px, 5vw, 28px);
+    }
+
+    body{
+      font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% -20%, rgba(202,168,90,.10), transparent 60%),
+        linear-gradient(180deg, var(--blue-dark), var(--blue-deep));
+      margin:0;
+    }
+
+    /* Safe areas iOS */
+    main{ padding-left:var(--padX); padding-right:var(--padX); }
+    @supports (padding:max(0px)){
+      main{ padding-left:max(var(--padX), env(safe-area-inset-left));
+            padding-right:max(var(--padX), env(safe-area-inset-right)); }
+      .site-header{ padding-left:env(safe-area-inset-left); padding-right:env(safe-area-inset-right); }
+    }
+
+    /* ===== Header minimale: SOLO logo (niente menu, niente toggle) ===== */
+    .site-header{
+      position:sticky; top:0; z-index:100; display:flex; align-items:center;
+      height:56px; padding:0 var(--padX);
+      background:transparent;
+    }
+    .site-header .brand a{ display:inline-flex; align-items:center; }
+    .site-header .brand .brand-logo{ height:30px; width:auto; }
+
+    /* ===== Layout ===== */
+    main.page{
+      min-height:calc(100vh - 140px);
+      display:grid; place-items:center; padding-top:22px; padding-bottom:40px;
+    }
+    .wrap{
+      width:min(900px, 100%);
+      text-align:center;
+      margin-inline:auto;
+      animation:fadeIn .6s ease-out both;
+    }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+
+    .page-title{
+      margin:.25rem 0 1rem;
+      text-transform:uppercase; letter-spacing:.12em;
+      color:var(--gold-soft); font-weight:800; font-size:.9rem;
+    }
+    .intro{
+      font-family:"Noto Serif",serif;
+      font-size:clamp(1.05rem, 1rem + .4vw, 1.25rem);
+      color:var(--muted);
+      margin:0 0 1.4rem;
+      line-height:1.6;
+    }
+
+    /* ===== Card pensiero ===== */
+    .thought{
+      position:relative; border:1px solid var(--card-border); background:var(--card);
+      border-radius:22px; padding: clamp(16px, 3.5vw, 28px) clamp(14px, 3vw, 22px);
+      box-shadow:0 18px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
+      overflow:hidden; contain: layout paint;
+      margin-inline:auto;
+    }
+    /* Bagliore morbido, non crea overflow layout grazie a contain */
+    .thought::before{
+      content:""; position:absolute; inset:-10% -10% auto -10%; height:60%;
+      background: radial-gradient(600px 260px at 50% 0%, rgba(202,168,90,.18), transparent 70%);
+      pointer-events:none; opacity:.8; animation:glow 5s ease-in-out infinite alternate;
+    }
+    @keyframes glow{ from{opacity:.6; transform:translateY(-6px)} to{opacity:.9; transform:translateY(6px)} }
+
+    .quote{
+      font-family:"Noto Serif",serif; font-weight:600;
+      font-size:clamp(1.32rem, 1.2rem + .8vw, 1.9rem);
+      line-height:1.6; color:var(--gold-soft);
+      text-shadow:0 0 10px rgba(202,168,90,.22);
+      margin:0 auto .6rem; max-width:760px; position:relative; padding-left:1.4rem;
+    }
+    .quote::before{
+      content:"“"; position:absolute; left:.1rem; top:-.65rem; opacity:.25;
+      font-size:clamp(2.2rem, 2rem + 1.2vw, 3rem); color:var(--gold-soft);
+    }
+    .author{ color:var(--gold-soft); font-weight:700; margin:0 0 1rem; min-height:1.2em; }
+
+    /* CTA */
+    .cta{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; justify-content:center; }
+    .btn{
+      appearance:none; border:0; border-radius:999px; padding:.7rem 1.2rem;
+      font-weight:800; letter-spacing:.02em; cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .btn:active{ transform:translateY(1px) scale(.99); }
+    .btn-share{
+      background: linear-gradient(180deg, #e8d39a, var(--gold));
+      color:#102845; box-shadow:0 10px 24px rgba(202,168,90,.3);
+      padding:.64rem 1.1rem; font-size:.98rem;
+    }
+
+    .status{ margin:.75rem 0 0; font-size:.95rem; color:var(--muted); min-height:1.2em; }
+
+    /* CTA primaria sotto la card */
+    .after{
+      margin: 1.8rem 0 0; line-height:1.55; color:var(--muted);
+      font-family:"Noto Serif",serif; font-size:clamp(1rem, .95rem + .2vw, 1.1rem);
+    }
+    .after .link{
+      display:inline-block; margin-top:.7rem; text-decoration:none; font-weight:800; color:#fff;
+      background: linear-gradient(180deg, #d44a3b, #c03a2b);
+      border-radius:999px; padding:.85rem 1.35rem; box-shadow:0 10px 24px rgba(192,58,43,.35);
+    }
+    .after .link:hover{ box-shadow:0 12px 30px rgba(192,58,43,.45); }
+
+    /* Mobile */
+    @media (max-width:480px){
+      .intro{ margin-bottom:1.1rem; }
+      .thought{ padding:16px 14px; }
+      .quote{ font-size:clamp(1.2rem, 4.6vw, 1.6rem); line-height:1.5; }
+      .cta .btn{ width:100%; max-width:420px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER: SOLO LOGO -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="wrap">
+      <h2 class="page-title">Pensiero del giorno</h2>
+      <p class="intro">Un piccolo raggio di luce quotidiano, da condividere con chi porta nel cuore un ricordo.</p>
+
+      <section class="thought">
+        <p id="pensieroTxt" class="quote">“Nel ricordo, ogni assenza trova una forma gentile di presenza.”</p>
+        <p id="pensieroAutore" class="author"></p>
+        <div class="cta">
+          <button id="shareBtn" class="btn btn-share" type="button">✨ Condividi</button>
+        </div>
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <div class="after">
+        Un piccolo gesto di luce può raggiungere qualcuno che ne ha bisogno.<br>
+        <a class="link" href="/index.html">Scopri OFI</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container small center">
+      <p>© 2025 OFI</p>
+    </div>
+  </footer>
+
+  <script>
+    /* Nessun toggle, nessun tema chiaro: forziamo SCURO sempre */
+    (function(){ document.documentElement.setAttribute('data-theme','dark'); })();
+
+    /* Pensiero dinamico */
+    const $=(s,sc=document)=>sc.querySelector(s);
+    const todayISO=(d=new Date())=>d.toISOString().slice(0,10);
+    const dayOfYear=(d)=>{const s=new Date(d.getFullYear(),0,0);return Math.floor((d-s)/86400000);};
+
+    async function fetchPensieri(){
+      try{
+        const res=await fetch('/data/pensieri_2025.json',{cache:'no-cache'});
+        if(!res.ok) throw 0; return await res.json();
+      }catch{
+        return [
+          "Nel ricordo, ogni assenza trova una forma gentile di presenza.",
+          "La memoria è una casa: apri le finestre alla luce.",
+          "Il bene donato non svanisce: diventa eredità per chi resta."
+        ];
+      }
+    }
+    function pickText(items,date){
+      const idx=(dayOfYear(date)-1)%items.length;
+      const raw=items[idx];
+      if(typeof raw==='string')return{text:raw,author:''};
+      if(typeof raw==='object')return{text:raw.text||raw.t||'',author:raw.author||raw.a||''};
+      return{text:'Oggi abito il silenzio con gratitudine.',author:''};
+    }
+    function setQuote({text,author}){
+      $('#pensieroTxt').textContent=`“${text}”`;
+      $('#pensieroAutore').textContent=author?`— ${author}`:'';
+    }
+
+    async function initThought(){
+      const items=await fetchPensieri();
+      const d=new Date();
+      const {text,author}=pickText(items,d);
+      setQuote({text,author});
+      const shareUrl=`${location.origin}/p/${todayISO(d)}`;
+      $('#shareBtn')?.addEventListener('click', async ()=>{
+        const payload={ title:'Pensiero del giorno — OFI', text, url: shareUrl };
+        try{
+          if(navigator.share){ await navigator.share(payload); }
+          else{ window.open(`https://wa.me/?text=${encodeURIComponent(text+' '+shareUrl)}`,'_blank'); }
+          $('#status').textContent='Grazie per aver condiviso 💫';
+        }catch{}
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initThought);
+  </script>
+</body>
+</html>

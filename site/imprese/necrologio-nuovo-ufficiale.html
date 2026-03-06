@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nuovo Necrologio – OFI</title>
+
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="necrologio-nuovo.css">
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <script defer src="/ofi.js"></script>
+  <script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&language=it&region=IT"
+  async
+  defer>
+</script>
+
+
+  <style>
+  .step-file-current{margin:10px 0 12px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(0,0,0,.12)}
+  .step-file-current-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .step-file-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.35);color:#f3d67b;font-weight:700;font-size:.9rem}
+  .step-file-remove{background:transparent;border:1px solid rgba(255,255,255,.18);color:#fff;padding:6px 10px;border-radius:12px;cursor:pointer}
+  .step-file-remove:hover{border-color:rgba(212,175,55,.55);color:#f3d67b}
+  .step-file-thumb{width:120px;height:160px;object-fit:cover;border-radius:14px;border:2px solid rgba(212,175,55,.45);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .step-file-hint{margin-top:8px;opacity:.85;font-size:.92rem}
+  </style>
+
+</head>
+
+<body>
+
+<!-- ========================================= -->
+<!-- HEADER COERENTE CON LOGIN IMPRESE        -->
+<!-- ========================================= -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/imprese/imprese-dashboard.html">DASHBOARD</a></li>
+      <li><a class="menu-callout" href="/imprese/necrologi-miei.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/imprese/preventivi.html">PREVENTIVI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><button class="btn btn-primary" id="logoutBtn" type="button">ESCI</button></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- =============================== -->
+<!-- HERO EMOZIONALE                 -->
+<!-- =============================== -->
+<section class="necro-hero">
+    <div class="necro-hero-inner">
+        <div class="necro-hero-content">
+            <div class="necro-hero-text">
+                <div class="necro-hero-eyebrow">Creazione Necrologio</div>
+                <h1>Troviamo insieme le parole giuste.</h1>
+                <p>Compila, parla in modo naturale o incolla un testo: l’Agente OFI trasformerà tutto in un necrologio elegante e professionale, pronto per la pubblicazione.</p>
+                
+                <div class="necro-hero-highlight">
+                    <span class="icon"><i class="fa-solid fa-feather"></i></span>
+                    Supporto avanzato tramite Intelligenza Artificiale
+                </div>
+
+                <div class="necro-hero-tricolore">
+                    <div class="necro-hero-flag"></div>
+                    <span class="necro-hero-tricolore-label">Standard Nazionale OFI</span>
+                </div>
+            </div>
+
+            <div class="necro-hero-agent">
+                <div class="necro-hero-agent-photo">
+                    <img src="/images/agente-ofi.png" alt="Agente OFI">
+                </div>
+                <div class="necro-hero-agent-label">Agente OFI</div>
+                <div class="necro-hero-agent-phrase">Ti guiderò passo dopo passo.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =============================== -->
+<!-- WIZARD                         -->
+<!-- =============================== -->
+<main class="ofi-main">
+
+<div class="wizard-shell">
+
+    <div class="wizard-card" id="wizardCard">
+
+        <!-- Header dinamico dello step -->
+        <div class="wizard-header">
+            <div class="wizard-eyebrow">
+  Passo <span id="stepNumber">1</span> di <span id="totalSteps">0</span>
+</div>
+            <h2 class="wizard-title" id="wizardTitle">Nome della persona cara.</h2>
+
+            <div class="step-progress">
+                <div class="step-progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- Campo input -->
+        <div class="wizard-layout">
+            <div class="agente-chat-container">
+
+                <!-- Messaggio Agente OFI -->
+                <div id="agentMessage" class="agent-message">
+                    👩‍💼 <strong>Agente OFI:</strong> <span id="agentText">Ti guiderò in ogni passo.</span>
+                </div>
+
+                <div class="step-field-wrapper">
+                    <input id="stepInput" type="text" placeholder="Rispondi qui..." autocomplete="off" />
+                </div>
+
+                <div id="stepHelper" class="step-helper"></div>
+                <div id="stepError" class="step-error"></div>
+
+                <div class="step-buttons">
+                    <button class="btn-soft" id="btnBack" disabled>
+                        <i class="fa-solid fa-arrow-left"></i> Indietro
+                    </button>
+
+                    <button class="btn-primary" id="btnNext">
+                        Avanti <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Anteprima generata: tenuta nascosta, usata solo internamente -->
+    <section class="preview-shell" id="previewShell">
+        <div class="preview-card" id="previewCard">
+            <div class="preview-header">Anteprima Necrologio</div>
+
+            <div class="preview-photo">
+                <div class="preview-photo-frame">
+                    <img id="previewPhoto" src="/images/rosa.png" alt="Foto" />
+                </div>
+            </div>
+
+            <div class="preview-text">
+                <p class="preview-hint">L’anteprima verrà generata automaticamente sulla base di tutte le informazioni inserite.</p>
+                <div id="previewBody" class="preview-body"></div>
+            </div>
+        </div>
+    </section>
+
+</div><!-- wizard-shell -->
+
+<!-- =============================== -->
+<!-- SEZIONE FINALE: INFO E BADGE    -->
+<!-- =============================== -->
+<section class="wizard-footer">
+    <div class="wizard-footer-left">
+        Quando tutti i passaggi sono completi e confermi l’ultimo step,
+        l’Agente OFI rilegge automaticamente le informazioni inserite e,
+        tramite Intelligenza Artificiale, propone il testo in tre varianti pronte
+        per l’uso: <strong>Elegante OFI</strong>, <strong>Calda</strong> e <strong>Essenziale</strong>.
+    </div>
+    <div class="wizard-footer-right">
+        <!-- Badge Agente OFI incluso -->
+        <div class="agente-ofi-badge">
+            <i class="fa-solid fa-shield-heart"></i>
+            Agente OFI incluso nel tuo abbonamento
+        </div>
+    </div>
+</section>
+
+<!-- Modal / Pagina finale necrologio -->
+<div class="result-modal" id="resultModal">
+  <div class="result-modal-content">
+
+    <button class="modal-close" id="closeResultModal" aria-label="Chiudi anteprima">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <section class="final-preview-shell">
+      <header class="final-preview-header">
+        <h2>Necrologio generato</h2>
+        <p>
+          Questo è l’aspetto con cui il necrologio verrà mostrato nella pagina pubblica OFI.
+          Puoi cambiare stile oppure tornare alla compilazione per correggere i dati.
+        </p>
+      </header>
+
+      <div class="final-preview-card">
+
+        <!-- FOTO DESKTOP (a sinistra) -->
+        <div class="final-preview-photo">
+          <div class="final-photo-frame">
+            <img id="finalPhoto" src="/images/rosa.png" alt="Fotografia della persona cara">
+          </div>
+        </div>
+
+        <!-- CORPO (testo) -->
+        <div class="final-preview-body">
+
+          <!-- ORNAMENTO (da mobile deve stare SOPRA alla foto) -->
+          <div class="final-ornament" id="finalOrnamentSlot"></div>
+
+          <!-- FOTO MOBILE (dentro al flusso del testo) -->
+          <div class="final-mobile-photo" id="finalMobilePhotoWrap">
+            <div class="final-photo-frame">
+              <img id="finalPhotoMobile" src="/images/rosa.png" alt="Fotografia della persona cara">
+            </div>
+          </div>
+
+          <article id="finalPreviewText" class="final-preview-text">
+            <!-- qui viene inserito il testo generato -->
+          </article>
+
+        </div>
+
+        <!-- FOOTER CARD: impresa (opzionale) a sinistra + sigillo (sempre) a destra -->
+        <div class="final-card-footer">
+
+          <!-- BLOCCO IMPRESA (OPZIONALE) -->
+          <a class="final-impresa-badge hidden" id="finalImpresaBadge"
+             href="#"
+             target="_blank" rel="noopener">
+            <img id="finalImpresaLogo" class="final-impresa-logo"
+                 src="/images/logo-ofi.png" alt="Logo impresa">
+            <div class="final-impresa-meta">
+              <div class="final-impresa-label">A cura di</div>
+              <div class="final-impresa-name" id="finalImpresaName">Impresa</div>
+            </div>
+          </a>
+
+          <!-- SIGILLO (SEMPRE) -->
+          <div class="ofi-editorial-seal ofi-editorial-seal--corner">
+            <img
+              src="/images/sigillo-editoriale.png"
+              alt="Sigillo editoriale OFI"
+              class="ofi-editorial-seal-img"
+            />
+            <div class="ofi-editorial-seal-text">
+              <strong>Sigillo editoriale OFI</strong><br>
+              Testo riletto e armonizzato secondo criteri editoriali di chiarezza e rispetto.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <section class="final-preview-controls">
+        <div class="final-variants" id="styleSwitcher">
+          <span class="final-variants-label">Stile proposto:</span>
+          <div class="final-variants-buttons">
+            <button type="button" class="final-variant-btn active"
+                    data-variant="elegante" data-target="var1">
+              Elegante OFI
+            </button>
+            <button type="button" class="final-variant-btn"
+                    data-variant="calda" data-target="var2">
+              Stile caldo
+            </button>
+            <button type="button" class="final-variant-btn"
+                    data-variant="essenziale" data-target="var3">
+              Essenziale
+            </button>
+          </div>
+        </div>
+
+        <div class="final-ornament-block">
+          <span class="final-ornament-label">Elemento grafico:</span>
+          <div class="final-ornament-buttons">
+            <button type="button" class="ornament-btn active" data-ornamento="none">
+              Nessuno
+            </button>
+            <button type="button" class="ornament-btn" data-ornamento="croce">
+              Crocefisso
+            </button>
+            <button type="button" class="ornament-btn" data-ornamento="gesu">
+              Gesù Cristo
+            </button>
+            <button type="button" class="ornament-btn" data-ornamento="madonna">
+              Madonna
+            </button>
+            <button type="button" class="ornament-btn" data-ornamento="angelo">
+              Angioletto
+            </button>
+            <button type="button" class="ornament-btn" data-ornamento="fiore">
+              Fiore
+            </button>
+          </div>
+        </div>
+
+        <div class="final-actions">
+          <button type="button" class="final-action-btn soft" id="resetWizardBtn">
+            <i class="fa-solid fa-rotate"></i>
+            Nuovo necrologio
+          </button>
+
+          <button type="button" class="final-action-btn soft" id="backToWizardBtn">
+            <i class="fa-solid fa-arrow-left"></i>
+            Correggi i dati (torna alla compilazione)
+          </button>
+
+          <button type="button" class="final-action-btn primary" id="saveFinalBtn">
+            <i class="fa-regular fa-bookmark"></i>
+            Conferma e salva su OFI
+          </button>
+        </div>
+      </section>
+
+      <!-- Contenitori nascosti per le varianti di testo -->
+      <div class="final-hidden-variants" aria-hidden="true">
+        <div class="result-text hidden" id="var1"></div>
+        <div class="result-text hidden" id="var2"></div>
+        <div class="result-text hidden" id="var3"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+</main>
+
+<!-- Footer legale -->
+<footer class="necro-footer">
+    <p>
+        Il presente necrologio è generato tramite il supporto dell’Agente OFI.
+        L’impresa è responsabile della veridicità dei contenuti e delle autorizzazioni dei familiari.
+    </p>
+</footer>
+
+<script type="module">
+// =======================================================
+// NECROLOGIO NUOVO – LOGICA WIZARD + ANTEPRIMA
+// =======================================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, serverTimestamp, doc, setDoc, getDoc,
+  GeoPoint
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+import * as geofire from
+  "https://cdn.jsdelivr.net/npm/geofire-common@6.0.0/dist/geofire-common/index.esm.js";
+
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL } 
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9",
+  storageBucket: "ofi2025-51ba9.firebasestorage.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const NECROLOGI_COLLECTION = "necrologi_pubblicati";
+
+let currentUser = null;
+let __authReadyResolve = null;
+const authReady = new Promise((res)=>{ __authReadyResolve = res; });
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user || null;
+  if (__authReadyResolve){ __authReadyResolve(); __authReadyResolve = null; }
+  console.log("Utente autenticato in necrologio-nuovo:", currentUser?.email || "nessuno");
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
+  // -----------------------------
+  // RIFERIMENTI DOM
+  // -----------------------------
+  const wizardTitle = document.getElementById("wizardTitle");
+  const progressBar = document.getElementById("progressBar");
+  const stepHelper = document.getElementById("stepHelper");
+  const stepError = document.getElementById("stepError");
+  const fieldWrapper = document.querySelector(".step-field-wrapper");
+  const agentTextEl = document.getElementById("agentText");
+  const btnBack = document.getElementById("btnBack");
+  const btnNext = document.getElementById("btnNext");
+  const previewShell = document.getElementById("previewShell");
+  const previewPhoto = document.getElementById("previewPhoto");
+  const previewBody = document.getElementById("previewBody");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  // Loader AI
+  const aiLoadingOverlay = document.getElementById("aiLoadingOverlay");
+  const aiLoadingText = document.getElementById("aiLoadingText");
+  const aiLoadingBar = document.getElementById("aiLoadingBar");
+  const aiLoadingPct = document.getElementById("aiLoadingPct");
+
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.warn("Logout Firebase non riuscito (procedo comunque):", e);
+    } finally {
+      window.location.href = "/login-imprese.html";
+    }
+  });
+}
+
+async function hydrateImpresaBadge() {
+  try {
+    if (!finalImpresaBadge || !finalImpresaName) return;
+    finalImpresaBadge.classList.add("hidden"); // default: nascosto
+
+    if (!currentUser?.email) return;
+
+    const impRef = doc(db, "imprese_registrate", currentUser.email);
+    const snap = await getDoc(impRef);
+    if (!snap.exists()) return;
+
+    const imp = snap.data() || {};
+    const nome = (imp.nomeImpresa || imp.nome || imp.ragioneSociale || "").trim();
+    const logo = (imp.logoURL || imp.logoUrl || imp.logo_url || imp.logo || imp.logoPath || "").trim();
+
+    if (!nome) return;
+
+    finalImpresaName.textContent = nome;
+    if (logo && finalImpresaLogo) finalImpresaLogo.src = logo;
+
+    finalImpresaBadge.href = `/imprese/profilo.html?id=${encodeURIComponent(currentUser.email)}`;
+    finalImpresaBadge.classList.remove("hidden");
+  } catch (e) {
+    console.warn("hydrateImpresaBadge error:", e);
+  }
+}
+
+  function setLoading(on, pct = 0, text = "Elaborazione…") {
+  if (!aiLoadingOverlay) return;
+
+  aiLoadingOverlay.hidden = !on;
+
+  // ✅ blocca scroll quando il loader è attivo
+  // ✅ quando lo spegni, lascia lo scroll bloccato se la modale è aperta
+  const modalOpen = !!document.getElementById("resultModal")?.classList.contains("open");
+  document.body.style.overflow = on ? "hidden" : (modalOpen ? "hidden" : "");
+
+  if (aiLoadingBar) aiLoadingBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+  if (aiLoadingPct) aiLoadingPct.textContent = `${Math.round(pct)}%`;
+  if (aiLoadingText) aiLoadingText.textContent = text;
+}
+
+  // Reset button
+  const resetWizardBtn = document.getElementById("resetWizardBtn");
+
+  // Modale / pagina finale
+  const resultModal = document.getElementById("resultModal");
+  const closeResultModal = document.getElementById("closeResultModal");
+
+  const finalPhoto = document.getElementById("finalPhoto");
+  const finalPreviewText = document.getElementById("finalPreviewText");
+  const finalImpresaBadge = document.getElementById("finalImpresaBadge");
+  const finalImpresaLogo  = document.getElementById("finalImpresaLogo");
+  const finalImpresaName  = document.getElementById("finalImpresaName");
+  const variantButtons = document.querySelectorAll(".final-variant-btn");
+  const toggleEditBtn = document.getElementById("toggleEditBtn");
+  const finalEditContainer = document.getElementById("finalEditContainer");
+  const ornamentButtons = document.querySelectorAll(".ornament-btn");
+  const finalOrnamentSlot = document.getElementById("finalOrnamentSlot");
+  const finalEditArea = document.getElementById("finalEditArea");
+  const editCitazione = document.getElementById("editCitazione");
+  const editFraseApertura = document.getElementById("editFraseApertura");
+  const editNome = document.getElementById("editNome");
+  const editCognome = document.getElementById("editCognome");
+  const editVedIn = document.getElementById("editVedIn");
+  const editSoprannome = document.getElementById("editSoprannome");
+  const editEta = document.getElementById("editEta");
+  const applyEditBtn = document.getElementById("applyEditBtn");
+  const backToWizardBtn = document.getElementById("backToWizardBtn");
+  const saveFinalBtn = document.getElementById("saveFinalBtn");
+
+  // Contenitori di testo delle varianti (nascosti)
+  const var1 = document.getElementById("var1");
+  const var2 = document.getElementById("var2");
+  const var3 = document.getElementById("var3");
+
+// -----------------------------
+// SWITCH VARIANTE (stile)
+// -----------------------------
+if (variantButtons && variantButtons.length) {
+  variantButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.variant || "elegante";   // elegante | calda | essenziale
+      const target = btn.dataset.target || "var1";     // var1 | var2 | var3
+
+      currentVariantKey = key;
+      currentVariantId = target;
+
+      // UI active state
+      variantButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      // aggiorna anteprima visibile
+      updateFinalPreviewFromVariant();
+
+      // se il box modifiche è aperto, riallinea i campi
+      const isEditOpen = finalEditContainer && !finalEditContainer.classList.contains("hidden");
+      if (isEditOpen) {
+        if (editCitazione) editCitazione.value = answers.citazione || "";
+        if (editFraseApertura) editFraseApertura.value = answers.fraseApertura || "";
+        if (editNome) editNome.value = answers.nome || "";
+        if (editCognome) editCognome.value = answers.cognome || "";
+        if (editVedIn) editVedIn.value = answers.vedIn || "";
+        if (editSoprannome) editSoprannome.value = answers.soprannome || "";
+        if (editEta) editEta.value = answers.eta || "";
+        syncEditAreaFromVariant();
+      }
+    });
+  });
+}
+
+  // -----------------------------
+  // DEFINIZIONE STEP
+  // -----------------------------
+  const steps = [
+    { id: "nome", title: "Nome della persona cara.", subtitle: "Inserisci il nome proprio (es. Maria, Giovanni...).", type: "text", required: true, placeholder: "Es. Maria" },
+    { id: "cognome", title: "Cognome della persona cara.", subtitle: "Inserisci il cognome (es. Rossi, Bianchi...).", type: "text", required: true, placeholder: "Es. Rossi" },
+    {
+      id: "vedIn",
+      title: "Indicazione \"Ved.\" o \"In\" (se donna)",
+      subtitle: "Se la persona è una donna sposata o vedova e desideri indicarlo, scrivi ad esempio “ved. Bianchi” oppure “in Bianchi” (facoltativo).",
+      type: "text",
+      required: false,
+      placeholder: "Es. ved. Bianchi"
+    },
+    { id: "soprannome", title: "La persona aveva un soprannome?", subtitle: "Se desideri, inserisci un soprannome affettuoso (facoltativo).", type: "text", required: false, placeholder: "Es. Nonna Rina" },
+    { id: "eta", title: "Desideri indicare l’età?", subtitle: "Inserisci l’età da indicare nel necrologio (facoltativo).", type: "text", required: false, placeholder: "Es. 82" },
+    
+  {
+  id: "citazione",
+  title: "Vuoi inserire una citazione iniziale?",
+  subtitle: "Puoi incollare una citazione già pronta oppure scrivere una richiesta e l’Agente OFI la creerà per te.",
+  type: "textarea",
+  required: false,
+  placeholder: "Esempio: “Scrivi una citazione emozionale breve” oppure incolla una citazione già pronta.",
+  helperHtml: `
+    <div class="ofi-note">
+      <div class="ofi-note-title">Nota OFI (importante)</div>
+      <ul class="ofi-note-list">
+        <li><strong>Richiesta libera</strong> (es. “Scrivi una citazione emozionale”): l’Agente OFI crea una frase <strong>originale</strong>.</li>
+        <li><strong>Richiesta “di” una persona reale</strong> (es. Vasco Rossi, Neruda…): per correttezza, OFI <strong>non attribuisce</strong> frasi a persone reali. Crea una frase originale e firma <strong>— OFI</strong>.</li>
+        <li><strong>Citazione già completa incollata</strong>: OFI la mantiene (corregge solo maiuscole/punteggiatura).</li>
+      </ul>
+    </div>
+  `
+},
+    { id: "fraseApertura", title: "Vuoi una frase di apertura prima del nome?", subtitle: "es. “È mancata all’affetto dei suoi cari”, “Ci ha lasciato la nostra cara” (facoltativo).", type: "textarea", required: false, placeholder: "Inserisci la frase di apertura o lascia vuoto." },
+    { id: "foto", title: "Vuoi inserire una fotografia?", subtitle: "Carica una fotografia della persona cara. Verrà mostrata nel riquadro standard OFI.", type: "file", required: false, helper: "Formato consigliato: verticale, volto ben visibile." },
+    { id: "chiAnnuncia", title: "Chi annuncia la scomparsa?", subtitle: "Inserisci l’elenco dei familiari o delle persone che annunciano la scomparsa.", type: "textarea", required: true, placeholder: "Es. I figli Marco e Anna, i generi, i nipoti e i parenti tutti." },
+    { id: "ringraziamentiAssistenza", title: "Vuoi inserire ringraziamenti a chi ha assistito la persona?", subtitle: "Se desideri, indica medici, infermieri o persone che hanno accompagnato la persona nel suo percorso (facoltativo).", type: "textarea", required: false, placeholder: "Es. Un sentito ringraziamento al personale medico e infermieristico..." },
+    { id: "luogoSalma", title: "Dove si trova la salma?", subtitle: "Indica il luogo dove è possibile fare visita (sala del commiato, abitazione, ecc.).", type: "textarea", required: false, placeholder: "Es. La cara salma è composta presso la Casa del Commiato La Pace..." },
+    { id: "orariVisita", title: "Vuoi indicare orari di visita?", subtitle: "Specificare eventuali orari (facoltativo).", type: "textarea", required: false, placeholder: "Es. Orari di visita: 9.00–12.00 e 14.00–19.00." },
+    { id: "veglia", title: "È prevista una veglia o momento di preghiera?", subtitle: "Inserisci eventuali informazioni su veglia di preghiera o rosario (facoltativo).", type: "textarea", required: false, placeholder: "Es. Il Santo Rosario sarà recitato la sera precedente alle ore..." },
+    { id: "tipoRito", title: "Tipo di rito funebre.", subtitle: "Seleziona il tipo di rito.", type: "select", required: false, options: [
+      { value: "", label: "Non specificato" },
+      { value: "religioso", label: "Religioso" },
+      { value: "laico", label: "Laico" }
+    ]},
+    { id: "luogoFunerale", title: "Dove si svolgerà il funerale?", subtitle: "Indica la chiesa, sala del commiato o altro luogo.", type: "textarea", required: true, placeholder: "Es. I funerali si svolgeranno nella Chiesa Parrocchiale di..." },
+    { id: "comuneFunerale", title: "In quale comune si svolgerà il funerale?", subtitle: "Inserisci il comune di svolgimento del funerale.", type: "text", required: true, placeholder: "Es. Bergamo" },
+    { id: "dataFunerale", title: "In che data si svolgerà il funerale?", subtitle: "Seleziona la data del funerale.", type: "date", required: true },
+    { id: "oraFunerale", title: "Vuoi indicare l’ora del funerale?", subtitle: "Specificare l’ora del funerale (facoltativo).", type: "time", required: false },
+    { id: "cremazioneCimitero", title: "Vuoi aggiungere informazioni su cremazione o cimitero?", subtitle: "Inserisci eventuali dettagli su cremazione, tumulazione o luogo di sepoltura (facoltativo).", type: "textarea", required: false, placeholder: "Es. Dopo le esequie la cara salma proseguirà per il Tempio Crematorio..." },
+    { id: "fraseRicordo", title: "Vuoi inserire una frase breve di ricordo?", subtitle: "Puoi scrivere la frase o chiedere all’Agente OFI di proporne una.", type: "textarea", required: false, placeholder: "Es. Rimarrai per sempre nei nostri cuori." },
+    { id: "fraseRingraziamentoFinale", title: "Vuoi inserire una frase di ringraziamento finale?", subtitle: "es. “I familiari ringraziano anticipatamente quanti prenderanno parte alla cerimonia.”", type: "textarea", required: false, placeholder: "Scrivi qui la frase finale." },
+    { id: "comuneRigaFinale", title: "Comune da indicare nella riga finale.", subtitle: "Indica il comune che comparirà alla fine del necrologio.", type: "text", required: true, placeholder: "Es. Bergamo" },
+    { id: "dataNecrologio", title: "Data del necrologio.", subtitle: "Seleziona la data da indicare nella riga finale.", type: "date", required: true },
+    { id: "consensi", title: "Confermi consenso e veridicità dei dati?", subtitle: "Per procedere è necessario avere il consenso dei familiari e garantire che i dati inseriti siano corretti.", type: "select", required: true, options: [
+      { value: "", label: "Seleziona un'opzione" },
+      { value: "si", label: "Sì, confermo" },
+      { value: "no", label: "No" }
+    ]}
+  ];
+
+  const TOTAL_STEPS = steps.length;
+  const totalStepsEl = document.getElementById("totalSteps");
+  if (totalStepsEl) totalStepsEl.textContent = String(TOTAL_STEPS);
+
+  // -----------------------------
+  // STATO
+  // -----------------------------
+  let currentStepIndex = 0;
+  let answers = {};
+    // ----------------------------------
+  // PREFILL CAMPi se sei in MODIFICA
+  // ----------------------------------
+  async function prefillWizardIfEditingLocal(){
+    const editingId = getEditingNecrologioIdFromUrl();
+    if (!IS_EDIT_MODE || !editingId) return false;
+    await authReady;
+    if (!currentUser){
+      alert("Per modificare devi essere loggato come impresa.");
+      window.location.href = "/imprese/login-imprese.html";
+      return false;
+    }
+    const snap = await getDoc(doc(db, "necrologi_pubblicati", editingId));
+    if (!snap.exists()){
+      alert("Necrologio non trovato (ID: " + editingId + ")");
+      window.location.href = "/imprese/necrologi-miei.html";
+      return false;
+    }
+    const data = snap.data() || {};
+    if (data.uidImpresa && data.uidImpresa !== currentUser.uid){
+      alert("Questo necrologio non appartiene alla tua impresa.");
+      window.location.href = "/imprese/necrologi-miei.html";
+      return false;
+    }
+    answers = (data.answersSnapshot && typeof data.answersSnapshot === "object") ? { ...data.answersSnapshot } : {};
+    photoDataUrl = (data.photoURL || data.photoDataUrl || data.foto || null);
+    
+    try { if (photoDataUrl) { answers.foto = photoDataUrl; } } catch {}
+currentOrnamentKey = (data.ornamentKey || currentOrnamentKey || "none");
+    currentVariantKey = (data.variantKey || currentVariantKey || "elegante");
+    geoFinale = (data.geoFinale || geoFinale || null);
+    geoFunerale = (data.geoFunerale || geoFunerale || null);
+
+    // aggiorna foto anteprima (se disponibili)
+    try{ if (previewPhoto) previewPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png"; }catch{}
+    try{ if (finalPhoto) finalPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png"; }catch{}
+    try{ if (finalPhotoMobile) finalPhotoMobile.src = photoDataUrl ? photoDataUrl : "/images/rosa.png"; }catch{}
+
+    // aggiorna ornamento UI
+    try{
+      ornamentButtons.forEach(b=>b.classList.remove("active"));
+      const ob = ornamentButtons.find(b => (b.dataset.ornamento||"") === currentOrnamentKey);
+      if (ob) ob.classList.add("active");
+      if (typeof renderOrnament === "function") renderOrnament(currentOrnamentKey);
+    }catch{}
+
+    // variante UI (se i bottoni esistono)
+    try{
+      document.querySelectorAll(".final-variant-btn").forEach(b=>b.classList.remove("active"));
+const vb = document.querySelector(`.final-variant-btn[data-variant="${currentVariantKey}"]`);
+if (vb) vb.classList.add("active");
+      if (vb) vb.classList.add("active");
+    }catch{}
+    return true;
+  }
+
+let photoDataUrl = null;
+  let geoFinale = null;     // { placeId, label, comune, provincia, lat, lng, frazione? }
+  let geoFunerale = null;   // opzionale (se vuoi anche per comuneFunerale)
+
+  let currentVariantKey = "elegante"; // elegante | calda | essenziale
+  let currentVariantId = "var1";      // var1 | var2 | var3
+  let currentOrnamentKey = "none";
+  const STYLE_TONE_MAP = {
+  elegante: "sobrio",
+  calda: "affettuoso",
+  essenziale: "molto_sobrio"
+};
+
+  let editMeta = {
+    hasEm: [],
+    headerHtml: ""
+  };
+
+  // -----------------------------
+  // RENDER DEL CAMPO PER STEP
+  // -----------------------------
+  function renderStep(index) {
+    const step = steps[index];
+    currentStepIndex = index;
+
+    wizardTitle.textContent = step.title;
+    // Supporto helper testuale o HTML (box istituzionale)
+if (step.helperHtml) {
+  stepHelper.innerHTML = step.helperHtml;
+} else {
+  stepHelper.textContent = step.helper || "";
+}
+    stepError.textContent = "";
+
+    if (agentTextEl) {
+      agentTextEl.textContent = step.subtitle || "Ti guiderò in ogni passo.";
+    }
+
+    const percent = ((index + 1) / TOTAL_STEPS) * 100;
+    progressBar.style.width = `${percent}%`;
+
+    const wizardEyebrow = document.querySelector(".wizard-eyebrow");
+    if (wizardEyebrow) {
+      wizardEyebrow.textContent = `Passo ${index + 1} di ${TOTAL_STEPS}`;
+    }
+
+    const stepNumberSpan = document.getElementById("stepNumber");
+    if (stepNumberSpan) {
+      stepNumberSpan.textContent = index + 1;
+    }
+
+    btnBack.disabled = index === 0;
+    btnNext.innerHTML = index === TOTAL_STEPS - 1
+      ? '<i class="fa-solid fa-wand-magic-sparkles"></i> Genera necrologio'
+      : 'Avanti <i class="fa-solid fa-arrow-right"></i>';
+
+    if (previewShell) {
+      previewShell.style.display = "none";
+    }
+
+    fieldWrapper.innerHTML = "";
+    let fieldEl;
+
+    switch (step.type) {
+      case "textarea":
+        fieldEl = document.createElement("textarea");
+        fieldEl.rows = 4;
+        break;
+      case "select":
+        fieldEl = document.createElement("select");
+        (step.options || []).forEach(opt => {
+          const o = document.createElement("option");
+          o.value = opt.value;
+          o.textContent = opt.label;
+          fieldEl.appendChild(o);
+        });
+        break;
+      case "date":
+        fieldEl = document.createElement("input");
+        fieldEl.type = "date";
+        break;
+      case "time":
+        fieldEl = document.createElement("input");
+        fieldEl.type = "time";
+        break;
+      case "file":
+        fieldEl = document.createElement("input");
+        fieldEl.type = "file";
+        fieldEl.accept = "image/*";
+        break;
+      default:
+        fieldEl = document.createElement("input");
+        fieldEl.type = "text";
+    }
+
+    fieldEl.id = "stepInput";
+    fieldEl.name = step.id;
+    fieldEl.autocomplete = "off";
+
+    if (step.type !== "file" && step.type !== "select") {
+      fieldEl.value = "";
+    }
+
+    if (step.placeholder && step.type !== "select" && step.type !== "file") {
+      fieldEl.placeholder = step.placeholder;
+    }
+
+    if (typeof answers[step.id] !== "undefined" && step.type !== "file") {
+      fieldEl.value = answers[step.id];
+    }
+
+    
+    // ✅ In modalità modifica non è possibile "pre-compilare" un input file.
+    // Mostriamo quindi la foto già presente (se esiste) e permettiamo la sostituzione.
+    if (step.type === "file" && photoDataUrl) {
+      const info = document.createElement("div");
+      info.className = "step-file-current";
+
+      const row = document.createElement("div");
+      row.className = "step-file-current-row";
+
+      const chip = document.createElement("span");
+      chip.className = "step-file-chip";
+      chip.textContent = "Foto attuale: presente ✅";
+
+      const btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "step-file-remove";
+      btnRemove.textContent = "Rimuovi foto";
+      btnRemove.addEventListener("click", () => {
+        photoDataUrl = null;
+        answers[step.id] = "";
+        answers.foto = "";
+        try { fieldEl.value = ""; } catch {}
+        try { previewPhoto.src = "/images/rosa.png"; } catch {}
+        try { finalPhoto.src = "/images/rosa.png"; } catch {}
+        try { info.remove(); } catch {}
+      });
+
+      row.appendChild(chip);
+      row.appendChild(btnRemove);
+
+      const img = document.createElement("img");
+      img.className = "step-file-thumb";
+      img.src = photoDataUrl;
+      img.alt = "Foto attuale";
+
+      const hint = document.createElement("div");
+      hint.className = "step-file-hint";
+      hint.textContent = "Se vuoi sostituirla, seleziona un nuovo file qui sotto.";
+
+      info.appendChild(row);
+      info.appendChild(img);
+      info.appendChild(hint);
+
+      fieldWrapper.appendChild(info);
+    }
+
+    fieldWrapper.appendChild(fieldEl);
+
+   // =========================
+// GOOGLE PLACES AUTOCOMPLETE (solo per comuni)
+// =========================
+if (step.id === "comuneRigaFinale" || step.id === "comuneFunerale") {
+  initPlacesForComune(fieldEl, step.id);
+}
+
+    if (step.type === "file") {
+  fieldEl.addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    // serve login impresa per salvare su path /imprese_media/{uid}/...
+    if (!currentUser) {
+      stepError.textContent = "Per caricare una foto devi essere loggato come impresa.";
+      e.target.value = "";
+      return;
+    }
+
+    // controllo tipo (coerente con storage.rules)
+    const isImage = (file.type || "").startsWith("image/");
+    if (!isImage) {
+      stepError.textContent = "Formato non valido. Carica un’immagine (JPG/PNG/WebP).";
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      stepError.textContent = "";
+      setLoading(true, 10, "Caricamento foto in corso…");
+
+      const safeName = (file.name || "foto.jpg").replace(/[^\w.\-]+/g, "_");
+      const path = `imprese_media/${currentUser.uid}/necrologi/${Date.now()}_${safeName}`;
+      const fileRef = sRef(storage, path);
+
+      await uploadBytes(fileRef, file, { contentType: file.type });
+      const url = await getDownloadURL(fileRef);
+
+      // da qui in poi NON è più base64: è una URL di Storage
+      photoDataUrl = url;
+      answers.foto = url;
+
+      if (previewPhoto) previewPhoto.src = url;
+      if (finalPhoto) finalPhoto.src = url;
+      const finalPhotoMobile = document.getElementById("finalPhotoMobile");
+      if (finalPhotoMobile) finalPhotoMobile.src = url;
+
+      setLoading(false);
+    } catch (err) {
+      console.error("Upload foto fallito:", err);
+      setLoading(false);
+      stepError.textContent = "Errore nel caricamento foto. Riprova.";
+      e.target.value = "";
+    }
+  });
+}
+
+    updatePreview();
+  }
+
+function initPlacesForComune(inputEl, stepId) {
+  if (!window.google || !google.maps || !google.maps.places) {
+    console.warn("Google Places non disponibile. Controlla lo script nel <head>.");
+    return;
+  }
+
+  // Autocomplete: Italia, risultati geografici (anche frazioni)
+  const ac = new google.maps.places.Autocomplete(inputEl, {
+    types: ["geocode"],
+    componentRestrictions: { country: "it" },
+    fields: ["place_id", "formatted_address", "geometry", "address_components", "name"]
+  });
+
+  // Piccolo aiuto UX
+  inputEl.setAttribute("autocomplete", "off");
+
+  ac.addListener("place_changed", () => {
+    const place = ac.getPlace();
+    if (!place || !place.geometry || !place.geometry.location) return;
+
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+
+    // Estrai componenti utili: frazione/località + comune + provincia
+    const comps = place.address_components || [];
+
+    const getComp = (types) => {
+      const found = comps.find(c => types.some(t => (c.types || []).includes(t)));
+      return found ? found.long_name : "";
+    };
+
+    const frazione =
+      getComp(["sublocality", "sublocality_level_1", "neighborhood", "locality"]) || "";
+
+    // Comune canonico: preferisci "locality", fallback su admin_area_level_3
+    const comune =
+      getComp(["locality"]) ||
+      getComp(["administrative_area_level_3"]) ||
+      frazione ||
+      (place.name || "");
+
+    // Provincia: admin_area_level_2 spesso è "Provincia di Bergamo"
+    let provincia = getComp(["administrative_area_level_2"]) || "";
+    provincia = provincia.replace(/^Provincia di\s+/i, "").trim();
+
+    // Label da mettere nel necrologio:
+    // se frazione diversa dal comune → "Frazione, Comune (Provincia)"
+    // altrimenti → "Comune (Provincia)"
+    const frazNorm = (frazione || "").trim();
+    const comNorm = (comune || "").trim();
+
+    let labelBase = comNorm;
+    if (frazNorm && comNorm && frazNorm.toLowerCase() !== comNorm.toLowerCase()) {
+      labelBase = `${frazNorm}, ${comNorm}`;
+    } else if (frazNorm && !comNorm) {
+      labelBase = frazNorm;
+    }
+
+    const label = provincia ? `${labelBase} (${provincia})` : labelBase;
+
+    // Imposta input
+    inputEl.value = label;
+
+    // Salva su answers
+    if (stepId === "comuneRigaFinale") {
+      answers.comuneRigaFinale = label;
+      geoFinale = {
+        placeId: place.place_id || null,
+        label,
+        frazione: frazNorm || null,
+        comune: comNorm || labelBase,
+        provincia: provincia || null,
+        lat, lng,
+        source: "google_places"
+      };
+    }
+
+    if (stepId === "comuneFunerale") {
+      answers.comuneFunerale = labelBase; // qui spesso vuoi solo il comune, senza provincia
+      geoFunerale = {
+        placeId: place.place_id || null,
+        label: labelBase,
+        frazione: frazNorm || null,
+        comune: comNorm || labelBase,
+        provincia: provincia || null,
+        lat, lng,
+        source: "google_places"
+      };
+    }
+
+    // pulisci eventuali errori
+    if (stepError) stepError.textContent = "";
+  });
+
+  // Se l’utente digita a mano e NON seleziona un suggerimento:
+  // invalidiamo geo per evitare pallini sbagliati
+  inputEl.addEventListener("input", () => {
+    if (stepId === "comuneRigaFinale") geoFinale = null;
+    if (stepId === "comuneFunerale") geoFunerale = null;
+  });
+}
+
+  // -----------------------------
+  // VALIDAZIONE STEP
+  // -----------------------------
+  function validateCurrentStep() {
+  const step = steps[currentStepIndex];
+  const input = document.getElementById("stepInput");
+
+  // FILE: non validiamo qui
+  if (step.type === "file") return true;
+
+  const value = (input?.value || "").trim();
+
+  // ✅ BLOCCO COMUNE (serve per Mappa dei Ricordi)
+  if (step.id === "comuneRigaFinale") {
+    if (!value) {
+      stepError.textContent = "Questo campo è obbligatorio.";
+      return false;
+    }
+    if (!geoFinale) {
+      stepError.textContent = "Seleziona il comune dalla lista (serve per la Mappa dei Ricordi).";
+      return false;
+    }
+  }
+
+  // ✅ CONSENSI
+  if (step.id === "consensi") {
+    if (value !== "si") {
+      stepError.textContent = "Per procedere è necessario confermare il consenso.";
+      return false;
+    }
+    return true;
+  }
+
+  // ✅ REQUIRED generici
+  if (step.required && !value) {
+    stepError.textContent = "Questo campo è obbligatorio.";
+    return false;
+  }
+
+  return true;
+}
+
+  // -----------------------------
+  // SALVATAGGIO RISPOSTA STEP
+  // -----------------------------
+  function saveCurrentStepAnswer() {
+    const step = steps[currentStepIndex];
+    const input = document.getElementById("stepInput");
+
+    if (step.type === "file") {
+  if (photoDataUrl) answers[step.id] = photoDataUrl; // URL
+  return;
+}
+
+    if (!input) return;
+    const value = (input.value || "").trim();
+    answers[step.id] = value;
+  }
+
+  // -----------------------------
+  // COSTRUZIONE TESTO BASE NECROLOGIO
+  // -----------------------------
+  function normalizeInstructionalField(value, defaultText = "") {
+  const raw = (value || "").trim();
+  if (!raw) return "";
+
+  const lower = raw.toLowerCase();
+
+  const isInstruction =
+    lower.includes("scrivi tu") ||
+    lower.includes("scrivi una frase") ||
+    lower.includes("scrivila tu") ||
+    lower.includes("scrivilo tu") ||
+    lower.includes("scrivi per me") ||
+    lower.includes("pensaci tu") ||
+    lower.includes("fai tu") ||
+    lower.includes("decidi tu") ||
+    // ✅ nuovi casi reali
+    lower.includes("metti una citazione") ||
+    lower.includes("inserisci una citazione") ||
+    lower.includes("una citazione classica") ||
+    lower.includes("con autore") ||
+    lower.includes("con nome autore") ||
+    lower.includes("scegli una citazione") ||
+    lower.startsWith("si metti una citazione") ||
+    lower.startsWith("sì metti una citazione");
+
+  if (isInstruction) return defaultText;
+  return raw;
+}
+
+  function buildNecrologioText(tone = "elegante") {
+  const nome = (answers.nome || "").trim();
+  const cognome = (answers.cognome || "").trim();
+  const soprannome = (answers.soprannome || "").trim();
+  const eta = (answers.eta || "").trim();
+  const vedIn = (answers.vedIn || "").trim();
+
+  const citazione = (answers.citazione || "").trim(); // ok
+let fraseApertura = (answers.fraseApertura || "").trim();
+
+// stessa regola “generica” usata in buildNecrologioText
+const nomeCognome = `${(answers.nome||"").trim()} ${(answers.cognome||"").trim()}`.trim();
+const vedInClean = (answers.vedIn || "").trim();
+const etaClean = (answers.eta || "").trim();
+
+const hasName = nomeCognome && fraseApertura.toLowerCase().includes(nomeCognome.toLowerCase());
+const hasVedIn = vedInClean && fraseApertura.toLowerCase().includes(vedInClean.toLowerCase());
+const hasEta = etaClean && new RegExp(`\\b${etaClean}\\b`).test(fraseApertura);
+
+if (hasName || hasVedIn || hasEta) fraseApertura = "";
+
+  const chiAnnuncia = (answers.chiAnnuncia || "").trim();
+  const ringraziamentiAssistenza = (answers.ringraziamentiAssistenza || "").trim();
+
+  const luogoSalma = (answers.luogoSalma || "").trim();
+  const orariVisita = (answers.orariVisita || "").trim();
+  const veglia = (answers.veglia || "").trim();
+  const tipoRito = (answers.tipoRito || "").trim();
+  const luogoFunerale = (answers.luogoFunerale || "").trim();
+  const comuneFunerale = (answers.comuneFunerale || "").trim();
+  const dataFunerale = (answers.dataFunerale || "").trim();
+  const oraFunerale = (answers.oraFunerale || "").trim();
+  const cremazioneCimitero = (answers.cremazioneCimitero || "").trim();
+
+  const fraseRicordo = (answers.fraseRicordo || "").trim();
+  const fraseRingraziamentoFinale = (answers.fraseRingraziamentoFinale || "").trim();
+  const comuneRigaFinale = (answers.comuneRigaFinale || "").trim();
+  const dataNecrologio = (answers.dataNecrologio || "").trim();
+
+  const righe = [];
+
+  // CITAZIONE
+const citazionePulita = (citazione || "").trim();
+let citazioneFinale = citazionePulita || "";
+
+// Se contiene già virgolette tipografiche o "..." non aggiungiamo altre « »
+const hasQuotes = /[«»"]/.test(citazioneFinale);
+
+if (citazioneFinale) {
+  if (hasQuotes) {
+    righe.push(`<p><em>${escapeHtml(citazioneFinale)}</em></p>`);
+  } else {
+    righe.push(`<p><em>«${escapeHtml(citazioneFinale)}»</em></p>`);
+  }
+}
+
+  // FRASE DI APERTURA (sempre generica, niente nome/cognome/ved./età – ora gestito dalla function server)
+  let apertura = normalizeInstructionalField(fraseApertura, "");
+  if (!apertura) {
+    if (tone === "calda") {
+      apertura = "Con profonda tristezza annunciamo la scomparsa della nostra cara.";
+    } else if (tone === "essenziale") {
+      apertura = "È mancata all’affetto dei suoi cari.";
+    } else {
+      apertura = "Ci ha lasciato la nostra cara.";
+    }
+  }
+  const aperturaConPunto = ensureSentenceEnd(apertura);
+  righe.push(`<p>${escapeHtml(aperturaConPunto)}</p>`);
+
+  // BLOCCO NOME / VED.IN / SOPRANNOME / ETÀ
+  const headerLines = [];
+  if (nome || cognome) {
+    const nomeCompleto = `${nome} ${cognome}`.trim().toUpperCase();
+    headerLines.push(`<strong>${escapeHtml(nomeCompleto)}</strong>`);
+  }
+  if (vedIn) {
+    headerLines.push(`<span>${escapeHtml(vedIn)}</span>`);
+  }
+  if (soprannome) {
+    headerLines.push(`<span><em>(${escapeHtml(soprannome)})</em></span>`);
+  }
+  if (eta) {
+    headerLines.push(`<span><em>di anni ${escapeHtml(eta)}</em></span>`);
+  }
+  if (headerLines.length > 0) {
+    righe.push(`<p>${headerLines.join("<br>")}</p>`);
+  }
+
+      // PARAGRAFO 1 – SOLO chi annuncia (familiari)
+  const parFamigliaRefined =
+  (answers[`paragrafoFamigliaRefined_${tone}`] || answers.paragrafoFamigliaRefined || "").trim();
+
+const fallbackFamiglia = (answers.chiAnnuncia || "").trim();
+
+const famigliaDaStampare = parFamigliaRefined || fallbackFamiglia;
+
+if (famigliaDaStampare) {
+  const par1 = ensureSentenceEnd(famigliaDaStampare);
+  righe.push(`<p class="section-break">${escapeHtml(par1)}</p>`);
+}
+
+  // PARAGRAFO 2 – ringraziamento per l'assistenza (es. Giorgia)
+  const ringraziamentiAssistenzaFinali = normalizeInstructionalField(
+    ringraziamentiAssistenza,
+    "Un sentito ringraziamento al personale medico e infermieristico per le cure premurose prestate."
+  );
+  if (ringraziamentiAssistenzaFinali) {
+    const txt = ensureSentenceEnd(ringraziamentiAssistenzaFinali.trim());
+    righe.push(`<p class="section-break"><em>${escapeHtml(txt)}</em></p>`);
+  }
+
+  // PARAGRAFO 3 – blocco unico dettagli (salma, visite, veglia, funerale, cremazione)
+  const parDettagliRefined = (answers[`paragrafoDettagliRefined_${tone}`] || answers.paragrafoDettagliRefined || "").trim();
+  if (parDettagliRefined) {
+    const parDet = ensureSentenceEnd(parDettagliRefined);
+    righe.push(`<p class="section-break">${escapeHtml(parDet)}</p>`);
+  } else {
+    // fallback se per qualche motivo non abbiamo il refine
+    const draftDet = buildParagrafoDettagliDraft(tone);
+    if (draftDet) {
+      righe.push(`<p class="section-break">${escapeHtml(draftDet)}</p>`);
+    }
+  }
+
+  // PARAGRAFO 4 – frase di ricordo dei parenti (Resterà sempre nei nostri cuori…)
+  const fraseRicordoFinale = normalizeInstructionalField(
+    fraseRicordo,
+    "Resterai sempre nei nostri cuori con affetto e gratitudine."
+  );
+  if (fraseRicordoFinale) {
+    const txt = ensureSentenceEnd(fraseRicordoFinale);
+    righe.push(`<p><em>${escapeHtml(txt)}</em></p>`);
+  }
+
+  // PARAGRAFO 5 – ringraziamento finale a chi è stato vicino
+  const fraseRingraziamentoFinaleOk = normalizeInstructionalField(
+    fraseRingraziamentoFinale,
+    "Grazie a tutti coloro che ci sono stati vicini in questo momento di grande dolore."
+  );
+  if (fraseRingraziamentoFinaleOk) {
+    const txt = ensureSentenceEnd(fraseRingraziamentoFinaleOk.trim());
+    righe.push(`<p class="section-break"><em>${escapeHtml(txt)}</em></p>`);
+  }
+
+
+  // RIGA FINALE – comune + data
+  if (comuneRigaFinale || dataNecrologio) {
+    const comuneFinale = comuneRigaFinale
+      ? comuneRigaFinale.trim().toUpperCase()
+      : "";
+    const dataFinale = dataNecrologio ? formatDateItalian(dataNecrologio) : "";
+    const finale = `${comuneFinale}${comuneFinale && dataFinale ? ", " : ""}${dataFinale}`.trim();
+    if (finale) {
+      righe.push(`<p>${escapeHtml(finale)}</p>`);
+    }
+  }
+
+  return righe.join("\n\n");
+}
+
+  // Costruisce la BOZZA del paragrafo famiglia/salma/visite/veglia
+  // da passare alla modalità "refine" dell'Agente OFI
+  function buildParagrafoFamigliaDraft(tone = "elegante") {
+  const chiAnnuncia = (answers.chiAnnuncia || "").trim();
+  if (!chiAnnuncia) return "";
+  // SOLO lista familiari (niente "Ne danno il triste annuncio", ecc.)
+  return ensureSentenceEnd(chiAnnuncia);
+}
+
+
+function stripLeadingPhrases(s) {
+  let t = (s || "").trim();
+  if (!t) return "";
+
+  // togli intestazioni ripetitive
+  t = t.replace(/^(orari?\s*(di\s*)?visita|orario\s*visita|visite|visite\s*consentite)\s*[:\-–]\s*/i, "");
+  t = t.replace(
+  /^(la\s*(cara\s*)?salma\s*(è\s*(composta|disponibile)|si\s*trova)\s*(presso)?\s*)/i,
+  ""
+);
+
+  t = t.replace(/^(è\s*prevista\s*una\s*veglia|veglia|rosario|santo\s*rosario)\s*[:\-–]\s*/i, "");
+  t = t.replace(/^\.*\s*/g, "");
+
+  return t.trim();
+}
+
+function normalizeLeadingLowercase(s) {
+  let t = (s || "").trim();
+  if (!t) return "";
+  // Solo per casi tipici che rovinano lo stile
+  t = t.replace(/^Dalle\b/, "dalle");
+  t = t.replace(/^Alle\b/, "alle");
+  t = t.replace(/^Il\b/, "il");
+  t = t.replace(/^La\b/, "la");
+  return t;
+}
+
+function ensureSentence(str) {
+  const t = (str || "").trim();
+  if (!t) return "";
+  return ensureSentenceEnd(t);
+}
+
+function smartSentence(prefix, value, guardWords = []) {
+  const v = (value || "").trim();
+  if (!v) return "";
+
+  const low = v.toLowerCase();
+
+  // Se contiene parole-chiave → è già una frase completa
+  if (guardWords.some(w => low.includes(w))) {
+    return ensureSentence(v);
+  }
+
+  // Se inizia con preposizioni → è complemento
+  if (/^(presso|alla|nella|in\s+via|in\s+viale|al\s+|ai\s+)/i.test(v)) {
+    return ensureSentence(`${prefix} ${v}`);
+  }
+
+  // Default: NON aggiungiamo nulla
+  return ensureSentence(v);
+}
+
+function buildParagrafoDettagliDraft(tone = "elegante") {
+  const luogoSalma         = (answers.luogoSalma || "").trim();
+  const orariVisita        = (answers.orariVisita || "").trim();
+  const veglia             = (answers.veglia || "").trim();
+  const tipoRito           = (answers.tipoRito || "").trim();
+  const luogoFunerale      = (answers.luogoFunerale || "").trim();
+  const comuneFunerale     = (answers.comuneFunerale || "").trim();
+  const dataFunerale       = (answers.dataFunerale || "").trim();
+  const oraFunerale        = (answers.oraFunerale || "").trim();
+  const cremazioneCimitero = (answers.cremazioneCimitero || "").trim();
+
+  const lines = [];
+
+  if (luogoSalma) lines.push(`SALMA: ${luogoSalma}`);
+  if (orariVisita) lines.push(`VISITE: ${orariVisita}`);
+  if (veglia) lines.push(`VEGLIA: ${veglia}`);
+
+  // FUNERALE (solo dati, senza frasi)
+  const detFun = [];
+  if (dataFunerale) detFun.push(`DATA=${formatDateItalian(dataFunerale)}`);
+  if (oraFunerale) detFun.push(`ORA=${oraFunerale}`);
+  if (luogoFunerale) detFun.push(`LUOGO=${luogoFunerale}`);
+  if (comuneFunerale) detFun.push(`COMUNE=${comuneFunerale}`);
+  if (tipoRito) detFun.push(`RITO=${tipoRito}`);
+
+  if (detFun.length) lines.push(`FUNERALE: ${detFun.join(" | ")}`);
+
+  if (cremazioneCimitero) lines.push(`DOPO: ${cremazioneCimitero}`);
+
+  // Questo testo NON è da mostrare: è solo “input dati” per il refine
+  return lines.join("\n").trim();
+}
+
+  // -----------------------------
+  // FORMATTAZIONE DATE
+  // -----------------------------
+  function formatDateItalian(dateString) {
+    if (!dateString) return "";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return dateString;
+    const [y, m, d] = parts;
+    return `${d}/${m}/${y}`;
+  }
+
+  // -----------------------------
+  // ESCAPE HTML
+  // -----------------------------
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function ensureSentenceEnd(str) {
+    const trimmed = (str || "").trim();
+    if (!trimmed) return "";
+    const last = trimmed.slice(-1);
+    if (".!?…".includes(last)) return trimmed;
+    return trimmed + ".";
+  }
+
+  // -----------------------------
+  // ANTEPRIMA INTERNA
+  // -----------------------------
+  function updatePreview() {
+    if (!previewBody) return;
+    const anyAnswer = Object.values(answers).some(v => (v || "").toString().trim().length > 0);
+    if (!anyAnswer) {
+      previewBody.innerHTML = "";
+      return;
+    }
+    const text = buildNecrologioText("elegante");
+    previewBody.innerHTML = text;
+  }
+
+  // -----------------------------
+  // BOTTONI WIZARD
+  // -----------------------------
+  btnNext.addEventListener("click", async () => {
+    if (!validateCurrentStep()) return;
+    saveCurrentStepAnswer();
+    updatePreview();
+
+    if (currentStepIndex < TOTAL_STEPS - 1) {
+      renderStep(currentStepIndex + 1);
+    } else {
+      await generaNecrologio();
+    }
+  });
+
+  btnBack.addEventListener("click", () => {
+    if (currentStepIndex > 0) {
+      saveCurrentStepAnswer();
+      renderStep(currentStepIndex - 1);
+    }
+  });
+
+  // -----------------------------
+  // STRUCTURED DATA PER AGENTE OFI
+  // -----------------------------
+  function buildStructuredDataForAgente() {
+    return {
+      datiPersona: {
+        nome: answers.nome || "",
+        cognome: answers.cognome || "",
+        soprannome: answers.soprannome || "",
+        eta: answers.eta || "",
+        vedIn: answers.vedIn || ""
+      },
+      strutturaTesto: {
+        citazione: answers.citazione || "",
+        fraseApertura: answers.fraseApertura || "",
+        chiAnnuncia: answers.chiAnnuncia || "",
+        ringraziamentiAssistenza: answers.ringraziamentiAssistenza || "",
+        fraseRicordo: answers.fraseRicordo || "",
+        fraseRingraziamentoFinale: answers.fraseRingraziamentoFinale || ""
+      },
+      rito: {
+        tipoRito: answers.tipoRito || "",
+        luogoSalma: answers.luogoSalma || "",
+        orariVisita: answers.orariVisita || "",
+        veglia: answers.veglia || "",
+        luogoFunerale: answers.luogoFunerale || "",
+        comuneFunerale: answers.comuneFunerale || "",
+        dataFunerale: answers.dataFunerale || "",
+        oraFunerale: answers.oraFunerale || "",
+        cremazioneCimitero: answers.cremazioneCimitero || ""
+      },
+      chiusura: {
+        comuneRigaFinale: answers.comuneRigaFinale || "",
+        dataNecrologio: answers.dataNecrologio || ""
+      }
+    };
+  }
+
+  // -----------------------------
+  // CHIAMATA NETLIFY FUNCTION
+  // -----------------------------
+  async function chiamaAgenteOFI(tone = "sobrio") {
+  const structuredData = buildStructuredDataForAgente();
+
+  const resp = await fetch("/.netlify/functions/chatNecrologio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    body: JSON.stringify({
+      mode: "segments",
+      tone,
+      structuredData
+    })
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error("Errore Agente OFI: " + text);
+  }
+
+  return resp.json();
+}
+
+async function chiamaAgenteOFIFinalize(draft, tone = "sobrio") {
+  const resp = await fetch("/.netlify/functions/chatNecrologio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+    body: JSON.stringify({
+      mode: "finalize",
+      tone,
+      draft: draft || ""
+    })
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text();
+    throw new Error("Errore Agente OFI (finalize): " + text);
+  }
+
+  return resp.json();
+}
+
+
+  // -----------------------------
+  // GENERAZIONE NECROLOGIO FINALE
+  // -----------------------------
+ function htmlToPlainText(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html || "";
+
+  const out = [];
+  const nodes = Array.from(tmp.querySelectorAll("p"));
+
+  for (const p of nodes) {
+    const t = (p.innerText || p.textContent || "").trim();
+    if (!t) continue;
+
+    // se il paragrafo aveva il separatore, lo segnamo PRIMA del testo
+    if (p.classList.contains("section-break")) out.push("<<<SEP>>>");
+
+    out.push(t);
+  }
+
+  return out.join("\n\n").trim();
+}
+
+function plainTextToHtml(text) {
+  const parts = (text || "")
+    .split(/\n{2,}/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  let nextHasBreak = false;
+
+  return parts.map((p) => {
+    if (p === "<<<SEP>>>") {
+      nextHasBreak = true;
+      return ""; // non diventa un <p>
+    }
+
+    const safe = escapeHtml(p);
+
+    // euristiche “blocchi speciali”
+    const isQuote = /[«»]/.test(p);
+    const isFinalLine = /^[A-ZÀ-Ü\s]+,\s*\d{1,2}\/\d{1,2}\/\d{4}$/i.test(p.trim());
+    const isThanks = /^(si\s+ringrazia|un\s+sentito\s+grazie|grazie\s+a|la\s+ricorderemo)/i.test(p.trim());
+
+    const cls = (nextHasBreak && !isFinalLine) ? ' class="section-break"' : "";
+    nextHasBreak = false;
+
+    if (isQuote || isThanks) return `<p${cls}><em>${safe}</em></p>`;
+    return `<p${cls}>${safe}</p>`;
+  }).filter(Boolean).join("\n");
+}
+
+function smartPrefix(prefix, value) {
+  const v = (value || "").trim();
+  if (!v) return "";
+  const low = v.toLowerCase();
+
+  // Se è già una frase completa / o inizia già con formule sensate → non aggiungere prefix
+  if (
+    low.startsWith("la salma") ||
+    low.startsWith("attualmente") ||
+    low.startsWith("presso") ||
+    low.startsWith("le visite") ||
+    low.startsWith("visite") ||
+    low.startsWith("orari") ||
+    low.startsWith("è prevista") ||
+    low.startsWith("il santo rosario") ||
+    low.startsWith("il rosario") ||
+    low.startsWith("la veglia") ||
+    low.startsWith("sarà recitato") ||
+    low.startsWith("sarà celebrato")
+  ) {
+    return ensureSentenceEnd(v);
+  }
+
+  // Se il testo contiene parole chiave “rosario/veglia”, è probabile sia già completo
+  if (/(rosario|santo rosario|veglia)/i.test(v)) {
+    return ensureSentenceEnd(v);
+  }
+
+  return ensureSentenceEnd(`${prefix} ${v}`);
+}
+
+function buildDraftNarrativoFromAnswers() {
+  const p = [];
+  const chiAnnuncia = (answers.chiAnnuncia || "").trim();
+  const ringAss = (answers.ringraziamentiAssistenza || "").trim();
+
+  const luogoSalma = normalizeFactual((answers.luogoSalma || ""));
+  const orariVisita = normalizeFactual((answers.orariVisita || ""));
+  const veglia = normalizeFactual((answers.veglia || ""));
+
+  const luogoFunerale = normalizeFactual((answers.luogoFunerale || ""));
+  const comuneFunerale = normalizeFactual((answers.comuneFunerale || ""));
+  const dataFunerale = (answers.dataFunerale || "").trim();
+  const oraFunerale = (answers.oraFunerale || "").trim();
+
+  const cremazioneCimitero = normalizeFactual((answers.cremazioneCimitero || ""));
+
+  const fraseRicordo = (answers.fraseRicordo || "").trim();
+  const fraseFinale = (answers.fraseRingraziamentoFinale || "").trim();
+
+  if (chiAnnuncia) p.push(chiAnnuncia);
+  if (ringAss) p.push(ringAss);
+
+  // Rito in PROSA (niente SALMA:/VISITE:/FUNERALE:)
+  const rito = [];
+  if (luogoSalma) rito.push(smartPrefix("La salma è composta presso", luogoSalma));
+if (orariVisita) rito.push(smartPrefix("Le visite sono possibili", orariVisita));
+if (veglia) rito.push(smartPrefix("È prevista una veglia", veglia));
+
+    const hasFun = dataFunerale || oraFunerale || luogoFunerale || comuneFunerale;
+  if (hasFun) {
+    const dd = dataFunerale ? `il ${formatDateItalian(dataFunerale)}` : "";
+    const hh = oraFunerale ? `alle ore ${oraFunerale}` : "";
+    const where = [luogoFunerale, comuneFunerale].filter(Boolean).join(", ");
+    const ww = where ? `presso ${where}` : "";
+
+    const line = `I funerali saranno celebrati ${dd} ${hh} ${ww}`.replace(/\s+/g, " ").trim();
+    rito.push(ensureSentenceEnd(line));
+  }
+
+  if (cremazioneCimitero) rito.push(`Al termine della funzione, ${cremazioneCimitero}.`);
+
+  if (rito.length) p.push(rito.join(" "));
+
+  if (fraseRicordo) p.push(fraseRicordo);
+  if (fraseFinale) p.push(fraseFinale);
+
+  return p.join("\n\n").trim();
+}
+
+// pulizia “SI…” e simili nei campi fattuali
+function normalizeFactual(s) {
+  return (s || "")
+    .toString()
+    .trim()
+    .replace(/^\s*s[ìi]\s*\.{0,}\s*/i, "")   // “SI… ”
+    .replace(/^\s*s[ìi]\s*[:,\-]\s*/i, "")  // “SI: ”
+    .trim();
+}
+
+function buildFinalLineHtml() {
+  const comune = (answers.comuneRigaFinale || "").trim();
+  const data = (answers.dataNecrologio || "").trim();
+  const comuneFinale = comune ? comune.toUpperCase() : "";
+  const dataFinale = data ? formatDateItalian(data) : "";
+  const finale = `${comuneFinale}${(comuneFinale && dataFinale) ? ", " : ""}${dataFinale}`.trim();
+  return finale ? `<p>${escapeHtml(finale)}</p>` : "";
+}
+
+function bodyTextToHtmlParagraphs(text) {
+  const parts = (text || "")
+    .split(/\n+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+
+  return parts.map(p => {
+    const safe = escapeHtml(p);
+    const isEm = /^(si\s+ringrazia|un\s+sentito\s+grazie|grazie\s+a|la\s+ricorderemo|«)/i.test(p.trim());
+    return isEm ? `<p><em>${safe}</em></p>` : `<p>${safe}</p>`;
+  }).join("\n");
+}
+
+function buildHeaderHtml(toneKey = "elegante") {
+  // usa i dati già presenti in answers (dopo segments)
+  const nome = (answers.nome || "").trim();
+  const cognome = (answers.cognome || "").trim();
+  const soprannome = (answers.soprannome || "").trim();
+  const eta = (answers.eta || "").trim();
+  const vedIn = (answers.vedIn || "").trim();
+
+  // citazione e apertura
+  const citazione = (answers.citazione || "").trim();
+  let fraseApertura = (answers.fraseApertura || "").trim();
+
+  // apertura: deve restare generica (niente nome/eta/vedin dentro)
+  const nomeCognome = `${nome} ${cognome}`.trim();
+  const hasName = nomeCognome && fraseApertura.toLowerCase().includes(nomeCognome.toLowerCase());
+  const hasVedIn = vedIn && fraseApertura.toLowerCase().includes(vedIn.toLowerCase());
+  const hasEta = eta && new RegExp(`\\b${eta}\\b`).test(fraseApertura);
+
+  if (hasName || hasVedIn || hasEta) fraseApertura = "";
+
+  // se è vuota, la genero io in base allo stile
+  if (!fraseApertura) {
+    if (toneKey === "calda") fraseApertura = "Con profonda tristezza annunciamo la scomparsa della nostra cara.";
+    else if (toneKey === "essenziale") fraseApertura = "È mancata all’affetto dei suoi cari.";
+    else fraseApertura = "Ci ha lasciato la nostra cara.";
+  }
+
+  const righe = [];
+
+  // citazione (se presente)
+  if (citazione) {
+    const hasQuotes = /[«»"]/.test(citazione);
+    const safe = escapeHtml(citazione);
+    righe.push(
+      hasQuotes
+        ? `<p><em>${safe}</em></p>`
+        : `<p><em>«${safe}»</em></p>`
+    );
+  }
+
+  // frase apertura
+  righe.push(`<p>${escapeHtml(ensureSentenceEnd(fraseApertura))}</p>`);
+
+  // blocco nome
+  const headerLines = [];
+  if (nome || cognome) {
+    headerLines.push(`<strong>${escapeHtml(`${nome} ${cognome}`.trim().toUpperCase())}</strong>`);
+  }
+  if (vedIn) headerLines.push(`<span>${escapeHtml(vedIn)}</span>`);
+  if (soprannome) headerLines.push(`<span><em>(${escapeHtml(soprannome)})</em></span>`);
+  if (eta) headerLines.push(`<span><em>di anni ${escapeHtml(eta)}</em></span>`);
+
+  if (headerLines.length) {
+    righe.push(`<p>${headerLines.join("<br>")}</p>`);
+  }
+
+  // separatore dopo header (coerente con lo stile che usi nel resto)
+  righe.push(`<p class="section-break"></p>`);
+
+  return righe.join("\n");
+}
+
+function assembleFinalHtml(bodyText, toneKey = "elegante") {
+  const headerHtml = buildHeaderHtml(toneKey);
+  const bodyHtml = bodyTextToHtmlParagraphs(bodyText);
+  const finalLineHtml = buildFinalLineHtml();
+
+  const sep = '<p class="section-break"></p>';
+
+  const parts = [];
+  if (headerHtml) parts.push(headerHtml);
+  if (bodyHtml) parts.push(bodyHtml);
+  if (finalLineHtml) parts.push(sep + "\n" + finalLineHtml);
+
+  return parts.join("\n\n").trim();
+}
+
+
+async function generaNecrologio() {
+  const missingRequired = steps
+    .filter(st => st.required && st.id !== "consensi" && st.type !== "file")
+    .some(st => !((answers[st.id] || "").toString().trim()));
+
+  if (missingRequired) {
+    alert("Per generare il necrologio è necessario completare tutti i passaggi obbligatori.");
+    return;
+  }
+
+  const oldLabel = btnNext.innerHTML;
+  btnNext.disabled = true;
+  btnNext.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles icon"></i> Genera necrologio · elaborazione in corso...';
+
+  setLoading(true, 5, "Sto analizzando i dati inseriti…");
+  await new Promise(r => setTimeout(r, 250));
+
+  try {
+    // 1) SEGMENTS una volta sola (base)
+setLoading(true, 22, `Sto migliorando i testi (base)…`);
+await new Promise(r => setTimeout(r, 150));
+
+const aiBase = await chiamaAgenteOFI("sobrio");
+const seg = aiBase?.segments || null;
+
+if (seg && typeof seg === "object") {
+  Object.entries(seg).forEach(([k, value]) => {
+    if (typeof value !== "string") return;
+    const v = value.trim();
+    if (!v) return;
+    if (v === "__CLEAR__") { answers[k] = ""; return; }
+    answers[k] = v;
+  });
+}
+
+// 2) FINALIZE: in MODIFICA una sola versione, in CREAZIONE tre varianti
+setLoading(true, 55, IS_EDIT_MODE
+  ? "Sto aggiornando il testo (correzione)…"
+  : "Sto creando le 3 varianti in prosa…"
+);
+await new Promise(r => setTimeout(r, 150));
+
+const draftBody = buildDraftNarrativoFromAnswers();
+
+let htmlElegante = "";
+let htmlCalda = "";
+let htmlEssenziale = "";
+
+if (IS_EDIT_MODE) {
+  // ✅ MODIFICA: una sola versione (elegante), senza switch stile
+  const fin = await chiamaAgenteOFIFinalize(draftBody, STYLE_TONE_MAP.elegante);
+  const body = (fin?.final || draftBody).trim();
+
+  // Impagina SOLO 1 variante
+  setLoading(true, 80, "Sto impaginando la versione aggiornata…");
+  await new Promise(r => setTimeout(r, 150));
+
+  htmlElegante = assembleFinalHtml(body, "elegante");
+  htmlCalda = "";
+  htmlEssenziale = "";
+
+  if (var1) var1.innerHTML = htmlElegante || "";
+  if (var2) var2.innerHTML = "";
+  if (var3) var3.innerHTML = "";
+
+  // Forza variante unica
+  currentVariantKey = "elegante";
+  currentVariantId  = "var1";
+
+} else {
+  // ✅ CREAZIONE: 3 varianti
+  const fin = await chiamaAgenteOFIFinalize(draftBody, STYLE_TONE_MAP.elegante); // tono qui è solo “indicativo”
+
+  // Nota: alcuni backend potrebbero tornare "caldo" invece di "calda" → fallback
+  const bodyElegante   = (fin?.variants?.elegante   || fin?.final || draftBody).trim();
+  const bodyCalda      = (fin?.variants?.calda      || fin?.variants?.caldo || fin?.final || draftBody).trim();
+  const bodyEssenziale = (fin?.variants?.essenziale || fin?.final || draftBody).trim();
+
+  // 3) Impagina
+  setLoading(true, 80, "Sto impaginando le 3 varianti finali…");
+  await new Promise(r => setTimeout(r, 150));
+
+  htmlElegante   = assembleFinalHtml(bodyElegante, "elegante");
+  htmlCalda      = assembleFinalHtml(bodyCalda, "calda");
+  htmlEssenziale = assembleFinalHtml(bodyEssenziale, "essenziale");
+
+  if (var1) var1.innerHTML = htmlElegante || "";
+  if (var2) var2.innerHTML = htmlCalda || "";
+  if (var3) var3.innerHTML = htmlEssenziale || "";
+
+  // 4) Apri modale (default elegante)
+  currentVariantKey = "elegante";
+  currentVariantId  = "var1";
+}
+
+// ✅ UI variante attiva: in edit probabilmente i bottoni sono nascosti, ma non fa danni
+variantButtons.forEach(btn => {
+  const key = btn.dataset.variant || "";
+  btn.classList.toggle("active", key === currentVariantKey);
+});
+
+const finalPhotoMobile = document.getElementById("finalPhotoMobile");
+
+if (finalPhoto) {
+  finalPhoto.src = photoDataUrl ? photoDataUrl : "/images/rosa.png";
+}
+if (finalPhotoMobile) {
+  finalPhotoMobile.src = photoDataUrl ? photoDataUrl : "/images/rosa.png";
+}
+
+updateFinalPreviewFromVariant();
+setLoading(true, 95, "Sto impaginando l’anteprima…");
+await new Promise(r => setTimeout(r, 150));
+await hydrateImpresaBadge();
+openResultModal();
+
+  } catch (err) {
+    console.error("Errore durante la generazione del necrologio:", err);
+    alert("Si è verificato un problema nella generazione del necrologio. Riprova tra poco.");
+  } finally {
+    setLoading(false);
+    btnNext.disabled = false;
+    btnNext.innerHTML = oldLabel;
+  }
+}
+ 
+
+  // -----------------------------
+  // SALVATAGGIO VERSIONE SCELTA
+  // -----------------------------
+  async function salvaNecrologioScelto(variantKey, text) {
+if (IS_EDIT_MODE) {
+  alert("In modalità modifica non si creano nuove bozze. Usa 'Salva modifiche'.");
+  return;
+}
+    if (!text || !text.trim()) {
+      alert("Il testo del necrologio è vuoto, impossibile salvare.");
+      return;
+    }
+
+    const structuredData = buildStructuredDataForAgente();
+
+    // ✅ Payload compatibile con le regole: /necrologi_pubblicati
+let geoPoint = null;
+let geoHash = null;
+
+// se hai già geoFinale con lat/lng (come nel tradizionale)
+if (geoFinale && Number.isFinite(geoFinale.lat) && Number.isFinite(geoFinale.lng)) {
+  geoPoint = new GeoPoint(geoFinale.lat, geoFinale.lng);
+  geoHash = geofire.geohashForLocation([geoFinale.lat, geoFinale.lng]);
+}
+
+const payload = {
+  status: "published",
+  lastApprovedHtml: (text || "").trim(),      // ✅ al posto di testoHtml
+  uidImpresa: currentUser.uid,                // ✅ obbligatorio per isOwnerReq()
+  ornamentKey: currentOrnamentKey || "none",  // ✅ se lo gestisci nel nuovo
+  variantKey: variantKey || "standard",       // ✅ al posto di "variante"
+
+  answersSnapshot: { ...answers },            // ✅ al posto di "answers"
+  structuredDataSnapshot: structuredData || {}, // ✅ al posto di "structuredData"
+
+  sorgente: "necrologio-nuovo",
+
+  geoFinale: geoFinale || null,
+  geoPoint: geoPoint || null,
+  geoHash: geoHash || null,
+
+  photoURL: photoDataUrl || null,             // ✅ usa solo photoURL
+  updatedAt: serverTimestamp(),
+  createdAt: serverTimestamp()
+};
+
+// ✅ emailImpresa SOLO se esiste (e deve combaciare col token)
+if (currentUser.email) payload.emailImpresa = currentUser.email;
+
+    if (currentUser) {
+      payload.uidImpresa = currentUser.uid;
+      payload.emailImpresa = currentUser.email || null;
+    } else {
+      payload.uidImpresa = null;
+      payload.emailImpresa = null;
+      payload.noteSistema = "Necrologio salvato senza utente autenticato (controllare).";
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, NECROLOGI_COLLECTION), payload);
+      console.log("Necrologio salvato in Firestore con ID:", docRef.id);
+
+      alert("Versione scelta salvata come bozza su OFI.\nPotrai rivederla e pubblicarla dalla dashboard necrologi.");
+      closeModal();
+    } catch (err) {
+      console.error("Errore salvataggio necrologio in Firestore:", err);
+      alert("Si è verificato un errore durante il salvataggio del necrologio.\nRiprova tra poco.");
+    }
+  }
+
+  // -----------------------------
+  // ORNAMENTI GRAFICI
+  // -----------------------------
+  function getOrnamentAsset(type) {
+  const base = "/images/ornamenti/";
+  const map = {
+    croce: "croce.png",
+    gesu: "gesu.png",
+    madonna: "madonna.png",
+    angelo: "angelo.png",
+    fiore: "fiore.png"
+  };
+  const file = map[type];
+  if (!file) return "";
+  return `<img class="ornament-img" src="${base}${file}" alt="" aria-hidden="true">`;
+}
+
+
+  function renderOrnament(type) {
+  currentOrnamentKey = (type && type !== "none") ? type : "none";
+  if (!finalOrnamentSlot) return;
+
+  if (currentOrnamentKey === "none") {
+    finalOrnamentSlot.innerHTML = "";
+    return;
+  }
+  finalOrnamentSlot.innerHTML = getOrnamentAsset(currentOrnamentKey);
+}
+
+  ornamentButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      ornamentButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const key = btn.dataset.ornamento || "none";
+      renderOrnament(key);
+    });
+  });
+
+  renderOrnament("none");
+
+ // -----------------------------
+// PAGINA FINALE: GESTIONE PREVIEW
+// -----------------------------
+function openResultModal() {
+  if (!resultModal) return;
+  resultModal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  if (!resultModal) return;
+  resultModal.classList.remove("open");
+
+  const loaderOn = !(document.getElementById("aiLoadingOverlay")?.hidden);
+  document.body.style.overflow = loaderOn ? "hidden" : "";
+}
+
+function resetWizard() {
+  currentStepIndex = 0;
+  Object.keys(answers).forEach(k => delete answers[k]);
+  photoDataUrl = null;
+
+  if (var1) var1.innerHTML = "";
+  if (var2) var2.innerHTML = "";
+  if (var3) var3.innerHTML = "";
+  if (finalPreviewText) finalPreviewText.innerHTML = "";
+  if (finalEditArea) finalEditArea.value = "";
+  if (finalEditContainer) finalEditContainer.classList.add("hidden");
+  if (toggleEditBtn) toggleEditBtn.textContent = "Vuoi modificare qualcosa?";
+
+  if (finalPhoto) finalPhoto.src = "/images/rosa.png";
+  const finalPhotoMobile = document.getElementById("finalPhotoMobile");
+  if (finalPhotoMobile) finalPhotoMobile.src = "/images/rosa.png";
+  if (previewPhoto) previewPhoto.src = "/images/rosa.png";
+
+  ornamentButtons.forEach(b => b.classList.remove("active"));
+  const noneBtn = Array.from(ornamentButtons).find(b => (b.dataset.ornamento || "") === "none");
+  if (noneBtn) noneBtn.classList.add("active");
+  renderOrnament("none");
+
+  setLoading(false);
+  closeModal();
+  renderStep(0);
+}
+
+if (resetWizardBtn) {
+  resetWizardBtn.addEventListener("click", resetWizard);
+}
+
+function getCurrentVariantElement() {
+  if (currentVariantId === "var2") return var2;
+  if (currentVariantId === "var3") return var3;
+  return var1;
+}
+
+function findHeaderParagraph(ps) {
+  return ps.find(p => p.querySelector("strong")) || null;
+}
+
+function findFinalLineParagraph(ps) {
+  return ps.find(p => {
+    const t = (p.innerText || p.textContent || "").trim();
+    return /^[A-ZÀ-Ü\s]+,\s*\d{1,2}\/\d{1,2}\/\d{4}$/i.test(t);
+  }) || null;
+}
+
+function extractBodyPlainTextFromVariant(el) {
+  if (!el) return "";
+  const ps = Array.from(el.querySelectorAll("p"));
+  const headerP = findHeaderParagraph(ps);
+  const finalLineP = findFinalLineParagraph(ps);
+
+  const bodyPs = ps.filter(p => {
+    if (p.classList.contains("section-break")) return false;
+    if (headerP && p === headerP) return false;
+    if (finalLineP && p === finalLineP) return false;
+    const txt = (p.innerText || p.textContent || "").trim();
+    return txt.length > 0;
+  });
+
+  return bodyPs
+    .map(p => (p.innerText || p.textContent || "").trim())
+    .filter(Boolean)
+    .join("\n\n")
+    .trim();
+}
+
+function updateFinalPreviewFromVariant() {
+  const el = getCurrentVariantElement();
+  if (!el || !finalPreviewText) return;
+  finalPreviewText.innerHTML = el.innerHTML || "";
+}
+
+function syncEditAreaFromVariant() {
+  const el = getCurrentVariantElement();
+  if (!el || !finalEditArea) return;
+  finalEditArea.value = extractBodyPlainTextFromVariant(el);
+}
+
+if (toggleEditBtn && finalEditContainer) {
+  toggleEditBtn.addEventListener("click", () => {
+    const isOpen = !finalEditContainer.classList.contains("hidden");
+
+    // toggle visivo
+    finalEditContainer.classList.toggle("hidden", isOpen);
+    toggleEditBtn.textContent = isOpen ? "Vuoi modificare qualcosa?" : "Nascondi modifiche";
+
+    // quando apro: prefill TOP + BODY
+    if (!isOpen) {
+      if (editCitazione) editCitazione.value = answers.citazione || "";
+      if (editFraseApertura) editFraseApertura.value = answers.fraseApertura || "";
+      if (editNome) editNome.value = answers.nome || "";
+      if (editCognome) editCognome.value = answers.cognome || "";
+      if (editVedIn) editVedIn.value = answers.vedIn || "";
+      if (editSoprannome) editSoprannome.value = answers.soprannome || "";
+      if (editEta) editEta.value = answers.eta || "";
+
+      syncEditAreaFromVariant();
+    }
+  });
+}
+
+function collectEditableNodes(containerEl) {
+  const ps = Array.from(containerEl.querySelectorAll("p"));
+  const headerP = ps.find(p => p.querySelector("strong")) || null;
+
+  const editablePs = ps.filter(p => {
+    if (p.classList.contains("section-break")) return false;
+    if (headerP && p === headerP) return false;
+    const txt = (p.innerText || p.textContent || "").trim();
+    return txt.length > 0;
+  });
+
+  return { editablePs, headerP };
+}
+
+if (applyEditBtn) {
+  applyEditBtn.addEventListener("click", () => {
+
+    // ============================
+    // 1) SALVA TOP IN answers
+    // ============================
+    answers.citazione = (editCitazione?.value || "").trim();
+    answers.fraseApertura = (editFraseApertura?.value || "").trim();
+    answers.nome = (editNome?.value || "").trim();
+    answers.cognome = (editCognome?.value || "").trim();
+    answers.vedIn = (editVedIn?.value || "").trim();
+    answers.soprannome = (editSoprannome?.value || "").trim();
+    answers.eta = (editEta?.value || "").trim();
+
+    if (!answers.nome || !answers.cognome) {
+      alert("Nome e Cognome non possono essere vuoti.");
+      return;
+    }
+
+    // ============================
+    // 2) BODY: testo dalla textarea
+    // ============================
+    const rawBody = (finalEditArea?.value || "").trim();
+
+    // ============================
+    // 3) Rigenera VARIANTE CORRENTE:
+    //    header + body nuovo
+    // ============================
+    const currentEl = getCurrentVariantElement();
+    if (!currentEl) return;
+
+    currentEl.innerHTML = assembleFinalHtml(rawBody, currentVariantKey);
+
+    // ============================
+    // 4) Rigenera ALTRE VARIANTI:
+    //    SOLO header (body invariato)
+    // ============================
+    if (var1) {
+      const b = (currentVariantId === "var1") ? rawBody : extractBodyPlainTextFromVariant(var1);
+      var1.innerHTML = assembleFinalHtml(b, "elegante");
+    }
+    if (var2) {
+      const b = (currentVariantId === "var2") ? rawBody : extractBodyPlainTextFromVariant(var2);
+      var2.innerHTML = assembleFinalHtml(b, "calda");
+    }
+    if (var3) {
+      const b = (currentVariantId === "var3") ? rawBody : extractBodyPlainTextFromVariant(var3);
+      var3.innerHTML = assembleFinalHtml(b, "essenziale");
+    }
+
+    // ============================
+    // 5) Aggiorna preview visibile
+    // ============================
+    updateFinalPreviewFromVariant();
+  });
+}
+
+if (backToWizardBtn) {
+  backToWizardBtn.addEventListener("click", () => {
+    closeModal();
+    // torna al wizard e riporta lo step all'inizio (o lascia l'ultimo step: scegli tu)
+    // Qui ti metto la versione "torna all'inizio" per massima chiarezza:
+    renderStep(0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
+function getEditingNecrologioIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const id = (params.get("id") || "").trim();
+  return id || null;
+}
+
+// edit=1 => modalità modifica (prefill campi)
+const __params = new URLSearchParams(window.location.search);
+const IS_EDIT_MODE = (__params.get("edit") === "1");
+
+function applyEditModeUI(){
+  if (!IS_EDIT_MODE) return;
+
+  // 1) nascondi i 3 stili
+  const styleSwitcher = document.getElementById("styleSwitcher");
+  if (styleSwitcher) styleSwitcher.style.display = "none";
+
+  // 2) cambia testi e microcopy: qui NON stai “generando”, stai “aggiornando”
+  const headerH2 = document.querySelector(".final-preview-header h2");
+  if (headerH2) headerH2.textContent = "Modifica necrologio";
+
+  const headerP = document.querySelector(".final-preview-header p");
+  if (headerP) {
+    headerP.textContent =
+      "Qui puoi correggere il necrologio già pubblicato, senza cambiare lo stile ufficiale OFI.";
+  }
+
+  // 3) bottone “Nuovo necrologio” meglio nasconderlo in edit (evita confusione)
+  if (resetWizardBtn) resetWizardBtn.style.display = "none";
+
+  // 4) cambia label del bottone finale
+  if (saveFinalBtn) {
+    saveFinalBtn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Salva modifiche';
+  }
+}
+
+
+// -----------------------------
+// SALVATAGGIO FINALE OFI (publish immediato dopo final_check)
+// -----------------------------
+// -----------------------------
+// SALVATAGGIO FINALE OFI (publish immediato dopo final_check)
+// -----------------------------
+if (saveFinalBtn) {
+
+  // =============================
+  // AUTH HEADER helper (per Netlify Functions protette)
+  // =============================
+  async function getAuthHeader(){
+    try{
+      // "currentUser" viene popolato da onAuthStateChanged più sotto
+      const u = currentUser || auth.currentUser;
+      if (!u) return {};
+      const idToken = await u.getIdToken();
+      return { Authorization: 'Bearer ' + idToken };
+    }catch(e){
+      console.warn('getAuthHeader failed', e);
+      return {};
+    }
+  }
+
+  async function aiFinalCheck(html) {
+    const todayISO = new Date().toISOString().slice(0, 10);
+    const res = await fetch("/.netlify/functions/chatNecrologio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ mode: "final_check", draft: html, html, todayISO })
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error("Final check error: " + t);
+    }
+    return await res.json(); // { ok, reason?, sanitizedHtml? }
+  }
+
+  saveFinalBtn.addEventListener("click", async () => {
+    try {
+      if (!currentUser) {
+        alert("Per pubblicare il necrologio devi essere loggato come impresa.");
+        return;
+      }
+
+      const el = getCurrentVariantElement();
+
+      // In alcuni casi (es. modifica) la variante selezionata può non essere sincronizzata.
+      // Fallback: usa sempre anche l’HTML dell’anteprima principale.
+      const htmlFromVariant = el ? (el.innerHTML || "").trim() : "";
+      const htmlFromMain = (finalPreviewText?.innerHTML || "").trim();
+      const htmlRaw = (htmlFromVariant || htmlFromMain || "").trim();
+if (!htmlRaw) {
+        alert("Anteprima vuota.");
+        return;
+      }
+
+      saveFinalBtn.disabled = true;
+      setLoading(true, 90, "Verifica finale Agente OFI…");
+
+      const check = await aiFinalCheck(htmlRaw);
+      if (!check?.ok) {
+        alert("⚠️ Contenuto non idoneo: " + (check?.reason || "verifica non superata"));
+        return;
+      }
+
+      const htmlFinal = (check?.sanitizedHtml || htmlRaw).trim();
+
+      // GEO
+      let geoPoint = null;
+      let geoHash = null;
+      if (geoFinale && Number.isFinite(geoFinale.lat) && Number.isFinite(geoFinale.lng)) {
+        geoPoint = new GeoPoint(geoFinale.lat, geoFinale.lng);
+        geoHash = geofire.geohashForLocation([geoFinale.lat, geoFinale.lng]);
+      }
+
+      const structuredDataSnapshot =
+        (typeof buildStructuredDataForAgente === "function") ? buildStructuredDataForAgente() : null;
+
+      const basePayload = {
+        status: "published",
+        variantKey: currentVariantKey,
+        lastApprovedHtml: htmlFinal,
+        pendingHtml: "",
+        uidImpresa: currentUser.uid,
+        emailImpresa: currentUser.email || null,
+        ornamentKey: currentOrnamentKey || "none",
+        answersSnapshot: { ...answers },
+        structuredDataSnapshot,
+        sorgente: "necrologio-nuovo",
+        geoFinale: geoFinale || null,
+        geoPoint,
+        geoHash,
+        photoURL: photoDataUrl || null,
+        updatedAt: serverTimestamp()
+      };
+
+      const editingId = getEditingNecrologioIdFromUrl();
+
+     let finalId = null;
+
+if (editingId) {
+  // EDIT: l'owner non puo' aggiornare direttamente lastApprovedHtml (regole Firestore).
+  // Quindi usiamo il backend (Admin SDK) tramite chatNecrologio in mode=publish_edit.
+  const authH = (typeof getAuthHeader === "function") ? await getAuthHeader() : {};
+  const resEdit = await fetch("/.netlify/functions/chatNecrologio", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authH },
+    cache: "no-store",
+    body: JSON.stringify({
+      mode: "publish_edit",
+      necrologioId: editingId,
+      // inviamo sia html che draft per compatibilita'
+      html: htmlFinal,
+      draft: htmlFinal,
+      variantKey: currentVariantKey,
+      ornamentKey: (currentOrnamentKey || "none"),
+      answersSnapshot: { ...answers },
+      geoFinale: (geoFinale || null),
+      photoURL: (photoDataUrl || null)
+    })
+  });
+
+  const dataEdit = await resEdit.json().catch(() => null);
+  if (!resEdit.ok || !dataEdit?.ok) {
+    const msg = dataEdit?.error || dataEdit?.reason || (dataEdit ? JSON.stringify(dataEdit) : "HTTP " + resEdit.status);
+    throw new Error("publish_edit failed: " + msg);
+  }
+
+  finalId = editingId;
+
+// ✅ invia mail “update”
+await notifyNecrologioPostPublish(finalId, { action: "update" });
+
+alert("Necrologio aggiornato e pubblicato.\nID: " + finalId);
+window.location.href = `/imprese/necrologio-mio.html?id=${encodeURIComponent(finalId)}&updated=1`;
+return;
+
+} else {
+  const refDoc = await addDoc(collection(db, "necrologi_pubblicati"), {
+    ...basePayload,
+    createdAt: serverTimestamp(),
+    publishedAt: serverTimestamp()
+  });
+  finalId = refDoc.id;
+
+  // ✅ 1) chiama la function post-publish (solo su NUOVO)
+  await notifyNecrologioPostPublish(finalId);
+
+  alert("Necrologio pubblicato con successo ✅\nID: " + finalId);
+
+  // redirect "published"
+  window.location.href = `/imprese/necrologi-miei.html?published=${encodeURIComponent(finalId)}`;
+  return;
+}
+
+    } catch (e) {
+      console.error("Errore pubblicazione necrologio:", e);
+      alert("Errore durante il salvataggio del necrologio.");
+    } finally {
+      setLoading(false);
+      saveFinalBtn.disabled = false;
+    }
+  });
+}
+
+// -----------------------------
+// POST-PUBLISH: email + log punti (Netlify Function)
+// -----------------------------
+async function notifyNecrologioPostPublish(necrologioId, opts = {}) {
+  try {
+    const authH = (typeof getAuthHeader === "function") ? await getAuthHeader() : {};
+    const res = await fetch("/.netlify/functions/necrologioPostPublish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authH },
+      cache: "no-store",
+      body: JSON.stringify({
+        necrologioId,
+        action: opts.action || "publish"
+      })
+    });
+
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data?.ok) {
+      console.warn("necrologioPostPublish KO:", data || { status: res.status });
+      return { ok: false, data };
+    }
+    return { ok: true, data };
+  } catch (e) {
+    console.warn("necrologioPostPublish ERROR:", e);
+    return { ok: false, error: String(e?.message || e) };
+  }
+}
+
+  // -----------------------------
+  // INIZIALIZZAZIONE
+  // -----------------------------
+  await prefillWizardIfEditingLocal();
+  renderStep(0);
+applyEditModeUI();
+});
+</script>
+
+<script src="/js/menu.js" defer></script>
+<!-- Overlay attesa AI (progress reale) -->
+<div id="aiLoadingOverlay" class="ai-loading" hidden>
+  <div class="ai-loading-card" role="status" aria-live="polite">
+    <div class="ai-loading-title">Agente OFI al lavoro…</div>
+    <div class="ai-loading-sub" id="aiLoadingText">Preparazione…</div>
+    <div class="ai-loading-bar">
+      <div class="ai-loading-bar-fill" id="aiLoadingBar"></div>
+    </div>
+    <div class="ai-loading-pct" id="aiLoadingPct">0%</div>
+  </div>
+</div>
+</body>
+</html>

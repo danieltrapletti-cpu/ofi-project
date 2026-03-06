@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html data-theme="auto" lang="it">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>I miei Pensieri — OFI</title>
+  <meta name="description" content="La tua bacheca personale su PENSIERI di OFI. Scrivi, custodisci e — se vuoi — condividi."/>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS global + pagina (ordine importante) -->
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="stylesheet" href="pensieri-miei.css">
+  <!-- Debug tema: lascia commentato finché non chiudiamo i conflitti -->
+  <!-- <link rel="stylesheet" href="pensieri-miei.compact.css"> -->
+  <link rel="stylesheet" href="pensieri-smart-header.css">
+  <link rel="stylesheet" href="pensieri-cover-quote.css">
+
+  <style>.legacy-source{display:none!important}</style>
+
+  <!-- JS globale -->
+  <script defer src="../ofi.js"></script>
+</head>
+<body>
+  <!-- ===== Header sito ===== -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home">
+        <img class="brand-logo" src="../images/logo-ofi.png" alt="OFI"/>
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-controls="menuPanel" aria-expanded="false" aria-label="Apri menù">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="../images/logo-ofi.png" alt="OFI"/>
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" style="min-height:40vh">
+    <div class="hero-overlay"></div>
+    <div class="hero-content container">
+      <h1>I miei Pensieri</h1>
+      <p class="lead">Gestisci la tua bacheca personale. Lumina cresce con il tempo e con l’affetto delle persone (reazioni/commenti).</p>
+    </div>
+  </section>
+
+  <!-- ===== SMART HEADER compatto ===== -->
+  <section class="container">
+    <section class="smart-header is-collapsed" id="smartHeader" aria-label="Riepilogo bacheca">
+      <div class="sh-row">
+        <div class="sh-user">
+          <div class="sh-avatar"><img id="shAvatar" alt="Avatar utente"></div>
+          <div class="sh-name" id="shName">—</div>
+        </div>
+
+        <div class="sh-kpi" aria-label="Indicatori">
+          <span class="pill"><b id="shTot">0</b> pensieri</span>
+          <span class="pill"><b id="shPub">0</b> pubblici</span>
+          <span class="pill"><b id="shLumina">0</b> Lumina</span>
+        </div>
+
+        <div class="sh-badges">
+          <span id="shAuthorBadge" class="author-badge off" title="Attiva per mostrare il tuo nome sotto frase e post pubblici">
+            <span class="flag-dot" aria-hidden="true"></span> Autore pubblico
+          </span>
+        </div>
+
+        <div class="sh-actions">
+          <button class="ico-btn" id="shSearchBtn" title="Cerca tra i tuoi pensieri" aria-label="Cerca"><span class="ico">🔎</span></button>
+          <button class="ico-btn" id="shShareBtn" title="Condividi bacheca pubblica" aria-label="Condividi"><span class="ico">🔗</span></button>
+          <button class="ico-btn" id="shEditBtn" title="Modifica la frase di copertina" aria-label="Modifica frase"><span class="ico">✏️</span></button>
+          <button class="ico-btn primary" id="shAddBtn" title="Nuovo pensiero" aria-label="Nuovo"><span class="ico">＋</span></button>
+        </div>
+
+        <div class="sh-quote" role="marquee" aria-label="Frase di copertina">
+          <span class="quote-mark">“</span>
+          <div class="quote-track">
+            <div class="quote-move">
+              <span id="shQuote">Sii l’autore di te stesso — o, se vuoi, diventa Autore pubblico.</span>
+              <span class="quote-author" id="shQuoteAuthor">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer gestione rapida -->
+      <div class="manage" id="shManage">
+        <div class="row">
+          <p class="hint"><strong>Sottotitolo (ufficiale):</strong><br>
+            <em>Sii l’autore di te stesso.</em> Se attivi <b>Autore pubblico</b>, il tuo nome comparirà sotto la frase e nei post pubblici. I post <b>privati</b> restano solo tuoi (niente reazioni/commenti).
+          </p>
+          <label class="author-badge" style="cursor:pointer">
+            <input type="checkbox" id="chk-autore-pubblico-legacy" style="margin-right:8px"> Autore pubblico
+          </label>
+        </div>
+        <label for="inp-frase" class="small">Frase di copertina</label>
+        <textarea id="inp-frase" placeholder="La tua frase…"></textarea>
+        <label for="inp-autore" class="small">Autore (opzionale)</label>
+        <input id="inp-autore" class="input" type="text" placeholder="Es. Emily Dickinson">
+        <div class="btns">
+          <button class="btn secondary" id="shCancel" type="button">Chiudi</button>
+          <button class="btn" id="shSave" type="button">Salva</button>
+        </div>
+      </div>
+
+      <!-- Overlay ricerca -->
+      <div class="search-layer" id="shSearch">
+        <div class="field">
+          <span>🔎</span>
+          <input id="searchBox" placeholder="Cerca titolo o testo…">
+          <button class="btn secondary" id="shSearchClose" type="button">Chiudi</button>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ===== COVER QUOTE CARD ===== -->
+  <section class="container">
+    <article class="cover-quote" id="coverQuote">
+      <div class="cq-ribbon" aria-hidden="true"></div>
+      <div class="cq-body">
+        <div class="cq-mark" aria-hidden="true">“</div>
+
+        <div class="cq-text">
+          <h2 class="cq-phrase" id="cqPhrase">Sii l’autore di te stesso.</h2>
+          <div class="cq-author" id="cqAuthor"> </div>
+        </div>
+
+        <div class="cq-actions">
+          <button class="btn cq-edit" id="cqEdit" title="Modifica">✏️ Modifica</button>
+          <button class="btn cq-share" id="cqShare" title="Condividi">🔗 Condividi</button>
+
+          <div class="cq-menu" id="cqMenu" hidden>
+            <button type="button" data-act="share-quote">Condividi frase</button>
+            <button type="button" data-act="share-board">Condividi bacheca</button>
+            <button type="button" data-act="copy-quote">Copia testo</button>
+          </div>
+        </div>
+      </div>
+      <div class="cq-flag" aria-hidden="true">
+        <span class="g"></span><span class="w"></span><span class="r"></span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Modale modifica Cover -->
+  <div class="cq-modal" id="cqModal" hidden>
+    <div class="cqm-panel" role="dialog" aria-modal="true" aria-labelledby="cqmTitle">
+      <h3 id="cqmTitle">Modifica copertina</h3>
+      <label class="cqm-label">Frase</label>
+      <textarea id="cqmFrase" rows="3" placeholder="La tua frase…"></textarea>
+      <label class="cqm-label">Autore (opzionale)</label>
+      <input id="cqmAutore" type="text" placeholder="Es. Emily Dickinson" />
+      <div class="cqm-actions">
+        <button class="btn secondary" id="cqmCancel" type="button">Chiudi</button>
+        <button class="btn primary" id="cqmSave" type="button">Salva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN: lista ===== -->
+  <main class="container section" id="main">
+    <div id="listaWrap">
+      <div id="skeletons"></div>
+      <div id="listaPensieri"></div>
+    </div>
+  </main>
+
+  <!-- ===== LEGACY (nascosto): SORGENTE DATI per il tuo JS ===== -->
+  <div class="legacy-source">
+    <!-- Frase & Autore (struttura originale) -->
+    <div id="frase-autore-box" class="frase-box">
+      <div class="frase-inline">
+        <span class="frase-text">
+          <strong id="frase-copertina" class="frase-copertina">Sii l’autore di te stesso.</strong>
+          <em id="frase-autore" class="frase-autore"></em>
+        </span>
+        <div class="frase-actions">
+          <button id="btn-edit-frase" class="btn btn-outline gold">✎ Modifica frase</button>
+        </div>
+      </div>
+      <div id="frase-editor" class="frase-editor" hidden>
+        <input id="inp-frase-legacy" type="text" placeholder="La tua frase di copertina…"/>
+        <input id="inp-autore-legacy" type="text" placeholder="Autore (opzionale)…"/>
+        <div>
+          <button id="btn-save-frase" class="btn primary">Salva</button>
+          <button id="btn-cancel-frase" class="btn btn-outline">Annulla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Autore pubblico -->
+    <div id="authorPublicCard" class="author-public-setting card subtle autore-pubblico-box">
+      <label class="toggle-author">
+        <input id="chk-autore-pubblico" type="checkbox"/>
+        <strong>Mostrami come <span class="accent">Autore pubblico</span></strong>
+      </label>
+      <p class="small muted" style="margin:.35rem 0 0">
+        Se attivo, il tuo <em>nome autore</em> comparirà sotto la frase di copertina e nei post pubblici.
+        I post <strong>privati</strong> restano solo tuoi (niente reazioni e commenti).
+      </p>
+    </div>
+
+    <!-- Strip profilo -->
+    <div class="profile-strip card">
+      <img id="avatarHeader" src="../images/avatar-uomo.png" alt="" />
+      <div>
+        <div id="nomeUtente" style="font-weight:800">—</div>
+        <div id="uidInfo" class="small muted"></div>
+      </div>
+      <div class="kpi">
+        <span class="chip"><strong id="kpiTot">0</strong> pensieri</span>
+        <span class="chip"><strong id="kpiPub">0</strong> pubblici</span>
+      </div>
+      <button id="shareBacheca" class="btn btn-outline">Condividi bacheca</button>
+      <button id="copyPublicLinkBtn" class="btn btn-outline" type="button">Copia link pubblico</button>
+    </div>
+  </div>
+
+  <!-- ===== Agente OFI (integrato) ===== -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI" aria-expanded="false">
+    <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+  </button>
+  <section id="agentPanel" class="agent-panel" aria-hidden="true" aria-live="polite">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+        <div><strong>Agente OFI</strong><br/><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Posso spiegarti <strong>Autore pubblico</strong> vs <strong>privato</strong> e come rendere pubblico un pensiero.</p></div>
+      <div class="suggest">
+        <button class="chip" data-q="Cosa cambia tra autore pubblico e privato?">Autore pubblico vs privato</button>
+        <button class="chip" data-q="Come rendo pubblico un pensiero?">Rendere pubblico un pensiero</button>
+        <button class="chip" data-q="Come aumentare Lumina?">Aumentare Lumina</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" action="#" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda" aria-label="Scrivi qui la tua domanda"/>
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Suggerimento: i post <strong>privati</strong> non hanno reazioni/commenti; i <strong>pubblici</strong> sì.</div>
+  </section>
+
+  <!-- ===== TEMPLATE COMMENTI ===== -->
+  <template id="tpl-comment-thread">
+    <div class="cm-thread" role="region" aria-label="Commenti">
+      <div class="cm-head">
+        <div class="cm-title">Commenti</div>
+        <div class="cm-count">0</div>
+      </div>
+      <form class="cm-form" data-role="comment-form">
+        <input class="cm-input" type="text" placeholder="Scrivi un commento…" aria-label="Scrivi un commento">
+        <button class="cm-send" type="submit">Invia</button>
+      </form>
+      <div class="cm-list" data-role="comment-list"></div>
+      <div class="cm-toggle" data-role="load-more" hidden>Mostra altri</div>
+    </div>
+  </template>
+
+  <template id="tpl-comment-item">
+    <div class="cm-item">
+      <a class="cm-avatar" href="#" aria-hidden="true"><img alt=""></a>
+      <div class="cm-body">
+        <div class="cm-meta">
+          <span class="cm-name"></span>
+          <span class="cm-time"></span>
+        </div>
+        <div class="cm-text"></div>
+        <div class="cm-actions">
+          <div class="cm-reactions">
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">❤️</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">👍</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">🌟</span><span class="cnt">0</span></button>
+          </div>
+          <a class="cm-link" data-act="reply">Rispondi</a>
+          <a class="cm-link" data-act="edit" hidden>Modifica</a>
+          <a class="cm-link" data-act="delete" hidden>Elimina</a>
+          <a class="cm-link" data-act="report">Segnala</a>
+        </div>
+        <div class="cm-replies" data-role="replies">
+          <form class="cm-reply-form" hidden data-role="reply-form">
+            <input class="cm-reply-input" type="text" placeholder="Scrivi una risposta…" aria-label="Scrivi una risposta">
+            <button class="cm-reply-send" type="submit">Invia</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-reply-item">
+    <div class="cm-item">
+      <a class="cm-avatar" href="#" aria-hidden="true"><img alt=""></a>
+      <div class="cm-body">
+        <div class="cm-meta">
+          <span class="cm-name"></span>
+          <span class="cm-time"></span>
+        </div>
+        <div class="cm-text"></div>
+        <div class="cm-actions">
+          <div class="cm-reactions">
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">👍</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">❤️</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">🌟</span><span class="cnt">0</span></button>
+          </div>
+          <a class="cm-link" data-act="edit" hidden>Modifica</a>
+          <a class="cm-link" data-act="delete" hidden>Elimina</a>
+          <a class="cm-link" data-act="report">Segnala</a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- ===== MEDIA VIEWER ===== -->
+  <div id="mediaViewer" class="mv hidden" aria-hidden="true">
+    <div class="mv-backdrop" data-mv-close></div>
+    <div class="mv-dialog" role="dialog" aria-modal="true">
+      <button class="mv-close" type="button" title="Chiudi" data-mv-close>×</button>
+      <div class="mv-head">
+        <img src="../images/pensieri-logo.png" alt="Pensieri" class="mv-logo">
+      </div>
+      <div class="mv-content" id="mvContent"></div>
+      <div class="mv-actions" id="mvActions"></div>
+    </div>
+  </div>
+
+  <!-- ===== Firebase bootstrap ===== -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    const firebaseConfig = {
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    if (!getApps().length) initializeApp(firebaseConfig);
+    window.__firebaseAppReady = true;
+  </script>
+
+  <!-- ===== JS pagina ===== -->
+  <script type="module" src="storia-emozioni.js"></script>
+  <script type="module" src="pensieri-miei.js"></script>
+  <script src="pensieri-miei.actions-compact.js" defer></script>
+  <script type="module" src="pensieri-miei-comments-ui.js"></script>
+  <script type="module" src="pensieri-smart-header.js"></script>
+  <script type="module" src="pensieri-cover-quote.js"></script>
+
+  <!-- ===== THEME CONTROLLER (unico, corretto) ===== -->
+  <script>
+    (function(){
+      const root = document.documentElement;               // <html>
+      const btn  = document.getElementById('themeToggle'); // bottone "◐" nel header
+      const KEY  = 'ofi-theme';
+      const mql  = window.matchMedia('(prefers-color-scheme: dark)');
+
+      function apply(theme){
+        root.setAttribute('data-theme', theme); // 'auto' | 'dark' | 'light'
+        // tema effettivo (per CSS opzionali)
+        const eff = (theme === 'auto') ? (mql.matches ? 'dark' : 'light') : theme;
+        root.dataset.effectiveTheme = eff;
+
+        if (btn){
+          const next = theme === 'auto' ? 'dark'
+                    : theme === 'dark' ? 'light'
+                    : 'auto';
+          btn.title = `Tema: ${theme} (clic per ${next})`;
+          btn.setAttribute('aria-label', btn.title);
+        }
+      }
+
+      let cur = localStorage.getItem(KEY) || root.getAttribute('data-theme') || 'auto';
+      if (!['auto','dark','light'].includes(cur)) cur = 'auto';
+      apply(cur);
+
+      function onSystemChange(){
+        if ((localStorage.getItem(KEY) || 'auto') === 'auto'){ apply('auto'); }
+      }
+      try { mql.addEventListener('change', onSystemChange); }
+      catch { mql.addListener(onSystemChange); }
+
+      btn?.addEventListener('click', ()=>{
+        cur = (cur === 'auto') ? 'dark' : (cur === 'dark' ? 'light' : 'auto');
+        localStorage.setItem(KEY, cur);
+        apply(cur);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard Cittadino — OFI</title>
+  <meta name="description" content="La tua casa in OFI: pensieri, ricordi, anniversari e servizi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="icon" href="../images/OFI-Social.png" type="image/png">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    :root{
+      --dash-glow-1: color-mix(in oklab, var(--oro), transparent 85%);
+      --dash-glow-2: color-mix(in oklab, var(--verde), transparent 88%);
+      --glass: saturate(120%) blur(3px);
+    }
+    /* WOW background */
+    .wow-hero{
+      padding:2.4rem 0 1.6rem;
+      background:
+        radial-gradient(1100px 520px at -10% -15%, var(--dash-glow-1), transparent 55%),
+        radial-gradient(900px 420px at 115% -20%, var(--dash-glow-2), transparent 50%);
+      position:relative;
+      overflow:hidden;
+    }
+    .sparkle{
+      position:absolute; inset:-20% -10% auto auto; width:40vmax; height:40vmax;
+      background:conic-gradient(from 180deg at 50% 50%, color-mix(in oklab, var(--oro), transparent 95%), transparent);
+      filter:blur(40px); opacity:.25; animation:spin 28s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Layout */
+    .wow-grid{display:grid;grid-template-columns:1.5fr .9fr;gap:1rem}
+    @media(max-width:1080px){.wow-grid{grid-template-columns:1fr}}
+    .hero-left h1{font-size:clamp(1.8rem, 4.5vw, 3.2rem);letter-spacing:.2px}
+    .hero-left .sub{max-width:70ch}
+    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-top:1rem}
+    @media(max-width:1000px){.kpis{grid-template-columns:1fr 1fr}}
+    .kpi{
+      border:1px solid color-mix(in oklab, var(--text), transparent 86%);
+      border-radius:18px; padding:.9rem; background:color-mix(in oklab, var(--bg), black 0%);
+      display:flex; align-items:center; gap:.7rem; backdrop-filter:var(--glass);
+      transition:transform .25s ease, box-shadow .25s ease;
+    }
+    .kpi:hover{transform:translateY(-3px); box-shadow:0 10px 26px rgba(0,0,0,.18)}
+    .kpi img{height:32px}
+    .kpi h4{margin:0 0 .1rem 0;font-size:1.02rem}
+    .kpi p{margin:0;font-size:.88rem;color:color-mix(in oklab, var(--text), transparent 35%)}
+    /* PDG card */
+    .pdg-card{
+      border-radius:18px; padding:1rem;
+      border:1px solid color-mix(in oklab, var(--text), transparent 86%);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--bg), #0000 0%), color-mix(in oklab, var(--oro), transparent 94%) 120%);
+      box-shadow:0 12px 30px rgba(0,0,0,.15);
+      position:relative;
+    }
+    .pdg-card blockquote{font-family:"Playfair Display",serif;font-size:clamp(1.1rem, 2.3vw, 1.7rem);line-height:1.55;margin:.55rem 0}
+    .badge{font-size:.75rem;border:1px solid currentColor;border-radius:999px;padding:.15rem .55rem;opacity:.8}
+    .stamp{position:absolute;right:8px;bottom:-12px;height:44px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.25));opacity:.9}
+    .subnav{position:sticky;top:64px;z-index:5;background:linear-gradient(180deg, color-mix(in oklab, var(--bg), transparent 2%), transparent);backdrop-filter:blur(2px);padding:.4rem 0 .2rem 0;border-bottom:1px solid color-mix(in oklab, var(--text), transparent 90%)}
+    .tab{border:1px solid color-mix(in oklab, var(--text), transparent 85%);border-radius:999px;padding:.35rem .7rem;font-size:.9rem;margin-right:.4rem}
+    .sec{padding:1.2rem 0}
+    .grid-3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:1rem}
+    .grid-2{display:grid;grid-template-columns:1.15fr 1fr;gap:1rem}
+    @media(max-width:1080px){.grid-3,.grid-2{grid-template-columns:1fr}}
+    .card-title{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+    .card-title img{height:26px}
+    .card{backdrop-filter:var(--glass)}
+    .list{display:flex;flex-direction:column;gap:.6rem}
+    .list .item{padding:.7rem;border:1px solid color-mix(in oklab, var(--text), transparent 90%);border-radius:12px;display:flex;justify-content:space-between;align-items:center}
+    .list .item h5{margin:0}
+    /* Theme floating circle */
+    .fab{position:fixed;right:16px;bottom:16px;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;border:1px solid color-mix(in oklab, var(--text), transparent 82%);background:color-mix(in oklab, var(--bg), black 0%);backdrop-filter:var(--glass);box-shadow:0 8px 28px rgba(0,0,0,.22);cursor:pointer;z-index:9998}
+    .fab:active{transform:scale(.98)}
+    .to-top{right:16px;bottom:84px;width:46px;height:46px}
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">
+        <img class="brand-mark" src="../images/logo-ofi.png" alt="OFI">
+      </a>
+      <nav class="site-nav" id="siteNav" aria-label="Principale">
+        <a href="../index.html#pensieri">Pensieri</a>
+        <a href="../index.html#servizi">Servizi</a>
+        <a href="../index.html#articoli-home">Articoli</a>
+        <a href="../index.html#come-funziona">Come funziona</a>
+        <a href="../index.html#mappa">Mappa</a>
+        <a href="../index.html#video">Video</a>
+        <a href="../index.html#imprese">Per le imprese</a>
+      </nav>
+      <div class="header-cta">
+        <a class="btn outline" href="../accesso.html#login">Accedi</a>
+        <a class="btn solid" href="../accesso.html#registrati">Registrati</a>
+      </div>
+      <button class="burger" id="burger" aria-label="Apri menu" aria-expanded="false" aria-controls="siteNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+<main>
+  <section class="wow-hero">
+    <div class="sparkle" aria-hidden="true"></div>
+    <div class="container wow-grid">
+      <div class="hero-left">
+        <h1 class="section-title" id="helloTitle">Ciao, benvenuto <span aria-hidden="true">👋</span></h1>
+        <p class="section-sub sub">Il tuo spazio di <strong>memoria</strong>, <strong>cura</strong> e <strong>servizi</strong>.
+          Qui puoi scrivere pensieri, creare necrologi e anniversari, e fissare un <strong>Luogo della Memoria</strong> — il posto del cuore di chi ami.</p>
+
+        <div class="kpis" role="navigation" aria-label="Sezioni della dashboard">
+          <a class="kpi" href="#pensieri">
+            <img src="../images/pensieri-logo.png" alt="Pensieri" loading="lazy">
+            <div><h4>Pensieri</h4><p>Scrivi e condividi. Guarda il pensiero del giorno.</p></div>
+          </a>
+          <a class="kpi" href="#ofi">
+            <img src="../images/OFI-Logo-3.png" alt="OFI" loading="lazy">
+            <div><h4>Onoranze Funebri Italia</h4><p>Necrologi, preventivi, anniversari.</p></div>
+          </a>
+          <a class="kpi" href="#luoghi">
+            <img src="../images/OFI-Logo-Long-Light.png" alt="Luoghi" loading="lazy" style="height:24px">
+            <div><h4>Luogo della Memoria</h4><p>Fissa un posto del cuore sulla mappa.</p></div>
+          </a>
+          <a class="kpi" href="#supporto">
+            <img src="../images/icona-fornitore.png" alt="Supporto" loading="lazy" style="height:28px">
+            <div><h4>Figure di supporto</h4><p>Professionisti e associazioni vicino a te.</p></div>
+          </a>
+        </div>
+      </div>
+
+      <div class="pdg-card card" id="pdg">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h3 style="margin:0">🌟 Pensiero del giorno <span class="badge" id="dayBadge"></span></h3>
+          <img src="../images/pensieri-logo.png" alt="logo pensieri" style="height:30px;opacity:.9">
+        </div>
+        <blockquote id="pdgText">«La memoria tiene accesa una piccola luce: basta guardarla per sentire calore.»</blockquote>
+        <p class="muted">Condividendo il tuo pensiero, aiuti qualcun altro a sentirsi meno solo. È così che la luce si moltiplica.</p>
+        <div class="cta-row">
+          <button id="savePDG" class="btn solid">📥 Salva</button>
+          <button id="sharePDG" class="btn outline" type="button">↗︎ Condividi</button>
+          <a class="btn ghost" href="pensieri-miei.html">Apri Pensieri</a>
+        </div>
+        <p id="pdgMsg" class="muted" style="margin-top:.4rem;"></p>
+        <img class="stamp" src="../images/OFI-Social.png" alt="OFI social">
+      </div>
+    </div>
+  </section>
+
+  <div class="subnav">
+    <div class="container">
+      <a class="tab" href="#pensieri">🖋 Pensieri</a>
+      <a class="tab" href="#ofi">🏛 OFI</a>
+      <a class="tab" href="#luoghi">🗺 Luoghi</a>
+      <a class="tab" href="#supporto">🤝 Supporto</a>
+    </div>
+  </div>
+
+  <section class="sec" id="pensieri">
+    <div class="container grid-3">
+      <div class="card">
+        <div class="card-title"><img src="../images/pensieri-logo.png" alt=""><h3>Scrivi un pensiero</h3></div>
+        <p class="muted">Un pensiero può scaldare il cuore di chi legge. Condividilo sul social Pensieri.</p>
+        <div class="cta-row"><a class="btn solid" href="pensieri-scrivi.html">Scrivi</a><a class="btn outline" href="pensieri-miei.html">I miei pensieri</a></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><img src="../images/pensieri-logo.png" alt=""><h3>Esplora il social Pensieri</h3></div>
+        <p class="muted">Stiamo preparando una pagina pubblica per scoprire pensieri ispiranti condivisi dalla community.</p>
+        <div class="cta-row"><a class="btn ghost" href="#">Prossimamente</a></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><img src="../images/icona-fornitore.png" alt=""><h3>Marchio di Affidabilità</h3></div>
+        <p class="muted">OFI certifica qualità e affidabilità di imprese e figure di supporto. Cerca il marchio sulle pagine.</p>
+        <div class="cta-row"><a class="btn outline" href="../imprese.html">Scopri di più</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="ofi">
+    <div class="container grid-2">
+      <div class="card">
+        <div class="card-title"><img src="../images/OFI-Logo-Light.png" alt=""><h3>Onoranze Funebri Italia</h3></div>
+        <p class="muted">Servizi pensati per te: preventivi rapidi, necrologi, anniversari.</p>
+        <div class="cta-row"><a class="btn outline" href="../richiedi-preventivo.html">Richiedi preventivo</a><a class="btn outline" href="../necrologi.html">Scrivi necrologio</a></div>
+        <div class="cta-row" style="margin-top:.4rem"><button class="btn solid" id="addAnniv">➕ Crea anniversario</button></div>
+        <div id="annivList" class="list" style="margin-top:.6rem"></div>
+      </div>
+
+      <div class="card" id="luoghi">
+        <div class="card-title"><img src="../images/OFI-Logo-3.png" alt=""><h3>Il tuo Atlante dei Ricordi</h3></div>
+        <p class="muted">Clicca sulla mappa per aggiungere un <strong>Luogo della Memoria</strong> — un posto del cuore legato a una persona.</p>
+        <div style="height:360px;border-radius:12px;overflow:hidden;border:1px solid color-mix(in oklab, var(--text), transparent 90%)">
+          <div id="mapDash" style="height:100%"></div>
+        </div>
+        <div class="cta-row" style="margin-top:.6rem"><button class="btn outline" id="openMemPlace">➕ Crea Luogo</button><a class="btn ghost" href="profilo-cittadino.html#luogo">Gestisci dal profilo</a></div>
+        <div id="memList" class="list" style="margin-top:.6rem"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="supporto">
+    <div class="container grid-2">
+      <div class="card">
+        <div class="card-title"><img src="../images/icona-fornitore.png" alt=""><h3>Figure di supporto</h3></div>
+        <p class="muted">Psicologi, gruppi di auto-aiuto, associazioni e guide spirituali. Stiamo costruendo la rete nazionale.</p>
+        <div class="cta-row"><a class="btn outline" href="../supporto.html">Cerca vicino a te</a><a class="btn ghost" href="../index.html#mappa">Apri la mappa generale</a></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><img src="../images/icona-impresa.png" alt=""><h3>Imprese accreditate</h3></div>
+        <p class="muted">Cerca imprese con <strong>Marchio di Affidabilità Nazionale</strong>. Scegli con serenità.</p>
+        <div class="cta-row"><a class="btn outline" href="../imprese.html">Trova impresa</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container foot-inner">
+    <div class="foot-brand"><img src="../images/logo-ofi.png" alt="OFI"><p><strong>OFI</strong> — piattaforma nazionale per cittadini, imprese e professionisti del sostegno.<br>Accoglienza, memoria, servizi in un unico spazio digitale.</p></div>
+    <div class="foot-links">
+      <a href="../index.html#pensieri">Pensieri</a><a href="../index.html#servizi">Servizi</a>
+      <a href="../index.html#articoli-home">Articoli</a><a href="../index.html#come-funziona">Come funziona</a>
+      <a href="../index.html#imprese">Per le imprese</a><a href="../index.html#contatti">Contatti</a><a href="../index.html#privacy">Privacy</a>
+    </div>
+    <div class="tricolore"><span></span><span></span><span></span></div>
+  </div>
+</footer>
+
+<!-- Floating actions -->
+<button id="themeFab" class="fab" title="Cambia tema">🌓</button>
+<button id="toTop" class="fab to-top" title="Torna su">↑</button>
+
+<script src="../ofi.js" defer></script>
+<script>window.OFI_MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";</script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<!-- Firebase v10 + Funzioni dashboard -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+  import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app",
+    messagingSenderId: "345581339212",
+    appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // Greeting
+  function setHello(u){
+    const el = document.getElementById('helloTitle');
+    if(!el) return;
+    const name = u?.displayName?.split(' ')[0] || 'benvenuto';
+    el.innerHTML = 'Ciao, ' + name + ' <span aria-hidden="true">👋</span>';
+  }
+
+  onAuthStateChanged(auth, async (u) => {
+    if (!u) { location.href='login-cittadino.html'; return; }
+    setHello(u);
+    initMapAndData(u.uid);
+    renderAnniversari(u.uid);
+  });
+
+  /* Pensiero del Giorno */
+  const PENSIERI = [
+    "La memoria tiene accesa una piccola luce: basta guardarla per sentire calore.",
+    "Ogni ricordo custodito è un filo d’oro che non si spezza.",
+    "Camminiamo su orme invisibili: sono di chi ci ha amati.",
+    "Il dolore cambia forma quando trova ascolto.",
+    "Le parole non dette vivono nel gesto gentile.",
+    "Ciò che resta è ciò che doniamo.",
+    "Nel silenzio, il cuore ricorda meglio.",
+    "Ogni tramonto conosce un nome che ci manca.",
+    "Una carezza di vento: qualcuno che torna a salutarci.",
+    "Le lacrime innaffiano semi di gratitudine.",
+    "Il tempo insegna a tenere senza stringere.",
+    "Ricordare è un atto di amore che non chiede permesso.",
+    "La vita continua nei gesti che ripetiamo.",
+    "Dove posi lo sguardo con affetto, nasce casa.",
+    "Le persone speciali lasciano luce, non ombra."
+  ];
+  function dayOfYear(d){const start=new Date(d.getFullYear(),0,0);const diff=d-start;return Math.floor(diff/86400000);}
+  (function initPdg(){
+    const i = dayOfYear(new Date()) % PENSIERI.length;
+    const t = PENSIERI[i];
+    document.getElementById('pdgText').textContent = `“${t}”`;
+    document.getElementById('dayBadge').textContent = new Date().toLocaleDateString('it-IT',{weekday:'long'});
+  })();
+  document.getElementById('savePDG').addEventListener('click', async () => {
+    const u = auth.currentUser; if(!u) return;
+    const testo = document.getElementById('pdgText').textContent.replace(/^“|”$/g,'');
+    try{
+      await addDoc(collection(db,'pensieri_utente'), {
+        uid: u.uid, autore: u.displayName || 'Utente OFI',
+        visibilita: 'privato', titolo: 'Pensiero del giorno',
+        testo, createdAt: serverTimestamp()
+      });
+      document.getElementById('pdgMsg').textContent = 'Salvato nella tua bacheca ✅';
+    }catch(e){ document.getElementById('pdgMsg').textContent = e.message; }
+  });
+  document.getElementById('sharePDG').addEventListener('click', async () => {
+    const testo = document.getElementById('pdgText').textContent.replace(/^“|”$/g,'');
+    const shareData = { title:'Pensiero del giorno • OFI', text: testo, url: location.href };
+    if(navigator.share){ try{ await navigator.share(shareData); }catch{} }
+    else { await navigator.clipboard.writeText(`${testo} — via OFI ${location.href}`);
+      document.getElementById('pdgMsg').textContent = 'Copiato negli appunti. Condividilo dove vuoi.'; }
+  });
+
+  /* Mapbox + Luoghi della Memoria */
+  let map, memMarkers = [];
+  function initMapAndData(uid){
+    if(!window.mapboxgl) return;
+    mapboxgl.accessToken = window.OFI_MAPBOX_TOKEN;
+    map = new mapboxgl.Map({ container:'mapDash', style:'mapbox://styles/mapbox/streets-v12', center:[12.4964,41.9028], zoom:4.6 });
+    map.addControl(new mapboxgl.NavigationControl({visualizePitch:true}), 'top-right');
+    if(navigator.geolocation) navigator.geolocation.getCurrentPosition(p => {
+      map.flyTo({center:[p.coords.longitude,p.coords.latitude], zoom:12, essential:true});
+      new mapboxgl.Marker({color:'#c7a053'}).setLngLat([p.coords.longitude,p.coords.latitude]).addTo(map);
+    });
+    map.on('click', (e)=> openMemModal(e.lngLat.lng, e.lngLat.lat));
+    loadLuoghi(uid);
+  }
+  async function loadLuoghi(uid){
+    const snap = await getDocs(query(collection(db,'luoghi_memoria'), where('uid','==',uid)));
+    const list = document.getElementById('memList'); list.innerHTML='';
+    memMarkers.forEach(m=>m.remove()); memMarkers = [];
+    if(snap.empty){ list.innerHTML = '<div class="muted">Nessun Luogo della Memoria ancora. Clicca sulla mappa o usa “Crea Luogo”.</div>'; return; }
+    snap.forEach(docu=>{
+      const d=docu.data();
+      const item = document.createElement('div');
+      item.className='item';
+      item.innerHTML = `<div><h5>${d.titolo || 'Luogo senza titolo'}</h5><p class="muted" style="margin:.2rem 0 0 0">${d.note || ''}</p></div><a class="btn ghost" href="#mapDash" data-lng="${d.lng}" data-lat="${d.lat}">Apri</a>`;
+      item.querySelector('a').addEventListener('click', (ev)=>{
+        ev.preventDefault(); map.flyTo({center:[d.lng,d.lat], zoom:14, essential:true}); });
+      list.appendChild(item);
+      const mk = new mapboxgl.Marker({color:'#8c5'}).setLngLat([d.lng,d.lat]).setPopup(new mapboxgl.Popup().setHTML(`<strong>${d.titolo||'Luogo'}</strong><br>${d.note||''}`)).addTo(map);
+      memMarkers.push(mk);
+    });
+  }
+
+  /* Modali: Luogo e Anniversario */
+  const modalMem = makeModal('memModal', 'Crea un Luogo della Memoria', `
+    <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div><label>Titolo</label><input id="memTitolo" placeholder="Es. Il colle del tramonto"></div>
+      <div><label>Data (opzionale)</label><input id="memData" type="date"></div>
+    </div>
+    <label>Nota (opzionale)</label>
+    <textarea id="memNote" rows="3" placeholder="Perché questo luogo è speciale…"></textarea>
+    <input type="hidden" id="memLng"><input type="hidden" id="memLat">
+    <div class="cta-row" style="margin-top:.6rem"><button class="btn solid" id="memSave">Salva</button><button class="btn ghost" data-close>Annulla</button></div>
+  `);
+  document.getElementById('openMemPlace').addEventListener('click', ()=> openMemModal());
+  function openMemModal(lng,lat){
+    if(typeof lng==='number'){ document.getElementById('memLng').value = String(lng); }
+    if(typeof lat==='number'){ document.getElementById('memLat').value = String(lat); }
+    modalMem.classList.add('show');
+  }
+  document.getElementById('memSave').addEventListener('click', async ()=>{
+    const u = auth.currentUser; if(!u) return;
+    const lng = parseFloat(document.getElementById('memLng').value);
+    const lat = parseFloat(document.getElementById('memLat').value);
+    const titolo = (document.getElementById('memTitolo').value || '').trim();
+    const note = (document.getElementById('memNote').value || '').trim();
+    const data = document.getElementById('memData').value || null;
+    if(Number.isNaN(lng) || Number.isNaN(lat)){ alert('Clicca prima sulla mappa per scegliere il punto.'); return; }
+    try{
+      await addDoc(collection(db,'luoghi_memoria'), { uid: auth.currentUser.uid, titolo, note, data, lng, lat, createdAt: serverTimestamp() });
+      modalMem.classList.remove('show'); loadLuoghi(auth.currentUser.uid);
+    }catch(e){ alert(e.message); }
+  });
+
+  const modalAnn = makeModal('annModal','Nuovo anniversario',`
+    <div class="row" style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div><label>Nome della persona</label><input id="annNome" placeholder="Es. Maria Rossi"></div>
+      <div><label>Data anniversario</label><input id="annData" type="date"></div>
+    </div>
+    <label>Nota (opzionale)</label>
+    <textarea id="annNote" rows="3" placeholder="Un pensiero che vuoi ricordare…"></textarea>
+    <div class="cta-row" style="margin-top:.6rem">
+      <button class="btn solid" id="annSave">Salva</button>
+      <button class="btn outline" id="annICS">Scarica promemoria (.ics)</button>
+      <button class="btn ghost" data-close>Annulla</button>
+    </div>
+  `);
+  document.getElementById('addAnniv').addEventListener('click', ()=> modalAnn.classList.add('show'));
+  document.getElementById('annSave').addEventListener('click', async ()=>{
+    const u = auth.currentUser; if(!u) return;
+    const nome = (document.getElementById('annNome').value||'').trim();
+    const dataStr = document.getElementById('annData').value;
+    const note = (document.getElementById('annNote').value||'').trim();
+    if(!nome || !dataStr){ alert('Compila nome e data.'); return; }
+    try{
+      await addDoc(collection(db,'anniversari'), { uid:u.uid, nome, data: dataStr, note, createdAt: serverTimestamp() });
+      modalAnn.classList.remove('show'); renderAnniversari(u.uid);
+    }catch(e){ alert(e.message); }
+  });
+  document.getElementById('annICS').addEventListener('click', ()=>{
+    const nome = (document.getElementById('annNome').value||'').trim() || 'Anniversario';
+    const dataStr = document.getElementById('annData').value;
+    if(!dataStr){ alert('Seleziona la data.'); return; }
+    const ics = makeICS({title:`Anniversario — ${nome}`, date:dataStr, desc: document.getElementById('annNote').value || 'Promemoria OFI'});
+    downloadFile('anniversario-ofi.ics', ics, 'text/calendar');
+  });
+  async function renderAnniversari(uid){
+    const wrap = document.getElementById('annivList'); wrap.innerHTML = '';
+    const q = query(collection(db,'anniversari'), where('uid','==',uid));
+    const snap = await getDocs(q);
+    if(snap.empty){ wrap.innerHTML = '<div class="muted">Nessun anniversario. Creane uno per essere avvisato ogni anno.</div>'; return; }
+    const arr = []; snap.forEach(d => arr.push({id:d.id, ...d.data()}));
+    arr.sort((a,b)=> (a.data||'').localeCompare(b.data||''));
+    arr.forEach(a=>{
+      const next = nextOccurrence(a.data);
+      const div = document.createElement('div');
+      div.className='item';
+      div.innerHTML = `<div><h5>${a.nome}</h5><p class="muted" style="margin:.2rem 0 0 0">Prossimo: ${next.toLocaleDateString('it-IT')}</p></div><button class="btn ghost" data-ics>ICS</button>`;
+      div.querySelector('[data-ics]').addEventListener('click', ()=>{
+        const ics = makeICS({title:`Anniversario — ${a.nome}`, date:a.data, desc:a.note||''});
+        downloadFile(\`anniversario-\${a.nome.replace(/\s+/g,'-')}.ics\`, ics, 'text/calendar');
+      });
+      wrap.appendChild(div);
+    });
+  }
+  function nextOccurrence(dateStr){
+    const [y,m,d] = dateStr.split('-').map(Number);
+    const now = new Date();
+    let target = new Date(now.getFullYear(), (m-1), d);
+    if(target < new Date(now.getFullYear(), now.getMonth(), now.getDate())){
+      target = new Date(now.getFullYear()+1, (m-1), d);
+    }
+    return target;
+  }
+  function makeICS({title,date,desc}){
+    const dt = date.replace(/-/g,'');
+    return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//OFI//Anniversari//IT
+BEGIN:VEVENT
+UID:${Date.now()}@ofi
+DTSTAMP:${dt}T000000Z
+DTSTART;VALUE=DATE:${dt}
+RRULE:FREQ=YEARLY
+SUMMARY:${title}
+DESCRIPTION:${(desc||'').replace(/\n/g,' ')}
+END:VEVENT
+END:VCALENDAR`;
+  }
+  // Minimal modal utility + download
+  function makeModal(id, title, inner){
+    const wrap = document.createElement('div');
+    wrap.className = 'modal'; wrap.id = id;
+    wrap.innerHTML = `<div class="box"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem"><h3 style="margin:0">${title}</h3><button class="btn ghost" data-close>Chiudi</button></div>${inner}</div>`;
+    Object.assign(wrap.style,{position:'fixed',inset:'0',background:'rgba(0,0,0,.5)',display:'none',alignItems:'center',justifyContent:'center',padding:'1rem',zIndex:'9999'});
+    const box = wrap.querySelector('.box');
+    Object.assign(box.style,{background:'var(--bg)',color:'var(--text)',borderRadius:'16px',maxWidth:'560px',width:'100%',padding:'1rem',border:'1px solid color-mix(in oklab, var(--text), transparent 90%)'});
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', (e)=>{ if(e.target.dataset.close!==undefined || e.target===wrap) wrap.style.display='none'; });
+    wrap.classList.add('show'); wrap.style.display='flex';
+    return wrap;
+  }
+  function downloadFile(name, content, type='text/plain'){
+    const blob = new Blob([content], {type}); const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  }
+
+  /* Theme FAB cycle: auto → light → dark → auto */
+  const fab = document.getElementById('themeFab');
+  function getTheme(){return document.documentElement.getAttribute('data-theme') || 'auto';}
+  function setTheme(t){document.documentElement.setAttribute('data-theme', t); localStorage.setItem('ofi-theme', t);}
+  (()=>{ const saved = localStorage.getItem('ofi-theme'); if(saved) setTheme(saved); })();
+  fab.addEventListener('click', ()=>{
+    const order = ['auto','light','dark']; let t = getTheme(); let i = (order.indexOf(t)+1)%order.length; setTheme(order[i]);
+    fab.textContent = order[i]==='light' ? '☀️' : order[i]==='dark' ? '🌙' : '🌓';
+  });
+  // Scroll to top
+  document.getElementById('toTop').addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Custodia Luogo — OFI</title>
+  <meta name="description" content="Gestione privata del Luogo della Memoria OFI (solo custodi)." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/cittadini/luogo-manage.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/cittadini/luogo-memoria.html" aria-label="Torna ai tuoi Luoghi">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <!-- Hamburger DASH (come necrologio-mio) -->
+      <button id="dashToggle" class="hamburger" aria-label="Apri menu" aria-controls="sidebar" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Menu globale: tenuto vuoto in modalità dashboard -->
+      <ul id="menuPanel" class="menu" role="menu"></ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="headerBlock">
+      <div class="headCard">
+        <div>
+          <div class="eyebrow">Custodia del Luogo</div>
+          <h1 class="h1" id="hTitle">Custodia del Luogo</h1>
+          <p class="sub" id="hSub">Uno spazio riservato alla cura. Nessuna fretta.</p>
+        </div>
+
+        <div class="chips" id="chips">
+          <span class="chip gold" id="chipRole" hidden>Custode</span>
+          </div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <article class="card welcomeCard welcomeCard--mini" id="welcomeCard" hidden aria-label="Benvenuto nella custodia">
+  <div class="welcomeTop">
+    <div class="welcomeKicker">Grazie.</div>
+    <h2 class="welcomeTitle" id="welcomeTitle">Questo Luogo è nato.</h2>
+    <p class="welcomeThanks" id="welcomeThanks">Hai già compiuto il primo passo.</p>
+    <p class="small welcomeText" id="welcomeText">Quando vorrai, una copertina, una foto, una parola. Il resto può aspettare.</p>
+  </div>
+</article>
+
+      <article class="coverHero" id="coverHero" aria-label="Copertina gestione">
+        <div class="coverHeroCard">
+          <div class="coverHeroPhoto">
+            <div class="coverFrame">
+              <img id="coverHeroImg" alt="Copertina Luogo della Memoria" loading="eager" src="/images/rosa.png" />
+            </div>
+          </div>
+
+          <div class="coverHeroBody">
+            <div class="coverHeroLine" aria-hidden="true"></div>
+
+            <div class="coverHeroName" id="coverHeroName">—</div>
+            <div class="coverHeroTagline">Un luogo dove il legame continua.</div>
+
+            <div class="coverHeroMetaRow" aria-label="Dati principali">
+              <div class="coverHeroMeta">
+                <span id="coverHeroPlace">—</span>
+                <span class="sep">•</span>
+                <span id="coverHeroDate">—</span>
+              </div>
+
+              <div class="coverHeroStats" aria-label="Riepilogo contenuti">
+  <div class="stat">
+    <span class="statN" id="statAlbum">0</span>
+    <span class="statL">Media</span>
+  </div>
+  <div class="stat">
+    <span class="statN" id="statThoughts">0</span>
+    <span class="statL">Parole</span>
+  </div>
+</div>
+
+            <div class="coverHeroActions">
+              <button class="btn primary" id="btnOpenManage" type="button">Apri il menu</button>
+              <a class="btn" id="btnVisitHero" href="#" target="_blank" rel="noopener">Visita il Luogo</a>
+              <a class="btn btn--ghost" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+            </div>
+</div>
+          </div>
+        </div>
+      </article>
+
+      
+
+      <article class="card" id="gateCard" hidden>
+        <h2>Accesso</h2>
+        <p class="small" id="gateText"></p>
+        <div class="actions">
+          <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+        </div>
+      </article>
+    </section>
+
+    <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+    <aside id="sidebar" class="sidebar" aria-label="Menu gestione" aria-hidden="true">
+      <div class="sb-head">
+        <div class="sb-brand">
+          <img src="/images/rosa.png" alt="" aria-hidden="true">
+          <span class="sb-name">Custodia</span>
+        </div>
+        <button class="sb-close" id="btnSidebarClose" type="button" aria-label="Chiudi menu">✕</button>
+      </div>
+
+      <div class="group">
+        <h4>Sezioni</h4>
+        <nav>
+          <a href="#copertina" data-act="cover">📘 Copertina</a>
+          <a href="#album" data-act="album">🕊 Foto e video</a>
+          <a href="#filmato" data-act="video">🎞 Filmato Ricordo</a>
+          <a href="#pensieri" data-act="thoughts">✍️ Parole</a>
+        </nav>
+      </div>
+
+      <div class="group">
+        <h4>Impostazioni</h4>
+        <nav>
+          <a href="#impostazioni" data-act="settings">⚙️ Visibilità e ambiente</a>
+          <a href="#firma" data-act="signature">🖋 Firma</a>
+        </nav>
+      </div>
+
+      <div class="group">
+        <h4>Azioni</h4>
+        <nav>
+          <a href="#visita" id="sbVisitLink">👁 Visita il Luogo</a>
+          <a class="sb-back" href="/cittadini/luogo-memoria.html">← Torna ai tuoi Luoghi</a>
+        </nav>
+      </div>
+    </aside>
+
+    <aside id="sidepanel" class="sidepanel" aria-label="Pannello laterale" aria-hidden="true" inert>
+      <div class="sp-head">
+        <div class="sp-title" id="sidePanelTitle">Dettagli</div>
+        <button class="sp-close" id="btnPanelClose" type="button" aria-label="Chiudi pannello">✕</button>
+      </div>
+      <div class="sp-body" id="sidePanelBody"></div>
+    </aside>
+
+    <div id="panelStash" hidden></div>
+
+    
+<section id="sectionStatus" class="card dash-hidden">
+  <h2>Stato del Luogo</h2>
+  <p class="small">Questo Luogo è già attivo. Qui trovi un riepilogo sobrio e alcune possibilità, quando lo desideri.</p>
+  <div class="hr"></div>
+
+  <div class="statusGrid">
+    <div class="statusCard">
+      <div class="statusTitle">Contenuti</div>
+      <div class="statusSub">Nessuna fretta. Anche una sola foto può bastare.</div>
+      <div class="statusList" id="careList"></div>
+    </div>
+
+    <div class="statusCard">
+      <div class="statusTitle">Azioni</div>
+      <div class="statusSub">Apri direttamente la sezione che ti serve.</div>
+      <div class="statusActions">
+        <button class="btn primary" id="qaCover" type="button">Copertina</button>
+        <button class="btn" id="qaAlbum" type="button">Foto e video</button>
+        <button class="btn" id="qaWords" type="button">Parole</button>
+        <button class="btn" id="qaSettings" type="button">Visibilità e ambiente</button>
+        <button class="btn" id="qaSignature" type="button">Firma</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="note">
+    <strong>Riservato</strong><br>
+    Le <em>visite segnate</em> (presenze) sono visibili solo ai custodi. “Lascia un ricordo” invece è pubblico e consapevole.
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="note" style="border-color: rgba(255,255,255,.12); background: rgba(0,0,0,.10);">
+    <strong>Filmato Ricordo</strong><br>
+    Quando vorrai, puoi creare un filmato breve e sobrio, guidato passo dopo passo. Puoi anche solo “salvare la richiesta” e completarla in un secondo momento.
+  </div>
+</section><section id="sectionSettings" class="card dash-hidden">
+      <h2>Impostazioni</h2>
+      <p class="small">Scegli se il Luogo è visibile a tutti o riservato alla famiglia. L’ambiente resta sobrio e uniforme.</p>
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Visibilità</div>
+          <select id="visibilitySelect" class="select">
+            <option value="family">Solo familiari</option>
+            <option value="public">Visibile a tutti</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label">Ambiente OFI</div>
+          <select id="sceneSelect" class="select">
+            <option value="campo_luce">Campo di Luce</option>
+            <option value="giardino_sobrio">Giardino Sobrio</option>
+            <option value="cappella_silenziosa">Cappella Silenziosa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnSaveSettings" class="btn primary">Salva impostazioni</button>
+        <a id="btnVisit" class="btn" href="#" target="_blank" rel="noopener">Apri la visita</a>
+      </div>
+
+      <div class="hr"></div>
+      <div class="note">
+        <strong>Nota</strong><br>
+        Se imposti “Visibile a tutti”, chiunque potrà visitare il Luogo. In “Solo familiari” resta riservato ai custodi.
+      </div>
+    </section>
+
+    <section id="sectionCover" class="card dash-hidden">
+      <h2>Copertina</h2>
+      <p class="small">Una sola immagine sobria. Nessun testo introduttivo.</p>
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Immagine copertina</div>
+          <input id="coverFile" class="input" type="file" accept="image/*">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnUploadCover" class="btn primary">Carica copertina</button>
+        <button id="btnRemoveCover" class="btn danger">Rimuovi</button>
+      </div>
+
+      <p class="small" id="coverState" style="margin-top:.65rem;">—</p>
+    </section>
+
+    <section id="sectionAlbum" class="card dash-hidden">
+      <h2>Foto e video</h2>
+
+      <p class="small albumIntro">Aggiungi una foto o un breve video personale. Anche uno solo basta per dare presenza al Luogo.</p>
+
+      <details class="albumDetails">
+        <summary>Dettagli e consigli</summary>
+        <div class="small">
+          Foto consigliate: JPG/PNG. Video personali: MP4 brevi (consigliato max 2 minuti).<br>
+          Ogni contenuto viene ottimizzato per una visualizzazione elegante e un caricamento leggero.
+        </div>
+      </details>
+
+      <div class="stepsRow" aria-label="In tre passi">
+        <span class="stepChip">1) Scegli</span>
+        <span class="stepSep">→</span>
+        <span class="stepChip">2) Didascalia (facolt.)</span>
+        <span class="stepSep">→</span>
+        <span class="stepChip">3) Carica</span>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Media</div>
+          <input id="albumFile" class="input" type="file" accept="image/*,video/*">
+        </div>
+        <div class="field">
+          <div class="label">Didascalia</div>
+          <input id="albumCaption" class="input" type="text" maxlength="110" placeholder="Es. Un giorno di luce (facoltativo)">
+        </div>
+      </div>
+
+      <div class="actions albumActionsBottom">
+        <button id="btnAddMedia" class="btn primary">Carica</button>
+        <a class="btn btn--ghost" id="btnAlbumPreview" href="#" target="_blank" rel="noopener">Vedi come appare nella visita</a>
+      </div>
+
+      <div class="hr"></div>
+      <div class="gridAlbum" id="albumGrid"></div>
+      <p class="small" id="albumEmpty" hidden>Nessun contenuto ancora.</p>
+    </section>
+
+
+    <section id="sectionVideo" class="card dash-hidden">
+      <h2>Filmato Ricordo</h2>
+      <p class="small">Se lo desideri, puoi creare un <strong>filmato breve</strong> da custodire in questo Luogo. È guidato, semplice e rispettoso: ti accompagna passo dopo passo, senza competenze tecniche.</p>
+      <div class="hr"></div>
+
+      <div class="note" style="border-color: rgba(202,168,90,.35); background: rgba(202,168,90,.10);">
+        <strong>Come funziona</strong><br>
+        In pochi minuti puoi inserire una dedica e, se vuoi, alcune foto. Se ora non le hai, puoi comunque <em>salvare la richiesta</em> e completarla più avanti.
+        <div style="margin-top:.55rem; opacity:.95;">
+          Con l’aiuto dell’<em>intelligenza artificiale</em>, OFI prepara un video sobrio e armonioso, adatto a essere rivisto nel tempo.
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:.85rem;">
+        <a class="btn primary" id="btnFilmatoRicordo" href="#" target="_blank" rel="noopener">Apri Filmato Ricordo</a>
+      </div>
+    </section>
+
+
+    <section id="sectionThoughts" class="card dash-hidden">
+      <h2 id="wordsTitle">Parole</h2>
+      <p class="small" id="wordsIntro">Qui puoi raccontare un ricordo o lasciare una parola. Le parole sono firmate e restano custodite in questo Luogo.</p>
+      <div class="hr"></div>
+
+      <div class="field">
+        <div class="label">Testo</div>
+        <textarea id="thoughtText" class="textarea" maxlength="1600" placeholder="Scrivi qualcosa che senti…"></textarea>
+      </div>
+
+      <div class="formRow" style="margin-top:.65rem;">
+        <div class="field">
+          <div class="label">Visibilità della parola</div>
+          <select id="thoughtVisibility" class="select">
+            <option value="public">Visibile a tutti</option>
+            <option value="family">Solo familiari</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnAddThought" class="btn primary">Lascia una Parola</button>
+      </div>
+
+      <div class="hr"></div>
+      <div id="thoughtsList"></div>
+      <p class="small" id="thoughtsEmpty" hidden>Nessun pensiero ancora.</p>
+    </section>
+
+    <section id="sectionSignature" class="card dash-hidden">
+      <h2>Firma</h2>
+      <p class="small">La firma è richiesta per lasciare una parola (nome e cognome visibili). Viene salvata solo su questo dispositivo.</p>
+      <div class="hr"></div>
+
+      <div class="field">
+        <div class="label">Nome</div>
+        <input id="sigNome" class="input" type="text" maxlength="60" placeholder="Nome">
+      </div>
+
+      <div class="field" style="margin-top:.65rem;">
+        <div class="label">Cognome</div>
+        <input id="sigCognome" class="input" type="text" maxlength="60" placeholder="Cognome">
+      </div>
+
+      <div class="actions">
+        <button id="btnSaveSig" class="btn">Salva firma</button>
+      </div>
+
+      <div class="hr"></div>
+      <p class="small" id="metaBox">—</p>
+
+      <div class="hr"></div>
+      <div class="note">
+        <strong>Custodia</strong><br>
+        Custode principale unico, co-custodi in futuro con inviti. OFI può intervenire in caso di incongruenze.
+      </div>
+    </section>
+
+    <div class="toast" id="toast">Salvato</div>
+
+    <!-- Overlay loading -->
+    <div id="overlay" class="overlay" aria-hidden="true">
+      <div class="overlayCard" role="status" aria-live="polite">
+        <h3 class="overlayTitle">Operazione in corso…</h3>
+        <p class="overlayText" id="overlayText">Attendere.</p>
+        <div class="overlayBar"><div class="overlayBarFill" id="overlayBar"></div></div>
+        <div class="overlayPct" id="overlayPct">0%</div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, updateDoc, serverTimestamp, Timestamp,
+      collection, query, orderBy, limit, getDocs, addDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getStorage, ref, uploadBytes, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+
+    const el = (id)=>document.getElementById(id);
+    const overlay = el("overlay");
+    const overlayText = el("overlayText");
+    const overlayBar = el("overlayBar");
+    const overlayPct = el("overlayPct");
+
+    function setLoading(on, pct=0, msg=""){
+      overlay.classList.toggle("open", !!on);
+      overlay.setAttribute("aria-hidden", on ? "false" : "true");
+      const p = Math.max(0, Math.min(100, Number(pct)||0));
+      overlayPct.textContent = `${p}%`;
+      overlayBar.style.width = `${p}%`;
+      overlayText.textContent = msg || "Attendere…";
+      document.body.style.overflow = on ? "hidden" : "";
+    }
+
+    function toast(msg="Salvato"){
+      const t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita"], "family")) || "family";
+      const sceneId = safeStr(pick(raw, ["scene.id", "sceneId"], "campo_luce"));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl"], ""));
+      const coverRef = safeStr(pick(raw, ["cover.storageRef","cover.photoRef","coverRef"], ""));
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(raw?.custody?.coUids) ? raw.custody.coUids.map(safeStr).filter(Boolean) : [];
+      return { nome, cognome, dataMorte, visibilityMode: (visibilityMode==="pubblico"?"public":visibilityMode), sceneId, coverUrl, coverRef, placeLabel, mainUid, coUids, raw };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function fmtTs(ts){
+      try{
+        if (!ts) return "";
+        const d = (typeof ts.toDate === "function") ? ts.toDate() : (ts instanceof Date ? ts : null);
+        if (!d) return "";
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        return `${dd}/${mm}/${yy}`;
+      }catch{ return ""; }
+    }
+
+    function isCustode(uid, luogo){
+      if (!uid) return false;
+      return uid === luogo.mainUid || luogo.coUids.includes(uid);
+    }
+
+    function mustLogin(msg){
+      el("gateCard").hidden = false;
+      el("gateText").textContent = msg;
+    }
+
+    // Firma locale
+    const SIG_KEY = "ofi_luogo_signature";
+    function loadSig(){
+      try{
+        const s = JSON.parse(localStorage.getItem(SIG_KEY) || "{}");
+        el("sigNome").value = safeStr(s.nome);
+        el("sigCognome").value = safeStr(s.cognome);
+      }catch{}
+    }
+    function saveSig(){
+      const nome = safeStr(el("sigNome").value);
+      const cognome = safeStr(el("sigCognome").value);
+      localStorage.setItem(SIG_KEY, JSON.stringify({ nome, cognome }));
+      toast("Firma salvata");
+      return { nome, cognome };
+    }
+
+    el("btnSaveSig").addEventListener("click", saveSig);
+
+    let currentUser = null;
+    let currentLuogo = null;
+
+
+    /* ==========================
+       THEME UI (coerenza OFI)
+       - usa html[data-theme] + body.theme-dark
+       ========================== */
+    (function initThemeUI(){
+      const btn = document.getElementById('themeToggle');
+      const root = document.documentElement;
+
+      function apply(theme){
+        const t = (theme === 'light' || theme === 'dark') ? theme : 'auto';
+        root.setAttribute('data-theme', t);
+        const resolved = (t === 'auto')
+          ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : t;
+        document.body.classList.toggle('theme-dark', resolved === 'dark');
+        try{ root.setAttribute('data-theme-resolved', resolved); }catch{}
+        if (btn) btn.textContent = (resolved === 'dark') ? '◐' : '☀';
+      }
+
+      function nextTheme(cur){
+        if (cur === 'dark') return 'light';
+        if (cur === 'light') return 'dark';
+        return 'dark';
+      }
+
+      const saved = localStorage.getItem('ofi_theme') || root.getAttribute('data-theme') || 'auto';
+      apply(saved);
+
+      btn?.addEventListener('click', ()=>{
+        const cur = root.getAttribute('data-theme') || 'auto';
+        const nxt = nextTheme(cur);
+        localStorage.setItem('ofi_theme', nxt);
+        apply(nxt);
+      });
+
+      // se in auto, reagisci al cambio sistema
+      try{
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq?.addEventListener?.('change', ()=>{
+          const cur = root.getAttribute('data-theme') || 'auto';
+          if (cur === 'auto') apply('auto');
+        });
+      }catch{}
+    })();
+
+
+    /* ==========================
+       DASH UI: sidebar + pannello
+       ========================== */
+    function initDashUI(){
+      // misura header per posizionare sidebar/pannello sotto la fascia superiore
+      const hdr = document.querySelector('.site-header');
+      function setHdrVar(){
+        if (!hdr) return;
+        const h = Math.round(hdr.getBoundingClientRect().height || 74);
+        document.documentElement.style.setProperty('--headerH', `${h}px`);
+      }
+      setHdrVar();
+      // aggiorna se cambia (resize, font, mobile)
+      window.addEventListener('resize', setHdrVar, { passive:true });
+      try{
+        const ro = new ResizeObserver(()=>setHdrVar());
+        ro.observe(hdr);
+      }catch(e){}
+
+      const btnSidebar = document.getElementById('dashToggle');
+      const btnSidebarClose = document.getElementById('btnSidebarClose');
+      const overlay = document.getElementById('dashOverlay');
+      const sidebar = document.getElementById('sidebar');
+
+      const panel = document.getElementById('sidepanel');
+      const panelBody = document.getElementById('sidePanelBody');
+      const panelTitle = document.getElementById('sidePanelTitle');
+      const btnPanelClose = document.getElementById('btnPanelClose');
+      const stash = document.getElementById('panelStash');
+
+      const secStatus = document.getElementById('sectionStatus');
+      const secSettings = document.getElementById('sectionSettings');
+      const secCover = document.getElementById('sectionCover');
+      const secAlbum = document.getElementById('sectionAlbum');
+      const secVideo = document.getElementById('sectionVideo');
+      const secThoughts = document.getElementById('sectionThoughts');
+      const secSignature = document.getElementById('sectionSignature');
+
+      // parcheggia sezioni
+      [secStatus, secSettings, secCover, secAlbum, secVideo, secThoughts, secSignature].forEach(sec=>{
+        if (sec && stash) stash.appendChild(sec);
+      });
+
+      let currentSection = null;
+      let lastFocusEl = null;
+
+      function openSidebar(){
+        if (!sidebar || !overlay) return;
+        sidebar.classList.add('open');
+        sidebar.setAttribute('aria-hidden','false');
+        overlay.hidden = false;
+        overlay.classList.add('show');
+        document.body.classList.add('dash-lock');
+        btnSidebar?.setAttribute('aria-expanded','true');
+      }
+      function closeSidebar(){
+        if (!sidebar || !overlay) return;
+        sidebar.classList.remove('open');
+        sidebar.setAttribute('aria-hidden','true');
+        overlay.hidden = true;
+        overlay.classList.remove('show');
+        document.body.classList.remove('dash-lock');
+        btnSidebar?.setAttribute('aria-expanded','false');
+      }
+
+      function openPanel(title){
+        if (!panel) return;
+        lastFocusEl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        if (panelTitle) panelTitle.textContent = title || 'Dettagli';
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden','false');
+        try{ panel.inert = false; }catch(e){}
+        panel.removeAttribute('inert');
+        setTimeout(()=>{ btnPanelClose?.focus?.(); }, 0);
+      }
+
+      function stashCurrent(){
+        if (currentSection && stash){
+          currentSection.classList.add('dash-hidden');
+          stash.appendChild(currentSection);
+          currentSection = null;
+        }
+        if (panelBody) panelBody.innerHTML = '';
+      }
+
+      function closePanel(){
+        if (!panel) return;
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden','true');
+        try{ panel.inert = true; }catch(e){}
+        panel.setAttribute('inert','');
+        stashCurrent();
+        if (lastFocusEl) setTimeout(()=>lastFocusEl?.focus?.(), 0);
+      }
+
+      function mountSection(sec, title){
+        if (!sec || !panelBody) return;
+        stashCurrent();
+        currentSection = sec;
+        sec.classList.remove('dash-hidden');
+        panelBody.appendChild(sec);
+        openPanel(title);
+      }
+
+      // header / overlay
+      btnSidebar?.addEventListener('click', openSidebar);
+      btnSidebarClose?.addEventListener('click', closeSidebar);
+      overlay?.addEventListener('click', ()=>{ closePanel(); closeSidebar(); });
+      btnPanelClose?.addEventListener('click', closePanel);
+
+      // ESC
+      window.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape'){
+          closePanel();
+          closeSidebar();
+        }
+      });
+
+      // nav click
+      sidebar?.addEventListener('click', (e)=>{
+        const a = e.target?.closest?.('[data-act]');
+        if (!a) return;
+        e.preventDefault();
+        const act = a.getAttribute('data-act');
+        if (act === 'status') mountSection(secStatus, 'Stato del Luogo');
+        if (act === 'settings') mountSection(secSettings, 'Visibilità e ambiente');
+        if (act === 'cover') mountSection(secCover, 'Copertina');
+        if (act === 'album') mountSection(secAlbum, 'Foto e video');
+        if (act === 'video') mountSection(secVideo, 'Filmato Ricordo');
+        if (act === 'thoughts') mountSection(secThoughts, 'Parole');
+        if (act === 'signature') mountSection(secSignature, 'Firma');
+        closeSidebar();
+      });
+
+      // bottone in copertina
+      document.getElementById('btnOpenManage')?.addEventListener('click', openSidebar);
+
+      // link visita
+      document.getElementById('sbVisitLink')?.addEventListener('click', (e)=>{
+        if (!currentLuogo) return;
+        // lascia navigare normalmente
+      });
+  // helpers globali (per pulsanti rapidi)
+  window.__ofiOpenSection = (act)=>{
+    if (act === 'status') mountSection(secStatus, 'Stato del Luogo');
+    if (act === 'settings') mountSection(secSettings, 'Visibilità e ambiente');
+    if (act === 'cover') mountSection(secCover, 'Copertina');
+    if (act === 'album') mountSection(secAlbum, 'Foto e video');
+    if (act === 'video') mountSection(secVideo, 'Filmato Ricordo');
+    if (act === 'thoughts') mountSection(secThoughts, 'Parole');
+    if (act === 'signature') mountSection(secSignature, 'Firma');
+  };
+  window.__ofiOpenSidebar = ()=>openSidebar();
+  window.__ofiClosePanel = ()=>closePanel();
+  window.__ofiCloseSidebar = ()=>closeSidebar();
+
+}
+
+initDashUI();
+
+// Pulsanti rapidi (welcome)
+function initQuickActions(){
+  const open = (act)=>{
+    try{
+      if (window.__ofiOpenSection) window.__ofiOpenSection(act);
+      else if (window.__ofiOpenSidebar) window.__ofiOpenSidebar();
+    }catch(e){}
+  };
+
+  // welcome actions
+  document.getElementById('waCover')?.addEventListener('click', ()=>open('cover'));
+  document.getElementById('waAlbum')?.addEventListener('click', ()=>open('album'));
+  document.getElementById('waWords')?.addEventListener('click', ()=>open('thoughts'));
+  document.getElementById('waMenu')?.addEventListener('click', ()=>window.__ofiOpenSidebar?.());
+
+  // status panel actions
+  document.getElementById('qaCover')?.addEventListener('click', ()=>open('cover'));
+  document.getElementById('qaAlbum')?.addEventListener('click', ()=>open('album'));
+  document.getElementById('qaWords')?.addEventListener('click', ()=>open('thoughts'));
+  document.getElementById('qaSettings')?.addEventListener('click', ()=>open('settings'));
+  document.getElementById('qaSignature')?.addEventListener('click', ()=>open('signature'));
+}
+initQuickActions();
+
+// Stato "Cura del Luogo" (sobrio)
+function updateCareStatus(){
+  const list = document.getElementById('careList');
+  if (!list || !currentLuogo) return;
+
+  const coverOk = !!(currentLuogo.coverUrl);
+  const albumN = Number(document.getElementById('statAlbum')?.textContent || "0") || 0;
+  const wordsN = Number(document.getElementById('statThoughts')?.textContent || "0") || 0;
+
+  const row = (ok, label, hint="")=>{
+    const dot = ok ? 'ok' : 'todo';
+    const tag = ok ? 'Presente' : 'Da fare';
+    const h = hint ? `<div class="careHint">${hint}</div>` : '';
+    return `
+      <div class="careItem">
+        <span class="careDot ${dot}" aria-hidden="true"></span>
+        <div class="careMain">
+          <div class="careLine">
+            <strong>${label}</strong>
+            <span class="careTag ${dot}">${tag}</span>
+          </div>
+          ${h}
+        </div>
+      </div>
+    `;
+  };
+
+  list.innerHTML = [
+    row(coverOk, 'Copertina', coverOk ? '' : 'Una foto sobria rende il Luogo subito “reale”.'),
+    row(albumN > 0, `Foto e video (${albumN})`, albumN > 0 ? '' : 'Anche 1 sola immagine basta per iniziare.'),
+    row(wordsN > 0, `Parole (${wordsN})`, wordsN > 0 ? '' : 'Una frase firmata dà calore e presenza.')
+  ].join('');
+}
+
+
+
+    async function refreshAlbum(){
+      const grid = el("albumGrid");
+      const empty = el("albumEmpty");
+      grid.innerHTML = "";
+
+      // NOTE: evitare query con doppio orderBy (richiede indice composito e se manca la UI resta "vuota" senza errori)
+      // Usiamo solo "order" (che generiamo sempre) così funziona subito.
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), limit(50));
+      const snap = await getDocs(qA).catch((e)=>{ console.error("Album query failed", e); return null; });
+
+      let count = 0;
+      if (snap && !snap.empty){
+        snap.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          if (!url) return;
+          count++;
+
+          const tile = document.createElement("div");
+          tile.className = "mediaTile";
+
+          const type = safeStr(m.type || "photo");
+          if (type === "video"){
+            const v = document.createElement("video");
+            v.src = url;
+            v.controls = true;
+            v.preload = "metadata";
+            tile.appendChild(v);
+          } else {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = safeStr(m.caption) || "Foto";
+            img.loading = "lazy";
+            tile.appendChild(img);
+          }
+
+          const cap = safeStr(m.caption);
+          if (cap){
+            const c = document.createElement("div");
+            c.className = "mediaCap";
+            c.textContent = cap;
+            tile.appendChild(c);
+          }
+
+          const tools = document.createElement("div");
+          tools.className = "mediaTools";
+          const del = document.createElement("button");
+          del.className = "iconBtn";
+          del.title = "Elimina";
+          del.textContent = "🗑";
+          del.addEventListener("click", async ()=>{
+            if (!confirm("Eliminare questo contenuto?")) return;
+            try{
+              setLoading(true, 25, "Eliminazione…");
+              const storageRef = safeStr(m.storageRef);
+              await deleteDoc(d.ref);
+              if (storageRef){
+                await deleteObject(ref(storage, storageRef)).catch(()=>{});
+              }
+              await refreshAlbum();
+              toast("Eliminato");
+            }catch(e){
+              console.error(e);
+              alert("Errore eliminazione.");
+            }finally{
+              setLoading(false);
+            }
+          });
+          tools.appendChild(del);
+          tile.appendChild(tools);
+
+          grid.appendChild(tile);
+        });
+      }
+      empty.hidden = count > 0;
+      const stat = document.getElementById('statAlbum');
+      if (stat) stat.textContent = String(count);
+
+      // Anteprima: ha senso SOLO se c'è almeno 1 media
+      const btnPrev = document.getElementById('btnAlbumPreview');
+      if (btnPrev){
+        btnPrev.style.display = (count > 0) ? '' : 'none';
+        btnPrev.setAttribute('aria-disabled', (count > 0) ? 'false' : 'true');
+      }
+      try{ updateCareStatus(); }catch(e){}
+    }
+
+    async function refreshThoughts(){
+      const box = el("thoughtsList");
+      const empty = el("thoughtsEmpty");
+      box.innerHTML = "";
+
+      const qT = query(collection(db, "luoghi_memoria", luogoId, "pensieri"), orderBy("createdAt","desc"), limit(20));
+      const snap = await getDocs(qT).catch(()=>null);
+
+      let count = 0;
+      if (snap && !snap.empty){
+        snap.forEach(d=>{
+          const t = d.data() || {};
+          const text = safeStr(t.text);
+          if (!text) return;
+          count++;
+
+          const an = t.author || {};
+          const authorLabel = [safeStr(an.nome), safeStr(an.cognome)].filter(Boolean).join(" ") || "—";
+          const visRaw = safeStr(t.visibility || "public");
+          const vis = (visRaw === "family") ? "Solo familiari" : "Visibile a tutti";
+          const when = fmtTs(t.createdAt);
+
+          const wrap = document.createElement("div");
+          wrap.className = "thought";
+          wrap.innerHTML = `
+            <div class="thMeta">
+              <span>${authorLabel}</span>
+              <span>${when ? (when + " • " + vis) : vis}</span>
+            </div>
+            <p class="thText"></p>
+          `;
+          wrap.querySelector(".thText").textContent = text;
+
+          const tools = document.createElement("div");
+          tools.className = "actions";
+          const del = document.createElement("button");
+          del.className = "btn danger";
+          del.textContent = "Elimina";
+          del.addEventListener("click", async ()=>{
+            if (!confirm("Eliminare questo pensiero?")) return;
+            try{
+              setLoading(true, 25, "Eliminazione…");
+              await deleteDoc(d.ref);
+              await refreshThoughts();
+              toast("Eliminato");
+            }catch(e){
+              console.error(e);
+              alert("Errore eliminazione.");
+            }finally{
+              setLoading(false);
+            }
+          });
+          tools.appendChild(del);
+
+          wrap.appendChild(tools);
+          box.appendChild(wrap);
+        });
+      }
+      empty.hidden = count > 0;
+      const stat = document.getElementById('statThoughts');
+      if (stat) stat.textContent = String(count);
+      try{ updateCareStatus(); }catch(e){}
+    }
+
+    async function saveSettings(){
+      if (!currentLuogo) return;
+      const mode = el("visibilitySelect").value;
+      const sceneId = el("sceneSelect").value;
+
+      try{
+        setLoading(true, 25, "Salvataggio impostazioni…");
+
+        // Compat: aggiorniamo sia nested (future) che flat (se esiste già).
+        const patch = {
+          "visibility.mode": mode,
+          "scene.id": sceneId,
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        // se doc è flat, scriviamo anche keys flat utili
+        patch["visibilita"] = mode;
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+
+        currentLuogo.visibilityMode = mode;
+        currentLuogo.sceneId = sceneId;
+
+        toast("Impostazioni salvate");
+      }catch(e){
+        console.error(e);
+        alert("Errore salvataggio impostazioni.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnSaveSettings").addEventListener("click", saveSettings);
+
+    async function uploadCover(){
+      const f = el("coverFile").files?.[0];
+      if (!f){
+        alert("Seleziona un'immagine.");
+        return;
+      }
+
+      try{
+        setLoading(true, 18, "Upload copertina…");
+        const ext = (f.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `luoghi_memoria/${luogoId}/cover_${Date.now()}.${ext}`;
+        const r = ref(storage, path);
+
+        await uploadBytes(r, f, { contentType: f.type || "image/jpeg" });
+        setLoading(true, 62, "Finalizzazione…");
+        const url = await getDownloadURL(r);
+
+        // ✅ Allineato alle regole Firestore: cover = { photoUrl, storageRef, source }
+        // (evitiamo campi legacy root come coverUrl/coverRef per non rompere le rules)
+        const patch = {
+          "cover.photoUrl": url,
+          "cover.storageRef": path,
+          "cover.source": "upload",
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+
+        // aggiorna UI locale
+        currentLuogo.coverUrl = url;
+        currentLuogo.coverRef = path;
+        const heroImg2 = document.getElementById("coverHeroImg");
+        if (heroImg2){ heroImg2.src = url; heroImg2.style.objectFit = "cover"; }
+        el("coverHeroImg")?.setAttribute?.("src", url);
+        el("coverState").textContent = "Copertina aggiornata.";
+        try{ updateCareStatus(); }catch(e){}
+        toast("Copertina caricata");
+      }catch(e){
+        console.error(e);
+        alert("Errore upload copertina.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    async function removeCover(){
+      if (!confirm("Rimuovere la copertina?")) return;
+      try{
+        setLoading(true, 25, "Rimozione…");
+
+        const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+        const raw = snap.data() || {};
+        const luogo = normalizeDoc(raw);
+        const refPath = safeStr(luogo.coverRef);
+
+        const patch = {
+          "cover.photoUrl": "",
+          "cover.storageRef": "",
+          "cover.source": "",
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+        if (refPath){
+          await deleteObject(ref(storage, refPath)).catch(()=>{});
+        }
+
+        // aggiorna UI locale
+        currentLuogo.coverUrl = "";
+        currentLuogo.coverRef = "";
+        const heroImg2 = document.getElementById("coverHeroImg");
+        if (heroImg2){ heroImg2.src = "/images/rosa.png"; heroImg2.style.objectFit = "contain"; }
+        el("coverState").textContent = "Copertina rimossa.";
+        try{ updateCareStatus(); }catch(e){}
+        toast("Rimossa");
+      }catch(e){
+        console.error(e);
+        alert("Errore rimozione copertina.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnUploadCover").addEventListener("click", uploadCover);
+    el("btnRemoveCover").addEventListener("click", removeCover);
+
+    async function addMedia(){
+      const f = el("albumFile").files?.[0];
+      const caption = safeStr(el("albumCaption").value);
+      if (!f){
+        alert("Seleziona un media (foto o video).");
+        return;
+      }
+
+      try{
+        setLoading(true, 14, "Upload media…");
+        const isVideo = (f.type || "").startsWith("video/");
+        const ext = (f.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase();
+        const path = `luoghi_memoria/${luogoId}/album/${Date.now()}_${Math.random().toString(16).slice(2)}.${ext}`;
+        const r = ref(storage, path);
+
+        await uploadBytes(r, f, { contentType: f.type || (isVideo ? "video/mp4" : "image/jpeg") });
+        setLoading(true, 62, "Finalizzazione…");
+        const url = await getDownloadURL(r);
+
+        // calcolo order: max+1 (semplice)
+        let nextOrder = Date.now();
+        const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","desc"), limit(1));
+        const snap = await getDocs(qA).catch(()=>null);
+        if (snap && !snap.empty){
+          const last = snap.docs[0].data() || {};
+          const o = Number(last.order);
+          if (!Number.isNaN(o)) nextOrder = o + 1;
+        }
+
+        // NOTE: nelle regole Firestore hai "createdAt is timestamp".
+        // FieldValue.serverTimestamp() può risultare "non timestamp" durante la valutazione rules.
+        // Usiamo Timestamp.now() per garantire inserimento immediato e ordinamenti stabili.
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "album"), {
+          type: isVideo ? "video" : "photo",
+          url,
+          storageRef: path,
+          caption: caption || "",
+          order: nextOrder,
+          createdAt: Timestamp.now(),
+          createdByUid: currentUser.uid
+        });
+
+        el("albumFile").value = "";
+        el("albumCaption").value = "";
+        await refreshAlbum();
+        toast("Aggiunto");
+      }catch(e){
+        console.error(e);
+        alert("Errore aggiunta media.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnAddMedia").addEventListener("click", addMedia);
+
+    async function addThought(){
+      const text = safeStr(el("thoughtText").value);
+      if (!text){
+        alert("Scrivi un pensiero.");
+        return;
+      }
+
+      const sig = saveSig();
+      if (!sig.nome || !sig.cognome){
+        alert("Inserisci Nome e Cognome (firma) prima di pubblicare.");
+        return;
+      }
+
+      let visibility = el("thoughtVisibility").value;
+
+      // coerente: se Luogo non è pubblico, le parole restano "Solo familiari"
+      if (currentLuogo && currentLuogo.visibilityMode !== "public") visibility = "family";
+
+      try{
+        setLoading(true, 25, "Pubblicazione…");
+        // stesso motivo di Album: in rules "createdAt is timestamp"
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "pensieri"), {
+          text,
+          visibility,
+          author: { nome: sig.nome, cognome: sig.cognome, uid: currentUser.uid },
+          createdAt: Timestamp.now()
+        });
+
+        el("thoughtText").value = "";
+        await refreshThoughts();
+        toast("Pubblicato");
+      }catch(e){
+        console.error(e);
+        alert("Errore pubblicazione pensiero.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnAddThought").addEventListener("click", addThought);
+
+    async function load(){
+      loadSig();
+
+      if (!luogoId){
+        mustLogin("ID mancante. I miei Luoghi e apri il Luogo corretto.");
+        return;
+      }
+
+      setLoading(true, 10, "Verifica accesso…");
+
+      await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          currentUser = u || null;
+          unsub();
+          resolve();
+        });
+      });
+
+      if (!currentUser){
+        setLoading(false);
+        mustLogin("Per gestire il Luogo devi accedere come cittadino.");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        setLoading(false);
+        mustLogin("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      currentLuogo = normalizeDoc(snap.data() || {});
+      if (!isCustode(currentUser.uid, currentLuogo)){
+        setLoading(false);
+        mustLogin("Non risulti custode di questo Luogo. Se hai ricevuto un invito, assicurati di usare lo stesso account cittadino.");
+        return;
+      }
+
+
+      // Benvenuto (riduce confusione, tono familiare)
+      const welcome = document.getElementById("welcomeCard");
+      if (welcome){
+        const isMain = (currentUser.uid === currentLuogo.mainUid);
+        const title = document.getElementById("welcomeTitle");
+        const text = document.getElementById("welcomeText");
+        if (title) title.textContent = "Benvenuto.";
+const thanks = document.getElementById("welcomeThanks");
+if (thanks){
+  thanks.textContent = "Questo Luogo è nato. Hai già compiuto il primo passo.";
+}
+if (text){
+  text.textContent = isMain
+    ? "Quando vuoi, puoi curarlo con calma: una copertina, una foto, una parola. Il resto è facoltativo."
+    : "Quando vuoi, puoi contribuire con delicatezza: immagini e parole firmate. Alcune scelte restano al custode principale.";
+}
+welcome.hidden = false;
+      }
+      // Header
+      const displayName = [currentLuogo.nome, currentLuogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      el("hTitle").textContent = "Custodia del Luogo";
+
+      el("hSub").textContent = "Area privata riservata ai custodi. Qui puoi aggiungere contenuti con calma, senza fretta.";
+
+      const chipRole = document.getElementById("chipRole");
+      if (chipRole){
+        chipRole.hidden = false;
+        chipRole.textContent = (currentUser.uid === currentLuogo.mainUid) ? "Custode principale" : "Co-custode";
+      }
+
+      // Link visita
+      // NOTE: luogo-visit.html è in /site (root)
+      const visitUrl = `/luogo-visit.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      el("btnVisit").href = visitUrl;
+      const vHero = document.getElementById('btnVisitHero');
+      if (vHero) vHero.href = visitUrl;
+      const sbV = document.getElementById('sbVisitLink');
+      if (sbV) sbV.setAttribute('href', visitUrl);
+      // Anteprima pubblica Album + Video Ricordo (pagine dedicate)
+      const previewUrl = `/cittadini/luogo-album-preview.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      const videoUrl = `/cittadini/luogo-video.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      const btnPrev = document.getElementById('btnAlbumPreview');
+      const btnFilm = document.getElementById('btnFilmatoRicordo');
+      if (btnPrev) btnPrev.href = previewUrl;
+      if (btnFilm) btnFilm.href = videoUrl;
+
+
+      // Settings form
+      el("visibilitySelect").value = (currentLuogo.visibilityMode === "public") ? "public" : "family";
+      el("sceneSelect").value = currentLuogo.sceneId || "campo_luce";
+
+      // Se il Luogo è "Solo familiari", le parole restano interne (scrittura custodi)
+      const tv = document.getElementById("thoughtVisibility");
+      if (tv){
+        if (currentLuogo.visibilityMode !== "public"){
+          tv.value = "family";
+          tv.disabled = true;
+        } else {
+          tv.disabled = false;
+        }
+      }
+
+      // Cover state
+      el("coverState").textContent = currentLuogo.coverUrl ? "Copertina presente." : "Nessuna copertina: verrà mostrata la rosa OFI.";
+      el("metaBox").textContent =
+        `ID Luogo: ${luogoId}\nRuolo: ${(currentUser.uid === currentLuogo.mainUid) ? "Custode principale" : "Co-custode"}\nVisibilità: ${(currentLuogo.visibilityMode === "public") ? "Visibile a tutti" : "Solo familiari"}`;
+
+      // Copertina HERO (in alto)
+      document.getElementById('coverHeroName').textContent = displayName;
+      document.getElementById('coverHeroPlace').textContent = currentLuogo.placeLabel || "Luogo non specificato";
+      document.getElementById('coverHeroDate').textContent = fmtDate(currentLuogo.dataMorte);
+      const heroImg = document.getElementById('coverHeroImg');
+      if (heroImg){
+        heroImg.src = currentLuogo.coverUrl || "/images/rosa.png";
+        heroImg.style.objectFit = currentLuogo.coverUrl ? "cover" : "contain";
+      }
+      try{ updateCareStatus(); }catch(e){}
+
+      setLoading(true, 72, "Caricamento contenuti…");
+      await refreshAlbum();
+      await refreshThoughts();
+      setLoading(false);
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      setLoading(false);
+      mustLogin("Errore nel caricamento. Riprova tra poco.");
+    });
+  </script>
+
+  <!-- menu.js non serve nella gestione (usiamo sidebar dedicata) -->
+</body>
+</html>

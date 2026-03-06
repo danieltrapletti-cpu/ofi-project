@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Custodia Luogo — OFI</title>
+  <meta name="description" content="Gestione privata del Luogo della Memoria OFI (solo custodi)." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/cittadini/luogo-manage.css">
+  <script defer src="/ofi.js"></script>
+
+  <style>
+    /* featured preview */
+    .featuredPreview{
+      margin-top:.9rem;
+      display:flex;
+      flex: 1 1 100%;
+      width: 100%;
+      max-width: 100%;
+      order: 2;
+      gap:.9rem;
+      padding:.9rem;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.08));
+      align-items:stretch;
+    }
+    .fpMedia{
+      position:relative;
+      width:min(360px, 46vw);
+      aspect-ratio:16/9;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      flex:0 0 auto;
+      cursor:pointer;
+    }
+    .fpVideo{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.05) contrast(1.02);
+    }
+    .fpOverlay{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at center, rgba(0,0,0,.15), rgba(0,0,0,.45));
+      opacity:.9;
+      transition: opacity .18s ease;
+      pointer-events:none;
+    }
+    .fpMedia:hover .fpOverlay{ opacity:.72; }
+    .fpPlay{
+      width:56px; height:56px;
+      border-radius:999px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(212,175,55,.92);
+      color:#0b0f1a;
+      font-weight:800;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      transform: translateX(2px);
+    }
+    .fpMeta{ flex:1 1 auto; min-width: 200px; }
+    .fpMetaTitle{ font-weight:800; letter-spacing:.02em; }
+    .fpMetaSub{ opacity:.9; margin-top:.25rem; max-width: 54ch; }
+    .fpActions{ display:flex; gap:.55rem; flex-wrap:wrap; margin-top:.75rem; }
+    @media (max-width: 760px){
+      .featuredPreview{ flex-direction:column; }
+      .fpMedia{ width:100%; }
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/cittadini/luogo-memoria.html" aria-label="Torna ai tuoi Luoghi">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <!-- Hamburger DASH (come necrologio-mio) -->
+      <button id="dashToggle" class="hamburger" aria-label="Apri menu" aria-controls="sidebar" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Menu globale: tenuto vuoto in modalità dashboard -->
+      <ul id="menuPanel" class="menu" role="menu"></ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="headerBlock">
+      <div class="headCard">
+        <div>
+          <div class="eyebrow">Custodia del Luogo</div>
+          <h1 class="h1" id="hTitle">Custodia del Luogo</h1>
+          <p class="sub" id="hSub">Uno spazio riservato alla cura. Nessuna fretta.</p>
+        </div>
+
+        <div class="chips" id="chips">
+          <span class="chip gold" id="chipRole" hidden>Custode</span>
+          
+          <span class="chip" id="chipVisibility" hidden>—</span>
+</div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <article class="card welcomeCard welcomeCard--mini" id="welcomeCard" hidden aria-label="Benvenuto nella custodia">
+  <div class="welcomeTop">
+    <div class="welcomeKicker">Grazie.</div>
+    <h2 class="welcomeTitle" id="welcomeTitle">Questo Luogo è nato.</h2>
+    <p class="welcomeThanks" id="welcomeThanks">Hai già compiuto il primo passo.</p>
+    <p class="small welcomeText" id="welcomeText">Quando vorrai, una copertina, una foto, una parola. Il resto può aspettare.</p>
+  </div>
+</article>
+
+      <article class="coverHero" id="coverHero" aria-label="Copertina gestione">
+        <div class="coverHeroCard">
+          <div class="coverHeroPhoto">
+            <div class="coverFrame">
+              <img id="coverHeroImg" alt="Copertina Luogo della Memoria" loading="eager" src="/images/rosa.png" />
+            </div>
+          </div>
+
+          <div class="coverHeroBody">
+            <div class="coverHeroLine" aria-hidden="true"></div>
+
+            <div class="coverHeroName" id="coverHeroName">—</div>
+            <div class="coverHeroTagline">Un luogo dove il legame continua.</div>
+
+            <div class="coverHeroMetaRow" aria-label="Dati principali">
+              <div class="coverHeroMeta">
+                <span id="coverHeroPlace">—</span>
+                <span class="sep">•</span>
+                <span id="coverHeroDate">—</span>
+              </div>
+
+              <div class="coverHeroStats" aria-label="Riepilogo contenuti">
+  <div class="stat">
+    <span class="statN" id="statAlbum">0</span>
+    <span class="statL">Album</span>
+  </div>
+  <div class="stat">
+    <span class="statN" id="statThoughts">0</span>
+    <span class="statL">Parole</span>
+  </div>
+</div>
+
+            <div class="coverHeroActions">
+              <button class="btn primary" id="btnOpenManage" type="button">Apri il menu</button>
+              <a class="btn" id="btnVisitHero" href="#" target="_blank" rel="noopener">Visita il Luogo</a>
+              
+              <button class="btn" id="btnToggleVisibility" type="button" hidden>—</button>
+<a class="btn btn--ghost" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+            </div>
+</div>
+          </div>
+        </div>
+      </article>
+
+      
+
+      <article class="card" id="gateCard" hidden>
+        <h2>Accesso</h2>
+        <p class="small" id="gateText"></p>
+        <div class="actions">
+          <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+        </div>
+      </article>
+    </section>
+
+    <div id="dashOverlay" class="dash-overlay" hidden></div>
+
+    <aside id="sidebar" class="sidebar" aria-label="Menu gestione" aria-hidden="true" inert>
+      <div class="sb-head">
+        <div class="sb-brand">
+          <img src="/images/rosa.png" alt="" aria-hidden="true">
+          <span class="sb-name">Custodia</span>
+        </div>
+        <button class="sb-close" id="btnSidebarClose" type="button" aria-label="Chiudi menu">✕</button>
+      </div>
+
+      <div class="group">
+        <h4>Sezioni</h4>
+        <nav>
+          <a href="#copertina" data-act="cover">📘 Copertina</a>
+          <a href="#album" data-act="album">🕊 Foto e video</a>
+          <a href="#filmato" data-act="video">🎞 Filmato Ricordo</a>
+          <a href="#pensieri" data-act="thoughts">✍️ Parole</a>
+        </nav>
+      </div>
+
+      <div class="group">
+        <h4>Impostazioni</h4>
+        <nav>
+          <a href="#impostazioni" data-act="settings">⚙️ Visibilità e ambiente</a>
+          <a href="#firma" data-act="signature">🖋 Firma</a>
+        </nav>
+      </div>
+
+      <div class="group">
+        <h4>Azioni</h4>
+        <nav>
+          <a href="#visita" id="sbVisitLink">👁 Visita il Luogo</a>
+          <a class="sb-back" href="/cittadini/luogo-memoria.html">← Torna ai tuoi Luoghi</a>
+        </nav>
+      </div>
+    </aside>
+
+    <aside id="sidepanel" class="sidepanel" aria-label="Pannello laterale" aria-hidden="true" inert>
+      <div class="sp-head">
+        <button class="sp-back" id="btnPanelBack" type="button" aria-label="Indietro">←</button>
+        <div class="sp-title" id="sidePanelTitle">Dettagli</div>
+        <button class="sp-close" id="btnPanelClose" type="button" aria-label="Chiudi pannello">✕</button>
+      </div>
+      <div class="sp-body" id="sidePanelBody"></div>
+    </aside>
+
+    <div id="panelStash" hidden></div>
+
+    
+<section id="sectionStatus" class="card dash-hidden">
+  <h2>Stato del Luogo</h2>
+  <p class="small">Questo Luogo è già attivo. Qui trovi un riepilogo sobrio e alcune possibilità, quando lo desideri.</p>
+  <div class="hr"></div>
+
+  <div class="statusGrid">
+    <div class="statusCard">
+      <div class="statusTitle">Contenuti</div>
+      <div class="statusSub">Nessuna fretta. Anche una sola foto può bastare.</div>
+      <div class="statusList" id="careList"></div>
+    </div>
+
+    <div class="statusCard">
+      <div class="statusTitle">Azioni</div>
+      <div class="statusSub">Apri direttamente la sezione che ti serve.</div>
+      <div class="statusActions">
+        <button class="btn primary" id="qaCover" type="button">Copertina</button>
+        <button class="btn" id="qaAlbum" type="button">Foto e video</button>
+        <button class="btn" id="qaWords" type="button">Parole</button>
+        <button class="btn" id="qaSettings" type="button">Visibilità e ambiente</button>
+        <button class="btn" id="qaSignature" type="button">Firma</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="note">
+    <strong>Riservato</strong><br>
+    Le <em>visite segnate</em> (presenze) sono visibili solo ai custodi. “Lascia un ricordo” invece è pubblico e consapevole.
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="note" style="border-color: rgba(255,255,255,.12); background: rgba(0,0,0,.10);">
+    <strong>Filmato Ricordo</strong><br>
+    Quando vorrai, puoi creare un filmato breve e sobrio, guidato passo dopo passo. Puoi anche solo “salvare la richiesta” e completarla in un secondo momento.
+  </div>
+</section><section id="sectionSettings" class="card dash-hidden">
+      <h2>Impostazioni</h2>
+      <p class="small">Scegli se il Luogo è visibile a tutti o riservato alla famiglia. L’ambiente resta sobrio e uniforme.</p>
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Visibilità</div>
+          <select id="visibilitySelect" class="select">
+            <option value="family">Solo familiari</option>
+            <option value="public">Visibile a tutti</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label">Ambiente OFI</div>
+          <select id="sceneSelect" class="select">
+            <option value="campo_luce">Campo di Luce</option>
+            <option value="giardino_sobrio">Giardino Sobrio</option>
+            <option value="cappella_silenziosa">Cappella Silenziosa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnSaveSettings" class="btn primary">Salva impostazioni</button>
+        <a id="btnVisit" class="btn" href="#" target="_blank" rel="noopener">Apri la visita</a>
+      </div>
+
+      <div class="hr"></div>
+      <div class="note">
+        <strong>Nota</strong><br>
+        Se imposti “Visibile a tutti”, chiunque potrà visitare il Luogo. In “Solo familiari” resta riservato ai custodi.
+      </div>
+    </section>
+
+    <section id="sectionCover" class="card dash-hidden">
+      <h2>Copertina</h2>
+      <p class="small">Una sola immagine sobria. Nessun testo introduttivo.</p>
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Immagine copertina</div>
+          <input id="coverFile" class="input" type="file" accept="image/*">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="btnUploadCover" class="btn primary">Carica copertina</button>
+        <button id="btnRemoveCover" class="btn danger">Rimuovi</button>
+      </div>
+
+      <p class="small" id="coverState" style="margin-top:.65rem;">—</p>
+    </section>
+
+    <section id="sectionAlbum" class="card dash-hidden">
+      <h2>Foto e video</h2>
+
+      <p class="small albumIntro">Aggiungi una foto o un breve video personale. Anche uno solo basta per dare presenza al Luogo.</p>
+
+      <details class="albumDetails">
+        <summary>Dettagli e consigli</summary>
+        <div class="small">
+          Foto consigliate: JPG/PNG. Video personali: MP4 brevi (consigliato max 2 minuti).<br>
+          Ogni contenuto viene ottimizzato per una visualizzazione elegante e un caricamento leggero.
+        </div>
+      </details>
+
+      <div class="stepsRow" aria-label="In tre passi">
+        <span class="stepChip">1) Scegli</span>
+        <span class="stepSep">→</span>
+        <span class="stepChip">2) Didascalia (facolt.)</span>
+        <span class="stepSep">→</span>
+        <span class="stepChip">3) Carica</span>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="formRow">
+        <div class="field">
+          <div class="label">Media</div>
+          <input id="albumFile" class="input" type="file" accept="image/*,video/*">
+        </div>
+        <div class="field">
+          <div class="label">Didascalia</div>
+          <input id="albumCaption" class="input" type="text" maxlength="110" placeholder="Es. Un giorno di luce (facoltativo)">
+        </div>
+      </div>
+
+      <div class="actions albumActionsBottom">
+        <button id="btnAddMedia" class="btn primary">Carica</button>
+        <a class="btn btn--ghost" id="btnAlbumPreview" href="#" target="_blank" rel="noopener">Vedi come appare nella visita</a>
+      </div>
+
+      <div class="hr"></div>
+      <div class="gridAlbum" id="albumGrid"></div>
+      <p class="small" id="albumEmpty" hidden>Nessun contenuto ancora.</p>
+    </section>
+
+
+    
+<section id="sectionVideo" class="card dash-hidden">
+  <h2>Filmato Ricordo</h2>
+  <div class="small" style="margin-top:-.15rem; opacity:.92;">
+    Nella <strong>pagina pubblica</strong> si vede <strong>solo</strong> un filmato (se attivo).
+  </div>
+  <div class="small" style="margin-top:.35rem; opacity:.86;">
+    <span class="infoDot" aria-hidden="true">i</span>
+    Se hai più filmati, puoi scegliere il <strong>filmato principale</strong> in “Gestisci filmati”.
+  </div>
+
+  <div class="hr"></div>
+
+  <div class="videoSummary" id="videoSummary">
+
+    <!-- MEGA STEP emozionale (mostrato solo quando serve) -->
+    <div class="videoMega" id="videoMega" hidden>
+      <div class="videoMegaHead">
+        <div class="videoMegaK">Filmato Ricordo</div>
+        <div class="videoMegaT" id="videoMegaTitle">Un piccolo filmato può dire molto.</div>
+      </div>
+      <div class="videoMegaBody" id="videoMegaText">—</div>
+      <div class="videoMegaActions">
+        <a class="btn primary" id="videoMegaStart" href="#" target="_blank" rel="noopener">Inizia ora (guidato)</a>
+        <button class="btn" id="videoMegaChoose" type="button">Gestisci filmati</button>
+      </div>
+      <div class="small videoMegaNote" id="videoMegaNote">Puoi fermarti quando vuoi: nulla si perde.</div>
+    </div>
+
+    <div class="videoSummaryTop">
+
+      <div class="videoSummaryHead">
+        <div class="videoSummaryHeadMain">
+          <div class="videoSummaryK">Filmato nella pagina pubblica</div>
+          <div class="videoSummaryTitle" id="featuredVideoTitle">—</div>
+          <div class="small" id="featuredVideoSub" style="margin-top:.25rem;">—</div>
+        </div>
+
+        <!-- Switch visibile (scelta primaria) -->
+        <div class="pubToggle" aria-label="Visibilità filmato nella pagina pubblica">
+          <div class="small pubToggleLabel">Mostra</div>
+          <label class="ofiSwitch">
+            <input type="checkbox" id="togglePublicVideo">
+            <span class="ofiSwitchTrack" aria-hidden="true"></span>
+          </label>
+          <div class="small pubToggleState" id="publicVideoState">—</div>
+        </div>
+
+        <!-- Menu ⋯ (solo azioni secondarie) -->
+        <details class="kebab" id="videoSummaryKebab">
+          <summary class="iconBtn kebabBtn" aria-label="Azioni filmato" title="Azioni">⋯</summary>
+          <div class="kebabMenu" role="menu" aria-label="Azioni filmato">
+            <div class="kmItem">
+              <button class="btn btn--ghost" id="btnCopyVisitLink2" type="button">Copia link</button>
+            </div>
+            <div class="kmItem">
+              <button class="btn" id="btnGoManageVideos" type="button">Gestisci filmati</button>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div id="featuredPreview" class="featuredPreview" hidden>
+        <div class="fpMedia">
+          <video id="featuredVideoEl" class="fpVideo" playsinline muted preload="auto" controls controlsList="nodownload noplaybackrate" disablepictureinpicture></video>
+          <div class="fpOverlay" aria-hidden="true">
+            <span class="fpPlay">▶</span>
+          </div>
+
+          <div class="fpLockOverlay" id="fpLockOverlay" hidden>
+            <div class="fpLockBadge">
+              <div class="fpLockK">ANTEPRIMA PROTETTA</div>
+              <div class="fpLockT">Filmato Ufficiale OFI</div>
+              <div class="fpLockS">Attiva per ottenere la versione ufficiale e scaricare il file definitivo.</div>
+              <button class="btn primary" id="btnUnlockFeatured" type="button">Attiva filmato ufficiale</button>
+              <div class="small fpLockNote">La pagina pubblica mostrerà solo filmati attivati.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fpMeta">
+          <div class="fpMetaTitle">Anteprima rapida</div>
+          <div class="small fpMetaSub">Un assaggio discreto. Puoi aprire la pagina pubblica per vederlo come apparirà.</div>
+          <div class="fpActions">
+            <a class="btn primary" id="btnOpenVisitAtVideo" href="#" target="_blank" rel="noopener">Apri pagina pubblica</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="videoSummaryChips">
+        <span class="chip" id="chipVideoTotal">0 VIDEO</span>
+        <span class="chip gold" id="chipVideoReady" hidden>PRONTI: 0</span>
+        <span class="chip" id="chipVideoDraft" hidden>BOZZE: 0</span>
+      </div>
+
+      <div class="note" id="videoSummaryNote" style="margin-top:.75rem;" hidden></div>
+
+    </div>
+  </div>
+</section>
+
+
+<section id="sectionThoughts" class="card dash-hidden">
+      <h2 id="wordsTitle">Parole</h2>
+      <p class="small" id="wordsIntro">Qui puoi raccontare un ricordo o lasciare una parola. Le parole sono firmate e restano custodite in questo Luogo.</p>
+      <div class="hr"></div>
+
+      <div class="field">
+        <div class="label">Testo</div>
+        <textarea id="thoughtText" class="textarea" maxlength="1600" placeholder="Scrivi qualcosa che senti…"></textarea>
+      </div>
+
+      <div class="formRow" style="margin-top:.65rem;">
+        <div class="field">
+          <div class="label">Visibilità della parola</div>
+          <select id="thoughtVisibility" class="select">
+            <option value="public">Visibile a tutti</option>
+            <option value="family">Solo familiari</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnAddThought" class="btn primary">Lascia una Parola</button>
+      </div>
+
+      <div class="hr"></div>
+      <div id="thoughtsList"></div>
+      <p class="small" id="thoughtsEmpty" hidden>Nessun pensiero ancora.</p>
+    </section>
+
+    <section id="sectionSignature" class="card dash-hidden">
+      <h2>Firma</h2>
+      <p class="small">La firma è richiesta per lasciare una parola (nome e cognome visibili). Viene salvata solo su questo dispositivo.</p>
+      <div class="hr"></div>
+
+      <div class="field">
+        <div class="label">Nome</div>
+        <input id="sigNome" class="input" type="text" maxlength="60" placeholder="Nome">
+      </div>
+
+      <div class="field" style="margin-top:.65rem;">
+        <div class="label">Cognome</div>
+        <input id="sigCognome" class="input" type="text" maxlength="60" placeholder="Cognome">
+      </div>
+
+      <div class="actions">
+        <button id="btnSaveSig" class="btn">Salva firma</button>
+      </div>
+
+      <div class="hr"></div>
+      <p class="small" id="metaBox">—</p>
+
+      <div class="hr"></div>
+      <div class="note">
+        <strong>Custodia</strong><br>
+        Custode principale unico, co-custodi in futuro con inviti. OFI può intervenire in caso di incongruenze.
+      </div>
+    </section>
+
+    <div class="toast" id="toast">Salvato</div>
+
+    <!-- Overlay loading -->
+    <div id="overlay" class="overlay" aria-hidden="true">
+      <div class="overlayCard" role="status" aria-live="polite">
+        <h3 class="overlayTitle">Operazione in corso…</h3>
+        <p class="overlayText" id="overlayText">Attendere.</p>
+        <div class="overlayBar"><div class="overlayBarFill" id="overlayBar"></div></div>
+        <div class="overlayPct" id="overlayPct">0%</div>
+      </div>
+    </div>
+
+    <div id="confirmOverlay" class="overlay" aria-hidden="true">
+      <div class="overlayCard" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+        <h3 class="overlayTitle" id="confirmTitle">Conferma</h3>
+        <p class="overlayText" id="confirmText"></p>
+
+        <div class="confirmActions">
+          <button class="btn" id="confirmCancelBtn" type="button">Annulla</button>
+          <button class="btn primary" id="confirmOkBtn" type="button">Conferma</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, updateDoc, serverTimestamp, Timestamp,
+      collection, query, orderBy, limit, getDocs, addDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getStorage, ref, uploadBytes, getDownloadURL, deleteObject
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+
+    const el = (id)=>document.getElementById(id);
+
+    // Filmato Ricordo: doc id unico (coerente con wizard)
+    function buildFilmatoDocId(uid){
+      return `filmato_${luogoId}_${uid}`;
+    }
+
+    function buildVisitUrl(lid){
+      return `/luogo-visit.html?id=${encodeURIComponent(lid)}&theme=dark`;
+    }
+
+    const overlay = el("overlay");
+    const overlayText = el("overlayText");
+    const overlayBar = el("overlayBar");
+    const overlayPct = el("overlayPct");
+
+    function setLoading(on, pct=0, msg=""){
+      overlay.classList.toggle("open", !!on);
+      overlay.setAttribute("aria-hidden", on ? "false" : "true");
+      const p = Math.max(0, Math.min(100, Number(pct)||0));
+      overlayPct.textContent = `${p}%`;
+      overlayBar.style.width = `${p}%`;
+      overlayText.textContent = msg || "Attendere…";
+      document.body.style.overflow = on ? "hidden" : "";
+    }
+
+async function forceDownload(url, filename = "filmato-ofi.mp4") {
+  try {
+    const res = await fetch(url, { mode: "cors" });
+    if (!res.ok) throw new Error("Download failed");
+    const blob = await res.blob();
+
+    const a = document.createElement("a");
+    const objUrl = URL.createObjectURL(blob);
+    a.href = objUrl;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(objUrl);
+  } catch (e) {
+    console.error(e);
+    // fallback: se proprio non riesce, almeno apre il file
+    window.open(url, "_blank", "noopener");
+  }
+}
+
+    function toast(msg="Salvato"){
+      const t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+
+
+    // Conferma OFI (dialog coerente con design, no confirm() browser)
+    const confirmOverlay = document.getElementById("confirmOverlay");
+    const confirmTitleEl = document.getElementById("confirmTitle");
+    const confirmTextEl  = document.getElementById("confirmText");
+    const confirmOkBtn   = document.getElementById("confirmOkBtn");
+    const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+
+    function ofiConfirm({ title="Conferma", text="", okText="Conferma", cancelText="Annulla", danger=false } = {}){
+      return new Promise((resolve) => {
+        confirmTitleEl.textContent = title;
+        confirmTextEl.textContent  = text;
+
+        confirmOkBtn.textContent = okText;
+        confirmCancelBtn.textContent = cancelText;
+
+        confirmOkBtn.classList.toggle("danger", !!danger);
+
+        const prevActive = document.activeElement;
+
+        const close = (val) => {
+          confirmOverlay.classList.remove("open");
+          confirmOverlay.setAttribute("aria-hidden","true");
+          cleanup();
+          try { prevActive && prevActive.focus && prevActive.focus(); } catch(_){}
+          resolve(val);
+        };
+
+        const onKey = (e) => {
+          if (e.key === "Escape") close(false);
+          if (e.key === "Enter") close(true);
+        };
+
+        const onBackdrop = (e) => {
+          if (e.target === confirmOverlay) close(false);
+        };
+
+        const cleanup = () => {
+          document.removeEventListener("keydown", onKey);
+          confirmOverlay.removeEventListener("click", onBackdrop);
+          confirmOkBtn.onclick = null;
+          confirmCancelBtn.onclick = null;
+        };
+
+        confirmOkBtn.onclick = () => close(true);
+        confirmCancelBtn.onclick = () => close(false);
+
+        document.addEventListener("keydown", onKey);
+        confirmOverlay.addEventListener("click", onBackdrop);
+
+        confirmOverlay.classList.add("open");
+        confirmOverlay.setAttribute("aria-hidden","false");
+
+        setTimeout(() => {
+          try { (danger ? confirmCancelBtn : confirmOkBtn).focus(); } catch(_){}
+        }, 0);
+      });
+    }
+
+
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+
+    async function loadVideosUI(currentUser, currentLuogo){
+      // UI elements (nuova UI multi-video)
+      const sum = el("videoSummary");
+      if (!sum) return;
+
+      const featuredTitle = el("featuredVideoTitle");
+      const featuredSub = el("featuredVideoSub");
+      const chipTotal = el("chipVideoTotal");
+      const chipReady = el("chipVideoReady");
+      const chipDraft = el("chipVideoDraft");
+      const btnManage = el("btnManageVideos");
+      const btnManageMain = el("btnManageVideosMain");
+      const btnCreate = el("btnCreateVideo");
+      const btnHide = el("btnHideFeatured");
+      const note = el("videoSummaryNote");
+      const actionsRow = sum ? sum.querySelector(".videoSummaryActions") : null;
+      const chipsRow = sum ? sum.querySelector(".videoSummaryChips") : null;
+      const mega = el("videoMega");
+      const megaTitle = el("videoMegaTitle");
+      const megaText = el("videoMegaText");
+      const megaNote = el("videoMegaNote");
+      const megaStart = el("videoMegaStart");
+      const megaChoose = el("videoMegaChoose");
+      const featuredPreview = el("featuredPreview");
+      const featuredVideoEl = el("featuredVideoEl");
+      const btnOpenVisitAtVideo = el("btnOpenVisitAtVideo");
+      const btnCopyVisitLink = el("btnCopyVisitLink");   // (non esiste più in UI, lo lasciamo tollerante)
+      const btnCopyVisitLink2 = el("btnCopyVisitLink2"); // nuovo: nel menu ⋯
+      const togglePublicVideo = el("togglePublicVideo");
+      const publicVideoState = el("publicVideoState");
+      const btnGoManageVideos = el("btnGoManageVideos");
+
+      const luogoRaw = currentLuogo?.raw || {};
+      // ✅ Un solo video "in evidenza": preferiamo SEMPRE un ID (non la URL)
+      // Motivo: in fase test più video possono condividere la stessa demoUrl → sembrerebbero tutti "in evidenza".
+      // Tuttavia, per compatibilità con dati già salvati, gestiamo anche il caso "solo URL".
+      let featuredId = safeStr(pick(luogoRaw, ["featuredVideoId","spotlight.videoId","videoId"], ""));
+      // In modalità “pulizia totale” non usiamo più una URL salvata nel documento Luogo come fonte di verità.
+      
+      function setPreview(url, locked=false, vid="", poster=""){
+  const u = safeStr(url);
+
+  // ✅ HARD RESET: non fidarti di "hidden" (può essere sovrascritto dal CSS globale)
+  if (featuredPreview){
+    featuredPreview.hidden = true;
+    featuredPreview.style.display = "none";
+  }
+
+  // pulizia player
+  if (featuredVideoEl){
+    try{
+      featuredVideoEl.pause();
+      featuredVideoEl.removeAttribute("src");
+      featuredVideoEl.load();
+    }catch(_e){}
+  }
+
+  // link visita di default
+  if (btnOpenVisitAtVideo) btnOpenVisitAtVideo.href = buildVisitUrl(luogoId);
+
+  // se non c'è URL → fine (niente riquadro)
+  if (!u) return;
+
+  // ✅ SHOW esplicito
+  if (featuredPreview){
+    featuredPreview.hidden = false;
+    featuredPreview.style.display = "";
+  }
+
+  // lock overlay
+  const lockBox = el("fpLockOverlay");
+  const unlockBtn = el("btnUnlockFeatured");
+  if (lockBox){
+    // ✅ HARD RESET: alcuni fogli stile globali non rispettano [hidden]
+    lockBox.hidden = !locked;
+    lockBox.style.display = locked ? "" : "none";
+  }
+  if (featuredVideoEl){
+    // blocca menu contestuale in anteprima (riduce il rischio di download)
+    featuredVideoEl.oncontextmenu = locked ? (e=>{ e.preventDefault(); return false; }) : null;
+  }
+
+  if (unlockBtn){
+    unlockBtn.onclick = ()=>{
+      // FASE 1: placeholder checkout
+      // (in seguito: Stripe Checkout -> webhook -> sblocco automatico)
+      const url = `/cittadini/video-checkout.html?luogoId=${encodeURIComponent(luogoId)}&videoId=${encodeURIComponent(vid||"")}`;
+      try{ window.location.href = url; }catch(_e){ window.open(url, "_blank"); }
+    };
+  }
+
+  // set src e carica metadata
+  if (featuredVideoEl){
+    try{
+      featuredVideoEl.src = u;
+      featuredVideoEl.load();
+      try{ featuredVideoEl.poster = poster || ""; }catch(_e){}
+    }catch(_e){}
+    const box = featuredVideoEl.closest(".fpMedia");
+    if (box && !box.dataset.bound){
+      box.dataset.bound = "1";
+      box.addEventListener("click", ()=>{
+        try{
+          if (featuredVideoEl.paused) featuredVideoEl.play();
+          else featuredVideoEl.pause();
+        }catch(_e){}
+      });
+    }
+  }
+
+  const visitLink = buildVisitUrl(luogoId) + "&autoplay=1";
+  if (btnOpenVisitAtVideo) btnOpenVisitAtVideo.href = visitLink;
+
+  if (btnOpenVisitAtVideo){
+    if (locked){
+      btnOpenVisitAtVideo.href = "#";
+      btnOpenVisitAtVideo.setAttribute("aria-disabled","true");
+      btnOpenVisitAtVideo.classList.add("isDisabled");
+      btnOpenVisitAtVideo.onclick = (e)=>{ e.preventDefault(); toast("La pagina pubblica mostra solo filmati attivati."); };
+    } else {
+      btnOpenVisitAtVideo.removeAttribute("aria-disabled");
+      btnOpenVisitAtVideo.classList.remove("isDisabled");
+      btnOpenVisitAtVideo.onclick = null;
+    }
+  }
+
+  const bindCopy = (btnEl)=>{
+    if (!btnEl) return;
+    btnEl.onclick = async ()=>{
+      try{
+        await navigator.clipboard.writeText(location.origin + visitLink);
+        toast("Link copiato");
+      }catch(e){
+        prompt("Copia il link:", location.origin + visitLink);
+      }
+    };
+  };
+  bindCopy(btnCopyVisitLink);
+  bindCopy(btnCopyVisitLink2);
+}
+
+      // Link creazione (wizard)
+      if (btnCreate){
+        const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+        btnCreate.href = `/cittadini/luogo-video-wizard.html?luogoId=${encodeURIComponent(luogoId)}&theme=dark&new=1&from=manage&return=${returnTo}&nonce=${Date.now()}`;
+      }
+
+      // Mega CTA (stessa destinazione del wizard)
+      if (megaStart){
+        const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+        megaStart.href = `/cittadini/luogo-video-wizard.html?luogoId=${encodeURIComponent(luogoId)}&theme=dark&new=1&from=manage&return=${returnTo}&nonce=${Date.now()}`;
+      }
+      if (megaChoose){
+        megaChoose.onclick = ()=>{
+          try{
+            window.ofiOpenPanel && window.ofiOpenPanel("Filmati del Luogo");
+            // se non abbiamo ancora caricato, il pulsante Gestisci resta la via principale
+            (btnManageMain?.click?.() || btnManage?.click?.());
+          }catch(_e){}
+        };
+      }
+
+      // Note coerente con visibilità del Luogo
+      if (note){
+        if ((currentLuogo?.visibilityMode || "family") !== "public"){
+          note.textContent = "Il Luogo è impostato su “Solo familiari”. Anche il video in evidenza resterà riservato.";
+        } else {
+          note.textContent = "Nella visita pubblica verrà mostrato solo il video in evidenza. Gli altri restano in archivio (area custodi).";
+        }
+      }
+
+      // Carica lista video (subcollection)
+      let videos = [];
+      try{
+        const qV = query(collection(db, "luoghi_memoria", luogoId, "videos"), orderBy("createdAt","desc"), limit(30));
+        const snap = await getDocs(qV);
+        snap.forEach(d=>{
+          const v = d.data() || {};
+          const title = safeStr(v.title || v.titolo || v.name || "Filmato");
+          const status = safeStr(v.status || v.state || "draft").toLowerCase();
+          const url = safeStr(v.url || v.videoUrl || (v.video && v.video.url) || "");
+          const authorUid = safeStr((v.author && v.author.uid) || v.authorUid || "");
+          const createdAt = v.createdAt || v.created_at || null;
+          const featured = !!v.featured;
+
+          // ✅ Robust "paid" detection (NON usare v.status: "ready" non è pagamento)
+          // Unica sorgente: paymentStatus / payStatus sul doc video (NO legacy offer)
+          const paymentStatus = safeStr(v.paymentStatus || v.payStatus || "").toLowerCase();
+          const paid =
+            (v.paid === true) ||
+            (v.isPaid === true) ||
+            (v.isOfficial === true) ||
+            ["paid","succeeded","success","complete","completed","attiva","attivato","active"].includes(paymentStatus);
+
+          // ✅ Locked detection (ufficiale): rispetta i flag reali salvati in Firestore
+          // - Se Firestore dice locked => protetto
+          // - Se Firestore dice hasWatermark => protetto
+          // - Altrimenti fallback su !paid
+          const locked = (v.locked === true) || (v.hasWatermark === true) || (!paid);
+
+          const priceCents = Number(v.priceCents ?? v.price_cent ?? v.price ?? 0) || 0;
+          const currency = safeStr(v.currency || "EUR");
+          const posterUrl = safeStr(v.posterUrl || v.poster || v.posterURL || "");
+          videos.push({ id: d.id, title, status, url, posterUrl, authorUid, createdAt, featured, paymentStatus, locked, priceCents, currency });
+        });
+      }catch(e){
+        // se la subcollection non esiste ancora o rules/indici non ok, resta vuoto (fallback (nessun video))
+        videos = [];
+      }
+          
+
+      const total = videos.length;
+      const readyCount = videos.filter(v=> (v.status === "ready" || v.status === "pronto" || (!!v.url && v.status !== "draft")) ).length;
+      const draftCount = total - readyCount;
+
+      stateVideoCount = total;
+      // Nota: in copertina 'Media' conta SOLO album (foto/video personali), non i Filmati Ricordo.
+      if (chipTotal) chipTotal.textContent = `${total} VIDEO`;
+      if (chipReady){ chipReady.hidden = (readyCount <= 0); chipReady.textContent = `PRONTI: ${readyCount}`; }
+      if (chipDraft){ chipDraft.hidden = (draftCount <= 0); chipDraft.textContent = `BOZZE: ${draftCount}`; }
+
+      /* Mega step: guida emotiva + CTA dinamiche */
+      if (mega){
+        const hasAny = total > 0;
+        const hasFeatured = !!featuredId;
+        // Caso A: nessun video
+        if (!hasAny){
+          mega.hidden = false;
+          if (megaTitle) megaTitle.textContent = "Un piccolo filmato può dire molto.";
+          if (megaText) megaText.textContent = "Se vuoi, possiamo crearlo insieme: in pochi passaggi scegli qualche immagine, scrivi due righe (anche solo una), e il sistema ti guida fino al risultato finale.";
+          if (megaNote) megaNote.textContent = "Puoi iniziare e fermarti quando vuoi: nulla viene pubblicato finché non lo decidi tu.";
+          if (megaChoose) { megaChoose.hidden = true; }
+        } else if (hasAny && !hasFeatured){
+          // Caso B: ci sono video ma nessuno in evidenza
+          mega.hidden = false;
+          if (megaTitle) megaTitle.textContent = "Hai già dei filmati pronti.";
+          if (megaText) megaText.textContent = "Nella visita pubblica viene mostrato solo il filmato in evidenza. Scegline uno da qui: così chi visita il Luogo vedrà subito il ricordo giusto.";
+          if (megaNote) megaNote.textContent = "Puoi cambiare il video in evidenza in qualsiasi momento.";
+          if (megaChoose) { megaChoose.hidden = false; }
+        } else {
+          mega.hidden = true;
+        }
+
+        // ✅ Se il MEGA STEP è visibile, nascondi i doppi pulsanti e i chip (meno confusione)
+        if (actionsRow) actionsRow.style.display = mega.hidden ? "" : "none";
+        if (chipsRow) chipsRow.style.display = mega.hidden ? "" : "none";
+      }
+
+
+      
+// ✅ Regola pulita:
+// - Il Luogo punta a UN SOLO video tramite featuredVideoId
+// - Se il video non è attivato (paid=false) non viene considerato "in evidenza" nella visita
+let featured = null;
+if (featuredId){
+  featured = videos.find(v => v.id === featuredId) || null;
+}
+if (featured && featured.locked){
+  featured = null;
+}
+
+// Preview privata intelligente (solo per i custodi):
+// - Se non c'è un filmato "in evidenza" attivo, preferiamo comunque un filmato già attivato
+// - Altrimenti mostriamo l'ultimo pronto (anche protetto)
+const isReady = (v)=> (v.status === "ready" || v.status === "pronto" || (!!v.url && v.status !== "draft")) && !!v.url;
+
+const paidCandidate = videos.find(v => isReady(v) && !v.locked) || null;
+const readyCandidate = videos.find(v => isReady(v)) || null;
+
+const previewCandidate = featured || paidCandidate || readyCandidate;
+
+if (featuredTitle){
+  featuredTitle.textContent = featured
+    ? featured.title
+    : (previewCandidate
+        ? (previewCandidate.locked ? "Anteprima protetta (non pubblica)" : "Filmato pronto (non in evidenza)")
+        : "Nessun video disponibile");
+}
+
+if (featuredSub){
+  if (featured){
+    featuredSub.textContent = "Questo filmato è mostrato nella pagina pubblica (se il Luogo è pubblico).";
+  } else if (previewCandidate){
+    featuredSub.textContent = previewCandidate.locked
+      ? "Questa anteprima è visibile solo ai custodi. Per comparire nella pagina pubblica deve essere attivata e poi abilitata con “Mostra”."
+      : "Questo filmato è pronto. Impostalo come principale (in “Gestisci filmati”) e attiva “Mostra” per visualizzarlo nella pagina pubblica.";
+  } else {
+    featuredSub.textContent = "Crea un filmato per iniziare.";
+  }
+}
+
+setPreview(
+  (previewCandidate && previewCandidate.url) ? previewCandidate.url : "",
+  !!(previewCandidate && previewCandidate.locked),
+  (previewCandidate && previewCandidate.id) ? previewCandidate.id : "",
+  (previewCandidate && previewCandidate.posterUrl) ? previewCandidate.posterUrl : ""
+);
+
+// ============================
+// SWITCH: filmato nella PAGINA PUBBLICA
+// Regola:
+// - ON  => il Luogo punta a featuredVideoId di un video ATTIVO (non locked)
+// - OFF => featuredVideoId vuoto (nessun filmato nella pagina pubblica)
+// La scelta di "quale" video resta in "Gestisci filmati".
+// ============================
+try{
+  const isMain = !!(currentUser?.uid && currentUser.uid === currentLuogo?.mainUid);
+  const featuredActive = !!(featuredId && videos.find(v => v.id === featuredId && !v.locked));
+
+  if (togglePublicVideo){
+    togglePublicVideo.disabled = !isMain;
+    togglePublicVideo.checked = featuredActive;
+
+    if (publicVideoState){
+      publicVideoState.textContent = togglePublicVideo.checked ? "Attivo" : "Disattivo";
+      publicVideoState.style.opacity = togglePublicVideo.checked ? "1" : ".85";
+    }
+
+    togglePublicVideo.onchange = async () => {
+      if (!isMain){
+        togglePublicVideo.checked = featuredActive;
+        toast("Solo il Custode principale può modificare questa scelta.");
+        return;
+      }
+
+      // OFF: togli dalla pagina pubblica
+      if (!togglePublicVideo.checked){
+        const ok = await ofiConfirm({
+          title: "Nascondere il filmato?",
+          text: "Vuoi nascondere il filmato dalla pagina pubblica? Potrai riattivarlo in qualsiasi momento.",
+          okText: "Nascondi",
+          cancelText: "Annulla",
+          danger: true
+        });
+        if (!ok) {
+          togglePublicVideo.checked = true;
+          return;
+        }
+        try{
+          togglePublicVideo.disabled = true;
+
+          await updateDoc(doc(db, "luoghi_memoria", luogoId), {
+            featuredVideoId: "",
+            videoId: "",
+            "spotlight.videoId": "",
+            featuredVideoUpdatedAt: serverTimestamp()
+          });
+
+          // ✅ aggiorna anche lo stato locale (evita "rimbalzo" UI senza refetch)
+          try{
+            if (currentLuogo && currentLuogo.raw){
+              currentLuogo.raw.featuredVideoId = "";
+              currentLuogo.raw.videoId = "";
+              if (!currentLuogo.raw.spotlight) currentLuogo.raw.spotlight = {};
+              currentLuogo.raw.spotlight.videoId = "";
+            }
+          }catch(_e){}
+
+
+          toast("Filmato nascosto dalla pagina pubblica");
+          await loadVideosUI(currentUser, currentLuogo);
+        }catch(e){
+          console.error(e);
+          toast("Errore: non riesco ad aggiornare la visibilità.");
+          togglePublicVideo.checked = true;
+        }finally{
+          togglePublicVideo.disabled = false;
+        }
+        return;
+      }
+
+      // ON: serve un candidato attivo
+      const candidate = videos.find(v => isReady(v) && !v.locked) || null;
+
+      if (!candidate){
+        toast("Non c’è ancora un filmato attivato da mostrare.");
+        togglePublicVideo.checked = false;
+        try{ openManageVideos(); }catch(_e){}
+        return;
+      }
+
+      try{
+        togglePublicVideo.disabled = true;
+
+        // best effort: segna featured nel doc video (utile per UI lista)
+        try{
+          await updateDoc(doc(db, "luoghi_memoria", luogoId, "videos", candidate.id), { featured: true, featuredAt: serverTimestamp() });
+          await Promise.all(videos.filter(x=>x.id!==candidate.id).slice(0,25).map(x=>{
+            return updateDoc(doc(db, "luoghi_memoria", luogoId, "videos", x.id), { featured: false });
+          }));
+        }catch(_e){}
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), {
+          featuredVideoId: candidate.id,
+          videoId: candidate.id,
+          "spotlight.videoId": candidate.id,
+          featuredVideoUpdatedAt: serverTimestamp()
+        });
+
+        // ✅ aggiorna anche lo stato locale (evita "rimbalzo" UI senza refetch)
+        try{
+          if (currentLuogo && currentLuogo.raw){
+            currentLuogo.raw.featuredVideoId = candidate.id;
+            currentLuogo.raw.videoId = candidate.id;
+            if (!currentLuogo.raw.spotlight) currentLuogo.raw.spotlight = {};
+            currentLuogo.raw.spotlight.videoId = candidate.id;
+          }
+        }catch(_e){}
+
+
+        toast("Filmato mostrato nella pagina pubblica");
+        await loadVideosUI(currentUser, currentLuogo);
+      }catch(e){
+        console.error(e);
+        toast("Errore: non riesco ad attivare la visibilità.");
+        togglePublicVideo.checked = false;
+      }finally{
+        togglePublicVideo.disabled = false;
+      }
+    };
+  }
+}catch(_e){}
+
+      // Sidepanel: gestione video
+      const openManageVideos = ()=>{
+        window.ofiOpenPanel && window.ofiOpenPanel("Filmati del Luogo");
+        renderVideosPanel(videos, featuredId, currentUser, currentLuogo);
+      };
+      if (btnManage) btnManage.onclick = openManageVideos;
+      if (btnManageMain) btnManageMain.onclick = openManageVideos;
+      if (megaChoose) megaChoose.onclick = openManageVideos; // ✅ anche il bottone "Gestisci" nel mega-box
+      if (btnGoManageVideos) btnGoManageVideos.onclick = openManageVideos;
+}
+
+    function fmtWhen(ts){
+      try{
+        if (!ts) return "";
+        const d = ts.toDate ? ts.toDate() : (ts instanceof Date ? ts : null);
+        if (!d) return "";
+        return d.toLocaleDateString("it-IT", { day:"2-digit", month:"short", year:"numeric" });
+      }catch{ return ""; }
+    }
+
+    function esc(s){
+      return String(s||"").replace(/[&<>"']/g, (m)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+    }
+
+    function renderVideosPanel(videos, featuredId, currentUser, currentLuogo){
+      const body = el("sidePanelBody");
+      if (!body) return;
+
+      const isMain = !!(currentUser?.uid && currentUser.uid === currentLuogo?.mainUid);
+const createUrl =
+  `/cittadini/luogo-video-wizard.html?luogoId=${encodeURIComponent(luogoId)}&theme=dark&new=1&from=manage&return=${encodeURIComponent(window.location.pathname + window.location.search)}&nonce=${Date.now()}`;
+
+// Top actions sempre visibili
+const topActionsHtml = `
+  <div class="actions" style="margin-bottom:.85rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+    <a class="btn primary" href="${createUrl}" rel="noopener">Crea nuovo video</a>
+    <button class="btn btn--ghost" type="button" data-act="closePanel">Chiudi</button>
+  </div>
+`;
+      if (!videos || !videos.length){
+  body.innerHTML = `
+    ${topActionsHtml}
+    <div class="note">
+      <strong>Nessun video ancora</strong><br>
+      Puoi crearne uno adesso oppure più avanti.
+    </div>
+  `;
+
+  // tasto chiudi
+  body.querySelector('[data-act="closePanel"]')?.addEventListener("click", ()=>{
+    try{ window.__ofiClosePanel && window.__ofiClosePanel(); }catch(e){}
+  });
+
+  return;
+}
+
+      const rows = videos.map(v=>{
+        const ready = (v.status === "ready" || v.status === "pronto" || (!!v.url && v.status !== "draft"));
+        const when = fmtWhen(v.createdAt);
+        // ✅ Evidenza robusta:
+        // - preferenza: confronto per ID
+        const locked = !!v.locked;
+        const isFeatured = !!((featuredId && v.id === featuredId) || v.featured);
+
+        const badge1 = isFeatured ? `<span class="badge gold">IN EVIDENZA</span>` : ``;
+        const badge2 = ready ? `<span class="badge green">PRONTO</span>` : `<span class="badge gray">BOZZA</span>`;
+        const badge3 = locked ? `<span class="badge warn">ANTEPRIMA</span>` : ``;
+
+        const btnFeat = isMain && ready && v.url
+          ? (isFeatured
+              ? `<button class="btn btn--ghost" data-act="unfeat" data-id="${esc(v.id)}">Rimuovi evidenza</button>`
+              : `<button class="btn" data-act="feat" data-id="${esc(v.id)}">Metti in evidenza</button>`)
+          : ``;
+
+        const btnOpen = ready && v.url && !locked
+          ? `<a class="btn" href="${esc(v.url)}" target="_blank" rel="noopener">Apri</a>`
+          : ``;
+
+        function forceDownloadUrl(storageUrl, filename){
+  try{
+    const u = new URL(storageUrl);
+    // forza "attachment" (download) su Firebase Storage
+    u.searchParams.set(
+      "response-content-disposition",
+      `attachment; filename="${filename}"`
+    );
+    // opzionale: forza content-type
+    u.searchParams.set("response-content-type", "video/mp4");
+    return u.toString();
+  }catch(e){
+    return storageUrl;
+  }
+}
+
+const btnDl = ready && v.url && !locked
+  ? `<a class="btn" href="${esc(forceDownloadUrl(v.url, `OFI_${luogoId}_${v.id}.mp4`))}">Scarica</a>`
+  : ``;
+
+        const btnResume = (!ready)
+          ? `<a class="btn primary" href="/cittadini/luogo-video-wizard.html?luogoId=${encodeURIComponent(luogoId)}&videoId=${encodeURIComponent(v.id)}" rel="noopener">Continua bozza</a>`
+          : ``;
+
+        const btnProcessing = (v.status === "processing" || v.stato === "processing" || v.status === "elaborazione" || v.stato === "elaborazione")
+          ? `<button class="btn" disabled>In elaborazione…</button>`
+          : ``;
+
+
+        const btnUnlock = locked && ready
+          ? `<a class="btn primary" href="/cittadini/video-checkout.html?luogoId=${encodeURIComponent(luogoId)}&videoId=${encodeURIComponent(v.id)}" rel="noopener">Attiva</a>`
+          : ``;
+
+        const btnDel = isMain
+          ? `<button class="btn danger" data-act="del" data-id="${esc(v.id)}">Elimina</button>`
+          : ``;
+
+        const meta = `${ready ? "Video pronto" : "Bozza in lavorazione"}${when ? " · " + when : ""}`;
+
+        const preview = (ready && v.url && !locked)
+          ? `
+            <div class="videoItemPreview" style="margin-top:.65rem; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.25);">
+              <video src="${esc(v.url)}" controls playsinline preload="metadata" style="width:100%; display:block;"></video>
+            </div>
+          `
+          : ``;
+
+        return `
+          <div class="videoItem ${isFeatured ? 'featured' : ''}" data-vid="${esc(v.id)}">
+            <div class="videoItemTop">
+              <div>
+                <div class="videoItemTitle">${esc(v.title)}</div>
+                <div class="videoItemMeta">${esc(meta)}</div>
+              </div>
+              <div class="videoBadges">${badge1}${badge2}${badge3}</div>
+            </div>
+            ${preview}
+            <div class="videoItemActions" style="margin-top:.65rem; display:flex; justify-content:flex-end;">
+              <details class="kebab" data-kebab>
+                <summary class="iconBtn kebabBtn" aria-label="Azioni filmato" title="Azioni">⋯</summary>
+                <div class="kebabMenu" role="menu">
+                  ${btnProcessing ? `<div class="kmItem">${btnProcessing}</div>` : ``}
+                  ${btnResume ? `<div class="kmItem">${btnResume}</div>` : ``}
+                  ${btnOpen ? `<div class="kmItem">${btnOpen}</div>` : ``}
+                  ${btnDl ? `<div class="kmItem">${btnDl}</div>` : ``}
+                  ${btnUnlock ? `<div class="kmItem">${btnUnlock}</div>` : ``}
+                  ${btnFeat ? `<div class="kmItem">${btnFeat}</div>` : ``}
+                  ${btnDel ? `<div class="kmItem">${btnDel}</div>` : ``}
+                </div>
+              </details>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const roleNote = isMain
+        ? `<div class="small" style="opacity:.9; margin:-.2rem 0 .7rem;">Sei <strong>Custode principale</strong>: puoi scegliere il filmato in evidenza.</div>`
+        : `<div class="small" style="opacity:.9; margin:-.2rem 0 .7rem;">Sei <strong>Co-custode</strong>: puoi vedere i filmati pronti e scaricarli, ma solo il Custode principale può scegliere il filmato in evidenza.</div>`;
+
+      body.innerHTML = `
+  ${topActionsHtml}
+  <div class="note" style="margin-bottom:.8rem;">
+    <strong>Regola OFI</strong><br>
+    Nella visita pubblica verrà mostrato <em>solo</em> il filmato in evidenza.
+  </div>
+  ${roleNote}
+  <div class="videoList">${rows}</div>
+`;
+
+// tasto chiudi
+body.querySelector('[data-act="closePanel"]')?.addEventListener("click", ()=>{
+  try{ window.__ofiClosePanel && window.__ofiClosePanel(); }catch(e){}
+});
+
+      // bind actions
+      body.querySelectorAll("button[data-act]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const act = btn.getAttribute("data-act");
+          const vid = btn.getAttribute("data-id");
+          if (!act || !vid) return;
+
+          const v = videos.find(x=>x.id===vid);
+          if (!v) return;
+
+          if (act === "feat"){
+            if (!v.url) return;
+            if (v.locked){
+              alert("Questo filmato è un’anteprima protetta. Attivalo prima di poterlo mostrare nella visita.");
+              return;
+            }
+            if (!(await ofiConfirm({
+                title: "Mettere in evidenza?",
+                text: "Vuoi mostrare questo video nella pagina pubblica del Luogo? (Ne resterà in evidenza solo uno.)",
+                okText: "Metti in evidenza",
+                cancelText: "Annulla",
+                danger: false
+              }))) return;
+            try{
+              btn.disabled = true;
+
+              // 1) set featured on doc (best effort)
+              try{
+                await updateDoc(doc(db, "luoghi_memoria", luogoId, "videos", vid), { featured: true, featuredAt: serverTimestamp() });
+                // spegni gli altri (best effort)
+                await Promise.all(videos.filter(x=>x.id!==vid).slice(0,25).map(x=>{
+                  return updateDoc(doc(db, "luoghi_memoria", luogoId, "videos", x.id), { featured: false });
+                }));
+              }catch(_e){}
+
+              // 2) punta la VISITA al video scelto (compatibile con luogo-visit.html attuale)
+              // ✅ Compatibilità visita: alcuni file leggono ancora videoId/spotlight.videoId
+              await updateDoc(doc(db, "luoghi_memoria", luogoId), {
+                "featuredVideoId": vid,
+                "videoId": vid,
+                "spotlight.videoId": vid,
+                "featuredVideoUpdatedAt": serverTimestamp()
+              });
+
+              toast("In evidenza");
+              // ricarica summary
+              await loadVideosUI(currentUser, currentLuogo);
+              window.ofiOpenPanel("Filmati del Luogo");
+              renderVideosPanel(videos.map(x=> x.id===vid ? {...x, featured:true} : {...x, featured:false}), vid, currentUser, currentLuogo);
+            }catch(e){
+              console.error(e);
+              alert("Non riesco a mettere in evidenza questo video.");
+            }finally{
+              btn.disabled = false;
+            }
+          }
+
+          if (act === "unfeat"){
+            if (!(await ofiConfirm({
+                title: "Rimuovere dall’evidenza?",
+                text: "Vuoi rimuovere questo video dalla pagina pubblica? In visita non verrà mostrato alcun filmato finché non ne metti uno in evidenza.",
+                okText: "Rimuovi",
+                cancelText: "Annulla",
+                danger: true
+              }))) return;
+            try{
+              btn.disabled = true;
+              // ✅ Spegni anche il flag featured sul documento video (altrimenti resta “in evidenza” nella lista)
+              try{
+                await updateDoc(doc(db, "luoghi_memoria", luogoId, "videos", vid), { featured: false });
+              }catch(_e){}
+
+              await updateDoc(doc(db, "luoghi_memoria", luogoId), {
+                "featuredVideoId": "",
+                "videoId": "",
+                "spotlight.videoId": "",
+                "featuredVideoUpdatedAt": serverTimestamp()
+              });
+              toast("Rimosso");
+              // Ricarica da Firestore (evita badge rimasti per array locale non aggiornato)
+              await loadVideosUI(currentUser, currentLuogo);
+              window.ofiOpenPanel("Filmati del Luogo");
+            }catch(e){
+              console.error(e);
+              alert("Non riesco a rimuovere l’evidenza.");
+            }finally{
+              btn.disabled = false;
+            }
+          }
+
+          if (act === "del"){
+            if (!(await ofiConfirm({
+                title: "Eliminare il video?",
+                text: "Vuoi eliminare definitivamente questo video? Questa azione non può essere annullata.",
+                okText: "Elimina",
+                cancelText: "Annulla",
+                danger: true
+              }))) return;
+            try{
+              btn.disabled = true;
+              await deleteDoc(doc(db, "luoghi_memoria", luogoId, "videos", vid));
+              // se era in evidenza, rimuovi anche dal Luogo
+              const luogoUpd = {};
+              if (featuredId && vid === featuredId){
+  luogoUpd["featuredVideoId"] = "";
+  luogoUpd["featuredVideoUpdatedAt"] = serverTimestamp();
+  await updateDoc(doc(db, "luoghi_memoria", luogoId), luogoUpd);
+}
+              toast("Eliminato");
+              await loadVideosUI(currentUser, currentLuogo);
+              window.ofiOpenPanel("Filmati del Luogo");
+            }catch(e){
+              console.error(e);
+              alert("Non riesco a eliminare il video.");
+            }finally{
+              btn.disabled = false;
+            }
+          }
+        });
+      });
+    }
+
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita"], "family")) || "family";
+      const sceneId = safeStr(pick(raw, ["scene.id", "sceneId"], "campo_luce"));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl"], ""));
+      const coverRef = safeStr(pick(raw, ["cover.storageRef","cover.photoRef","coverRef"], ""));
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid", "custodeUid"], ""));
+      const coUids = Array.isArray(raw?.custody?.coUids) ? raw.custody.coUids.map(safeStr).filter(Boolean) : [];
+      return { nome, cognome, dataMorte, visibilityMode: (visibilityMode==="pubblico"?"public":visibilityMode), sceneId, coverUrl, coverRef, placeLabel, mainUid, coUids, raw };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function fmtTs(ts){
+      try{
+        if (!ts) return "";
+        const d = (typeof ts.toDate === "function") ? ts.toDate() : (ts instanceof Date ? ts : null);
+        if (!d) return "";
+        const dd = String(d.getDate()).padStart(2,"0");
+        const mm = String(d.getMonth()+1).padStart(2,"0");
+        const yy = d.getFullYear();
+        return `${dd}/${mm}/${yy}`;
+      }catch{ return ""; }
+    }
+
+    function isCustode(uid, luogo){
+      if (!uid) return false;
+      return uid === luogo.mainUid || luogo.coUids.includes(uid);
+    }
+
+    function mustLogin(msg){
+      el("gateCard").hidden = false;
+      el("gateText").textContent = msg;
+    }
+
+    // Firma locale
+    const SIG_KEY = "ofi_luogo_signature";
+    function loadSig(){
+      try{
+        const s = JSON.parse(localStorage.getItem(SIG_KEY) || "{}");
+        el("sigNome").value = safeStr(s.nome);
+        el("sigCognome").value = safeStr(s.cognome);
+      }catch{}
+    }
+    function saveSig(){
+      const nome = safeStr(el("sigNome").value);
+      const cognome = safeStr(el("sigCognome").value);
+      localStorage.setItem(SIG_KEY, JSON.stringify({ nome, cognome }));
+      toast("Firma salvata");
+      return { nome, cognome };
+    }
+
+    el("btnSaveSig").addEventListener("click", saveSig);
+
+    let currentUser = null;
+    let currentLuogo = null;
+      let stateAlbumCount = 0;
+      let stateVideoCount = 0;
+
+
+    /* ==========================
+       THEME UI (coerenza OFI)
+       - usa html[data-theme] + body.theme-dark
+       ========================== */
+    (function initThemeUI(){
+      const btn = document.getElementById('themeToggle');
+      const root = document.documentElement;
+
+      function apply(theme){
+        const t = (theme === 'light' || theme === 'dark') ? theme : 'auto';
+        root.setAttribute('data-theme', t);
+        const resolved = (t === 'auto')
+          ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : t;
+        document.body.classList.toggle('theme-dark', resolved === 'dark');
+        try{ root.setAttribute('data-theme-resolved', resolved); }catch{}
+        if (btn) btn.textContent = (resolved === 'dark') ? '◐' : '☀';
+      }
+
+      function nextTheme(cur){
+        if (cur === 'dark') return 'light';
+        if (cur === 'light') return 'dark';
+        return 'dark';
+      }
+
+      const saved = localStorage.getItem('ofi_theme') || root.getAttribute('data-theme') || 'auto';
+      apply(saved);
+
+      btn?.addEventListener('click', ()=>{
+        const cur = root.getAttribute('data-theme') || 'auto';
+        const nxt = nextTheme(cur);
+        localStorage.setItem('ofi_theme', nxt);
+        apply(nxt);
+      });
+
+      // se in auto, reagisci al cambio sistema
+      try{
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq?.addEventListener?.('change', ()=>{
+          const cur = root.getAttribute('data-theme') || 'auto';
+          if (cur === 'auto') apply('auto');
+        });
+      }catch{}
+    })();
+
+
+    /* ==========================
+       DASH UI: sidebar + pannello
+       ========================== */
+    function initDashUI(){
+      // misura header per posizionare sidebar/pannello sotto la fascia superiore
+      const hdr = document.querySelector('.site-header');
+      function setHdrVar(){
+        if (!hdr) return;
+        const h = Math.round(hdr.getBoundingClientRect().height || 74);
+        document.documentElement.style.setProperty('--headerH', `${h}px`);
+      }
+      setHdrVar();
+      // aggiorna se cambia (resize, font, mobile)
+      window.addEventListener('resize', setHdrVar, { passive:true });
+      try{
+        const ro = new ResizeObserver(()=>setHdrVar());
+        ro.observe(hdr);
+      }catch(e){}
+
+      const btnSidebar = document.getElementById('dashToggle');
+      const btnSidebarClose = document.getElementById('btnSidebarClose');
+      const overlay = document.getElementById('dashOverlay');
+      const sidebar = document.getElementById('sidebar');
+
+      const panel = document.getElementById('sidepanel');
+      const panelBody = document.getElementById('sidePanelBody');
+      const panelTitle = document.getElementById('sidePanelTitle');
+      const btnPanelClose = document.getElementById('btnPanelClose');
+      const stash = document.getElementById('panelStash');
+
+      const secStatus = document.getElementById('sectionStatus');
+      const secSettings = document.getElementById('sectionSettings');
+      const secCover = document.getElementById('sectionCover');
+      const secAlbum = document.getElementById('sectionAlbum');
+      const secVideo = document.getElementById('sectionVideo');
+      const secThoughts = document.getElementById('sectionThoughts');
+      const secSignature = document.getElementById('sectionSignature');
+
+      // parcheggia sezioni
+      [secStatus, secSettings, secCover, secAlbum, secVideo, secThoughts, secSignature].forEach(sec=>{
+        if (sec && stash) stash.appendChild(sec);
+      });
+
+      let currentSection = null;
+      let lastFocusEl = null;
+
+      function openSidebar(){
+        if (!sidebar || !overlay) return;
+        // abilita focus dentro sidebar
+        try{ sidebar.inert = false; }catch(e){}
+        sidebar.removeAttribute('inert');
+
+        sidebar.classList.add('open');
+        sidebar.setAttribute('aria-hidden','false');
+        overlay.hidden = false;
+        overlay.classList.add('show');
+        document.body.classList.add('dash-lock');
+        btnSidebar?.setAttribute('aria-expanded','true');
+
+        // porta il focus dentro, per accessibilità (evita focus "perso")
+        setTimeout(()=>{ btnSidebarClose?.focus?.(); }, 0);
+      }
+      function closeSidebar(){
+        if (!sidebar || !overlay) return;
+
+        // se il focus è dentro, spostalo prima di nascondere (evita warning aria-hidden)
+        try{
+          if (sidebar.contains(document.activeElement)) btnSidebar?.focus?.();
+        }catch(e){}
+
+        sidebar.classList.remove('open');
+        // blocca focus dentro sidebar quando chiusa
+        try{ sidebar.inert = true; }catch(e){}
+        sidebar.setAttribute('inert','');
+        sidebar.setAttribute('aria-hidden','true');
+
+        overlay.hidden = true;
+        overlay.classList.remove('show');
+        document.body.classList.remove('dash-lock');
+        btnSidebar?.setAttribute('aria-expanded','false');
+      }
+
+      function openPanel(title){
+        if (!panel) return;
+        lastFocusEl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        if (panelTitle) panelTitle.textContent = title || 'Dettagli';
+        panel.classList.add('open');
+        panel.setAttribute('aria-hidden','false');
+        try{ panel.inert = false; }catch(e){}
+        panel.removeAttribute('inert');
+        setTimeout(()=>{ btnPanelClose?.focus?.(); }, 0);
+      }
+      // Espone helper nel modulo (per handler esterni o futuri refactor)
+      window.ofiOpenPanel = openPanel;
+
+
+      function stashCurrent(){
+        if (currentSection && stash){
+          currentSection.classList.add('dash-hidden');
+          stash.appendChild(currentSection);
+          currentSection = null;
+        }
+        if (panelBody) panelBody.innerHTML = '';
+      }
+
+      function closePanel(){
+        if (!panel) return;
+        panel.classList.remove('open');
+        panel.setAttribute('aria-hidden','true');
+        try{ panel.inert = true; }catch(e){}
+        panel.setAttribute('inert','');
+        stashCurrent();
+        if (lastFocusEl) setTimeout(()=>lastFocusEl?.focus?.(), 0);
+      }
+
+      function mountSection(sec, title){
+        if (!sec || !panelBody) return;
+        stashCurrent();
+        currentSection = sec;
+        sec.classList.remove('dash-hidden');
+        panelBody.appendChild(sec);
+        window.ofiOpenPanel(title);
+      }
+
+      // header / overlay
+      btnSidebar?.addEventListener('click', openSidebar);
+      btnSidebarClose?.addEventListener('click', closeSidebar);
+      overlay?.addEventListener('click', ()=>{ closePanel(); closeSidebar(); });
+      btnPanelClose?.addEventListener('click', closePanel);
+      const btnPanelBack = document.getElementById('btnPanelBack');
+      btnPanelBack?.addEventListener('click', ()=>{ closePanel(); openSidebar(); });
+
+      // ESC
+      window.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape'){
+          closePanel();
+          closeSidebar();
+        }
+      });
+
+
+      // Chiudi menu “⋯” cliccando fuori (migliora UX)
+      document.addEventListener('click', (ev)=>{
+        const t = ev.target;
+        document.querySelectorAll('details.kebab[open]').forEach(d=>{
+          if (!(t instanceof Node) || !d.contains(t)) d.removeAttribute('open');
+        });
+      });
+      // nav click
+      sidebar?.addEventListener('click', (e)=>{
+        const a = e.target?.closest?.('[data-act]');
+        if (!a) return;
+        e.preventDefault();
+        const act = a.getAttribute('data-act');
+        if (act === 'status') mountSection(secStatus, 'Stato del Luogo');
+        if (act === 'settings') mountSection(secSettings, 'Visibilità e ambiente');
+        if (act === 'cover') mountSection(secCover, 'Copertina');
+        if (act === 'album') mountSection(secAlbum, 'Foto e video');
+        if (act === 'video') mountSection(secVideo, 'Filmato Ricordo');
+        if (act === 'thoughts') mountSection(secThoughts, 'Parole');
+        if (act === 'signature') mountSection(secSignature, 'Firma');
+        closeSidebar();
+      });
+
+      // bottone in copertina
+      document.getElementById('btnOpenManage')?.addEventListener('click', openSidebar);
+
+      // link visita
+      document.getElementById('sbVisitLink')?.addEventListener('click', (e)=>{
+        if (!currentLuogo) return;
+        // lascia navigare normalmente
+      });
+  // helpers globali (per pulsanti rapidi)
+  window.__ofiOpenSection = (act)=>{
+    if (act === 'status') mountSection(secStatus, 'Stato del Luogo');
+    if (act === 'settings') mountSection(secSettings, 'Visibilità e ambiente');
+    if (act === 'cover') mountSection(secCover, 'Copertina');
+    if (act === 'album') mountSection(secAlbum, 'Foto e video');
+    if (act === 'video') mountSection(secVideo, 'Filmato Ricordo');
+    if (act === 'thoughts') mountSection(secThoughts, 'Parole');
+    if (act === 'signature') mountSection(secSignature, 'Firma');
+  };
+  window.__ofiOpenSidebar = ()=>openSidebar();
+  window.__ofiClosePanel = ()=>closePanel();
+  window.__ofiCloseSidebar = ()=>closeSidebar();
+
+}
+
+initDashUI();
+
+// Pulsanti rapidi (welcome)
+function initQuickActions(){
+  const open = (act)=>{
+    try{
+      if (window.__ofiOpenSection) window.__ofiOpenSection(act);
+      else if (window.__ofiOpenSidebar) window.__ofiOpenSidebar();
+    }catch(e){}
+  };
+
+  // welcome actions
+  document.getElementById('waCover')?.addEventListener('click', ()=>open('cover'));
+  document.getElementById('waAlbum')?.addEventListener('click', ()=>open('album'));
+  document.getElementById('waWords')?.addEventListener('click', ()=>open('thoughts'));
+  document.getElementById('waMenu')?.addEventListener('click', ()=>window.__ofiOpenSidebar?.());
+
+  // status panel actions
+  document.getElementById('qaCover')?.addEventListener('click', ()=>open('cover'));
+  document.getElementById('qaAlbum')?.addEventListener('click', ()=>open('album'));
+  document.getElementById('qaWords')?.addEventListener('click', ()=>open('thoughts'));
+  document.getElementById('qaSettings')?.addEventListener('click', ()=>open('settings'));
+  document.getElementById('qaSignature')?.addEventListener('click', ()=>open('signature'));
+}
+initQuickActions();
+
+// Stato "Cura del Luogo" (sobrio)
+function updateCareStatus(){
+  const list = document.getElementById('careList');
+  if (!list || !currentLuogo) return;
+
+  const coverOk = !!(currentLuogo.coverUrl);
+  const albumN = Number(document.getElementById('statAlbum')?.textContent || "0") || 0;
+  const wordsN = Number(document.getElementById('statThoughts')?.textContent || "0") || 0;
+
+  const row = (ok, label, hint="")=>{
+    const dot = ok ? 'ok' : 'todo';
+    const tag = ok ? 'Presente' : 'Da fare';
+    const h = hint ? `<div class="careHint">${hint}</div>` : '';
+    return `
+      <div class="careItem">
+        <span class="careDot ${dot}" aria-hidden="true"></span>
+        <div class="careMain">
+          <div class="careLine">
+            <strong>${label}</strong>
+            <span class="careTag ${dot}">${tag}</span>
+          </div>
+          ${h}
+        </div>
+      </div>
+    `;
+  };
+
+  list.innerHTML = [
+    row(coverOk, 'Copertina', coverOk ? '' : 'Una foto sobria rende il Luogo subito “reale”.'),
+    row(albumN > 0, `Foto e video (${albumN})`, albumN > 0 ? '' : 'Anche 1 sola immagine basta per iniziare.'),
+    row(wordsN > 0, `Parole (${wordsN})`, wordsN > 0 ? '' : 'Una frase firmata dà calore e presenza.')
+  ].join('');
+}
+
+
+
+    async function refreshAlbum(){
+      const grid = el("albumGrid");
+      const empty = el("albumEmpty");
+      grid.innerHTML = "";
+
+      // NOTE: evitare query con doppio orderBy (richiede indice composito e se manca la UI resta "vuota" senza errori)
+      // Usiamo solo "order" (che generiamo sempre) così funziona subito.
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), limit(50));
+      const snap = await getDocs(qA).catch((e)=>{ console.error("Album query failed", e); return null; });
+
+      let count = 0;
+      if (snap && !snap.empty){
+        snap.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          if (!url) return;
+          count++;
+
+          const tile = document.createElement("div");
+          tile.className = "mediaTile";
+
+          const type = safeStr(m.type || "photo");
+          if (type === "video"){
+            const v = document.createElement("video");
+            v.src = url;
+            v.controls = true;
+            v.preload = "metadata";
+            tile.appendChild(v);
+          } else {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = safeStr(m.caption) || "Foto";
+            img.loading = "lazy";
+            tile.appendChild(img);
+          }
+
+          const cap = safeStr(m.caption);
+          if (cap){
+            const c = document.createElement("div");
+            c.className = "mediaCap";
+            c.textContent = cap;
+            tile.appendChild(c);
+          }
+
+          const tools = document.createElement("div");
+          tools.className = "mediaTools";
+          const del = document.createElement("button");
+          del.className = "iconBtn";
+          del.title = "Elimina";
+          del.textContent = "🗑";
+          del.addEventListener("click", async ()=>{
+            if (!(await ofiConfirm({
+                title: "Eliminare contenuto?",
+                text: "Vuoi eliminare definitivamente questo contenuto? Questa azione non può essere annullata.",
+                okText: "Elimina",
+                cancelText: "Annulla",
+                danger: true
+              }))) return;
+            try{
+              setLoading(true, 25, "Eliminazione…");
+              const storageRef = safeStr(m.storageRef);
+              await deleteDoc(d.ref);
+              if (storageRef){
+                await deleteObject(ref(storage, storageRef)).catch(()=>{});
+              }
+              await refreshAlbum();
+              toast("Eliminato");
+            }catch(e){
+              console.error(e);
+              alert("Errore eliminazione.");
+            }finally{
+              setLoading(false);
+            }
+          });
+          tools.appendChild(del);
+          tile.appendChild(tools);
+
+          grid.appendChild(tile);
+        });
+      }
+      empty.hidden = count > 0;
+      stateAlbumCount = count;
+      const stat = document.getElementById('statAlbum');
+      if (stat) stat.textContent = String(stateAlbumCount);
+
+      // Anteprima: ha senso SOLO se c'è almeno 1 media
+      const btnPrev = document.getElementById('btnAlbumPreview');
+      if (btnPrev){
+        btnPrev.style.display = (count > 0) ? '' : 'none';
+        btnPrev.setAttribute('aria-disabled', (count > 0) ? 'false' : 'true');
+      }
+      try{ updateCareStatus(); }catch(e){}
+    }
+
+    async function refreshThoughts(){
+      const box = el("thoughtsList");
+      const empty = el("thoughtsEmpty");
+      box.innerHTML = "";
+
+      const qT = query(collection(db, "luoghi_memoria", luogoId, "pensieri"), orderBy("createdAt","desc"), limit(20));
+      const snap = await getDocs(qT).catch(()=>null);
+
+      let count = 0;
+      if (snap && !snap.empty){
+        snap.forEach(d=>{
+          const t = d.data() || {};
+          const text = safeStr(t.text);
+          if (!text) return;
+          count++;
+
+          const an = t.author || {};
+          const authorLabel = [safeStr(an.nome), safeStr(an.cognome)].filter(Boolean).join(" ") || "—";
+          const visRaw = safeStr(t.visibility || "public");
+          const vis = (visRaw === "family") ? "Solo familiari" : "Visibile a tutti";
+          const when = fmtTs(t.createdAt);
+
+          const wrap = document.createElement("div");
+          wrap.className = "thought";
+          wrap.innerHTML = `
+            <div class="thMeta">
+              <span>${authorLabel}</span>
+              <span>${when ? (when + " • " + vis) : vis}</span>
+            </div>
+            <p class="thText"></p>
+          `;
+          wrap.querySelector(".thText").textContent = text;
+
+          const tools = document.createElement("div");
+          tools.className = "actions";
+          const del = document.createElement("button");
+          del.className = "btn danger";
+          del.textContent = "Elimina";
+          del.addEventListener("click", async ()=>{
+            if (!(await ofiConfirm({
+                title: "Eliminare pensiero?",
+                text: "Vuoi eliminare definitivamente questo pensiero? Questa azione non può essere annullata.",
+                okText: "Elimina",
+                cancelText: "Annulla",
+                danger: true
+              }))) return;
+            try{
+              setLoading(true, 25, "Eliminazione…");
+              await deleteDoc(d.ref);
+              await refreshThoughts();
+              toast("Eliminato");
+            }catch(e){
+              console.error(e);
+              alert("Errore eliminazione.");
+            }finally{
+              setLoading(false);
+            }
+          });
+          tools.appendChild(del);
+
+          wrap.appendChild(tools);
+          box.appendChild(wrap);
+        });
+      }
+      empty.hidden = count > 0;
+      const stat = document.getElementById('statThoughts');
+      if (stat) stat.textContent = String(count);
+      try{ updateCareStatus(); }catch(e){}
+    }
+
+    async function saveSettings(){
+      if (!currentLuogo) return;
+      const mode = el("visibilitySelect").value;
+      const sceneId = el("sceneSelect").value;
+
+      try{
+        setLoading(true, 25, "Salvataggio impostazioni…");
+
+        // Compat: aggiorniamo sia nested (future) che flat (se esiste già).
+        const patch = {
+          "visibility.mode": mode,
+          "scene.id": sceneId,
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        // se doc è flat, scriviamo anche keys flat utili
+        patch["visibilita"] = mode;
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+
+        currentLuogo.visibilityMode = mode;
+        currentLuogo.sceneId = sceneId;
+
+        toast("Impostazioni salvate");
+      }catch(e){
+        console.error(e);
+        alert("Errore salvataggio impostazioni.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnSaveSettings").addEventListener("click", saveSettings);
+
+    async function uploadCover(){
+      const f = el("coverFile").files?.[0];
+      if (!f){
+        alert("Seleziona un'immagine.");
+        return;
+      }
+
+      try{
+        setLoading(true, 18, "Upload copertina…");
+        const ext = (f.name.split(".").pop() || "jpg").toLowerCase();
+        const path = `luoghi_memoria/${luogoId}/cover_${Date.now()}.${ext}`;
+        const r = ref(storage, path);
+
+        await uploadBytes(r, f, { contentType: f.type || "image/jpeg" });
+        setLoading(true, 62, "Finalizzazione…");
+        const url = await getDownloadURL(r);
+
+        // ✅ Allineato alle regole Firestore: cover = { photoUrl, storageRef, source }
+        // (evitiamo campi legacy root come coverUrl/coverRef per non rompere le rules)
+        const patch = {
+          "cover.photoUrl": url,
+          "cover.storageRef": path,
+          "cover.source": "upload",
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+
+        // aggiorna UI locale
+        currentLuogo.coverUrl = url;
+        currentLuogo.coverRef = path;
+        const heroImg2 = document.getElementById("coverHeroImg");
+        if (heroImg2){ heroImg2.src = url; heroImg2.style.objectFit = "cover"; }
+        el("coverHeroImg")?.setAttribute?.("src", url);
+        el("coverState").textContent = "Copertina aggiornata.";
+        try{ updateCareStatus(); }catch(e){}
+        toast("Copertina caricata");
+      }catch(e){
+        console.error(e);
+        alert("Errore upload copertina.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    async function removeCover(){
+      if (!(await ofiConfirm({
+                title: "Rimuovere copertina?",
+                text: "Vuoi rimuovere la foto di copertina? Potrai caricarne un’altra in qualsiasi momento.",
+                okText: "Rimuovi",
+                cancelText: "Annulla",
+                danger: true
+              }))) return;
+      try{
+        setLoading(true, 25, "Rimozione…");
+
+        const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+        const raw = snap.data() || {};
+        const luogo = normalizeDoc(raw);
+        const refPath = safeStr(luogo.coverRef);
+
+        const patch = {
+          "cover.photoUrl": "",
+          "cover.storageRef": "",
+          "cover.source": "",
+          "custody.lastUpdatedAt": serverTimestamp()
+        };
+
+        await updateDoc(doc(db, "luoghi_memoria", luogoId), patch);
+        if (refPath){
+          await deleteObject(ref(storage, refPath)).catch(()=>{});
+        }
+
+        // aggiorna UI locale
+        currentLuogo.coverUrl = "";
+        currentLuogo.coverRef = "";
+        const heroImg2 = document.getElementById("coverHeroImg");
+        if (heroImg2){ heroImg2.src = "/images/rosa.png"; heroImg2.style.objectFit = "contain"; }
+        el("coverState").textContent = "Copertina rimossa.";
+        try{ updateCareStatus(); }catch(e){}
+        toast("Rimossa");
+      }catch(e){
+        console.error(e);
+        alert("Errore rimozione copertina.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnUploadCover").addEventListener("click", uploadCover);
+    el("btnRemoveCover").addEventListener("click", removeCover);
+
+    async function addMedia(){
+      const f = el("albumFile").files?.[0];
+      const caption = safeStr(el("albumCaption").value);
+      if (!f){
+        alert("Seleziona un media (foto o video).");
+        return;
+      }
+
+      try{
+        setLoading(true, 14, "Upload media…");
+        const isVideo = (f.type || "").startsWith("video/");
+        const ext = (f.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase();
+        const path = `luoghi_memoria/${luogoId}/album/${Date.now()}_${Math.random().toString(16).slice(2)}.${ext}`;
+        const r = ref(storage, path);
+
+        await uploadBytes(r, f, { contentType: f.type || (isVideo ? "video/mp4" : "image/jpeg") });
+        setLoading(true, 62, "Finalizzazione…");
+        const url = await getDownloadURL(r);
+
+        // calcolo order: max+1 (semplice)
+        let nextOrder = Date.now();
+        const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","desc"), limit(1));
+        const snap = await getDocs(qA).catch(()=>null);
+        if (snap && !snap.empty){
+          const last = snap.docs[0].data() || {};
+          const o = Number(last.order);
+          if (!Number.isNaN(o)) nextOrder = o + 1;
+        }
+
+        // NOTE: nelle regole Firestore hai "createdAt is timestamp".
+        // FieldValue.serverTimestamp() può risultare "non timestamp" durante la valutazione rules.
+        // Usiamo Timestamp.now() per garantire inserimento immediato e ordinamenti stabili.
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "album"), {
+          type: isVideo ? "video" : "photo",
+          url,
+          storageRef: path,
+          caption: caption || "",
+          order: nextOrder,
+          createdAt: Timestamp.now(),
+          createdByUid: currentUser.uid
+        });
+
+        el("albumFile").value = "";
+        el("albumCaption").value = "";
+        await refreshAlbum();
+        toast("Aggiunto");
+      }catch(e){
+        console.error(e);
+        alert("Errore aggiunta media.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnAddMedia").addEventListener("click", addMedia);
+
+    async function addThought(){
+      const text = safeStr(el("thoughtText").value);
+      if (!text){
+        alert("Scrivi un pensiero.");
+        return;
+      }
+
+      const sig = saveSig();
+      if (!sig.nome || !sig.cognome){
+        alert("Inserisci Nome e Cognome (firma) prima di pubblicare.");
+        return;
+      }
+
+      let visibility = el("thoughtVisibility").value;
+
+      // coerente: se Luogo non è pubblico, le parole restano "Solo familiari"
+      if (currentLuogo && currentLuogo.visibilityMode !== "public") visibility = "family";
+
+      try{
+        setLoading(true, 25, "Pubblicazione…");
+        // stesso motivo di Album: in rules "createdAt is timestamp"
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "pensieri"), {
+          text,
+          visibility,
+          author: { nome: sig.nome, cognome: sig.cognome, uid: currentUser.uid },
+          createdAt: Timestamp.now()
+        });
+
+        el("thoughtText").value = "";
+        await refreshThoughts();
+        toast("Pubblicato");
+      }catch(e){
+        console.error(e);
+        alert("Errore pubblicazione pensiero.");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    el("btnAddThought").addEventListener("click", addThought);
+
+    async function load(){
+      loadSig();
+
+      if (!luogoId){
+        mustLogin("ID mancante. I miei Luoghi e apri il Luogo corretto.");
+        return;
+      }
+
+      setLoading(true, 10, "Verifica accesso…");
+
+      await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          currentUser = u || null;
+          unsub();
+          resolve();
+        });
+      });
+
+      if (!currentUser){
+        setLoading(false);
+        mustLogin("Per gestire il Luogo devi accedere come cittadino.");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        setLoading(false);
+        mustLogin("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      currentLuogo = normalizeDoc(snap.data() || {});
+      if (!isCustode(currentUser.uid, currentLuogo)){
+        setLoading(false);
+        mustLogin("Non risulti custode di questo Luogo. Se hai ricevuto un invito, assicurati di usare lo stesso account cittadino.");
+        return;
+      }
+
+
+      // Benvenuto (riduce confusione, tono familiare)
+      const welcome = document.getElementById("welcomeCard");
+      if (welcome){
+        const isMain = (currentUser.uid === currentLuogo.mainUid);
+        const title = document.getElementById("welcomeTitle");
+        const text = document.getElementById("welcomeText");
+        if (title) title.textContent = "Benvenuto.";
+const thanks = document.getElementById("welcomeThanks");
+if (thanks){
+  thanks.textContent = "Questo Luogo è nato. Hai già compiuto il primo passo.";
+}
+if (text){
+  text.textContent = isMain
+    ? "Quando vuoi, puoi curarlo con calma: una copertina, una foto, una parola. Il resto è facoltativo."
+    : "Quando vuoi, puoi contribuire con delicatezza: immagini e parole firmate. Alcune scelte restano al custode principale.";
+}
+welcome.hidden = false;
+      }
+      // Header
+      const displayName = [currentLuogo.nome, currentLuogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      el("hTitle").textContent = "Custodia del Luogo";
+
+      el("hSub").textContent = "Area privata riservata ai custodi. Qui puoi aggiungere contenuti con calma, senza fretta.";
+
+      const chipRole = document.getElementById("chipRole");
+      if (chipRole){
+        chipRole.hidden = false;
+        chipRole.textContent = (currentUser.uid === currentLuogo.mainUid) ? "Custode principale" : "Co-custode";
+      }
+
+      
+      // Stato visibilità (subito chiaro + toggle rapido)
+      const chipVis = document.getElementById("chipVisibility");
+      const btnToggleVis = document.getElementById("btnToggleVisibility");
+
+      function applyVisibilityUi(mode){
+        const m = (mode || "family");
+        const isPublic = (m === "public");
+        if (chipVis){
+          chipVis.hidden = false;
+          chipVis.classList.remove("gold","red");
+          chipVis.classList.add(isPublic ? "gold" : "red");
+          chipVis.textContent = isPublic ? "PUBBLICO" : "SOLO FAMIGLIARI";
+        }
+        if (btnToggleVis){
+          btnToggleVis.hidden = false;
+          btnToggleVis.textContent = isPublic ? "Rendi riservato" : "Rendi pubblico";
+          btnToggleVis.classList.remove("primary","danger");
+          btnToggleVis.classList.add(isPublic ? "btn--ghost" : "primary");
+        }
+      }
+
+      applyVisibilityUi(currentLuogo.visibilityMode);
+
+      async function toggleVisibility(){
+        if (!currentUser || !currentLuogo) return;
+        const nowMode = currentLuogo.visibilityMode || "family";
+        const nextMode = (nowMode === "public") ? "family" : "public";
+
+	        const ok = await ofiConfirm({
+          title: (nextMode === "public") ? "Rendere pubblico?" : "Rendere riservato?",
+          text: (nextMode === "public")
+            ? "Vuoi rendere questo Luogo PUBBLICO? Sarà visitabile da chiunque abbia il link."
+            : "Vuoi rendere questo Luogo RISERVATO (solo familiari/custodi)? Chi non è custode non potrà più visitarlo.",
+          okText: (nextMode === "public") ? "Rendi pubblico" : "Rendi riservato",
+          cancelText: "Annulla",
+          danger: (nextMode !== "public")
+        });
+        if (!ok) return;
+
+        try{
+          btnToggleVis && (btnToggleVis.disabled = true);
+
+          // Scriviamo su entrambi i campi per compatibilità (nuovo + vecchio)
+          const upd = {
+            "visibility.mode": nextMode,
+            "visibilita": (nextMode === "public" ? "pubblico" : "family"),
+            "updatedAt": serverTimestamp()
+          };
+          await updateDoc(doc(db, "luoghi_memoria", luogoId), upd);
+
+          currentLuogo.visibilityMode = nextMode;
+          applyVisibilityUi(nextMode);
+
+          // aggiorna note del video (dipende dalla visibilità)
+          try{ await loadVideoSummary(); }catch(_e){}
+
+          toast(nextMode === "public" ? "Luogo reso pubblico" : "Luogo reso riservato");
+        }catch(e){
+          console.error(e);
+          alert("Non riesco ad aggiornare la visibilità. Riprova.");
+        }finally{
+          btnToggleVis && (btnToggleVis.disabled = false);
+        }
+      }
+
+      btnToggleVis?.addEventListener("click", toggleVisibility);
+
+// Link visita
+      // NOTE: luogo-visit.html è in /site (root)
+      const visitUrl = `/luogo-visit.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      el("btnVisit").href = visitUrl;
+      const vHero = document.getElementById('btnVisitHero');
+      if (vHero) vHero.href = visitUrl;
+      const sbV = document.getElementById('sbVisitLink');
+      if (sbV) sbV.setAttribute('href', visitUrl);
+      // Anteprima pubblica Album + Video Ricordo (pagine dedicate)
+      const previewUrl = `/cittadini/luogo-album-preview.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      const videoUrl = `/cittadini/luogo-video-wizard.html?luogoId=${encodeURIComponent(luogoId)}&theme=dark&new=1&nonce=${Date.now()}`;
+      const btnPrev = document.getElementById('btnAlbumPreview');
+      const btnFilm = document.getElementById('btnCreateVideo');
+      if (btnPrev) btnPrev.href = previewUrl;
+      if (btnFilm) {
+        const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
+        btnFilm.href = `${videoUrl}&from=manage&return=${returnTo}`;
+      }
+
+      // Filmato Ricordo: stato e download
+      await loadVideosUI(currentUser, currentLuogo);
+
+      // Settings form
+      el("visibilitySelect").value = (currentLuogo.visibilityMode === "public") ? "public" : "family";
+      el("sceneSelect").value = currentLuogo.sceneId || "campo_luce";
+
+      // Se il Luogo è "Solo familiari", le parole restano interne (scrittura custodi)
+      const tv = document.getElementById("thoughtVisibility");
+      if (tv){
+        if (currentLuogo.visibilityMode !== "public"){
+          tv.value = "family";
+          tv.disabled = true;
+        } else {
+          tv.disabled = false;
+        }
+      }
+
+      // Cover state
+      el("coverState").textContent = currentLuogo.coverUrl ? "Copertina presente." : "Nessuna copertina: verrà mostrata la rosa OFI.";
+      el("metaBox").textContent =
+        `ID Luogo: ${luogoId}\nRuolo: ${(currentUser.uid === currentLuogo.mainUid) ? "Custode principale" : "Co-custode"}\nVisibilità: ${(currentLuogo.visibilityMode === "public") ? "Visibile a tutti" : "Solo familiari"}`;
+
+      // Copertina HERO (in alto)
+      document.getElementById('coverHeroName').textContent = displayName;
+      document.getElementById('coverHeroPlace').textContent = currentLuogo.placeLabel || "Luogo non specificato";
+      document.getElementById('coverHeroDate').textContent = fmtDate(currentLuogo.dataMorte);
+      const heroImg = document.getElementById('coverHeroImg');
+      if (heroImg){
+        heroImg.src = currentLuogo.coverUrl || "/images/rosa.png";
+        heroImg.style.objectFit = currentLuogo.coverUrl ? "cover" : "contain";
+      }
+      try{ updateCareStatus(); }catch(e){}
+
+      setLoading(true, 72, "Caricamento contenuti…");
+      await refreshAlbum();
+      await refreshThoughts();
+      setLoading(false);
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      setLoading(false);
+      mustLogin("Errore nel caricamento. Riprova tra poco.");
+    });
+  </script>
+
+  <!-- menu.js non serve nella gestione (usiamo sidebar dedicata) -->
+</body>
+</html>

@@ -1,0 +1,145 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-03-03",
+  "notes": "Archivio asset video OFI (placeholder V1). In futuro: clip reali + regole di montaggio.",
+  "atmosfere": [
+    {
+      "id": "chiaro_moderno",
+      "label": "Chiaro moderno",
+      "tags": [
+        "pulito",
+        "luminoso",
+        "contemporaneo"
+      ]
+    },
+    {
+      "id": "caldo_dorato",
+      "label": "Caldo dorato",
+      "tags": [
+        "caldo",
+        "oro",
+        "solenne",
+        "classico"
+      ]
+    },
+    {
+      "id": "intimo_raccolto",
+      "label": "Intimo raccolto",
+      "tags": [
+        "famiglia",
+        "vicinanza",
+        "delicato"
+      ]
+    },
+    {
+      "id": "essenziale_profondo",
+      "label": "Essenziale profondo",
+      "tags": [
+        "silenzio",
+        "profondita",
+        "sobrio"
+      ]
+    }
+  ],
+  "musiche": [
+    {
+      "id": "discreta",
+      "label": "Discreta (OFI)",
+      "license": "internal"
+    },
+    {
+      "id": "pianoforte",
+      "label": "Solo pianoforte",
+      "license": "internal"
+    },
+    {
+      "id": "silenzio",
+      "label": "Senza musica",
+      "license": "none"
+    }
+  ],
+  "templates": [
+    {
+      "id": "ofi_sobrio_01",
+      "title": "Omaggio sobrio",
+      "durationTargetsSec": [
+        80,
+        110,
+        140
+      ],
+      "defaultAtmosfera": "essenziale_profondo",
+      "masterPath": "ofi_assets/video/templates/ofi_sobrio_01/master.mp4",
+      "posterPath": "ofi_assets/video/templates/ofi_sobrio_01/poster.jpg",
+      "timeline": [
+        {
+          "slot": "intro",
+          "type": "clip",
+          "tags": [
+            "fade_in",
+            "soft"
+          ]
+        },
+        {
+          "slot": "photos",
+          "type": "kenburns",
+          "count": "6-12"
+        },
+        {
+          "slot": "closing",
+          "type": "clip",
+          "tags": [
+            "fade_out",
+            "silenzio"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ofi_racconto_01",
+      "title": "Racconto di vita",
+      "durationTargetsSec": [
+        110,
+        140
+      ],
+      "defaultAtmosfera": "chiaro_moderno",
+      "masterPath": "ofi_assets/video/templates/ofi_racconto_01/master.mp4",
+      "posterPath": "ofi_assets/video/templates/ofi_racconto_01/poster.jpg",
+      "timeline": [
+        {
+          "slot": "intro",
+          "type": "clip",
+          "tags": [
+            "modern",
+            "warm"
+          ]
+        },
+        {
+          "slot": "photos",
+          "type": "kenburns",
+          "count": "8-14"
+        },
+        {
+          "slot": "closing",
+          "type": "clip",
+          "tags": [
+            "caldo",
+            "oro"
+          ]
+        }
+      ]
+    }
+  ],
+  "clips": {
+    "placeholders": [
+      {
+        "id": "clip_placeholder_01",
+        "path": "ofi_assets/video/clips/placeholders/clip_placeholder_01.mp4",
+        "tags": [
+          "chiaro_moderno",
+          "intro",
+          "soft"
+        ]
+      }
+    ]
+  }
+}

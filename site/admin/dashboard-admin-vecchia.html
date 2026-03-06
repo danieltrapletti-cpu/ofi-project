@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Amministratore OFI</title>
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+    }
+    .sidebar {
+      width: 260px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      background-color: #002c5d;
+      color: white;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 1.3rem;
+    }
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 0.95rem;
+      border-bottom: 1px solid #003c8f;
+    }
+    .sidebar a:hover {
+      background-color: #001f3d;
+    }
+    .main {
+      margin-left: 260px;
+      padding: 2rem;
+    }
+    h1 {
+      color: #002c5d;
+    }
+    .category {
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #b0c4de;
+      padding: 10px 20px 0;
+      margin-top: 1.5rem;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user || user.uid !== "k1yxKXHiWyX5G5k9ZoEbwuNIXa63") {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Admin OFI</h2>
+
+    <div class="category">📂 Gestione contenuti</div>
+    <a href="articoli-admin.html">📝 Articoli pubblicati</a>
+    <a href="articoli-gestione-admin.html">🗂 Gestione articoli</a>
+<a href="necrologi-admin.html">🕯 Necrologi ricevuti</a>
+    <a href="presentazioni-imprese-admin.html">📣 Presentazioni imprese</a>
+    <a href="fornitori-admin.html">📦 Fornitori registrati</a>
+
+    <div class="category">👥 Gestione utenti</div>
+    <a href="utenti-admin.html">👤 Utenti registrati</a>
+    <a href="richieste-nome-admin.html">✏️ Richieste modifica nome</a>
+    <a href="segnalazioni-admin.html">🧠 Segnalazioni ricevute</a>
+
+    <div class="category">💳 Gestione economica</div>
+    <a href="preventivi-admin.html">📁 Preventivi ricevuti</a>
+    <a href="preventivi-scaduti.html">📅 Preventivi scaduti</a>
+    <a href="pagamenti-admin.html">💰 Pagamenti ricevuti</a>
+    <a href="fatture-admin.html">📄 Fatture emesse</a>
+
+    <div class="category">📊 Sistema & Log</div>
+    <a href="statistiche-admin.html">📈 Statistiche generali</a>
+    <a href="log-attivita-admin.html">📊 Log attività</a>
+  </div>
+
+  <div class="main">
+    <h1>Benvenuto nella Dashboard Amministrativa OFI</h1>
+    <p>Da qui puoi gestire ogni aspetto della piattaforma in modo ordinato, sicuro e professionale.</p>
+    <p>Utilizza il menu laterale per accedere alle sezioni principali.</p>
+  </div>
+  <script type="module" src="admin-header.js"></script>
+</body>
+</html>

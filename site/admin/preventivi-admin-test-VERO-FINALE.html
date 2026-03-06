@@ -1,0 +1,1157 @@
+
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Preventivi • OFI</title>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js">
+const contaPreventivi = () => {
+  const attesa = tutti.filter(p => p.stato === 'in attesa').length;
+  const approvati = tutti.filter(p => p.stato === 'approvato').length;
+  const rifiutati = tutti.filter(p => p.stato === 'rifiutato').length;
+  const scaduti = tutti.filter(p => p.stato === 'scaduto').length;
+
+  document.getElementById("badge-attesa").textContent = `(${attesa})`;
+  document.getElementById("badge-approvati").textContent = `(${approvati})`;
+  document.getElementById("badge-rifiutati").textContent = `(${rifiutati})`;
+  document.getElementById("badge-scaduti").textContent = `(${scaduti})`;
+};
+const contaPreventivi = () => {
+  const attesa = tutti.filter(p => p.stato === 'in attesa').length;
+  const approvati = tutti.filter(p => p.stato === 'approvato').length;
+  const rifiutati = tutti.filter(p => p.stato === 'rifiutato').length;
+  const scaduti = tutti.filter(p => p.stato === 'scaduto').length;
+
+  document.getElementById("tab-attesa").innerText = `In Attesa (${attesa})`;
+  document.getElementById("tab-approvati").innerText = `Approvati (${approvati})`;
+  document.getElementById("tab-rifiutati").innerText = `Rifiutati (${rifiutati})`;
+  document.getElementById("tab-scaduti").innerText = `Scaduti (${scaduti})`;
+};
+
+function aggiornaStatoPreventivo(id, nuovoStato) {
+  const docRef = db.collection("preventivi").doc(id);
+  const campoData = nuovoStato === "approvato" ? "dataApprovazione" : "dataRifiuto";
+  const payload = {
+    stato: nuovoStato,
+    [campoData]: firebase.firestore.Timestamp.now()
+  };
+
+  docRef.update(payload).then(() => {
+    alert("✅ Preventivo aggiornato");
+    location.reload(); // reload semplice
+  }).catch(err => {
+    alert("Errore durante l'aggiornamento");
+    console.error(err);
+  });
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+
+function verificaScadenzaPreventivo(id, dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  if (now >= scadenza) {
+    db.collection("preventivi").doc(id).update({
+      stato: "scaduto"
+    }).then(() => {
+      console.log("Preventivo " + id + " aggiornato a SCADUTO");
+    }).catch((err) => {
+      console.error("Errore aggiornamento stato scaduto:", err);
+    });
+  }
+}
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js">
+
+function aggiornaStatoPreventivo(id, nuovoStato) {
+  const docRef = db.collection("preventivi").doc(id);
+  const campoData = nuovoStato === "approvato" ? "dataApprovazione" : "dataRifiuto";
+  const payload = {
+    stato: nuovoStato,
+    [campoData]: firebase.firestore.Timestamp.now()
+  };
+
+  docRef.update(payload).then(() => {
+    alert("✅ Preventivo aggiornato");
+    location.reload(); // reload semplice
+  }).catch(err => {
+    alert("Errore durante l'aggiornamento");
+    console.error(err);
+  });
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+
+function verificaScadenzaPreventivo(id, dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  if (now >= scadenza) {
+    db.collection("preventivi").doc(id).update({
+      stato: "scaduto"
+    }).then(() => {
+      console.log("Preventivo " + id + " aggiornato a SCADUTO");
+    }).catch((err) => {
+      console.error("Errore aggiornamento stato scaduto:", err);
+    });
+  }
+}
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js">
+
+function aggiornaStatoPreventivo(id, nuovoStato) {
+  const docRef = db.collection("preventivi").doc(id);
+  const campoData = nuovoStato === "approvato" ? "dataApprovazione" : "dataRifiuto";
+  const payload = {
+    stato: nuovoStato,
+    [campoData]: firebase.firestore.Timestamp.now()
+  };
+
+  docRef.update(payload).then(() => {
+    alert("✅ Preventivo aggiornato");
+    location.reload(); // reload semplice
+  }).catch(err => {
+    alert("Errore durante l'aggiornamento");
+    console.error(err);
+  });
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+
+function verificaScadenzaPreventivo(id, dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  if (now >= scadenza) {
+    db.collection("preventivi").doc(id).update({
+      stato: "scaduto"
+    }).then(() => {
+      console.log("Preventivo " + id + " aggiornato a SCADUTO");
+    }).catch((err) => {
+      console.error("Errore aggiornamento stato scaduto:", err);
+    });
+  }
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+
+function aggiornaStatoPreventivo(id, nuovoStato) {
+  const docRef = db.collection("preventivi").doc(id);
+  const campoData = nuovoStato === "approvato" ? "dataApprovazione" : "dataRifiuto";
+  const payload = {
+    stato: nuovoStato,
+    [campoData]: firebase.firestore.Timestamp.now()
+  };
+
+  docRef.update(payload).then(() => {
+    alert("✅ Preventivo aggiornato");
+    location.reload(); // reload semplice
+  }).catch(err => {
+    alert("Errore durante l'aggiornamento");
+    console.error(err);
+  });
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+
+function verificaScadenzaPreventivo(id, dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  if (now >= scadenza) {
+    db.collection("preventivi").doc(id).update({
+      stato: "scaduto"
+    }).then(() => {
+      console.log("Preventivo " + id + " aggiornato a SCADUTO");
+    }).catch((err) => {
+      console.error("Errore aggiornamento stato scaduto:", err);
+    });
+  }
+}
+
+</script>
+<style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      background: #002b5c;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      padding: 1rem;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      border: 2px solid transparent;
+      background: #e4e7eb;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .tab-btn:hover {
+      background: #d0d5db;
+    }
+    .tab-btn.active {
+      background: #002b5c;
+      color: white;
+      border-color: #002b5c;
+    }
+    .tab-content {
+      display: none;
+      animation: fade 0.3s ease-in-out;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fade {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .card {
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1rem;
+      border-left: 6px solid #ccc;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.01);
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      margin-top: 6px;
+      font-weight: bold;
+    }
+    .attesa {
+      background: #fff3cd;
+      color: #856404;
+      border-left-color: #ffc107;
+    }
+    .approvato {
+      background: #d4edda;
+      color: #155724;
+      border-left-color: #28a745;
+    }
+    .rifiutato {
+      background: #f8d7da;
+      color: #721c24;
+      border-left-color: #dc3545;
+    }
+    .scaduto {
+      background: #e2e3e5;
+      color: #383d41;
+      border-left-color: #6c757d;
+    }
+    .eliminato {
+      background: #f8f9fa;
+      color: #6c757d;
+      border-left-color: #adb5bd;
+    }
+    button {
+      background: #002b5c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #001f3f;
+    }
+    .modale {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modale-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      position: relative;
+    }
+    .modale-content h3 {
+      margin-top: 0;
+    }
+    .modale-content p {
+      margin: 0.5rem 0;
+    }
+    .modale-content button.chiudi-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      color: #333;
+      font-size: 1.5rem;
+    }
+    @media (max-width: 600px) {
+      .card {
+        font-size: 0.95rem;
+      }
+    }
+    
+    .tab-btn {
+      background: #e1e5ea !important;
+      color: #002b5c !important;
+      font-weight: 600;
+    }
+    .tab-btn.active {
+      background: #002b5c !important;
+      color: white !important;
+    }
+    
+    .badge-nuovo {
+      background: #ffcc00;
+      color: #000;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 12px;
+      margin-left: 8px;
+    }
+    
+/* Miglioramento card */
+.card-preventivo {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.card-preventivo p {
+  margin: 0.3rem 0;
+}
+.card-preventivo button {
+  background-color: #002b5c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.card-preventivo button:hover {
+  background-color: #004080;
+}
+
+/* Miglioramento tab */
+.tab-button {
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 2px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.tab-button.active {
+  background: #002b5c;
+  color: white;
+  border-color: #002b5c;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .card-preventivo {
+    padding: 0.8rem;
+  }
+  .card-preventivo p {
+    font-size: 0.95rem;
+  }
+  .card-preventivo button {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .tab-button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+  .grafico-container {
+    width: 100% !important;
+  }
+  .modal-content {
+    width: 95% !important;
+  }
+}
+
+/* Modale migliorato */
+.modal-content {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: auto;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+/* Visuale coerente e sicura */
+.card-preventivo {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.card-preventivo p {
+  margin: 0.3rem 0;
+}
+.card-preventivo button {
+  background-color: #002b5c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.card-preventivo button:hover {
+  background-color: #004080;
+}
+.tab-button {
+  background-color: #f2f2f2;
+  color: #002b5c;
+  border: 1px solid #ccc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin: 2px;
+  font-weight: 600;
+}
+.tab-button.active {
+  background-color: #002b5c;
+  color: #fff;
+  border-color: #002b5c;
+}
+@media (max-width: 768px) {
+  .card-preventivo {
+    padding: 0.8rem;
+  }
+  .card-preventivo p {
+    font-size: 0.95rem;
+  }
+  .card-preventivo button {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .tab-button {
+    display: block;
+    width: 100%;
+    margin: 4px 0;
+  }
+  .modal-content {
+    width: 95% !important;
+  }
+}
+
+.badge-nuovo.animated {
+  animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/></head>
+<body><audio id="notificaAudio" preload="auto" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+<header style="background: #002b5c; color: white; padding: 1rem 2rem; display:flex; justify-content: space-between; align-items:center; position:relative;"><div style="display:flex; align-items:center; gap:12px;"><img alt="Logo OFI" src="../images/OFI-Logo-Long-Light.png" style="height:46px; vertical-align:middle;"/><h1 style="margin:0; font-size:1.4rem;">Dashboard Preventivi</h1><div id="notificaBell" style="font-size: 1.5rem; margin-left: auto; cursor:pointer; transition: transform 0.3s, color 0.3s;">🔔</div></div></header>
+<div class="container"><div id="azioniRapide" style="background:#e9f0f7; padding:1em; border-radius:8px; margin-bottom:1.5em; display:flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;"><input id="searchInput" placeholder="Cerca per ID, nome o email..." style="width:100%;padding:0.8em 1em;margin-bottom:1em;border-radius:6px;border:1px solid #ccc;font-size:1rem; max-width:400px;"/><button onclick="esportaPreventiviCSV()" style="float:right;margin-bottom:1em;background:#17a2b8; padding:10px 16px; border-radius:6px; font-weight:bold;">📤 Esporta CSV</button></div>
+<div class="tabs">
+<button class="tab-btn active" id="btn-attesa" onclick="mostraTab('attesa')">🟡 In Attesa</button>
+<button class="tab-btn" id="btn-approvato" onclick="mostraTab('approvato')">🟢 Approvati</button>
+<button class="tab-btn" id="btn-rifiutato" onclick="mostraTab('rifiutato')">🔴 Rifiutati</button>
+<button class="tab-btn" id="btn-scaduto" onclick="mostraTab('scaduto')">🕓 Scaduti</button>
+<button class="tab-btn" id="btn-eliminato" onclick="mostraTab('eliminato')">🗑️ Eliminati</button>
+</div>
+<canvas height="200" id="graficoAlternativo" style="margin-bottom: 30px;" width="400"></canvas>
+<canvas id="graficoStati" style="max-width:600px; margin: auto; display:block;"></canvas>
+<div class="tab-content active" id="tab-attesa"></div>
+<div class="tab-content" id="tab-approvato"></div>
+<div class="tab-content" id="tab-rifiutato"></div>
+<div class="tab-content" id="tab-scaduto"></div>
+<div class="tab-content" id="tab-eliminato"></div>
+</div>
+<div class="modale" id="modal">
+<div class="modale-content">
+<button class="chiudi-modal" onclick="chiudiModal()">❌</button>
+<div id="contenutoModal"></div>
+<div id="azioniModal" style="margin-top: 2rem; text-align: center; padding-top: 1rem; border-top: 1px solid #ccc;">
+<button id="btnApprova" style="padding:10px 20px; margin-right:15px; background:#28a745; color:white; border:none; border-radius:6px; font-weight:bold; font-size:1rem;">✅ Approva</button>
+<button id="btnRifiuta" style="padding:10px 20px; background:#dc3545; color:white; border:none; border-radius:6px; font-weight:bold; font-size:1rem;">❌ Rifiuta</button>
+</div>
+</div>
+</div>
+<script>
+function contaPreventivi() {
+  const attesa = tutti.filter(p => p.stato === 'in attesa').length;
+  const approvati = tutti.filter(p => p.stato === 'approvato').length;
+  const rifiutati = tutti.filter(p => p.stato === 'rifiutato').length;
+  const scaduti = tutti.filter(p => p.stato === 'scaduto').length;
+
+  document.getElementById("btn-attesa").innerHTML = `🟡 In Attesa (${attesa})`;
+  document.getElementById("btn-approvato").innerHTML = `🟢 Approvati (${approvati})`;
+  document.getElementById("btn-rifiutato").innerHTML = `🔴 Rifiutati (${rifiutati})`;
+  document.getElementById("btn-scaduto").innerHTML = `🕓 Scaduti (${scaduti})`;
+}
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+const tutti = [];
+
+function mostraTab(nome) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('[onclick="mostraTab(\'' + nome + '\')"]').classList.add('active');
+  document.getElementById('tab-' + nome).classList.add('active');
+}
+
+function chiudiModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function apriModal(id) {
+  const p = tutti.find(x => x.id === id);
+  if (!p) return;
+
+  function formatDate(d) {
+    return d?.toDate?.().toLocaleString?.() || '-';
+  }
+
+  let html = `<h3>📄 Dettagli Preventivo</h3><hr>`;
+  html += `<p><strong>ID:</strong> ${id}</p>`;
+  html += `<p><strong>Nome:</strong> ${p.nome || '-'}</p>`;
+  html += `<p><strong>Email:</strong> ${p.email || '-'}</p>`;
+  html += `<p><strong>Servizio:</strong> ${p.tipoServizio || '-'}</p>`;
+  html += `<p><strong>Luogo Cerimonia:</strong> ${p.luogoCerimonia || '-'}</p>`;
+  html += `<p><strong>Comuni Manifesti:</strong> ${p.comuniManifesti || '-'}</p>`;
+  html += `<p><strong>Telefono:</strong> ${p.telefono || '-'}</p>`;
+  html += `<p><strong>Cimitero:</strong> ${p.cimitero || '-'}</p>`;
+  html += `<p><strong>Fiori:</strong> ${p.fiori || '-'}</p>`;
+  html += `<p><strong>Note:</strong> ${p.note || '-'}</p>`;
+  html += `<p><strong>Privacy:</strong> ${p.privacy || '-'}</p>`;
+  html += `<p><strong>Affido:</strong> ${p.affido || '-'}</p>`;
+  html += `<p><strong>Veridicità:</strong> ${p.veridicita || '-'}</p>`;
+  html += `<p><strong>Ricevuto il:</strong> ${formatDate(p.dataRicezione)}</p>`;
+  html += `<p><strong>Approvato il:</strong> ${formatDate(p.dataApprovazione)}</p>`;
+  html += `<p><strong>Rifiutato il:</strong> ${formatDate(p.dataRifiuto)}</p>`;
+  
+  const timestampDate = p.timestamp ? new Date(p.timestamp) : null;
+  html += `<p><strong>Creato:</strong> ${
+    timestampDate
+      ? timestampDate.toLocaleString("it-IT", {
+          timeZone: "Europe/Rome",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      : "-"
+  }</p>`;
+    
+
+  
+  
+
+  document.getElementById("contenutoModal").innerHTML = html;
+  
+  document.getElementById("btnApprova").onclick = () => mostraModaleConferma(id);
+  document.getElementById("btnRifiuta").onclick = () => aggiornaStatoPreventivo(id, 'rifiutato');
+  document.getElementById("modal").style.display = "flex";
+
+  // 🔄 Pulsanti dinamici
+  const btnApprovazione = document.getElementById("btnApprova");
+  const btnRifiuto = document.getElementById("btnRifiuta");
+  let btnRitorna = document.getElementById("btnRitorna");
+
+  if (!btnRitorna) {
+    btnRitorna = document.createElement("button");
+    btnRitorna.id = "btnRitorna";
+    btnRitorna.textContent = "🔄 Ritorna in Attesa";
+    btnRitorna.style = "padding:10px 20px; margin-top:15px; background:#ffc107; color:#000; border:none; border-radius:6px; font-weight:bold; font-size:1rem; display:none;";
+    btnRitorna.onclick = () => aggiornaStatoPreventivo(id, 'in attesa');
+    document.getElementById("azioniModal").appendChild(btnRitorna);
+  }
+
+  btnApprovazione.style.display = "none";
+  btnRifiuto.style.display = "none";
+  let btnElimina = document.getElementById("btnElimina");
+  if (btnElimina) btnElimina.style.display = "none";
+  let btnRipristina = document.getElementById("btnRipristina");
+  if (btnRipristina) btnRipristina.style.display = "none";
+  btnRitorna.style.display = "none";
+
+  if (p.stato === "in attesa") {
+    btnApprovazione.style.display = "inline-block";
+    btnRifiuto.style.display = "inline-block";
+  
+  } else if (p.stato === "approvato") {
+    btnRitorna.style.display = "inline-block";
+  } else if (p.stato === "rifiutato") {
+    btnRitorna.style.display = "inline-block";
+
+    let btnElimina = document.getElementById("btnElimina");
+    if (!btnElimina) {
+      btnElimina = document.createElement("button");
+      btnElimina.id = "btnElimina";
+      btnElimina.textContent = "🗑️ Elimina";
+      btnElimina.style = "padding:10px 20px; margin-left:10px; background:#000; color:white; border:none; border-radius:6px; font-weight:bold; font-size:1rem;";
+      btnElimina.onclick = () => {
+        if (confirm("⚠️ Sei sicuro di voler eliminare questo preventivo?") &&
+            confirm("Confermi l'eliminazione definitiva (con possibilità di ripristino)?")) {
+          db.collection('preventivi').doc(id).update({
+            stato: 'eliminato',
+            dataEliminazione: firebase.firestore.Timestamp.now()
+          }).then(() => {
+            alert("✅ Preventivo eliminato (può essere ripristinato entro 30 giorni)");
+            location.reload();
+          });
+        }
+      };
+      document.getElementById("azioniModal").appendChild(btnElimina);
+    } else {
+      btnElimina.style.display = "inline-block";
+    }
+
+  } else if (p.stato === "approvato") {
+    btnRitorna.style.display = "inline-block";
+  } else if (p.stato === "rifiutato") {
+    btnRitorna.style.display = "inline-block";
+
+    let btnElimina = document.getElementById("btnElimina");
+    if (!btnElimina) {
+      btnElimina = document.createElement("button");
+      btnElimina.id = "btnElimina";
+      btnElimina.textContent = "🗑️ Elimina";
+      btnElimina.style = "padding:10px 20px; margin-left:10px; background:#000; color:white; border:none; border-radius:6px; font-weight:bold; font-size:1rem;";
+      btnElimina.onclick = () => {
+        if (confirm("⚠️ Sei sicuro di voler eliminare questo preventivo?") &&
+            confirm("Confermi l'eliminazione definitiva (con possibilità di ripristino)?")) {
+          db.collection('preventivi').doc(id).update({
+            stato: 'eliminato',
+            dataEliminazione: firebase.firestore.Timestamp.now()
+          }).then(() => {
+            alert("✅ Preventivo eliminato (può essere ripristinato entro 30 giorni)");
+            location.reload();
+          });
+        }
+      };
+      document.getElementById("azioniModal").appendChild(btnElimina);
+    } else {
+      btnElimina.style.display = "inline-block";
+    }
+
+  } else if (p.stato === "eliminato") {
+    let btnRipristina = document.getElementById("btnRipristina");
+    if (!btnRipristina) {
+      btnRipristina = document.createElement("button");
+      btnRipristina.id = "btnRipristina";
+      btnRipristina.textContent = "♻️ Ripristina";
+      btnRipristina.style = "padding:10px 20px; margin-left:10px; background:#17a2b8; color:white; border:none; border-radius:6px; font-weight:bold; font-size:1rem;";
+      btnRipristina.onclick = () => {
+        db.collection('preventivi').doc(id).update({
+          stato: 'in attesa',
+          dataEliminazione: firebase.firestore.FieldValue.delete()
+        }).then(() => {
+          alert("✅ Preventivo ripristinato");
+          location.reload();
+        });
+      };
+      document.getElementById("azioniModal").appendChild(btnRipristina);
+    } else {
+      btnRipristina.style.display = "inline-block";
+    }
+
+  }
+
+    
+}
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  db.collection("preventivi").orderBy("dataRicezione", "desc").get().then(snapshot => {
+    console.log("📥 Lettura preventivi da Firebase");
+    let conteggi = { attesa: 0, approvato: 0, rifiutato: 0, scaduto: 0 };
+    
+snapshot.forEach(doc => {
+  const p = doc.data(), id = doc.id, stato = (p.stato || "in attesa").toLowerCase();
+
+  // Cancellazione definitiva dopo 30 giorni se eliminato
+  if (stato === "eliminato" && p.dataEliminazione) {
+    const diff = Date.now() - p.dataEliminazione.toDate().getTime();
+    if (diff > 30 * 24 * 60 * 60 * 1000) {
+      db.collection("preventivi").doc(id).delete();
+      return;
+    }
+  }
+
+  tutti.push({ id, ...p });
+  const div = document.createElement("div");
+  div.className = "card";
+  const ricevuto = p.dataRicezione?.toDate?.();
+const ora = new Date();
+const nuovo = ricevuto && ((ora - ricevuto) < 24*60*60*1000);
+div.innerHTML = `
+    <h4>${p.tipoServizio || 'Sconosciuto'} ${nuovo ? '<span class=\"badge-nuovo\">NUOVO</span>' : ''}</h4>
+    <p><strong>ID:</strong> ${id}</p>
+    <p><strong>Email:</strong> ${p.email || '-'}</p>
+    <span class="status ${stato}">${stato.toUpperCase()}</span>${(stato === "approvato" && p.dataApprovazione) ? `<p>${calcolaCountdown(p.dataApprovazione)}</p>` : ""}
+    <div style="margin-top:10px;">
+      <button onclick="apriModal('${id}')">📄 Dettagli</button>
+    </div>
+  `;
+
+  const statoId = {
+    "in attesa": "attesa",
+    "approvato": "approvato",
+    "rifiutato": "rifiutato",
+    "scaduto": "scaduto",
+    "eliminato": "eliminato"
+  }[stato];
+  const container = document.getElementById("tab-" + statoId);
+  if (container) container.appendChild(div);
+conteggi[stato] = (conteggi[stato] || 0) + 1;
+
+    });
+
+    contaPreventivi();
+    
+    new Chart(document.getElementById("graficoStati"), {
+      type: 'bar',
+      data: {
+        labels: ['In Attesa', 'Approvati', 'Rifiutati', 'Scaduti', 'Eliminati'],
+        datasets: [{
+          label: 'Preventivi',
+          data: [
+    conteggi['in attesa'] || 0,
+    conteggi['approvato'] || 0,
+    conteggi['rifiutato'] || 0,
+    conteggi['scaduto'] || 0,
+    conteggi['eliminato'] || 0
+  ],
+          backgroundColor: ['#ffc107', '#28a745', '#dc3545', '#6c757d', '#6f42c1']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+  });
+});
+
+
+function aggiornaStatoPreventivo(id, nuovoStato) {
+  const docRef = db.collection("preventivi").doc(id);
+  const campoData = nuovoStato === "approvato" ? "dataApprovazione" : "dataRifiuto";
+  const payload = {
+    stato: nuovoStato,
+    [campoData]: firebase.firestore.Timestamp.now()
+  };
+
+  docRef.update(payload).then(() => {
+    alert("✅ Preventivo aggiornato");
+    location.reload(); // reload semplice
+  }).catch(err => {
+    alert("Errore durante l'aggiornamento");
+    console.error(err);
+  });
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+function calcolaCountdown(dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const diff = scadenza - now;
+  if (diff <= 0) return "❌ Scaduto";
+  const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const ore = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minuti = Math.floor((diff / (1000 * 60)) % 60);
+  return `⏳ Scade tra ${giorni}g ${ore}h ${minuti}m`;
+}
+
+
+
+function verificaScadenzaPreventivo(id, dataApprovazione) {
+  const scadenza = new Date(dataApprovazione.toDate().getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  if (now >= scadenza) {
+    db.collection("preventivi").doc(id).update({
+      stato: "scaduto"
+    }).then(() => {
+      console.log("Preventivo " + id + " aggiornato a SCADUTO");
+    }).catch((err) => {
+      console.error("Errore aggiornamento stato scaduto:", err);
+    });
+  }
+}
+
+</script>
+<div style="background:#f0f0f0;padding:1em;margin-top:2em;">
+<h3>🧪 Diagnostica Preventivi (solo admin)</h3>
+<ul id="diagnostica-preventivi" style="font-family:monospace;font-size:0.9em;"></ul>
+</div>
+<div style="background:#fff0f0;padding:1em;margin-top:2em;">
+<h3>⚠️ Preventivi NON Visualizzati</h3>
+<ul id="debug-non-visibili" style="font-family:monospace;font-size:0.9em;color:#a00;"></ul>
+</div>
+<script>
+document.getElementById("searchInput").addEventListener("input", function () {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll(".tab-content.active .card").forEach(card => {
+    const testo = card.textContent.toLowerCase();
+    card.style.display = testo.includes(q) ? "block" : "none";
+  });
+});
+</script><script>
+function esportaPreventiviCSV() {
+  const rows = [["ID", "Email", "Servizio", "Stato", "Data Ricezione"]];
+  tutti.forEach(p => {
+    rows.push([
+      p.id,
+      p.email || "-",
+      p.tipoServizio || "-",
+      p.stato || "in attesa",
+      p.dataRicezione?.toDate?.().toLocaleString("it-IT") || "-"
+    ]);
+  });
+
+  let csvContent = "data:text/csv;charset=utf-8," 
+    + rows.map(e => e.join(";")).join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "preventivi_OFI.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+</script><script>
+let primiID = [];
+
+auth.onAuthStateChanged(user => {
+  if (!user) return;
+  db.collection("preventivi").orderBy("dataRicezione", "desc").get().then(snapshot => {
+    snapshot.forEach(doc => primiID.push(doc.id));
+  });
+
+  // Controlla ogni 30 secondi se ci sono nuovi preventivi
+  setInterval(() => {
+    db.collection("preventivi").orderBy("dataRicezione", "desc").limit(1).get().then(snapshot => {
+      const nuovoID = snapshot.docs[0]?.id;
+      if (nuovoID && !primiID.includes(nuovoID)) {
+        document.getElementById("notificaAudio").play();
+        primiID.unshift(nuovoID); // aggiorna
+      }
+    });
+  }, 30000);
+});
+
+        const campanella = document.getElementById("notificaBell");
+        if (campanella) {
+          campanella.style.color = "#ffcc00";
+          campanella.style.transform = "scale(1.3)";
+          setTimeout(() => {
+            campanella.style.color = "#fff";
+            campanella.style.transform = "scale(1)";
+          }, 1500);
+        }
+        </script>
+<div class="modale" id="modaleConfermaInvio">
+<div class="modale-content">
+<h3>📤 Conferma Invio Preventivo</h3>
+<p>Stai per approvare e inviare questo preventivo alle seguenti imprese:</p>
+<ul id="listaImpreseDestinatarie" style="margin:1em 0; font-size:0.95rem; line-height:1.4;"></ul>
+
+<div style="margin-top:1em;">
+  <label for="emailImpresaManuale">Email impresa destinataria:</label>
+  <input type="email" id="emailImpresaManuale" placeholder="es. impresatest@ofi.it" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; margin-top:0.3em;" />
+</div>
+
+<p style="margin-top:1em; font-size:0.95rem;">⚠️ Una volta confermato, il preventivo verrà approvato e inviato via email. </p>
+<div style="margin-top:1.5em; text-align:center;">
+<button id="btnConfermaInvio" style="background:#28a745; padding:10px 20px; margin-right:10px;">✅ Conferma invio</button>
+<button onclick="document.getElementById('modaleConfermaInvio').style.display='none'" style="background:#dc3545; padding:10px 20px;">❌ Annulla</button>
+</div>
+</div>
+</div>
+<script>
+
+    document.getElementById("modaleConfermaInvio").style.display = "none";
+    inviaEmailPreventivo(p, emailManuale);
+    db.collection("preventivi").doc(p.id).update({ impresa_destinataria: emailManuale });
+    aggiornaStatoPreventivo(p.id, 'approvato');
+  };
+
+    document.getElementById("modaleConfermaInvio").style.display = "none";
+    inviaEmailPreventivo(p);
+    aggiornaStatoPreventivo(id, 'approvato');
+    // (Fase 2: invio email seguirà qui)
+  };
+}
+</script>
+<script>
+function inviaEmailPreventivo(p, destinatarioEmail) {
+  // const email = "daniel.trapletti@gmail.com"; // o uno degli indirizzi veri
+  const subject = "Nuovo Preventivo Ricevuto - Onoranze Funebri Italia";
+  const message = `
+    <p>Gentile Impresa,</p>
+    <p>è stato approvato un nuovo preventivo per un servizio funebre.</p>
+    <p><strong>Nome:</strong> ${p.nome || '-'}<br/>
+    <strong>Email:</strong> ${p.email || '-'}<br/>
+    <strong>Servizio:</strong> ${p.tipoServizio || '-'}<br/>
+    <strong>Luogo Cerimonia:</strong> ${p.luogoCerimonia || '-'}</p>
+    <p>Accedi alla tua area riservata:<br/>
+    <a href="https://www.onoranzefunebritalia.it/imprese-dashboard.html">Vai alla Dashboard</a></p>
+    <p>— Onoranze Funebri Italia</p>
+  `;
+
+  fetch('/.netlify/functions/sendPreventivo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ destinatarioEmail, subject, message })
+  })
+  .then(res => res.text())
+  .then(res => console.log("✅ Email inviata via function:", res))
+  .catch(err => console.error("❌ Errore invio via function:", err));
+}
+</script>
+
+<script>
+function mostraModaleConferma(id) {
+  const p = tutti.find(x => x.id === id);
+  if (!p) return;
+
+  const lista = document.getElementById("listaImpreseDestinatarie");
+  lista.innerHTML = "";
+
+  const divInput = document.createElement("div");
+  divInput.innerHTML = \`
+    <label for="emailImpresaManuale"><strong>Email impresa destinataria:</strong></label><br>
+    <input type="email" id="emailImpresaManuale" placeholder="es. impresatest@ofi.it" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; margin-top:0.5em;" />
+  \`;
+
+  lista.appendChild(divInput);
+  document.getElementById("modaleConfermaInvio").style.display = "flex";
+
+  document.getElementById("btnConfermaInvio").onclick = () => {
+    const emailManuale = document.getElementById("emailImpresaManuale")?.value;
+    if (!emailManuale) {
+      alert("Inserisci l'email dell'impresa destinataria.");
+      return;
+    }
+
+    document.getElementById("modaleConfermaInvio").style.display = "none";
+
+    db.collection("preventivi").doc(p.id).update({
+      impresa_destinataria: emailManuale
+    }).then(() => {
+      inviaEmailPreventivo(p, emailManuale);
+      aggiornaStatoPreventivo(p.id, 'approvato');
+    }).catch(err => {
+      alert("❌ Errore nel salvataggio impresa destinataria.");
+      console.error(err);
+    });
+  };
+}
+</script>
+
+
+<script>
+function mostraModaleConferma(id) {
+  const p = tutti.find(x => x.id === id);
+  if (!p) return alert("Preventivo non trovato.");
+
+  const email = prompt("Email dell'impresa (es. impresa.test@ofi.it):", "impresa.test@ofi.it");
+  if (!email) return alert("Email non valida.");
+
+  const payload = {
+    email: email,
+    nomeImpresa: "Impresa OFI",
+    luogo: p.luogoCerimonia || "non specificato",
+    servizio: p.tipoServizio || "non specificato",
+    idPreventivo: p.id
+  };
+
+  fetch('/.netlify/functions/sendPreventivo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(async res => {
+    console.log("✅ Email inviata:", res);
+    await firebase.firestore().collection("preventivi").doc(p.id).update({
+      stato: "approvato",
+      dataApprovazione: firebase.firestore.Timestamp.now()
+    });
+    alert("✅ Preventivo approvato e email inviata!");
+    location.reload();
+  })
+  .catch(err => {
+    console.error("❌ Errore invio:", err);
+    alert("Errore durante invio email.");
+  });
+}
+</script>
+
+</body>
+</html>

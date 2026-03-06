@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Punti, Stelle e Crediti — Guida semplice OFI</title>
+  <meta name="description" content="Guida semplice e trasparente per capire come funzionano Punti, Stelle e Crediti nella piattaforma OFI per le imprese funebri.">
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="./imprese-dashboard.css?v=1.1">
+
+  <!-- JS globale + tema -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+
+  <!-- ====== CSS MODE EMBED (MODALE DASHBOARD) ====== -->
+  <style>
+    html.embedded body .site-header,
+    html.embedded body .site-footer {
+      display: none !important;
+    }
+
+    html.embedded body {
+      padding-top: 1rem !important;
+    }
+
+    html.embedded main.container {
+      padding-top: 1rem !important;
+      max-width: 980px;
+    }
+
+    /* Rimuove spazi in eccesso nel modale */
+    html.embedded .pc-header {
+      margin-top: 0 !important;
+    }
+
+    .pc-example {
+      margin-top: 1rem;
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      background: var(--ofi-surface-soft, rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.92rem;
+    }
+    .pc-example-title {
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .pc-example small {
+      opacity: 0.85;
+      display: block;
+      margin-top: 0.35rem;
+    }
+
+    .pc-mini-grid-thresholds {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .pc-mini-grid-thresholds div {
+      padding: 0.6rem 0.75rem;
+      border-radius: 0.6rem;
+      background: var(--ofi-surface-soft, rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .pc-mini-grid-thresholds strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+  </style>
+</head>
+
+<body class="ofi-page punti-crediti-page">
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <a href="../index.html">Per i cittadini</a>
+    <a href="./login-imprese.html">Area imprese</a>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+</header>
+
+<main class="container">
+  <!-- INTESTAZIONE EMOZIONALE -->
+  <header class="pc-header">
+    <p class="page-title">Guida per le imprese</p>
+
+    <section class="pc-hero card">
+      <div class="pc-hero-top">
+        <figure class="pc-hero-logo">
+          <img src="../images/rosa.png" alt="Marchio OFI">
+        </figure>
+        <div class="pc-hero-text">
+          <h1>Punti, Stelle &amp; Crediti OFI</h1>
+          <p class="pc-hero-sub">
+            Un sistema semplice, meritocratico e trasparente per valorizzare
+            il tuo lavoro quotidiano accanto alle famiglie.
+          </p>
+        </div>
+      </div>
+
+      <div class="pc-hero-chips">
+        <span class="chip pc-chip pc-chip-gold">✨ Punti: azioni concrete</span>
+        <span class="chip pc-chip">⭐ Stelle: presenza e affidabilità</span>
+        <span class="chip pc-chip pc-chip-soft">💳 Crediti OFI: vantaggi economici</span>
+      </div>
+
+      <p class="pc-hero-note small">
+        Non devi fare calcoli: <strong>OFI si occupa di tutto</strong>.
+        Tu concentrati su <strong>seguire le famiglie</strong> e usare la piattaforma con continuità.
+      </p>
+    </section>
+  </header>
+
+  <!-- MINI FLOW -->
+  <section class="card pc-flow">
+    <h2 class="pc-sec-title">Come funziona, in una frase</h2>
+    <div class="pc-flow-steps" aria-label="Schema di funzionamento Punti, Stelle e Crediti">
+      <div class="pc-flow-step">
+        <span class="pc-flow-ico">🤝</span>
+        <p class="pc-flow-label">Azioni utili<br><span>pensiero, necrologi, preventivi, profilo…</span></p>
+      </div>
+      <span class="pc-flow-arrow">→</span>
+      <div class="pc-flow-step">
+        <span class="pc-flow-ico">✨</span>
+        <p class="pc-flow-label">Punti<br><span>misurano l’attività reale</span></p>
+      </div>
+      <span class="pc-flow-arrow">→</span>
+      <div class="pc-flow-step">
+        <span class="pc-flow-ico">⭐</span>
+        <p class="pc-flow-label">Stelle<br><span>ciò che vede il cittadino</span></p>
+      </div>
+      <span class="pc-flow-arrow">→</span>
+      <div class="pc-flow-step">
+        <span class="pc-flow-ico">💳</span>
+        <p class="pc-flow-label">Crediti OFI<br><span>risparmio sui servizi OFI</span></p>
+      </div>
+    </div>
+    <p class="small pc-flow-note">
+      In sintesi: <strong>azioni reali → punti</strong> · <strong>punti + reputazione → stelle</strong> ·
+      le stelle mostrano la tua <strong>presenza nel tempo</strong> ai cittadini.
+    </p>
+  </section>
+
+  <!-- Sezione 1 -->
+  <section class="card pc-section">
+    <h2 class="pc-sec-title">1. Perché esistono Punti &amp; Stelle?</h2>
+    <p>
+      OFI vuole premiare le imprese che sono davvero <strong>presenti, corrette e di supporto</strong> ai cittadini.
+      Per questo ogni profilo ha tre elementi principali:
+    </p>
+    <ul class="pc-list">
+      <li><strong>Punti</strong> → misurano la tua attività concreta sulla piattaforma.</li>
+      <li><strong>Stelle</strong> → riassumono in modo visibile la tua affidabilità e presenza nel tempo.</li>
+      <li><strong>Crediti</strong> → trasformano una parte dei punti in un <strong>vantaggio economico</strong> sui servizi OFI.</li>
+    </ul>
+    <p class="small">
+      L’obiettivo è semplice: chi partecipa, cura il profilo,
+      <strong>pubblica necrologi/anniversari</strong> e risponde ai cittadini
+      viene premiato in modo chiaro e uguale per tutti.
+    </p>
+  </section>
+
+  <!-- Sezione 2: PUNTI -->
+  <section class="card pc-section">
+    <div class="pc-sec-head">
+      <h2 class="pc-sec-title">2. Cosa sono i Punti?</h2>
+      <span class="pc-sec-ico">✨</span>
+    </div>
+    <p>
+      I <strong>Punti OFI</strong> aumentano quando fai azioni <strong>utili e reali</strong> su OFI.
+      Alcuni esempi concreti:
+    </p>
+    <ul class="pc-list">
+      <li><strong>Condivisione del Pensiero del giorno</strong> (+5 pt, massimo 1 volta al giorno)</li>
+      <li><strong>Pubblicazione di necrologi/anniversari</strong> (+10 pt ciascuno, senza limite giornaliero)</li>
+      <li><strong>Risposta tramite modulo OFI ai preventivi</strong> (+10 pt per preventivo gestito)</li>
+      <li><strong>Aggiornamento reale del profilo</strong> (+5 pt quando completi o migliori sezioni importanti)</li>
+      <li><strong>Recensioni positive verificate</strong> (+10 pt)</li>
+      <li><strong>Inviti andati a buon fine</strong> (+20 pt)</li>
+    </ul>
+    <p>
+      Le azioni “di routine” (es. Pensiero del giorno) hanno limiti giornalieri,
+      mentre <strong>i necrologi e gli anniversari non hanno limiti</strong>,
+      perché rappresentano servizio reale alle famiglie.
+    </p>
+
+    <div class="pc-example">
+      <div class="pc-example-title">Esempio pratico (settimana tipo)</div>
+      <p>
+        In una settimana:
+        condividi il Pensiero del giorno 4 volte (<strong>4 × 5 = 20 pt</strong>),
+        pubblichi 3 necrologi (<strong>3 × 10 = 30 pt</strong>),
+        rispondi a 2 preventivi dal modulo OFI (<strong>2 × 10 = 20 pt</strong>).
+      </p>
+      <p>
+        Totale settimana: <strong>70 punti</strong>.
+      </p>
+      <small>
+        Non devi segnarti nulla: il conteggio è automatico
+        e lo vedi nel pannello “Punti &amp; Stelle” in dashboard.
+      </small>
+    </div>
+
+    <p style="margin-top:1rem;">
+      In dashboard vedrai sia la <strong>storia complessiva</strong> dei punti,
+      sia il <strong>saldo disponibile</strong> che puoi usare per
+      <em>aumentare il livello di presenza</em> e, se vuoi, per
+      <strong>convertire parte dei punti in crediti</strong>.
+    </p>
+   <p class="small">
+  Se ti fermi, il sistema è <strong>graduale</strong>:
+</p>
+<ul class="small pc-list">
+  <li><strong>Primi 14 giorni senza attività</strong> → non succede nulla: hai un vero e proprio <strong>periodo di grazia</strong>.</li>
+  <li><strong>Dopo le prime due settimane</strong> → giorno dopo giorno l’indicatore di
+      <strong>attività recente</strong> inizia a scendere lentamente, e questo può abbassare
+      soprattutto le <strong>stelle più alte</strong> (es. da 5★ a 4★).</li>
+  <li><strong>Dopo molti mesi completamente fermo</strong> → anche il “potenziale” del profilo
+      può ridursi un po’, ma senza mai azzerarsi: resta sempre una <strong>soglia di sicurezza</strong>.</li>
+</ul>
+<p class="small">
+  I <strong>punti già maturati non vengono cancellati</strong>.
+  Appena torni ad usare OFI (necrologi, preventivi, Pensiero del giorno, aggiornamenti di profilo),
+  le nuove azioni riattivano il profilo e possono far risalire sia l’attività recente sia le stelle.
+</p>
+  </section>
+
+  <!-- Sezione 3: STELLE -->
+  <section class="card pc-section">
+    <div class="pc-sec-head">
+      <h2 class="pc-sec-title">3. Cosa sono le Stelle?</h2>
+      <span class="pc-sec-ico">⭐</span>
+    </div>
+    <p>
+      Le <strong>Stelle</strong> (da 1★ a 5★) sono ciò che il cittadino vede
+      quando guarda il tuo profilo.
+      Sono la sintesi di tre elementi:
+    </p>
+    <ol class="pc-list pc-list-ordered">
+      <li><strong>Completezza del profilo</strong> → quanto è curata la tua scheda (testi, contatti, foto, servizi…)</li>
+      <li><strong>Punti e attività recente</strong> → quanta presenza reale hai avuto negli ultimi periodi</li>
+      <li><strong>Reputazione</strong> → recensioni verificate e condotta corretta sulla piattaforma</li>
+    </ol>
+
+    <p>
+      In dashboard puoi vedere:
+    </p>
+    <ul class="pc-list">
+      <li><strong>Stelle visibili oggi</strong> → il livello reale in questo momento (ciò che vede il cittadino)</li>
+      <li><strong>Potenziale del profilo</strong> → quante stelle puoi raggiungere con un profilo completato e curato</li>
+      <li><strong>Punti totali e attività degli ultimi 30 giorni</strong> → spiegano come sei arrivato lì</li>
+    </ul>
+
+    <div class="pc-mini-panel">
+      <h3 class="pc-mini-title">Come leggere il numero di stelle (in modo semplice)</h3>
+      <div class="pc-mini-grid-thresholds">
+        <div>
+          <strong>1★</strong>
+          <span>Profilo molto base o quasi nessuna attività. È il livello di partenza.</span>
+        </div>
+        <div>
+          <strong>2★</strong>
+          <span>Profilo avviato, qualche azione ogni tanto. Presenza minima ma riconoscibile.</span>
+        </div>
+        <div>
+          <strong>3★</strong>
+          <span>Profilo ben compilato e attività regolare. L’impresa è visibilmente attiva.</span>
+        </div>
+        <div>
+          <strong>4★</strong>
+          <span>Profilo molto curato, punti consistenti e buona reputazione. Presenza forte su OFI.</span>
+        </div>
+        <div>
+          <strong>5★</strong>
+          <span>Tutto quanto sopra, <strong>più</strong> attività continua nelle ultime settimane. La quinta stella è un “bonus” per chi è davvero presente adesso.</span>
+        </div>
+      </div>
+      <p class="small" style="margin-top:0.75rem;">
+        Le soglie interne sono gestite in automatico dal sistema OFI e possono essere affinate nel tempo,
+        ma la logica rimane sempre questa: <strong>profilo curato + punti + reputazione + attività recente</strong>.
+      </p>
+    </div>
+
+    <div class="pc-mini-panel" style="margin-top:1rem;">
+      <h3 class="pc-mini-title">Stelle e attività recente (come funziona davvero)</h3>
+      <p class="small">
+        Il sistema tiene sempre conto di due elementi:
+      </p>
+      <ul class="small pc-list">
+        <li>il <strong>potenziale del profilo</strong> (quanto è curata e completa la tua scheda);</li>
+        <li>l’<strong>attività reale delle ultime settimane</strong> (necrologi, preventivi, pensieri, aggiornamenti).</li>
+      </ul>
+      <p class="small">
+        Se per circa <strong>due settimane</strong> non succede nulla, le stelle rimangono stabili.
+        Solo dopo questo periodo l’indicatore di attività recente inizia a scendere
+        e, col tempo, le stelle possono abbassarsi un po’ (ad esempio da 5★ a 4★).
+      </p>
+      <p class="small">
+        Appena riprendi ad usare OFI con continuità, le nuove azioni riattivano il profilo:
+        è possibile <strong>recuperare le stelle perse</strong>, compresa la quinta, senza fare richieste manuali.
+      </p>
+    </div>
+
+    <div class="pc-example">
+      <div class="pc-example-title">Esempio: stelle che salgono, scendono e risalgono</div>
+      <p>
+        Un’impresa completa bene il profilo, pubblica necrologi, risponde ai preventivi
+        e condivide spesso il Pensiero del giorno: raggiunge <strong>5★</strong>.
+      </p>
+      <p>
+        Se per alcune settimane non fa più nulla, l’indicatore di attività recente
+        diminuisce e le stelle possono scendere, ad esempio da 5★ a 4★.
+      </p>
+      <p>
+        Non è una “punizione”: il sistema mostra ai cittadini chi è più attivo
+        <strong>in questo periodo</strong>. Appena l’impresa torna ad usare OFI con continuità,
+        la quinta stella può riaccendersi automaticamente.
+      </p>
+      <small>
+        Le stelle non si comprano e non dipendono dal tipo di abbonamento,
+        ma solo dall’uso reale della piattaforma e dalla reputazione.
+      </small>
+    </div>
+  </section>
+
+  <!-- Sezione 4: CREDITI -->
+  <section class="card pc-section">
+    <div class="pc-sec-head">
+      <h2 class="pc-sec-title">4. Cosa sono i Crediti OFI?</h2>
+      <span class="pc-sec-ico">💳</span>
+    </div>
+
+    <p>I Crediti OFI rappresentano un <strong>vantaggio economico reale</strong> per la tua impresa.</p>
+
+    <ul class="pc-list">
+      <li><strong>100 punti = 1 credito</strong></li>
+      <li>Soglia minima per poter convertire: <strong>300 punti</strong> di saldo</li>
+      <li>Quando converti, scegli tu quanti punti usare (a blocchi da 100)</li>
+      <li>I crediti possono coprire fino a una parte dei <strong>servizi OFI</strong></li>
+    </ul>
+
+    <div class="pc-example">
+      <div class="pc-example-title">Esempio: da punti a crediti</div>
+      <p>
+        Hai un saldo di <strong>850 punti</strong>.<br>
+        Decidi di convertire <strong>500 punti</strong>:
+      </p>
+      <ul class="pc-list small">
+        <li>500 punti = <strong>5 crediti OFI</strong></li>
+        <li>Ti restano <strong>350 punti</strong> di saldo</li>
+      </ul>
+      <small>
+        Più punti converti, più crediti ottieni, ma restano meno punti “attivi”
+        a supporto delle stelle. In dashboard vedrai sempre il nuovo saldo,
+        i crediti disponibili e le stelle aggiornate, così puoi scegliere con consapevolezza.
+      </small>
+    </div>
+
+    <p style="margin-top:1rem;">
+      La conversione viene gestita in modo protetto dalla piattaforma OFI:
+      il sistema controlla automaticamente che tu abbia abbastanza punti e che
+      la richiesta sia valida.
+    </p>
+  </section>
+
+  <!-- Sezione 5: PANNELLO DASHBOARD -->
+  <section class="card pc-section">
+    <h2 class="pc-sec-title">5. Come leggere il pannello in dashboard</h2>
+
+    <p>
+      Nel pannello “Punti &amp; Stelle” della dashboard impresa trovi sempre:
+    </p>
+
+    <ul class="pc-list">
+      <li><strong>Stelle visibili oggi</strong> → il livello che i cittadini vedono ora</li>
+      <li><strong>Potenziale del profilo</strong> → quante stelle puoi raggiungere con un profilo completo</li>
+      <li><strong>Punti totali</strong> → la storia della tua attività su OFI</li>
+      <li><strong>Attività degli ultimi 30 giorni</strong> → misura quanto sei stato presente di recente</li>
+      <li><strong>Crediti disponibili</strong> → quanto puoi utilizzare per i servizi OFI</li>
+    </ul>
+
+    <p class="small">
+      Se vuoi migliorare in modo semplice:
+    </p>
+
+    <ul class="small pc-list">
+      <li>Condividi il <strong>Pensiero del giorno</strong> (una volta al giorno)</li>
+      <li>Pubblica con cura <strong>necrologi e anniversari</strong> per ogni servizio svolto</li>
+      <li>Rispondi ai <strong>preventivi</strong> dal modulo OFI, non solo via telefono</li>
+      <li>Completa e aggiorna il <strong>profilo impresa</strong> (testi, immagini, recapiti, servizi)</li>
+      <li>Invita le famiglie a lasciare <strong>recensioni verificate</strong> quando lo ritieni opportuno</li>
+    </ul>
+  </section>
+
+  <!-- Sezione 6: TRASPARENZA ED ETICA -->
+  <section class="card pc-section">
+    <h2 class="pc-sec-title">6. Un sistema trasparente e meritocratico</h2>
+    <p>
+      Il sistema Punti, Stelle e Crediti OFI è pensato per essere
+      <strong>chiaro, etico e uguale per tutte le imprese</strong>.
+    </p>
+    <ul class="pc-list">
+      <li><strong>Nessun acquisto di punti o stelle</strong> → non è possibile “comprare” visibilità.</li>
+      <li><strong>Stesse regole per tutti</strong> → le logiche di calcolo sono automatiche e non personalizzate su singole imprese.</li>
+      <li><strong>Solo attività reale</strong> → contano solo azioni effettive (necrologi, preventivi, pensieri, recensioni verificate).</li>
+      <li><strong>Nessuna penalizzazione nascosta</strong> → l’eventuale calo di stelle è legato solo all’assenza di attività e può essere recuperato.</li>
+      <li><strong>Dialogo aperto</strong> → se qualcosa non è chiaro, puoi sempre contattare OFI per avere spiegazioni.</li>
+    </ul>
+    <p class="small">
+      In questo modo il cittadino vede indicatori che riflettono realmente
+      la presenza e la serietà delle imprese,
+      e le imprese possono crescere nel tempo in modo <strong>trasparente e misurabile</strong>.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="card pc-section pc-faq">
+    <h2 class="pc-sec-title">Domande frequenti</h2>
+
+    <details>
+      <summary>Cosa devo fare per recuperare la quinta stella?</summary>
+      <p>
+        La quinta stella è legata anche all’<strong>attività recente</strong>.
+        Se l’hai persa è perché, per un periodo, non ci sono state azioni sulla piattaforma
+        (necrologi, preventivi, pensieri, ecc.).
+      </p>
+      <p>
+        Per recuperarla devi semplicemente <strong>tornare attivo</strong>:
+        pubblica necrologi e anniversari, rispondi ai preventivi dal modulo OFI,
+        condividi il Pensiero del giorno e cura il profilo.
+        Dopo un po’ di continuità, il sistema può riaccendere automaticamente la quinta stella.
+      </p>
+    </details>
+
+    <details>
+  <summary>Se smetto di usare OFI, perdo subito le stelle?</summary>
+  <p>
+    No. C’è innanzitutto un <strong>periodo di grazia</strong>: per circa
+    <strong>due settimane senza attività</strong> non succede nulla.
+  </p>
+  <p>
+    Solo dopo questo periodo l’indicatore di <strong>attività recente</strong> inizia a scendere
+    gradualmente e, se resti fermo per molto tempo, anche le stelle possono abbassarsi un po’.
+    Non è una punizione, ma un modo per mostrare ai cittadini chi è più presente
+    <strong>in questo periodo</strong>.
+  </p>
+</details>
+
+    <details>
+  <summary>Perdo i punti se mi fermo?</summary>
+  <p>
+    No. I punti già guadagnati <strong>non vengono cancellati</strong>.
+  </p>
+  <p>
+    Se per un po’ ti fermi, dopo un periodo di grazia di circa <strong>14 giorni</strong>
+    inizia a scendere solo l’indicatore di <strong>attività recente</strong>, che incide
+    soprattutto sulle stelle più alte (ad esempio il passaggio da 5★ a 4★).
+  </p>
+  <p>
+    Appena torni ad usare OFI (necrologi, preventivi, Pensiero del giorno, aggiornamento profilo),
+    puoi <strong>riprendere a crescere</strong> e far risalire sia l’attività recente sia le stelle.
+  </p>
+</details>
+
+    <details>
+      <summary>Perché un’altra impresa ha più stelle pur avendo meno punti di me?</summary>
+      <p>
+        Le stelle non dipendono solo dal numero di punti.
+        Contano anche la <strong>completezza del profilo</strong>, l’<strong>attività recente</strong>
+        e la <strong>reputazione</strong>.
+        Un’impresa con profilo molto curato e molta attività nelle ultime settimane
+        può avere più stelle anche con meno punti storici.
+      </p>
+    </details>
+
+    <details>
+      <summary>Posso pubblicare tanti necrologi? Li conta tutti?</summary>
+      <p>
+        Sì. I necrologi e gli anniversari <strong>non hanno limite giornaliero</strong>,
+        perché rappresentano servizi reali alle famiglie. Ogni pubblicazione corretta viene conteggiata.
+      </p>
+    </details>
+
+    <details>
+      <summary>Posso comprare punti o stelle?</summary>
+      <p>
+        No. Punti e stelle si ottengono <strong>solo</strong> con attività reale sulla piattaforma
+        e con recensioni verificate. Non esiste alcun pacchetto a pagamento per “alzare le stelle”.
+      </p>
+    </details>
+
+    <details>
+      <summary>I cittadini vedono i miei punti?</summary>
+      <p>
+        No. I cittadini vedono soltanto <strong>stelle, badge e profilo pubblico</strong>.
+        I numeri di punti e crediti sono visibili solo a te in dashboard.
+      </p>
+    </details>
+
+    <details>
+      <summary>Quando posso convertire punti in crediti?</summary>
+      <p>
+        Quando superi le soglie minime (almeno <strong>300 punti</strong> di saldo).
+        Dal pannello puoi scegliere quanti punti convertire, sempre a blocchi da 100.
+      </p>
+    </details>
+
+    <details>
+      <summary>Se converto molti punti in crediti, le stelle scendono?</summary>
+      <p>
+        È possibile che scendano un po’, perché le stelle tengono conto
+        anche dei <strong>punti attivi</strong>. Convertendo tanti punti avrai più crediti,
+        ma un saldo punti più basso. Puoi sempre recuperarli con nuova attività.
+      </p>
+    </details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ====== SCRIPT AUTO-EMBED ====== -->
+<script>
+(function () {
+  try {
+    const url = new URL(window.location.href);
+    const byParam = url.searchParams.get('embed') === '1';
+    const inIframe = (window.self !== window.top);
+
+    if (inIframe || byParam) {
+      document.documentElement.classList.add('embedded');
+      document.body.classList.add('embedded');
+    }
+  } catch (e) {}
+})();
+</script>
+
+</body>
+</html>

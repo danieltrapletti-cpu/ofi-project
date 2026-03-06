@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin OFI – Richieste Modifica Nome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f6f9; padding: 2rem; color: #002c5d; }
+    h1 { text-align: center; color: #002c5d; margin-bottom: 1rem; }
+    .descrizione { text-align: center; font-size: 1rem; margin-bottom: 2rem; }
+    table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    th, td { padding: 1rem; border-bottom: 1px solid #ddd; text-align: left; }
+    th { background: #002c5d; color: white; }
+    button { padding: 8px 14px; font-size: 0.9rem; border: none; border-radius: 6px; cursor: pointer; }
+    .approva { background: #28a745; color: white; }
+    .rifiuta { background: #dc3545; color: white; margin-left: 0.5rem; }
+    .msg { margin-top: 1rem; font-weight: bold; text-align: center; }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, collection, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const tbody = document.querySelector("#tabellaRichieste tbody");
+    const msg = document.getElementById("msg");
+
+    onAuthStateChanged(auth, user => {
+      if (!user) {
+        window.location.href = "/admin/login.html";
+        return;
+      }
+
+      const richiesteRef = collection(db, "richieste_modifica_nome");
+
+      onSnapshot(richiesteRef, snapshot => {
+        tbody.innerHTML = "";
+        if (snapshot.empty) {
+          tbody.innerHTML = "<tr><td colspan='5'>Nessuna richiesta presente.</td></tr>";
+          return;
+        }
+        snapshot.forEach(docSnap => {
+          const r = docSnap.data();
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${r.email_impresa}</td>
+            <td>${r.nuovo_nome}</td>
+            <td>${r.motivo}</td>
+            <td>${r.timestamp?.toDate().toLocaleString() || "-"}</td>
+            <td>
+              <button class="approva">Approva</button>
+              <button class="rifiuta">Rifiuta</button>
+            </td>`;
+          const btns = tr.querySelectorAll("button");
+          btns[0].onclick = async () => {
+            try {
+              const impresaRef = doc(db, "imprese_registrate", r.email_impresa);
+              const snap = await getDoc(impresaRef);
+              if (snap.exists()) {
+                await updateDoc(impresaRef, {
+                  nome_impresa: r.nuovo_nome,
+                  timestamp_ultima_modifica: serverTimestamp()
+                });
+                await deleteDoc(doc(db, "richieste_modifica_nome", docSnap.id));
+                msg.textContent = "✅ Richiesta approvata e aggiornata.";
+              } else {
+                msg.textContent = "⚠️ Nessun profilo impresa trovato.";
+              }
+            } catch (e) {
+              msg.textContent = "Errore: " + e.message;
+            }
+          };
+          btns[1].onclick = async () => {
+            await deleteDoc(doc(db, "richieste_modifica_nome", docSnap.id));
+            msg.textContent = "❌ Richiesta eliminata.";
+          };
+          tbody.appendChild(tr);
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>📄 Richieste Modifica Nome</h1>
+  <div class="descrizione">Gestisci le richieste di aggiornamento del nome delle imprese registrate su OFI.</div>
+  <table id="tabellaRichieste">
+    <thead>
+      <tr>
+        <th>Email Impresa</th>
+        <th>Nuovo Nome</th>
+        <th>Motivo</th>
+        <th>Data Richiesta</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <p id="msg" class="msg"></p>
+</body>
+</html>

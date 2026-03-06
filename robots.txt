@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.italiaofi.it/sitemap.xml

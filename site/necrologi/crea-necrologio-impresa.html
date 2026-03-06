@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Crea un Necrologio - Cittadino</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style-crea-necrologio.css">
+</head>
+<body>
+  <header>
+    <img src="../images/logo-ofi.png" alt="Logo OFI" class="logo">
+    <h1>Crea un Necrologio</h1>
+  </header>
+
+  <main>
+    <form id="necrologioForm">
+      <input type="hidden" name="tipoUtente" value="impresa">
+      <label><input type="checkbox" name="croce"> Includi croce</label>
+      <label>Frase iniziale: <input type="text" name="frase"></label>
+      <label>Foto del defunto: <input type="file" name="foto" accept="image/*"></label>
+      <label>Nome e Cognome del defunto: <input type="text" name="nome" required></label>
+      <label>Ved./In: <input type="text" name="vedIn"></label>
+      <label>Età: <input type="number" name="eta" min="0"></label>
+      <label>Testo necrologio: <textarea name="testo"></textarea></label>
+      <label>Ringraziamenti: <input type="text" name="ringraziamenti"></label>
+      <label>Luogo: <input type="text" name="luogo"></label>
+      <label>Data: <input type="date" name="data"></label>
+      <input type="hidden" name="autore" value="Impresa">
+      <label><input type="checkbox" name="veritiero" required> Dichiaro che quanto scritto è veritiero</label>
+      <label><input type="checkbox" name="privacy" required> Accetto la Privacy Policy</label>
+      <button type="button" onclick="generaAnteprima()">Crea Anteprima</button>
+      <button type="button" onclick="salvaNecrologio()">Invia Necrologio</button>
+    </form>
+
+    <section id="anteprima" style="display:none">
+      <h2>Anteprima Necrologio</h2>
+      <div id="contenutoAnteprima"></div>
+    </section>
+
+    <section id="conferma" style="display:none; text-align:center; margin-top:2rem;"></section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Onoranze Funebri Italia</p>
+  </footer>
+
+  <script src="script-crea-necrologio.js"></script>
+<script src="comuni.js"></script>
+<script src="autocomplete-comuni.js"></script>
+</body>
+</html>

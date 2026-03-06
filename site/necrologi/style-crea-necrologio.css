@@ -1,0 +1,153 @@
+
+/* Layout generale */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f6fa;
+  color: #222;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+  background-color: white;
+}
+
+header img.logo {
+  max-height: 60px;
+  margin-bottom: 0.5rem;
+}
+
+.navbar {
+  background-color: #002b5c;
+  padding: 0.6rem 1rem;
+  text-align: center;
+}
+
+.navbar a {
+  color: white;
+  margin: 0 1rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+  width: 100%;
+  padding: 0.5em;
+  margin-top: 0.3em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+button {
+  padding: 0.7em 1.2em;
+  background-color: #002b5c;
+  color: #fff;
+  border: none;
+  margin-top: 1em;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#anteprima {
+  margin-top: 2rem;
+  display: none;
+}
+
+.necrologio {
+  text-align: center;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.08);
+}
+
+.foto-defunto {
+  display: block;
+  max-width: 180px;
+  height: auto;
+  margin: 1rem auto;
+  border: 4px solid #555;
+  border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 3/4;
+}
+
+.croce {
+  width: 40px;
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.frase {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.nome {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.vedIn, .eta {
+  font-style: italic;
+  margin: 0.2rem 0;
+}
+
+.testo {
+  margin: 1.2rem 0;
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.ringraziamenti {
+  font-style: oblique;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.luogo, .data {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.firma {
+  margin-top: 1.5rem;
+  font-size: 0.9em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.logo-pubblicazione {
+  width: 24px;
+  height: auto;
+}

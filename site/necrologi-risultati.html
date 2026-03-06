@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Necrologi – Risultati | Onoranze Funebri Italia</title>
+  <meta name="description" content="Risultati di ricerca necrologi su Onoranze Funebri Italia: elenco ordinato e filtrabile con anteprime rispettose." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- Font set coerente con accesso/index -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="images/OFI-Social.png" type="image/png">
+
+  <!-- CSS base sito -->
+  <link rel="stylesheet" href="/ofi.css?v=20251229_2" />
+  <link rel="stylesheet" href="/necrologi.css?v=1.3" />
+  <link rel="stylesheet" href="/necrologi-risultati.css?v=20260106_7" />
+
+  <!-- Icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <!-- Menu standard -->
+  <script defer src="/js/menu.js?v=2"></script>
+  <!-- Tema + utilities OFI -->
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+
+<body>
+  <!-- HEADER standard OFI (identico ad accesso.html) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="index.html" aria-label="Torna alla home">
+        <img src="images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="menu-callout" href="necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="vision.html">Visione di OFI</a></li>
+            <li><a href="index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="index.html#pensieri">Pensieri</a></li>
+            <li><a href="articoli/articoli.html">Articoli</a></li>
+            <li><a href="index.html#ricordi">Ricordi</a></li>
+            <li><a href="index.html#mappa">Vicino a te</a></li>
+            <li><a href="index.html#video">Video</a></li>
+          </ul>
+        </li>
+
+        <li><a class="btn btn-primary" href="accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+
+    <section class="results-hero">
+      <div class="panel">
+        <div class="results-kicker-row">
+          <div class="results-kicker">
+            <span class="dot"></span>
+            <span>Sezione Necrologi</span>
+            <span class="sep">·</span>
+            <span>Risultati di ricerca</span>
+          </div>
+
+          <div class="results-seal" aria-hidden="true">
+            <img src="images/logo-ofi.png" alt="">
+          </div>
+        </div>
+
+        <div class="results-goldline" aria-hidden="true"></div>
+
+        <div class="results-toprow">
+          <a class="results-back" href="necrologi.html">
+            <i class="fa-solid fa-arrow-left"></i> Torna alla mappa
+          </a>
+          <div class="results-count" id="resultsCount">—</div>
+        </div>
+
+        <h1 class="results-title" id="resultsTitle">Necrologi vicino a te</h1>
+        <p class="results-sub">
+          Persone ricordate, luoghi che parlano, storie che meritano rispetto.
+        </p>
+
+        <!-- TOGGLE FILTRI (apri/chiudi) -->
+        <button class="filters-toggle" id="filtersToggle" type="button"
+                aria-expanded="false" aria-controls="filtersPanel">
+          <span><i class="fa-solid fa-sliders"></i> Filtri di ricerca</span>
+          <span id="filtersCount">— risultati</span>
+        </button>
+
+        <!-- PANEL FILTRI (chiuso di default) -->
+        <div class="results-filters is-collapsed" id="filtersPanel"
+             role="search" aria-label="Filtri risultati necrologi">
+          <input id="fName" type="text" placeholder="Filtra per nome o cognome" autocomplete="off">
+          <input id="fPlace" type="text" placeholder="Filtra per luogo (comune/provincia)" autocomplete="off">
+          <select id="fSort" aria-label="Ordina risultati">
+            <option value="date">Più recenti</option>
+            <option value="distance">Più vicini</option>
+          </select>
+          <button class="btn-primary-ofi" id="btnApply" type="button">
+            <span class="icon">🔎</span><span>Aggiorna</span>
+          </button>
+        </div>
+
+        <div class="results-actions">
+          <div class="results-chip" id="modeChip">Modalità: <small>—</small></div>
+          <button class="btn-geo" id="btnReset" type="button">
+            <i class="fa-solid fa-rotate"></i><span>Reset filtri</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-wrap">
+      <div class="results-grid luxury-grid" id="resultsGrid"></div>
+      <div class="necro-empty" id="emptyState" style="display:none; text-align:center; opacity:.85; padding: 20px;">
+        Nessun risultato con questi filtri.
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER standard (identico ad accesso.html) -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+        </div>
+        <div class="f-links">
+          <a href="articoli/articoli.html">Articoli</a>
+          <a href="faq.html">FAQ</a>
+          <a href="accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">
+          © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+          <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPT pagina -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, query, where, orderBy, limit, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9",
+  storageBucket:"ofi2025-51ba9.firebasestorage.app",
+  messagingSenderId: "345581339212",
+  appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const GRID  = document.getElementById("resultsGrid");
+    const EMPTY = document.getElementById("emptyState");
+    const TITLE = document.getElementById("resultsTitle");
+    const COUNT = document.getElementById("resultsCount");
+    const CHIP  = document.getElementById("modeChip");
+
+    const fName = document.getElementById("fName");
+    const fPlace = document.getElementById("fPlace");
+    const fSort = document.getElementById("fSort");
+    const btnApply = document.getElementById("btnApply");
+    const btnReset = document.getElementById("btnReset");
+    const filtersToggle = document.getElementById("filtersToggle");
+    const filtersPanel  = document.getElementById("filtersPanel");
+
+    if (filtersToggle && filtersPanel) {
+      filtersToggle.addEventListener("click", () => {
+        filtersPanel.classList.toggle("is-collapsed");
+        const expanded = !filtersPanel.classList.contains("is-collapsed");
+        filtersToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      });
+    }
+
+    const params = new URLSearchParams(location.search);
+
+    const mode = (params.get("mode") || "italia").trim();
+    const q = (params.get("q") || "").trim();
+    const place = (params.get("place") || "").trim();
+    const regione = (params.get("regione") || "").trim();
+    const label = (params.get("label") || "").trim();
+    const latQ = parseFloat(params.get("lat") || "");
+    const lngQ = parseFloat(params.get("lng") || "");
+    const hasCoords = Number.isFinite(latQ) && Number.isFinite(lngQ);
+    const sortQ = (params.get("sort") || "date").trim();
+
+    fName.value = q;
+    fPlace.value = place || label || regione || "";
+    fSort.value = (sortQ === "distance") ? "distance" : "date";
+    if(!hasCoords) fSort.value = "date";
+
+    function safeText(s){ return (s || "").toString().trim(); }
+
+function cleanPublisherName(name){
+  let s = safeText(name);
+
+  // normalizza spazi (anche non-breaking)
+  s = s.replace(/\u00A0/g, " ");
+  s = s.replace(/\s+/g, " ").trim();
+
+  // elimina ellissi unicode ovunque
+  s = s.replace(/\u2026/g, "");
+
+  // elimina puntini/ellissi finali (anche combinazioni tipo "...", "…", " .. ")
+  s = s.replace(/\s*[\.\u2026]+\s*$/g, "");
+
+  return s.trim();
+}
+
+
+    function haversineKm(lat1,lng1,lat2,lng2){
+      const R = 6371;
+      const toRad = (x)=> x * Math.PI/180;
+      const dLat = toRad(lat2-lat1);
+      const dLng = toRad(lng2-lng1);
+      const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+      return 2*R*Math.asin(Math.sqrt(a));
+    }
+
+    function normalizeOrnamentKey(key){
+      const t = safeText(key).toLowerCase();
+      if(!t) return "fiore";
+      const last = t.split("/").pop();
+      return (last || "fiore").replace(/\.png$/i, "");
+    }
+
+    function getOrnamentUrl(type){
+      const base = "images/ornamenti/";
+      const map = { croce:"croce.png", gesu:"gesu.png", madonna:"madonna.png", angelo:"angelo.png", fiore:"fiore.png" };
+      const key = normalizeOrnamentKey(type);
+      const file = map[key] || map.fiore;
+      return base + file;
+    }
+
+    function pickName(data){
+      const a = data?.answersSnapshot || {};
+      const n = safeText(a.nome);
+      const c = safeText(a.cognome);
+      const full = (n + " " + c).trim();
+      if(full) return full;
+
+      const html = safeText(data?.lastApprovedHtml || "");
+      if(html){
+        const tmp = document.createElement("div");
+        tmp.innerHTML = html;
+        const strong = tmp.querySelector("strong");
+        if(strong) return safeText(strong.textContent).replace(/\s+/g," ");
+      }
+      return "Ricordo pubblicato";
+    }
+
+    function pickNickname(data){
+      const a = data?.answersSnapshot || {};
+      return safeText(a.soprannome || a.nickname || data?.soprannome || data?.nickname);
+    }
+
+    function pickAge(data){
+      const a = data?.answersSnapshot || {};
+      const raw = (a.eta ?? a.età ?? a.age ?? data?.eta ?? data?.age ?? "").toString().trim();
+      const m = raw.match(/(\d{1,3})/);
+      if(!m) return "";
+      const n = parseInt(m[1],10);
+      if(!Number.isFinite(n) || n<=0 || n>120) return "";
+      return String(n);
+    }
+
+    function pickPlaceLine(data){
+      const g = data?.geoFinale || {};
+      const comune = safeText(g.comune);
+      const prov = safeText(g.provincia);
+      const line = [comune, prov ? `(${prov})` : ""].filter(Boolean).join(" ");
+      return line || safeText(g.label) || "—";
+    }
+
+    function pickDateLine(data){
+      const ts = data?.publishedAt || data?.createdAt || null;
+      try{
+        const d = ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : null);
+        if(!d) return "";
+        return d.toLocaleDateString("it-IT", { day:"2-digit", month:"long", year:"numeric" });
+      }catch(e){ return ""; }
+    }
+
+    function pickPhotoUrl(data){
+      return safeText(data?.photoURL || data?.photoDataUrl) || "images/rosa.png";
+    }
+
+    function pickOrnamentType(data){
+      const key = safeText(data?.ornamentKey || data?.ornamento || data?.simbolo);
+      if(key) return normalizeOrnamentKey(key);
+      const a = data?.answersSnapshot || {};
+      return normalizeOrnamentKey(a.ornamentKey || a.ornamento || a.simbolo || a.simboloReligioso || "fiore");
+    }
+
+    // =========================
+    // IMPRESA PUBBLICANTE
+    // =========================
+    const impresaNameCache = new Map(); // email -> "Nome Impresa" | ""
+
+    function pickPublisherEmail(data){
+      return safeText(data?.emailImpresa || data?.email_impresa || data?.publisherEmail);
+    }
+
+    async function resolveImpresaNameByEmail(email){
+      const key = (email || "").trim().toLowerCase();
+      if(!key) return "";
+      if(impresaNameCache.has(key)) return impresaNameCache.get(key);
+
+      async function tryCol(col){
+        try{
+          const ref = doc(db, col, key);
+          const snap = await getDoc(ref);
+          if(!snap.exists()) return "";
+          const imp = snap.data() || {};
+          return safeText(
+            imp.nomeImpresa || imp.nome_impresa || imp.nome || imp.ragioneSociale || imp.denominazione || imp.ragione_sociale || ""
+          );
+        }catch(e){
+          return "";
+        }
+      }
+
+      const fromPublic = await tryCol("imprese_pubbliche") || await tryCol("imprese_visibili");
+      if(fromPublic){
+        impresaNameCache.set(key, fromPublic);
+        return fromPublic;
+      }
+
+      const fromPrivate = await tryCol("imprese_registrate");
+      impresaNameCache.set(key, fromPrivate || "");
+      return fromPrivate || "";
+    }
+
+    function cardTemplate(row){
+      const data = row.data;
+
+      const name = pickName(data);
+      const nick = pickNickname(data);
+      const age  = pickAge(data);
+      const placeLine = pickPlaceLine(data);
+      const dateLine  = pickDateLine(data);
+// ===== Badge "NUOVO" (entro 72 ore dalla pubblicazione) =====
+const nowMs = Date.now();
+const tsPub = data?.publishedAt || data?.createdAt || null;
+let pubMs = null;
+
+try {
+  const dPub = tsPub?.toDate ? tsPub.toDate() : (tsPub instanceof Date ? tsPub : null);
+  pubMs = dPub ? dPub.getTime() : null;
+} catch(e){ pubMs = null; }
+
+const ageMs = (pubMs ? (nowMs - pubMs) : null);
+const isToday = (ageMs !== null && ageMs <= (24 * 60 * 60 * 1000));
+const isNew72 = (ageMs !== null && ageMs <= (72 * 60 * 60 * 1000));
+
+let badgeLabel = "";
+if (isToday) badgeLabel = "PUBBLICATO OGGI";
+else if (isNew72) badgeLabel = "NUOVO";
+
+const newBadgeHtml = badgeLabel
+  ? `<div class="neco-badge-new" aria-label="${badgeLabel}"><i class="fa-solid fa-certificate"></i> ${badgeLabel}</div>`
+  : "";
+      const photo = pickPhotoUrl(data);
+      const isPlaceholder = /\/rosa\.png$/i.test(photo) || /images\/rosa\.png$/i.test(photo);
+
+      const ornType = pickOrnamentType(data);
+      const ornKey  = normalizeOrnamentKey(ornType);
+      const ornUrl  = (ornKey && ornKey !== "none") ? getOrnamentUrl(ornKey) : "";
+
+      const publisherEmail = pickPublisherEmail(data);
+      const publisherType = safeText(data?.publisherType).toLowerCase(); // "impresa" | "cittadino"
+      const showPublisher = data?.showPublisher === true;                // true solo se spuntato
+      const publisherName = cleanPublisherName(safeText(data?.publisherName));
+
+      const km = (typeof row.km === "number" && Number.isFinite(row.km))
+        ? `${row.km.toFixed(0)} km`
+        : "";
+
+      const ageLine = age ? `${age} anni` : "";
+
+      // (opzionale) se in futuro salvi reactionCount, qui lo userai
+      const heartsRaw = Number(data?.reactionsHeartTotal);
+      const hearts = Math.max(0, Number.isFinite(heartsRaw) ? heartsRaw : 0);
+
+      return `
+        <article class="necro-card ${isPlaceholder ? "is-placeholder" : ""}" data-id="${row.id}" tabindex="0" role="link"
+          aria-label="Apri necrologio di ${name}">
+
+      ${newBadgeHtml}
+
+          <div class="card-topcap" aria-hidden="true">
+            <div class="card-ornament">
+              ${ornUrl ? `<img src="${ornUrl}" alt="" loading="lazy"
+                onerror="this.onerror=null; this.src='images/ornamenti/fiore.png';">` : ``}
+            </div>
+            <div class="card-divider"></div>
+          </div>
+
+          <div class="card-media">
+            <img class="card-photo" src="${photo}" alt="Foto (se disponibile)" loading="lazy"
+  onerror="this.onerror=null; this.src='images/rosa.png'; this.closest('.necro-card')?.classList.add('is-placeholder');">
+          </div>
+
+          <div class="card-body">
+            <h2 class="card-name">${name}</h2>
+            ${nick ? `<p class="card-nick">“${nick}”</p>` : ``}
+
+            <div class="card-meta">
+              ${ageLine ? `<div class="card-line"><span>${ageLine}</span></div>` : ``}
+              <div class="card-line">
+                <span>${placeLine}</span>
+                ${dateLine ? `<span class="sep">·</span><span>${dateLine}</span>` : ``}
+              </div>
+              ${km ? `<div class="card-line"><span>${km}</span></div>` : ``}
+            </div>
+
+            <!-- Indicatore "Cuore" (non cliccabile: più istituzionale) -->
+            <div class="card-actions single-reaction" aria-label="Cuori ricevuti">
+              <div class="react-indicator heart">
+                <i class="fa-solid fa-heart"></i>
+                <span class="react-count">${hearts}</span>
+              </div>
+            </div>
+
+            <!-- Nome impresa: elegante + label istituzionale -->
+            <div class="publisher-block" style="display:none"
+     data-pub-email="${publisherEmail}"
+     data-pub-type="${publisherType}"
+     data-show-pub="${showPublisher ? "1" : "0"}"
+     data-pub-name="${publisherName}">
+  <span class="card-publisher-label">A cura di</span>
+  <p class="card-publisher"></p>
+</div>
+          </div>
+        </article>
+      `;
+    }
+
+    async function hydratePublisherNames(){
+      const blocks = Array.from(GRID.querySelectorAll(".publisher-block"));
+      if(!blocks.length) return;
+
+      await Promise.all(blocks.map(async (block)=>{
+  const pubType = safeText(block.dataset.pubType).toLowerCase();
+  const showPub = safeText(block.dataset.showPub) === "1";
+  const directCitizenName = cleanPublisherName(safeText(block.dataset.pubName));
+
+  // ✅ CASO CITTADINO
+  if (pubType === "cittadino") {
+  if (showPub && directCitizenName) {
+
+    // testo nome
+    const p = block.querySelector(".card-publisher");
+    if (p) p.textContent = directCitizenName;
+
+    // cambia LABEL
+    const label = block.querySelector(".card-publisher-label");
+    if (label) label.textContent = "REDATTO DA";
+
+    // classe stile cittadino
+    block.classList.add("is-cittadino");
+    block.classList.remove("is-impresa");
+
+    block.style.display = "block";
+  } else {
+    block.style.display = "none";
+  }
+  return;
+}
+
+  // ✅ CASO IMPRESA (come prima)
+  const email = safeText(block.dataset.pubEmail);
+  if(!email){
+    block.style.display = "none";
+    return;
+  }
+
+  const card = block.closest(".necro-card");
+  const id = card?.getAttribute("data-id");
+  const row = cache.find(r=>r.id===id);
+  const data = row?.data || {};
+
+  const directName = safeText(data.impresaName || data.nomeImpresa || data.publisherName || data.impresa || "");
+  const rawName = directName || await resolveImpresaNameByEmail(email);
+  const name = cleanPublisherName(rawName);
+
+  if(!name){
+    block.style.display = "none";
+    return;
+  }
+
+  const p = block.querySelector(".card-publisher");
+  if(p) p.textContent = name;
+
+  block.style.display = "block";
+}));
+    }
+
+    function setHeader(){
+      let t = "Risultati";
+
+      if(mode === "near"){
+        t = "Necrologi vicino a te";
+      } else if(mode === "zona"){
+        t = "Necrologi per zona";
+      } else if(mode === "italia"){
+        t = "Ultimi necrologi in Italia";
+      } else if(mode === "nome"){
+        t = "Risultati per nome";
+      }
+
+      TITLE.textContent = t;
+
+      const modeLabel = (mode === "near") ? "Vicino a me"
+        : (mode === "zona") ? "Un luogo che conosco"
+        : (mode === "italia") ? "In tutta Italia"
+        : "Ricerca";
+
+      CHIP.innerHTML = `Modalità: <small>${modeLabel}</small>`;
+    }
+
+    setHeader();
+    if (hasCoords) fSort.value = "distance";
+
+    let cache = [];
+
+    async function loadData(){
+      COUNT.textContent = "Caricamento…";
+      GRID.innerHTML = `
+        ${Array.from({length:8}).map(()=>`
+          <div class="necro-skel">
+            <div class="necro-skel__photo"></div>
+            <div class="necro-skel__body">
+              <div class="necro-skel__line w70"></div>
+              <div class="necro-skel__line w45"></div>
+              <div class="necro-skel__line w90"></div>
+              <div class="necro-skel__line w80"></div>
+            </div>
+          </div>
+        `).join("")}
+      `;
+
+      const qy = query(
+        collection(db, "necrologi_pubblicati"),
+        where("status", "==", "published"),
+        orderBy("publishedAt","desc"),
+        limit(300)
+      );
+
+      const snap = await getDocs(qy);
+      cache = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+      applyAndRender();
+    }
+
+    function applyAndRender(){
+      const nameFilter = safeText(fName.value).toLowerCase();
+      const placeFilter = safeText(fPlace.value).toLowerCase();
+      const sort = fSort.value;
+
+      let rows = cache.slice();
+
+      if(nameFilter){
+        rows = rows.filter(r => pickName(r.data).toLowerCase().includes(nameFilter));
+      }
+
+      if (placeFilter && !hasCoords) {
+        rows = rows.filter(r => {
+          const g = r.data?.geoFinale || {};
+          const blob = [g.label, g.comune, g.provincia].map(safeText).join(" ").toLowerCase();
+          const blob2 = safeText(regione).toLowerCase();
+          return blob.includes(placeFilter) || (blob2 && blob2.includes(placeFilter));
+        });
+      }
+
+      let withKm = rows.map(r=>{
+        let km = null;
+        const g = r.data?.geoFinale || {};
+        const lat = Number(g.lat);
+        const lng = Number(g.lng);
+        if(hasCoords && Number.isFinite(lat) && Number.isFinite(lng)){
+          km = haversineKm(latQ,lngQ,lat,lng);
+        }
+        return { ...r, km };
+      });
+
+      if(sort === "distance" && hasCoords){
+        withKm.sort((a,b)=>{
+          const ak = Number.isFinite(a.km) ? a.km : 1e9;
+          const bk = Number.isFinite(b.km) ? b.km : 1e9;
+          return ak - bk;
+        });
+      }
+
+      GRID.innerHTML = "";
+      const shown = withKm.slice(0, 120);
+      for(const row of shown){
+        GRID.insertAdjacentHTML("beforeend", cardTemplate(row));
+      }
+
+      hydratePublisherNames();
+
+      const total = withKm.length;
+      COUNT.textContent = total ? `${total} risultati` : "0 risultati";
+      const fc = document.getElementById("filtersCount");
+      if (fc) fc.textContent = total ? `${total} risultati` : "0 risultati";
+      EMPTY.style.display = total ? "none" : "";
+    }
+
+    btnApply.addEventListener("click", ()=>{
+      applyAndRender();
+
+      // UX: su mobile richiudi i filtri dopo "Aggiorna"
+      if (window.innerWidth < 700 && filtersPanel && filtersToggle) {
+        filtersPanel.classList.add("is-collapsed");
+        filtersToggle.setAttribute("aria-expanded","false");
+      }
+    });
+
+    btnReset.addEventListener("click", ()=>{
+      fName.value = "";
+      fPlace.value = "";
+      fSort.value = hasCoords ? "distance" : "date";
+      applyAndRender();
+    });
+
+    GRID.addEventListener("click",(e)=>{
+      const card = e.target.closest(".necro-card");
+      if(!card) return;
+      const id = card.getAttribute("data-id");
+      window.location.href = `necrologio.html?id=${encodeURIComponent(id)}`;
+    });
+
+    GRID.addEventListener("keydown",(e)=>{
+      if(e.target.closest("button")) return;
+      const card = e.target.closest(".necro-card");
+      if(!card) return;
+      if(e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        const id = card.getAttribute("data-id");
+        window.location.href = `necrologio.html?id=${encodeURIComponent(id)}`;
+      }
+    });
+
+    loadData().catch(err=>{
+      console.error(err);
+      COUNT.textContent = "Errore di caricamento.";
+      EMPTY.style.display = "";
+      EMPTY.textContent = "Si è verificato un errore nel caricamento dei necrologi.";
+    });
+  </script>
+</body>
+</html>

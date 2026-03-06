@@ -1,0 +1,168 @@
+/* OFI · Admin FIX (2025-10-07)
+   - Unifica altezza header
+   - Riduce hero (ora .admin-hero per evitare conflitti con ofi.css)
+   - Z-index chiari (header > menu > sidebar > topbar > contenuto)
+   - Niente overflow orizzontale / doppie scrollbar
+*/
+
+/* === Token coerenti === */
+:root{ --headerH: 64px; }
+
+/* === Hard stop overflow orizzontale === */
+html, body{
+  margin:0; max-width:100%; overflow-x:hidden;
+  -webkit-tap-highlight-color: transparent; touch-action: pan-y;
+}
+
+/* Quando pannelli aperti: blocco scroll sotto */
+html.menu-open, body.menu-open,
+html.sidebar-open, body.sidebar-open,
+html.cdebug-open, body.cdebug-open{ height:100%; overflow:hidden !important; }
+
+/* === Layering === */
+.site-header{ position:sticky; top:0; z-index:3200; isolation:isolate; }
+.main-nav{ position:relative; z-index:3210; }
+.menu .submenu{ z-index:3220; }
+.menu-overlay{ z-index:3190; }
+
+@media (max-width:900px){
+  .menu{ inset: var(--headerH) 0 auto 0 !important; will-change: transform; }
+  .menu.open{ pointer-events:auto; }
+  .menu-overlay{ position:fixed !important; inset: var(--headerH) 0 0 0 !important; }
+}
+
+/* Header logo più compatto */
+.brand-logo{ height:28px !important; }
+
+/* Sidebar layering */
+.sidebar{ z-index:3000; top: var(--headerH); }
+#sbOverlay{ z-index:2990; }
+
+@media (min-width:1025px){
+  .sidebar{ position:sticky; top:0; height:calc(100dvh - var(--headerH)); }
+}
+@media (max-width:1024px){
+  .sidebar{
+    position:fixed; left:0; width:min(88vw,320px);
+    height:calc(100dvh - var(--headerH));
+    transform:translateX(-110%); transition:transform .22s ease;
+    will-change:transform; contain:paint; -webkit-overflow-scrolling:touch; overflow-y:auto;
+  }
+  .sidebar.open{ transform:translateX(0); }
+  #sbOverlay{
+    position:fixed; top:var(--headerH); left:min(88vw,320px); right:0; bottom:0;
+    background:rgba(0,0,0,.45); backdrop-filter:blur(2px);
+  }
+}
+
+/* Topbar sotto header/menu/sidebar */
+.topbar{ position:sticky; top:0; z-index:2000; }
+
+/* === HERO ADMIN compatto === */
+.admin-hero{
+  display:grid; grid-template-columns: 1fr auto;
+  padding: .9rem 1rem !important; gap: .8rem !important;
+  border-radius: 14px !important;
+  background: var(--surface); color: var(--surface-text);
+  border:1px solid rgba(202,168,90,.35); box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.admin-hero h1{ margin:.1rem 0 .2rem !important; font-size: clamp(1.18rem, 1.6vw, 1.35rem) !important; line-height:1.25 !important; }
+.admin-hero .sub{ font-size:.95rem; opacity:.95; }
+.admin-hero .cta{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; }
+.admin-hero .cta .btn{ height:36px; }
+
+@media (max-width:900px){
+  .admin-hero{ grid-template-columns:1fr; padding:.85rem .9rem !important; }
+}
+
+/* Neutralizza eventuali .hero globali */
+.app .hero{
+  min-height:auto !important; background:none !important; padding:0 !important;
+  box-shadow:none !important; border:0 !important;
+}
+
+/* === Avatar sempre tondo === */
+.avatar{ width:40px; height:40px; aspect-ratio:1/1;
+  border-radius:50% !important; object-fit:cover; border:2px solid var(--gold);
+}
+
+/* Overlay disabilitati davvero quando hidden */
+.menu-overlay[hidden], #sbOverlay[hidden]{ display:none !important; pointer-events:none !important; }
+
+/* Desktop: menu sempre cliccabile */
+@media (min-width:901px){ #menuPanel{ pointer-events:auto !important; } }
+
+/* Micro-polish pulsanti su bande chiare/scure */
+.admin-hero .btn-outline{ border-color:rgba(0,0,0,.25); color:var(--surface-text); }
+html[data-theme="dark"] .admin-hero .btn-outline{ border-color:rgba(255,255,255,.55); color:#fff; }
+html[data-theme="dark"] .admin-hero .btn-outline:hover{ background:rgba(255,255,255,.12); }
+
+/* Contrasto pulsanti nella topbar */
+.topbar .btn-ghost{ border-color: var(--border); color: var(--text); }
+html[data-theme="dark"] .topbar .btn-ghost{ border-color: rgba(255,255,255,.55); color: #fff; }
+html[data-theme="dark"] .topbar .btn-ghost:hover{ background: rgba(255,255,255,.12); }
+
+/* Tema scuro: callout menu leggibili */
+html[data-theme="dark"] .menu .menu-callout{
+  background:transparent; border-color:rgba(255,255,255,.4); color:#fff;
+}
+
+/* Disattiva qualunque HERO globale ereditato */
+.is-admin > .hero, .is-admin .hero, .is-admin .page-hero, .is-admin .vision-hero{
+  display:none !important; min-height:0 !important; padding:0 !important; background:none !important;
+  box-shadow:none !important; border:0 !important;
+}
+
+/* Compatta header e prevenzione immagini oversize */
+.is-admin .brand-logo { height: 28px !important; }
+
+/* ——— OFI Mini Toast ——— */
+#ofiToast{
+  position:fixed; right:16px; bottom:16px; max-width:320px;
+  background:rgba(20,24,35,.9); color:#fff;
+  border:1px solid rgba(212,175,55,.45); /* gold */
+  border-radius:14px; padding:12px 14px; z-index:9999;
+  box-shadow:0 10px 25px rgba(0,0,0,.2); backdrop-filter:blur(6px);
+  transform:translateY(120%); opacity:0; transition:.35s ease;
+}
+#ofiToast.show{ transform:translateY(0); opacity:1; }
+#ofiToast .t-title{ font-weight:700; margin-bottom:4px; font-size:15px; }
+#ofiToast .t-body{ font-size:14px; line-height:1.3; }
+#ofiToast .t-actions{ display:flex; gap:8px; margin-top:8px; justify-content:flex-end; }
+#ofiToast .t-btn{ border:none; padding:6px 10px; border-radius:10px; cursor:pointer; }
+#ofiToast .t-btn.primary{ background:#d4af37; color:#141823; }
+#ofiToast .t-btn.ghost{ background:transparent; color:#fff; }
+@media (max-width:480px){ #ofiToast{ left:12px; right:12px; bottom:12px; } }
+
+/* === FIX layout Approvazioni – colonna principale a larghezza piena === */
+.app{
+  /* forza la colonna contenuti a usare tutta la larghezza disponibile */
+  grid-template-columns: var(--sidebarW) minmax(0, 1fr) !important;
+}
+
+.main{
+  min-width: 0 !important;       /* evita min-content shrink */
+  display: flex;
+  flex-direction: column;
+}
+
+.main > .wrap{
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  /* disattiva effetti collaterali del container-type */
+  container-type: normal !important;
+}
+
+.toolbar{
+  display: flex;
+  flex-direction: row;            /* niente colonna imposta da condizioni anomale */
+  align-items: center;
+}
+
+/* piccoli affinamenti per i bottoni della toolbar quando lo spazio c’è */
+@media (min-width: 861px){
+  .toolbar .tab{ white-space: nowrap; }
+  .toolbar .kpi{ margin-left: auto; }
+}

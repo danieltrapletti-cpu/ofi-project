@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Accesso Imprese — OFI</title>
+  <meta name="description" content="Accedi alla tua area Impresa su OFI per gestire il profilo, i preventivi e i servizi professionali.">
+
+  <!-- Font & CSS coerenti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <script defer src="/ofi.js"></script>
+
+  <style>
+    .auth-wrap{display:grid;place-items:center;padding:2rem 0;}
+    .auth-card{max-width:560px;width:100%;padding:1.5rem;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--surface-text)}
+    .auth-title{font-size:1.1rem;margin:0 0 .8rem;font-weight:800;letter-spacing:.2px;color:var(--surface-text)}
+    .auth-field label{display:block;font-size:.95rem;margin:0 0 .35rem;font-weight:700;color:var(--surface-text)}
+    .auth-field input{width:100%;height:46px;border-radius:12px;padding:0 .9rem;border:1px solid rgba(202,168,90,.35);background:transparent;color:var(--surface-text)}
+    .auth-actions{display:flex;gap:12px;align-items:center;margin-top:.6rem}
+    .auth-actions .btn{height:46px;border-radius:14px;font-weight:800}
+    .hint{font-size:.95rem;color:var(--muted)}
+    .error{color:#ffb3b3;font-weight:800}
+    .success{color:#3cc482;font-weight:800}
+    .small{font-size:.9rem}
+    .form-top{display:flex;flex-direction:column;align-items:center;text-align:center;margin-bottom:.6rem}
+    .form-top img{height:56px;margin-bottom:.4rem}
+    .link{color:var(--link);text-decoration:underline}
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+  .ofi-banner{
+    background: rgba(255, 215, 0, 0.08); /* oro molto tenue */
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .ofi-banner__content{ flex: 1; }
+  .ofi-banner__title{ margin: 0 0 4px; font-size: 1.1rem; }
+  .ofi-banner__text{ margin: 0; opacity: .9; }
+  .ofi-banner__actions{ display: flex; gap: 10px; }
+  .btn.btn-outline{ background: transparent; border: 1px solid currentColor; }
+
+
+  </style>
+</head>
+<body>
+ <header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="/vision.html">Visione di OFI</a></li>
+          <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="/index.html#pensieri">Pensieri</a></li>
+          <li><a href="/articoli/articoli.html">Articoli</a></li>
+          <li><a href="/index.html#ricordi">Ricordi</a></li>
+          <li><a href="/index.html#mappa">Vicino a te</a></li>
+          <li><a href="/index.html#video">Video</a></li>
+        </ul>
+      </li>
+
+      <li><a class="btn btn-primary" href="/imprese/registrazione-imprese.html">Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+
+  <main>
+<!-- ============ BOX SEI GIÀ AUTENTICATO (visibile solo con ?force=1) ============ -->
+<div id="alreadyLoggedBox" class="ofi-banner" hidden>
+  <div class="ofi-banner__content">
+    <h3 class="ofi-banner__title">Sei già autenticato</h3>
+    <p class="ofi-banner__text">
+      Stai accedendo come <strong id="whoami">—</strong>.
+    </p>
+  </div>
+  <div class="ofi-banner__actions">
+    <button id="goDashboard" class="btn btn-primary">Vai in dashboard</button>
+    <button id="doLogout" class="btn btn-outline">Esci / Cambia account</button>
+  </div>
+</div>
+<!-- ============================================================================ -->
+
+    <section class="page-hero">
+      <div class="container">
+        <h1 class="section-title">Accesso Imprese</h1>
+        <p class="section-sub">Entra nella tua area per gestire profilo, marchio di affidabilità e servizi.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container auth-wrap">
+        <div class="auth-card" role="form" aria-labelledby="titLogin">
+          <div class="form-top">
+            <img src="/images/logo-ofi.png" alt="Logo OFI">
+            <h2 id="titLogin" class="auth-title">Accedi con la tua email</h2>
+            <p class="hint small">Non hai un account? <a class="link" href="/imprese/registrazione-imprese.html">Registrati</a></p>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="auth-field">
+              <label for="email">Email</label>
+              <input id="email" type="email" required placeholder="email@azienda.it" autocomplete="email">
+            </div>
+
+            <div class="auth-field" style="margin-top:.6rem">
+              <label for="password">Password</label>
+              <input id="password" type="password" required placeholder="Password" autocomplete="current-password">
+              <div class="small" style="margin-top:.3rem">
+                <button type="button" id="togglePwd" class="btn btn-ghost small" style="height:auto;padding:.2rem .5rem">Mostra/Nascondi</button>
+              </div>
+            </div>
+
+            <!-- reCAPTCHA v3 -->
+            <input type="hidden" id="recaptchaToken" name="recaptchaToken"/>
+
+            <div class="auth-actions" style="margin-top:.8rem">
+              <button class="btn btn-primary" type="submit">Accedi</button>
+              <button class="btn btn-outline" type="button" id="resetBtn">Password dimenticata</button>
+            </div>
+
+            <div id="msg" class="hint" style="margin-top:.6rem" aria-live="polite"></div>
+          </form>
+
+          <p class="small hint" style="margin-top:.8rem">
+            Questa pagina è protetta da reCAPTCHA; si applicano la
+            <a class="link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> e i
+            <a class="link" href="https://policies.google.com/terms" target="_blank" rel="noopener">Termini di Google</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce cittadini e imprese in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- reCAPTCHA v3 (stessa chiave pubblica dei cittadini/registrazione) -->
+  <script>window.RECAPTCHA_SITE_KEY = "6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb";</script>
+ <script src="https://www.google.com/recaptcha/api.js?render=6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb"></script>
+
+  <!-- Firebase v10 (modular) -->
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+  sendPasswordResetEmail, signOut, reload
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* === Firebase init === */
+const firebaseConfig = { apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs", authDomain:"ofi2025-51ba9.firebaseapp.com", projectId:"ofi2025-51ba9" };
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+auth.languageCode = 'it';
+
+/* === URL params (UNA sola volta, dopo init) === */
+const urlParams   = new URLSearchParams(location.search);
+const forceChoice = urlParams.has('force');          // mostra il banner scelta, no auto-redirect
+const mustLogout  = urlParams.get('logout') === '1';
+const invitedEmail  = (urlParams.get('email') || '').trim().toLowerCase();
+const continueToRaw = urlParams.get('continue') || urlParams.get('next') || '';
+const continueTo    = continueToRaw.startsWith('/') ? continueToRaw : '';
+
+/* === Logout forzato via ?logout=1 === */
+if (mustLogout) {
+  try { await signOut(auth); } catch {}
+  const u = new URL(location.href);
+  u.searchParams.delete('logout');
+  location.replace(u.toString());
+}
+
+/* === Helpers UI === */
+const $ = (id)=>document.getElementById(id);
+const msg = $('msg');
+
+/* Precompila l’email se arriva dal link della mail */
+const emailField = $('email');
+if (invitedEmail && emailField) {
+  emailField.value = invitedEmail;
+  emailField.addEventListener('focus', ()=> emailField.select());
+}
+
+/* reCAPTCHA helper */
+function getToken(action) {
+  return new Promise((resolve) => {
+    if (!window.grecaptcha) return resolve('');
+    grecaptcha.ready(() => {
+      grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action })
+        .then(resolve)
+        .catch(()=>resolve(''));
+    });
+  });
+}
+
+/* Mostra/Nascondi password */
+$('togglePwd').addEventListener('click', ()=>{
+  const el = $('password'); el.type = (el.type === 'password') ? 'text' : 'password';
+});
+
+/* Reset password */
+$('resetBtn').addEventListener('click', async ()=>{
+  msg.className = 'hint';
+  const email = $('email').value.trim();
+  if(!email){ msg.textContent = "Inserisci prima la tua email per reimpostare la password."; return; }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    msg.className = 'success'; msg.textContent = "Email di reset inviata. Controlla la tua casella.";
+  }catch(e){
+    console.error(e);
+    msg.className = 'error'; msg.textContent = "Errore nell'invio della mail. Verifica l'indirizzo.";
+  }
+});
+
+/* Controllo mismatch con email invito */
+function checkMismatch(user) {
+  if (!user || !invitedEmail) return false;
+  return (user.email || '').toLowerCase() !== invitedEmail;
+}
+
+/* Routing dopo login */
+async function routeAfterLogin(user){
+  if (!user) return;
+  await reload(user).catch(()=>{});
+
+  if (checkMismatch(user)) {
+    msg.className = 'error';
+    msg.innerHTML = `Stai accedendo come <b>${user.email}</b> ma l’invito è per <b>${invitedEmail}</b>.
+      <button id="logoutBtn" class="btn btn-outline small" style="margin-left:.5rem">Esci</button>`;
+    document.getElementById('logoutBtn').onclick = async ()=>{ await signOut(auth); location.reload(); };
+    return;
+  }
+
+  if (!user.emailVerified) {
+    location.replace("/imprese/verifica-email.html?email="+encodeURIComponent(user.email||'')); return;
+  }
+
+  // Stato impresa
+  let stato = 'in_attesa', onboarding=false;
+  try{
+    const snap = await getDoc(doc(db,'imprese_registrate',(user.email||'').toLowerCase()));
+    if (!snap.exists()){
+      // Non è un account impresa registrato su OFI → blocco accesso area imprese
+      msg.className = 'error';
+      msg.textContent = "Questo account non risulta registrato come Impresa OFI. Accedi dall’Area Cittadini oppure registra la tua impresa.";
+      try { await signOut(auth); } catch {}
+      return; // stop
+    }
+    const d = snap.data();
+    stato = (d.stato || 'in_attesa').toLowerCase();
+    onboarding = !!d.onboarding_completed;
+  }catch(e){ console.warn('Impossibile leggere stato impresa', e); }
+
+  if (stato !== 'approvata') {
+    location.replace("/imprese/imprese-dashboard.html?pending=1"); return;
+  }
+
+  const wantsWelcome = continueTo.includes('/imprese/benvenuto-impresa.html');
+  if (wantsWelcome && !onboarding) {
+    const emailQ = `email=${encodeURIComponent((user.email||'').toLowerCase())}`;
+    const sep = continueTo.includes('?') ? '&' : '?';
+    location.replace(`${continueTo}${sep}${emailQ}`);
+  } else {
+    if (continueTo) {
+      location.replace(continueTo);
+    } else {
+      location.replace("/imprese/imprese-dashboard.html");
+    }
+  }
+}
+
+/* Utente già autenticato che apre la pagina login */
+onAuthStateChanged(auth, async (user)=>{
+  if (!user) return;
+
+  if (forceChoice) {
+    // mostro banner scelta, NO redirect auto
+    const box = document.getElementById('alreadyLoggedBox');
+    const who = document.getElementById('whoami');
+    box.hidden = false;
+    who.textContent = user.email || user.uid;
+    document.getElementById('goDashboard').onclick = ()=> location.href="/imprese/imprese-dashboard.html";
+    document.getElementById('doLogout').onclick   = async ()=>{ await signOut(auth); location.reload(); };
+    return;
+  }
+
+  routeAfterLogin(user);
+});
+
+/* Submit login */
+$('loginForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  msg.className = 'hint'; msg.textContent = "Verifica in corso…";
+  try { $('recaptchaToken').value = await getToken('login') || ''; } catch {}
+
+  const email = $('email').value.trim().toLowerCase();
+  const pwd   = $('password').value;
+  if(!email || !pwd){ msg.textContent = "Inserisci email e password."; return; }
+
+  try{
+    const cred = await signInWithEmailAndPassword(auth, email, pwd);
+    msg.className = 'success'; msg.textContent = "Accesso effettuato. Reindirizzamento…";
+    routeAfterLogin(cred.user);
+  }catch(err){
+    console.error(err);
+    msg.className = 'error';
+    let friendly = "Credenziali errate o account non registrato.";
+    if (err?.code === 'auth/invalid-email') friendly = "Indirizzo email non valido.";
+    else if (err?.code === 'auth/user-disabled') friendly = "Account disabilitato.";
+    else if (err?.code === 'auth/user-not-found') friendly = "Utente non trovato.";
+    else if (err?.code === 'auth/wrong-password') friendly = "Password errata.";
+    msg.textContent = friendly;
+  }
+});
+</script>
+<script src="/js/menu.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Benvenuto — Imprese OFI</title>
+  <meta name="description" content="Benvenuto su OFI: 60 giorni gratis, marchio di affidabilità e strumenti professionali. Inizia completando il profilo."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <style>
+    .wrap{max-width:1080px;margin:0 auto;padding:1rem}
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .card{background:var(--card-bg);border:1px solid var(--card-brd);border-radius:16px;padding:1rem}
+    .media{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+    .banner{border:1px solid rgba(202,168,90,.45);background:var(--surface);color:var(--surface-text);
+      border-left:6px solid var(--gold);border-radius:12px;padding:12px 14px;margin:0 0 14px;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+    .banner h4{margin:.1rem 0 .35rem;font-weight:800}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:.5rem}
+    .pill{display:inline-block;border:1px solid var(--card-brd);padding:.18rem .5rem;border-radius:999px;font-size:.8rem}
+    .serif{font-family:"Noto Serif", ui-serif, Georgia, serif}
+    .sigillo{display:flex;gap:12px;align-items:center}
+    .sigillo img{width:120px;height:auto;border-radius:12px;border:1px solid var(--card-brd);background:#0b1630}
+    .muted{color:var(--muted)}
+    /* stato bloccato dashboard */
+    .btn-locked{opacity:.5;cursor:not-allowed;pointer-events:none}
+    .lock-hint{font-size:.85rem;color:var(--muted);margin-top:.25rem}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="/images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="/imprese/imprese-dashboard.html">Dashboard</a></li>
+      <li><a class="menu-callout" href="/pensieri-pubblici.html">Pensieri Pubblici</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a href="/faq.html">FAQ</a></li>
+      <li><a class="btn btn-primary" href="/imprese/login-imprese.html">Esci / Cambia account</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="section-title">Benvenuto in OFI 🎉</h1>
+    <p id="sub" class="section-sub">Hai <strong>60 giorni di prova gratuita</strong> con tutte le funzioni. <u>Per attivarle</u>, completa il tuo profilo.</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <div id="welcomeBanner" class="banner" hidden></div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="media">
+        <!-- Placeholder: sostituire con embed HeyGen -->
+        <iframe src="https://www.youtube.com/embed/iyKTbfzBgpw" title="Benvenuto OFI" frameborder="0" allowfullscreen style="width:100%;height:100%"></iframe>
+      </div>
+      <p class="muted" style="margin-top:.6rem">Video di benvenuto (placeholder). Lo sostituiremo con l’avatar HeyGen.</p>
+
+      <hr class="divider" style="margin:1rem 0">
+
+      <h3 class="serif">Da oggi inizi con</h3>
+      <ul class="list">
+        <li><b>Marchio di Affidabilità Nazionale</b> — si attiva quando il profilo è pronto (vedi sotto).</li>
+        <li><b>Certificato di adesione</b> — scaricabile dalla dashboard dopo il completamento minimo.</li>
+        <li><b>Punti & Stelle</b> — crescono con azioni utili (profilo completo, galleria, risposte ai preventivi).</li>
+        <li><b>2 mesi gratuiti</b> — prova completa senza obblighi. <span class="pill">Servizi inclusi</span></li>
+      </ul>
+    </section>
+
+    <aside class="card" style="display:flex;flex-direction:column;gap:.9rem">
+      <h3>Prossimi passi</h3>
+      <ol class="list">
+        <li>Carica logo, inserisci contatti e posiziona la sede sulla mappa.</li>
+        <li>Scrivi una descrizione chiara (min 160 caratteri) — aiuta punti ⭐.</li>
+        <li>Raggiungi almeno <b>60/100</b> per sbloccare la Dashboard completa.</li>
+      </ol>
+
+      <div class="actions">
+        <a class="btn btn-primary" id="ctaProfilo" href="/imprese/imprese-profilo.html">Completa il profilo</a>
+        <a class="btn btn-outline btn-locked" id="ctaDash" href="#" aria-disabled="true" title="Completa prima il profilo">Vai alla dashboard</a>
+      </div>
+      <div id="dashLockHint" class="lock-hint">La dashboard si sblocca quando il tuo profilo raggiunge <b>60/100</b>.</div>
+
+      <div class="card" style="margin-top:.2rem">
+        <div class="sigillo">
+          <img src="/images/sigillo-ofi.png" alt="Marchio di Affidabilità Nazionale — OFI">
+          <div>
+            <strong>Marchio di Affidabilità</strong>
+            <p class="small muted" style="margin:.2rem 0 0">Visibile nella tua pagina pubblica e scaricabile dalla <b>Dashboard</b> non appena il profilo è completo al minimo.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="small muted">Il certificato PDF con QR al tuo profilo sarà disponibile nella Dashboard quando raggiungi la soglia minima.</p>
+    </aside>
+  </div>
+</main>
+
+<!-- Agente OFI flottante -->
+<button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+  <img src="/images/agente-ofi.png" alt="">
+</button>
+<section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+  <header class="agent-top">
+    <div class="agent-id">
+      <img src="/images/agente-ofi.png" alt="">
+      <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+    </div>
+    <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+  </header>
+  <div id="agentChat" class="agent-chat">
+    <div class="msg msg-in"><p>Ciao! Completa il profilo per sbloccare certificato, marchio e funzioni.</p></div>
+    <div class="suggest">
+      <button class="chip" data-q="Come raggiungo 60/100 nel profilo?">Come raggiungo 60/100 nel profilo?</button>
+      <button class="chip" data-q="Dove trovo il certificato?">Dove trovo il certificato?</button>
+      <button class="chip" data-q="Come ottenere punti e stelle?">Come ottenere punti e stelle?</button>
+    </div>
+  </div>
+  <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+    <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+    <button class="btn btn-primary">Invia</button>
+  </form>
+  <div class="agent-note small">Per risposte approfondite ti apro la guida dedicata.</div>
+</section>
+
+<script src="/ofi.js" defer></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = { apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs", authDomain:"ofi2025-51ba9.firebaseapp.com", projectId:"ofi2025-51ba9" };
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const banner = document.getElementById('welcomeBanner');
+const ctaDash = document.getElementById('ctaDash');
+const ctaProfilo = document.getElementById('ctaProfilo');
+const hint = document.getElementById('dashLockHint');
+const params = new URLSearchParams(location.search);
+let emailParam = (params.get('email') || '').trim().replace(/[{}<>]/g,'').toLowerCase();
+const SOGLIA = 60;
+
+function showBanner(html){ banner.innerHTML = html; banner.hidden = false; }
+function esc(s){ return String(s||'').replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+async function markOnboardingDone(email){
+  try {
+    await updateDoc(doc(db,'imprese_registrate',email), {
+      onboarding_completed:true,
+      onboarding_completed_at:new Date().toISOString()
+    });
+  } catch(e){ console.warn('markOnboardingDone',e); }
+}
+
+async function getImpresaData(email){
+  try{
+    const snap = await getDoc(doc(db,'imprese_registrate',email));
+    return snap.exists()? snap.data() : {};
+  }catch(e){ console.error(e); return {}; }
+}
+
+function lockDashboard(){
+  ctaDash.classList.add('btn-locked');
+  ctaDash.setAttribute('aria-disabled','true');
+  ctaDash.setAttribute('href','#');
+  hint.style.display='';
+}
+
+function unlockDashboard(){
+  ctaDash.classList.remove('btn-locked');
+  ctaDash.removeAttribute('aria-disabled');
+  ctaDash.setAttribute('href','/imprese/imprese-dashboard.html');
+  hint.style.display='none';
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if (!user){
+    const back = encodeURIComponent(location.pathname + (location.search||''));
+    location.replace(`/imprese/login-imprese.html?continue=${back}&email=${encodeURIComponent(emailParam)}`);
+    return;
+  }
+  await user.getIdToken(true).catch(()=>{});
+  await user.reload().catch(()=>{});
+  if (!user.emailVerified){
+    location.replace('/imprese/verifica-email.html?email='+encodeURIComponent(user.email||''));
+    return;
+  }
+
+  const loggedEmail = (user.email||'').toLowerCase();
+  if (emailParam && emailParam !== loggedEmail){
+    showBanner(`
+      <h4>🔐 Questo invito è per <strong>${esc(emailParam)}</strong></h4>
+      <p>Sei connesso come <strong>${esc(loggedEmail)}</strong>. Per continuare, accedi con l’email corretta.</p>
+      <div class="actions">
+        <button id="switchBtn" class="btn btn-primary">Accedi come ${esc(emailParam)}</button>
+        <a class="btn btn-outline" href="/imprese/imprese-profilo.html">Completa il profilo</a>
+      </div>
+    `);
+    document.getElementById('switchBtn')?.addEventListener('click', async ()=>{
+      await signOut(auth);
+      const back = encodeURIComponent(location.pathname + location.search);
+      location.replace(`/imprese/login-imprese.html?email=${encodeURIComponent(emailParam)}&continue=${back}`);
+    });
+    lockDashboard();
+    return;
+  }
+
+  const targetEmail = emailParam || loggedEmail;
+  const d = await getImpresaData(targetEmail);
+  const stato = String(d.stato||'').toLowerCase();
+  const score = Number(d.profilo_score||0);
+  const done  = !!d.onboarding_completed;
+
+  // Lock/unlock Dashboard in base alla soglia
+  if (score >= SOGLIA) unlockDashboard(); else lockDashboard();
+
+  if (['approvata','approvato'].includes(stato) && done && score>=SOGLIA){
+    // se è già tutto ok, portiamo direttamente in dashboard
+    location.replace('/imprese/imprese-dashboard.html');
+    return;
+  }
+
+  if (['approvata','approvato'].includes(stato)){
+    const endISO = d.abbonamento_end || null;
+    const extra = endISO ? ` La prova gratuita termina il <strong>${new Date(endISO).toLocaleDateString('it-IT')}</strong>.` : '';
+    showBanner(`
+      <h4>🎉 La tua impresa è stata approvata</h4>
+      <p>Per attivare tutte le funzioni completa il profilo fino ad almeno <b>${SOGLIA}/100</b>.${extra}</p>
+      <div class="actions">
+        <a id="goProfilo" class="btn btn-primary" href="/imprese/imprese-profilo.html">Completa il profilo</a>
+        <a id="goDashboard" class="btn btn-outline ${score>=SOGLIA?'':'btn-locked'}" 
+           href="${score>=SOGLIA?'/imprese/imprese-dashboard.html':'#'}" 
+           ${score>=SOGLIA?'':'aria-disabled="true"'}>Vai alla dashboard</a>
+      </div>
+    `);
+    const mark = ()=> markOnboardingDone(targetEmail);
+    document.getElementById('goProfilo')?.addEventListener('click', mark);
+    if (score>=SOGLIA) document.getElementById('goDashboard')?.addEventListener('click', mark);
+  } else {
+    showBanner(`
+      <h4>⏳ In attesa di approvazione</h4>
+      <p>Abbiamo ricevuto i dati e li stiamo controllando. Intanto puoi completare il profilo per essere pronto.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/imprese/imprese-profilo.html">Completa il profilo</a>
+      </div>
+    `);
+    lockDashboard();
+  }
+});
+
+// Se l’utente prova comunque a cliccare la dashboard bloccata
+ctaDash.addEventListener('click', (e)=>{
+  if (ctaDash.classList.contains('btn-locked')){
+    e.preventDefault();
+    document.getElementById('agentFab')?.click();
+  }
+});
+
+// Tracciamento onboarding sulle CTA
+ctaProfilo?.addEventListener('click', ()=>{
+  const u = (getAuth().currentUser||{}); if (u.email) markOnboardingDone(u.email.toLowerCase());
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+/* =============================================================
+   OFI — PENSIERI MIEI Smart Header (v3)
+   - Azioni nella barra
+   - Toggle Autore pubblico
+   - Compact on scroll, MA non nasconde KPI
+   ============================================================= */
+.smart-header{
+  position:relative;
+  background:linear-gradient(180deg,rgba(8,21,36,.86),rgba(8,21,36,.68));
+  border-radius:18px;
+  border:1px solid rgba(212,175,55,.18);
+  box-shadow:0 6px 28px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.06);
+  padding:10px 14px; margin:10px auto 14px; color:#fff; overflow:hidden;
+}
+.smart-header.is-collapsed{ padding:8px 12px; }
+
+.sh-row{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+
+/* Utente */
+.sh-user{ display:flex; align-items:center; gap:12px; flex:1 1 240px; min-width:220px; }
+.sh-avatar{ width:46px; height:46px; border-radius:999px; overflow:hidden; box-shadow:0 0 0 2px rgba(255,255,255,.18) inset; flex:0 0 auto; }
+.sh-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+.sh-name{ font-weight:800; line-height:1.2; white-space:normal }
+
+/* KPI */
+.sh-kpi{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+.pill{ display:inline-flex; align-items:center; gap:8px; padding:6px 9px; border-radius:999px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); font-size:12.5px }
+.pill b{ font-size:12.5px; background:rgba(255,255,255,.14); padding:3px 7px; border-radius:999px }
+
+/* Toggle Autore pubblico */
+.author-badge{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+  border:1px solid rgba(212,175,55,.35); background:rgba(212,175,55,.12); font-size:12.5px; cursor:pointer; }
+.author-badge .dot{ width:10px; height:10px; border-radius:50%; box-shadow:0 0 0 1px rgba(255,255,255,.25) inset; background:#b9151b; }
+.author-badge.on .dot{ background:#24b36b; }
+
+/* Azioni */
+.sh-actions{ display:flex; gap:10px; align-items:center }
+.ico-btn{ width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center;
+  border-radius:10px; border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.06);
+  box-shadow:0 1px 2px rgba(0,0,0,.15); user-select:none; -webkit-tap-highlight-color:transparent;
+  transition:transform .12s ease,background .12s ease,opacity .12s ease }
+.ico-btn:hover{ transform:translateY(-1px) }
+.ico{ font-size:18px; line-height:1 }
+.ico-btn.primary{ border-color:#d6b76b; box-shadow:0 0 0 1px #d6b76b inset; }
+
+/* Drawer gestione rapida (frase + toggle) */
+.manage{ position:absolute; left:0; right:0; bottom:0; transform:translateY(100%);
+  background:rgba(8,21,36,.98); border-top:1px solid rgba(212,175,55,.25); padding:14px;
+  display:grid; gap:12px; transition:transform .22s ease }
+.smart-header.is-expanded .manage{ transform:translateY(0) }
+.manage .row{ display:flex; align-items:center; justify-content:space-between; gap:10px }
+.manage .hint{ font-size:.92rem; opacity:.9; line-height:1.45 }
+.manage textarea{ width:100%; min-height:72px; border-radius:10px; padding:10px 12px;
+  border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:#fff }
+.manage .btns{ display:flex; gap:10px; justify-content:flex-end }
+.manage .btn{ padding:8px 12px; border-radius:10px; border:1px solid rgba(212,175,55,.35);
+  background:rgba(212,175,55,.12); color:#fff; font-weight:700; cursor:pointer }
+.manage .btn.secondary{ background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18) }
+
+/* Ricerca */
+.search-layer{ position:absolute; inset:0; background:rgba(8,21,36,.96); display:none;
+  align-items:center; justify-content:center; padding:14px }
+.smart-header.is-search .search-layer{ display:flex }
+.search-layer .field{ width:100%; display:flex; gap:10px; align-items:center;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:10px 12px }
+.search-layer input{ flex:1; background:transparent; border:0; outline:0; color:#fff; font-size:16px }
+
+/* Compact scroll: NON nascondo nulla */
+@media (max-width:520px){
+  .smart-header{ margin-top:8px }
+  .sh-avatar{ width:40px; height:40px }
+}
+
+/* Nasconde la frase nella barra compatta: la frase resta SOLO nella cover card */
+.smart-header .sh-quote{ display:none !important; }
+
+/* Nasconde i campi frase/autore del drawer rapido: si usa SOLO la modale della card */
+#inp-frase, #inp-autore, label[for="inp-frase"], label[for="inp-autore"]{ display:none !important; }
+
+.author-badge.on{
+  box-shadow:0 0 0 2px rgba(200,168,86,.6) inset, 0 0 18px rgba(200,168,86,.28);
+  background:rgba(200,168,86,.18);
+  border-color:rgba(200,168,86,.66);
+}
+.author-badge.on .flag-dot, 
+.author-badge.on .dot{
+  background:#2da56a;
+}
+
+.author-badge.on{
+  box-shadow:0 0 0 2px rgba(200,168,86,.6) inset, 0 0 18px rgba(200,168,86,.28);
+  background:rgba(200,168,86,.18);
+  border-color:rgba(200,168,86,.66);
+}
+.author-badge.on .flag-dot,
+.author-badge.on .dot{ background:#2da56a; }
+
+/* ...file esistente... */
+
+/* Bottone “+” sempre bianco (visibile anche in tema scuro) */
+#shAddBtn{
+  background:#ffffff !important;
+  border-color:#ffffff !important;
+  color:#0b1220 !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.15);
+}
+
+/* “Occhio” coerente con le altre icone */
+#shViewBtn.ico-btn{
+  display:none;           /* di default nascosto: lo mostra il JS se Autore pubblico è ON */
+  min-width:34px;
+}
+#shViewBtn .ico{ font-size:18px; line-height:1 }
+
+/* Evidenza leggera quando attivo il badge */
+.author-badge.on{
+  box-shadow:0 0 0 2px rgba(200,168,86,.6) inset, 0 0 18px rgba(200,168,86,.28);
+  background:rgba(200,168,86,.18);
+  border-color:rgba(200,168,86,.66);
+}
+.author-badge.on .flag-dot,
+.author-badge.on .dot{ background:#2da56a; }
+

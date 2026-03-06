@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Statistiche Admin | OFI</title>
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #002c5d;
+      margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: white;
+      padding: 1.5rem;
+      margin: 1rem auto;
+      max-width: 600px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+      border-left: 5px solid #002d6b;
+      border-radius: 8px;
+    }
+    .stat-box h2 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #002d6b;
+    }
+    .stat-box p {
+      font-size: 2rem;
+      margin: 0.5rem 0 0 0;
+      color: #333;
+      font-weight: bold;
+    }
+    .msg {
+      text-align: center;
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>📊 Statistiche Amministrative</h1>
+
+  <div class="stat-box">
+    <h2>Preventivi Totali</h2>
+    <p id="stat-preventivi">Caricamento...</p>
+  </div>
+
+  <div class="stat-box">
+    <h2>Imprese Registrate</h2>
+    <p id="stat-imprese">Caricamento...</p>
+  </div>
+
+  <div class="stat-box">
+    <h2>Articoli Pubblicati</h2>
+    <p id="stat-articoli">Caricamento...</p>
+  </div>
+
+  <p class="msg" id="msgErrore"></p>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const statPreventivi = document.getElementById("stat-preventivi");
+    const statImprese = document.getElementById("stat-imprese");
+    const statArticoli = document.getElementById("stat-articoli");
+    const msgErrore = document.getElementById("msgErrore");
+
+    auth.onAuthStateChanged(user => {
+      if (user && user.uid === "k1yxKXHiWyX5G5k9ZoEbwuNIXa63") {
+        Promise.all([
+          db.collection("preventivi").get(),
+          db.collection("imprese_registrate").get(),
+          db.collection("articoli_pubblicati").get()
+        ]).then(([snapPrev, snapImp, snapArt]) => {
+          statPreventivi.textContent = snapPrev.size;
+          statImprese.textContent = snapImp.size;
+          statArticoli.textContent = snapArt.size;
+        }).catch(e => {
+          statPreventivi.textContent = "Errore";
+          statImprese.textContent = "Errore";
+          statArticoli.textContent = "Errore";
+          msgErrore.textContent = "Errore nel caricamento: " + e.message;
+        });
+      } else {
+        statPreventivi.textContent = statImprese.textContent = statArticoli.textContent = "🔒";
+        msgErrore.textContent = "Accesso negato. Solo amministratore autorizzato.";
+      }
+    });
+  </script>
+</body>
+</html>

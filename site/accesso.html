@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Accedi / Registrati — OFI</title>
+  <meta name="description" content="Scegli la tua area di accesso per usufruire dei servizi dedicati." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Font set coerente con index.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/OFI-Social.png" />
+  <link rel="stylesheet" href="ofi.css" />
+ <script defer src="/js/menu.js?v=2"></script>
+<script defer src="/ofi.js?v=3"></script>
+
+
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <a href="index.html" aria-label="Torna alla home">
+      <img src="images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="vision.html">Visione di OFI</a></li>
+          <li><a href="index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="index.html#pensieri">Pensieri</a></li>
+          <li><a href="articoli/articoli.html">Articoli</a></li>
+          <li><a href="index.html#ricordi">Ricordi</a></li>
+          <li><a href="index.html#mappa">Vicino a te</a></li>
+          <li><a href="index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="section container">
+    <div class="section-head">
+      <h2>Accedi / Registrati</h2>
+      <p>Scegli la tua area di accesso per usufruire dei servizi dedicati.</p>
+    </div>
+    <div class="grid grid-2">
+      <!-- Cittadini -->
+      <article class="card" id="cittadini">
+        <div class="card-head">
+          <img class="icon-xl" src="images/icona-cittadino.png" alt="Area Cittadino">
+          <h3>Area Cittadini</h3>
+        </div>
+        <p>Scrivi <strong>Pensieri</strong>, crea <strong>Necrologi &amp; Anniversari</strong>, imposta un <strong>Luogo della Memoria</strong> e richiedi <strong>Preventivi</strong>.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn btn-ghost" href="cittadini/registrazione-cittadino.html">Registrati</a>
+        </div>
+      </article>
+
+      <!-- Imprese -->
+      <article class="card" id="imprese">
+        <div class="card-head">
+          <img class="icon-xl" src="images/icona-impresa.png" alt="Area Imprese">
+          <h3>Area Imprese</h3>
+        </div>
+        <p>Profilo pubblico, preventivi, <strong>Marchio di Affidabilità</strong>, strumenti professionali e visibilità nazionale.</p>
+        <div class="cta">
+          <a class="btn solid" href="/imprese/login-imprese.html?force=1">Accedi</a>
+          <a class="btn btn-ghost" href="imprese/registrazione-imprese.html">Registrati</a>
+        </div>
+      </article>
+
+      <!-- Supporto (in arrivo) -->
+      <article class="card" id="supporto" aria-disabled="true">
+        <div class="card-head">
+          <img class="icon-xl" src="images/icona-supporto.png" alt="Figure di Supporto">
+          <h3>Figure di Supporto</h3>
+        </div>
+        <p>Psicologi, avvocati, CAF, mediatori. Strumenti per offrire sostegno pratico ed emozionale.</p>
+        <div class="cta">
+          <button class="btn btn-outline" disabled>Accedi</button>
+          <button class="btn btn-ghost" disabled>Registrati</button>
+        </div>
+        <span class="small" style="opacity:.8">In arrivo</span>
+      </article>
+
+      <!-- Fornitori (in arrivo) -->
+      <article class="card" id="fornitori" aria-disabled="true">
+        <div class="card-head">
+          <img class="icon-xl" src="images/icona-fornitore.png" alt="Area Fornitori">
+          <h3>Area Fornitori</h3>
+        </div>
+        <p>Presentazioni aziendali e promozioni mirate alla rete imprese OFI. Servizi extra <strong>PLUS</strong>.</p>
+        <div class="cta">
+          <button class="btn btn-outline" disabled>Accedi</button>
+          <button class="btn btn-ghost" disabled>Registrati</button>
+        </div>
+        <span class="small" style="opacity:.8">In arrivo</span>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+      </div>
+      <div class="f-links">
+        <a href="articoli/articoli.html">Articoli</a>
+        <a href="faq.html">FAQ</a>
+        <a href="accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p></div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Come pubblico un necrologio?</button>
+        <button class="chip" role="listitem">Come funziona PENSIERI?</button>
+        <button class="chip" role="listitem">Come richiedo un preventivo?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">Suggerimento: scrivi parole semplici (es. “necrologio”, “pensieri”, “preventivo”).</p>
+  </section>
+
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const cont = params.get('continue') || params.get('next') || '';
+  if(!cont) return;
+
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const href = a.getAttribute('href') || '';
+    // solo link che puntano alle pagine di accesso/registrazione
+    if(!/login-|registrazione-/.test(href)) return;
+
+    try{
+      const u = new URL(href, location.href);
+      u.searchParams.set('continue', cont);
+      // mantengo path relativo
+      a.setAttribute('href', u.pathname + '?' + u.searchParams.toString());
+    }catch(e){}
+  });
+})();
+</script>
+
+</body>
+</html>

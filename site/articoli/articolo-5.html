@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Articolo — OFI</title>
+  <link rel="stylesheet" href="../ofi.css">
+  <style>
+    .page{max-width:900px;margin:2rem auto;padding:0 1rem}
+    .cover{width:100%;max-height:460px;object-fit:cover;border-radius:16px;border:1px solid rgba(0,0,0,.12);box-shadow:0 10px 30px rgba(0,0,0,.06)}
+    .alert{max-width:680px;margin:2rem auto;padding:1.4rem;border-radius:14px;background:var(--card);border:1px solid rgba(0,0,0,.12);text-align:center}
+  
+    /* --- Articolo: sharebar & tipografia --- */
+    .sharebar{display:flex;gap:.6rem;align-items:center;margin:1rem 0 1.5rem;flex-wrap:wrap}
+    .btn.btn-ghost{background:transparent;border:1px solid rgba(0,0,0,.2)}
+    .content .lead{font-size:1.1rem;line-height:1.8;margin:1rem 0 1.25rem;color:var(--text-muted)}
+    .content p{line-height:1.85;margin:1rem 0}
+    .content h2{font-size:1.4rem;margin:2rem 0 .6rem}
+    .content h3{font-size:1.2rem;margin:1.6rem 0 .4rem}
+    .content blockquote{border-left:4px solid var(--gold);padding:.6rem 1rem;margin:1rem 0;background:var(--card)}
+    .content figure{margin:1.2rem auto;text-align:center}
+    .content figure img{max-width:100%;border-radius:14px}
+    .content figcaption{font-size:.9rem;color:var(--text-muted);margin-top:.4rem}
+</style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body class="theme-auto">
+  <header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="../vision.html">Visione di OFI</a></li>
+          <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="../index.html#pensieri">Pensieri</a></li>
+          <li><a href="../articoli/articoli.html">Articoli</a></li>
+          <li><a href="../index.html#ricordi">Ricordi</a></li>
+          <li><a href="../index.html#mappa">Vicino a te</a></li>
+          <li><a href="../index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+  <main class="page">
+    <p><a href="articoli.html" class="btn btn-ghost">← Torna agli articoli</a></p>
+
+    <img id="immagine" class="cover" alt="Immagine articolo">
+    <h1 id="titolo" class="section-title" style="text-align:center;margin:.8rem 0 .2rem">Caricamento…</h1>
+    <p id="estratto" class="section-sub" style="text-align:center"></p>
+<section id="err" class="alert" hidden></section>
+
+    <section id="gate" class="alert" hidden>
+      <h3>🔒 Accesso necessario</h3>
+      <p>Accedi per leggere l’articolo completo.</p>
+      <a class="btn btn-primary" id="loginLink" href="../accesso.html#login">Accedi ora</a>
+    </section>
+
+    <article id="contenutoBox" class="content" hidden>
+      <div id="contenuto"></div>
+    </article>
+    <div class="sharebar" aria-label="Condividi questo articolo" style="justify-content:center;margin-top:1.5rem">
+      <button class="btn btn-primary share-btn" data-url="" id="shareThis">Condividi</button>
+      <button class="btn btn-ghost copy-btn" id="copyLink">Copia link</button>
+    </div>
+    
+
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <script src="../ofi.js" defer></script>
+  <script>
+    if (!window.firebase || (firebase.apps && firebase.apps.length === 0)) {
+      firebase.initializeApp({
+        apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+        authDomain:"ofi2025-51ba9.firebaseapp.com",
+        projectId:"ofi2025-51ba9",
+        storageBucket:"ofi2025-51ba9.firebasestorage.app",
+        messagingSenderId:"345581339212",
+        appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+      });
+    }
+    
+    function setMetaAndLD(x){
+      try{
+        const title = x.titolo || 'Articolo — OFI';
+        const description = x.estratto || x.sottotitolo || 'Approfondimento da Onoranze Funebri Italia';
+        const image = x.immagine || x.cover || x.thumb || '../images/OFI-Social.png';
+        const url = location.href.split('#')[0];
+        document.title = title + ' — OFI';
+        // description meta (helps UX)
+        let md = document.querySelector('meta[name="description"]');
+        if(!md){ md = document.createElement('meta'); md.setAttribute('name','description'); document.head.appendChild(md); }
+        md.setAttribute('content', description);
+        // Open Graph (best effort client-side)
+        const ensureOG = (name, content)=>{
+          let m = document.querySelector(`meta[property="${name}"]`);
+          if(!m){ m=document.createElement('meta'); m.setAttribute('property', name); document.head.appendChild(m); }
+          m.setAttribute('content', content);
+        };
+        ensureOG('og:type','article');
+        ensureOG('og:site_name','OFI — Onoranze Funebri Italia');
+        ensureOG('og:title', title);
+        ensureOG('og:description', description);
+        ensureOG('og:image', image);
+        ensureOG('og:url', url);
+        // JSON-LD Article
+        const ld = {
+          "@context":"https://schema.org",
+          "@type":"NewsArticle",
+          "headline": title,
+          "description": description,
+          "image": [image],
+          "datePublished": x.dataPubblicazione || x.creatoIl || new Date().toISOString(),
+          "author": {"@type":"Organization","name":"Onoranze Funebri Italia"},
+          "publisher": {"@type":"Organization","name":"Onoranze Funebri Italia","logo":{"@type":"ImageObject","url":"../images/logo-ofi.png"}},
+          "mainEntityOfPage": url
+        };
+        let script = document.getElementById('ld-article');
+        if(!script){ script = document.createElement('script'); script.type='application/ld+json'; script.id='ld-article'; document.head.appendChild(script); }
+        script.textContent = JSON.stringify(ld);
+        // Share buttons
+        const shareBtn = document.getElementById('shareThis');
+        const copyBtn = document.getElementById('copyLink');
+        if (shareBtn){ shareBtn.dataset.url = url; }
+        if (copyBtn){
+          copyBtn.onclick = async ()=>{
+            try{ await navigator.clipboard.writeText(url); copyBtn.textContent='Copiato!'; setTimeout(()=>copyBtn.textContent='Copia link',1200); }catch{}
+          };
+        }
+        document.addEventListener('click', async (e)=>{
+          const b = e.target.closest('#shareThis'); if(!b) return;
+          const u = b.dataset.url || url;
+          try{
+            if (navigator.share){ await navigator.share({ title, text: description, url: u }); }
+            else{ await navigator.clipboard.writeText(u); b.textContent='Link copiato!'; setTimeout(()=>b.textContent='Condividi',1200); }
+          }catch{}
+        });
+      }catch(e){ /* no-op */ }
+    }
+const db=firebase.firestore();
+    const auth=firebase.auth();
+
+    const qp = new URLSearchParams(location.search);
+    const id = qp.get('id') || qp.get('doc') || (location.hash ? location.hash.substring(1) : '');
+    const errBox = document.getElementById('err');
+    const gate = document.getElementById('gate');
+    const contBox = document.getElementById('contenutoBox');
+    const cont = document.getElementById('contenuto');
+
+    if(!id){
+      errBox.textContent = "Articolo non trovato (manca l'ID nell'URL).";
+      errBox.hidden = false;
+    }else{
+      // Metadati (pubblici)
+      db.collection('articoli_pubblicati').doc(id).get().then(doc=>{
+        if(!doc.exists){ errBox.textContent='Articolo inesistente o rimosso.'; errBox.hidden=false; return; }
+        const x=doc.data();
+        document.getElementById('titolo').textContent=x.titolo||'Articolo';
+        setMetaAndLD(x);
+        document.getElementById('estratto').textContent=x.estratto||'';
+        if(x.immagineURL) document.getElementById('immagine').src=x.immagineURL;
+      }).catch(()=>{ errBox.textContent='Errore nel caricamento dei dati.'; errBox.hidden=false; });
+
+      // Gate login + contenuto da 'articoli_pubblicati' (campo 'contenuto')
+      auth.onAuthStateChanged(async user=>{
+        if(!user){
+          const link = document.getElementById('loginLink');
+          link.href = `../accesso.html#login&redirect=${encodeURIComponent(location.pathname + location.search)}`;
+          gate.hidden=false;
+          return;
+        }
+        try{
+          const meta=await db.collection('articoli_pubblicati').doc(id).get();
+          let testo = (meta.exists && meta.data().contenuto) ? meta.data().contenuto : '';
+          if(testo){
+            // Se nel backend salvi HTML pulito, qui può essere renderizzato.
+            cont.innerHTML = testo;
+            contBox.hidden = false;
+            gate.hidden = true;
+          }else{
+            errBox.textContent = 'Contenuto non disponibile.';
+            errBox.hidden = false;
+          }
+        }catch(e){
+          errBox.textContent = 'Errore nel recupero del contenuto.';
+          errBox.hidden = false;
+        }
+      });
+    }
+  </script>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="../images/agente-ofi.png" alt="" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in">
+        <p>Ciao, sono l’Agente OFI. Posso guidarti in ogni passo: dalle urgenze, ai preventivi, fino alla creazione di un ricordo.</p>
+      </div>
+      <div class="suggest">
+        <button class="chip" data-q="Come chiedo un preventivo?">Come chiedo un preventivo?</button>
+        <button class="chip" data-q="Come pubblico un necrologio?">Come pubblico un necrologio?</button>
+        <button class="chip" data-q="Cos’è il Luogo della Memoria?">Cos’è il Luogo della Memoria?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" action="#" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+  </section>
+
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+<script>
+  // Mobile submenu toggle (safe fallback)
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    if(!trigger) return;
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const open = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+<script>
+// Mobile submenu toggle + close on second tap / outside
+document.addEventListener('click', function(e){
+  const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+  const menu = document.getElementById('menuPanel');
+  if(trigger){
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const isOpen = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }else{
+    // click outside submenu: close all
+    if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  }
+});
+</script>
+</body>
+</html>

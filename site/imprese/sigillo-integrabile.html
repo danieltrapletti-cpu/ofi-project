@@ -1,0 +1,26 @@
+
+<div class="section" style="text-align:center;">
+  <h2>🎖 Sigillo di Affidabilità Nazionale OFI</h2>
+  <a href="https://www.onoranzefunebritalia.it/impresa/la-serenita" target="_blank">
+    <img src="images/sigillo-ofi.png" alt="Sigillo OFI" style="max-width:200px; margin:1rem auto;">
+  </a>
+  <p style="margin-bottom:1rem;">Questa impresa è ufficialmente riconosciuta da Onoranze Funebri Italia.</p>
+  <div>
+    <button onclick="condividiSigillo('facebook')">📘 Condividi su Facebook</button>
+    <button onclick="condividiSigillo('whatsapp')">📲 Condividi su WhatsApp</button>
+  </div>
+</div>
+
+<script>
+function condividiSigillo(piattaforma) {
+  const url = "https://www.onoranzefunebritalia.it/impresa/la-serenita";
+  const testo = "Siamo orgogliosi di essere riconosciuti da OFI – Onoranze Funebri Italia. Scopri il nostro profilo: " + url;
+  let link = "";
+  if (piattaforma === "facebook") {
+    link = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  } else if (piattaforma === "whatsapp") {
+    link = `https://wa.me/?text=${encodeURIComponent(testo)}`;
+  }
+  window.open(link, "_blank");
+}
+</script>

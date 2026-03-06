@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Accedi — OFI Cittadini</title>
+  <meta name="description" content="Accedi all'area riservata dei cittadini: pensieri, necrologi, richieste e profilo personale.">
+
+  <!-- Font set coerente con index.html -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="icon" href="../images/OFI-Social.png" type="image/png">
+  <script src="../ofi.js" defer></script>
+
+  <style>
+    /* === Login / Cittadini — UI coerente con OFI === */
+    .auth-wrap{display:grid;place-items:center;padding:2.2rem 0;}
+    .auth-card{max-width:760px;width:100%;padding:1.6rem;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--surface-text)}
+    .auth-title{font-size:1.05rem;margin:0 0 .8rem;font-weight:800;letter-spacing:.2px;color:var(--surface-text)}
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .auth-grid .full{grid-column:1/-1}
+    .auth-field label{display:block;font-size:.95rem;margin:0 0 .35rem;font-weight:700;color:var(--surface-text)}
+    .auth-field input[type="text"],
+    .auth-field input[type="email"],
+    .auth-field input[type="password"]{width:100%;height:46px;border-radius:12px;padding:0 .9rem;outline:none;transition:box-shadow .15s, border-color .15s;border:1px solid rgba(202,168,90,.35);background:transparent;color:var(--surface-text)}
+    .auth-field input::placeholder{color:var(--muted)}
+    .auth-field input:focus{box-shadow:0 0 0 3px rgba(202,168,90,.32);border-color:var(--gold)}
+    .auth-actions{display:flex;gap:12px;align-items:center;margin-top:.4rem}
+    .auth-actions .btn{flex:1;height:46px;border-radius:14px;font-weight:800}
+    .oauth{width:100%;height:46px;border-radius:14px;margin-bottom:14px;border:1px solid var(--gold);background:transparent;color:var(--surface-text);font-weight:800}
+    .oauth:hover{background:rgba(202,168,90,.10)}
+    .helper{margin-top:.65rem;font-size:.95rem;text-align:center}
+    .auth-field .checkbox{display:flex;align-items:center;gap:.6rem}
+    .auth-field input[type="checkbox"]{width:18px;height:18px;margin:0;vertical-align:middle;accent-color:var(--gold)}
+    .error{color:#ffb3b3;font-weight:700}
+    @media (max-width: 760px){ .auth-grid{grid-template-columns:1fr} }
+  </style>
+
+  <script>
+    window.RECAPTCHA_SITE_KEY = "6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb";
+    window.recaptchaReady = new Promise((resolve) => {
+      var s = document.createElement('script');
+      s.src = 'https://www.google.com/recaptcha/api.js?render=' + window.RECAPTCHA_SITE_KEY;
+      s.async = true;
+      s.onload = function() { grecaptcha.ready(resolve); };
+      document.head.appendChild(s);
+    });
+  </script>
+
+</head>
+<body>
+  <div class="overlay" id="overlay" hidden></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home">
+        <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1 class="section-title" style="text-align:center">Accedi</h1>
+        <p class="section-sub" style="text-align:center">Area riservata ai cittadini</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container auth-wrap">
+        <div class="auth-card">
+          <button id="googleBtn" class="oauth" type="button">↪ Accedi con Google</button>
+          <div class="auth-title">Oppure con email e password</div>
+
+          <form id="loginForm" class="auth-grid" novalidate>
+            <div class="auth-field full">
+              <label for="email">Email</label>
+              <input id="email" type="email" required placeholder="nome@email.it" autocomplete="username">
+            </div>
+
+            <div class="auth-field full">
+              <label for="password">Password</label>
+              <input id="password" type="password" required placeholder="La tua password" autocomplete="current-password">
+            </div>
+
+            <div class="full error" id="errorMsg" aria-live="polite"></div>
+
+            <div class="auth-actions full">
+              <button class="btn btn-primary" type="submit">Accedi</button>
+              <a class="btn btn-outline" href="reset-password.html" role="button" style="display:inline-grid;place-items:center">Password dimenticata</a>
+            </div>
+
+            <div class="helper full small" style="opacity:.9;text-align:center;margin-top:.8rem">
+              Non hai un account? <a href="registrazione-cittadino.html">Registrati</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+        </div>
+        <div class="f-links">
+          <a href="../articoli/articoli.html">Articoli</a>
+          <a href="../faq.html">FAQ</a>
+          <a href="../accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">
+          © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+          <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="../images/agente-ofi.png" alt="">
+  </button>
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="">
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in">
+        <p>Ciao, sono l’Agente OFI. Posso aiutarti a recuperare la password, registrarti e orientarti nella dashboard.</p>
+      </div>
+      <div class="suggest">
+        <button class="chip" data-q="Come mi registro?">Come mi registro?</button>
+        <button class="chip" data-q="Ho dimenticato la password">Ho dimenticato la password</button>
+        <button class="chip" data-q="Cosa posso fare da cittadino?">Cosa posso fare da cittadino?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+  </section>
+
+  <!-- Torna su -->
+  <button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signInWithPopup,
+      GoogleAuthProvider,
+      setPersistence,
+      browserLocalPersistence,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ✅ CONFIG come da tua conferma
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // ✅ Persistenza: senza questo, su altre pagine potresti risultare "non loggato"
+    await setPersistence(auth, browserLocalPersistence);
+
+    const errBox = document.getElementById('errorMsg');
+
+    // ✅ ritorno alla pagina precedente (es. necrologio)
+    const urlParams = new URLSearchParams(location.search);
+    const continueToRaw =
+  urlParams.get('continue') ||
+  urlParams.get('next') ||
+  urlParams.get('redirect') ||
+  '';
+    const continueTo = (continueToRaw.startsWith('/') || continueToRaw.startsWith('http')) ? continueToRaw : '';
+
+    // 🔁 Fallback dopo login (se non arrivi da ?continue=)
+    // Se la tua dashboard ha un nome diverso, cambia SOLO questa costante:
+    const DEFAULT_AFTER_LOGIN = "/cittadini/dashboard-cittadino.html";
+
+    async function ensureCitizen(user){
+      // Se non esiste il profilo cittadino → non è cittadino
+      const snap = await getDoc(doc(db, 'utenti_cittadini', user.uid));
+      if (!snap.exists()){
+        errBox.textContent = "Questo account non risulta registrato come Cittadino OFI. Usa l’Area Imprese oppure completa la registrazione cittadino.";
+        try { await signOut(auth); } catch {}
+        return false;
+      }
+      return true;
+    }
+
+    // ✅ FIX: prima era ricorsiva e poteva entrare in loop infinito
+    function goAfterLogin(){
+      // 1) priorità al parametro ?continue=
+      let target = continueTo || '';
+
+      // 2) fallback robusto: recupera il ritorno salvato prima del redirect (evita perdita token)
+      if (!target){
+        try{
+          target = sessionStorage.getItem('ofi_citizen_continue') || '';
+        }catch(e){}
+      }
+
+      // 3) se abbiamo un token di consegna “pendente”, assicuriamoci che resti nell'URL di destinazione
+      try{
+        const pending = sessionStorage.getItem('ofi_pending_accept') || '';
+        if (pending){
+          const u = new URL(target || DEFAULT_AFTER_LOGIN, location.origin);
+          if (!u.searchParams.get('accept')) u.searchParams.set('accept', pending);
+          target = u.pathname + (u.search || '');
+        }
+      }catch(e){}
+
+      // 4) pulizia storage (best effort)
+      try{
+        sessionStorage.removeItem('ofi_citizen_continue');
+        // non rimuovo ofi_pending_accept qui: lo rimuoviamo quando la consegna viene accettata con successo
+      }catch(e){}
+
+      location.href = target || DEFAULT_AFTER_LOGIN;
+    }
+    
+    async function verifyRecaptcha(action){
+      if(!window.RECAPTCHA_SITE_KEY){ return { ok:false, error:'missing_site_key' }; }
+      await window.recaptchaReady;
+      const token = await grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action });
+      const res = await fetch('/.netlify/functions/recaptcha-verify', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ token, action })
+      });
+      return await res.json();
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errBox.textContent = "";
+      const email = document.getElementById('email').value.trim();
+      const pass = document.getElementById('password').value;
+
+      try {
+        const check = await verifyRecaptcha('citizen_login');
+        if(!check.ok) throw new Error('Verifica reCAPTCHA non valida');
+
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if (await ensureCitizen(cred.user)) { goAfterLogin(); }
+      } catch(err) {
+        errBox.textContent = "Accesso non riuscito. " + (err?.message || '');
+      }
+    });
+
+    document.getElementById('googleBtn').addEventListener('click', async () => {
+      errBox.textContent = "";
+      try {
+        const check = await verifyRecaptcha('citizen_google_login');
+        if(!check.ok) throw new Error('Verifica reCAPTCHA non valida');
+
+        const result = await signInWithPopup(auth, provider);
+        if (await ensureCitizen(result.user)) { goAfterLogin(); }
+      } catch(err) {
+        errBox.textContent = "Accesso Google non riuscito. " + (err?.message || '');
+      }
+    });
+  </script>
+
+  <!-- Submenu mobile graceful close -->
+  <script>
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    const menu = document.getElementById('menuPanel');
+    if(trigger){
+      e.preventDefault();
+      const li = trigger.parentElement;
+      const isOpen = li.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }else if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  });
+  </script>
+</body>
+</html>

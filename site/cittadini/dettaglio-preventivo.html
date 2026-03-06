@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dettaglio Preventivo | OFI</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f7f9fb;
+      margin: 0;
+      padding: 0;
+      color: #002c5d;
+    }
+    header {
+      background: #002c5d;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .section h2 {
+      font-size: 1.2rem;
+      color: #002c5d;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .row {
+      margin-bottom: 0.8rem;
+    }
+    .row strong {
+      display: inline-block;
+      width: 200px;
+      color: #333;
+    }
+    .stato {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    .attesa { background: #fff3cd; color: #856404; }
+    .approvato { background: #c8e6c9; color: #256029; }
+    .inviato { background: #bbdefb; color: #0d47a1; }
+    .rifiutato { background: #ffcdd2; color: #c62828; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📄 Dettaglio Preventivo</h1>
+  </header>
+  <div class="container" id="contenuto">
+    <p style="text-align:center;">⏳ Caricamento in corso...</p>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const id = new URLSearchParams(window.location.search).get("id");
+    const contenitore = document.getElementById("contenuto");
+
+    if (!id) {
+      contenitore.innerHTML = "<p style='color:red;text-align:center;'>❌ ID non valido</p>";
+    } else {
+      db.collection("preventivi").doc(id).get().then(doc => {
+        if (!doc.exists) {
+          contenitore.innerHTML = "<p style='color:red;text-align:center;'>❌ Preventivo non trovato</p>";
+          return;
+        }
+
+        const d = doc.data();
+        const imprese = Array.isArray(d.imprese) ? d.imprese.join(", ") : "-";
+        const data = new Date(d.timestamp || Date.now());
+        const dataStr = `${String(data.getDate()).padStart(2, "0")}/${String(data.getMonth()+1).padStart(2, "0")}/${data.getFullYear()}`;
+        const stato = (d.stato || "in attesa").toLowerCase();
+
+        contenitore.innerHTML = `
+          <div class="section">
+            <h2>📌 Informazioni Generali</h2>
+            <div class="row"><strong>ID Preventivo:</strong> ${doc.id}</div>
+            <div id="scadenzaBox" style="margin-bottom:1rem;"></div><div class="row"><strong>Stato:</strong> <span class="stato ${stato}">${d.stato}</span></div>
+            <div class="row"><strong>Data invio:</strong> ${dataStr}</div>
+            <div class="row"><strong>Modalità:</strong> ${d.modalità || "-"}</div>
+            <div class="row"><strong>Imprese contattate:</strong> ${imprese}</div>
+          </div>
+
+          <div class="section">
+            <h2>👤 Richiedente</h2>
+            <div class="row"><strong>Nome:</strong> ${d["Nome e Cognome"] || "-"}</div>
+            <div class="row"><strong>Email:</strong> ${d["Email"] || "-"}</div>
+            <div class="row"><strong>Telefono:</strong> ${d["Telefono"] || "-"}</div>
+            <div class="row"><strong>Residenza:</strong> ${d["Comune di Residenza"] || "-"}</div>
+          </div>
+
+          <div class="section">
+            <h2>📍 Dettagli Servizio</h2>
+            <div class="row"><strong>Luogo del servizio:</strong> ${d["Luogo del servizio funebre"] || "-"}</div>
+            <div class="row"><strong>Luogo del decesso:</strong> ${d["Luogo presunto del decesso"] || "-"}</div>
+            <div class="row"><strong>Tipo cerimonia:</strong> ${d["Tipo di cerimonia prevista"] || "-"}</div>
+            <div class="row"><strong>Luogo cerimonia:</strong> ${d["Luogo della cerimonia (se previsto)"] || "-"}</div>
+            <div class="row"><strong>Tipo servizio:</strong> ${d["Tipo di servizio desiderato"] || "-"}</div>
+            <div class="row"><strong>Sepoltura:</strong> ${d["Tipo di sepoltura"] || "-"}</div>
+            <div class="row"><strong>Cimitero:</strong> ${d["Cimitero di destinazione (se noto)"] || "-"}</div>
+          </div>
+
+          <div class="section">
+            <h2>📌 Note e Servizi Aggiuntivi</h2>
+            <div class="row"><strong>Note aggiuntive:</strong> ${d["Note aggiuntive o richieste particolari"] || "Nessuna"}</div>
+          
+        <div class="section">
+          <h2>🕓 Cronologia Stato</h2>
+          <div class="row"><strong>✔️ Inviato:</strong> ${dataStr} (${d.modalità || "-"})</div>
+          <div class="row"><strong>📌 Stato attuale:</strong> ${d.stato}</div>
+          ${d.stato === "approvato" ? '<div class="row"><strong>✅ Approvato da admin</strong></div>' : ''}
+          ${d.imprese && d.imprese.length ? '<div class="row"><strong>📬 Inviato a:</strong> ' + d.imprese.join(", ") + '</div>' : ''}
+          ${d.visualizzatoDa && d.visualizzatoDa.length ? '<div class="row"><strong>👁️ Visualizzato da:</strong> ' + d.visualizzatoDa.join(", ") + '</div>' : ''}
+        </div>
+      </div>
+      `;
+      }).catch(err => {
+        contenitore.innerHTML = "<p style='color:red;text-align:center;'>❌ Errore nel recupero</p>";
+        console.error(err);
+      });
+    }
+  
+// Verifica scadenza automatica a 7 giorni
+if (d.timestamp) {
+  const now = new Date();
+  const invio = new Date(d.timestamp);
+  const scadenza = new Date(invio.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const scaduto = now > scadenza && d.stato !== "risposto";
+  if (scaduto) {
+    document.getElementById("scadenzaBox").innerHTML = '<div style="background:#ffebee; padding:10px; border-left:5px solid #c62828; border-radius:6px; color:#b71c1c;">⚠️ Questa richiesta è scaduta il ' + scadenza.toLocaleDateString("it-IT") + ' perché non sono arrivate risposte in tempo utile.</div>';
+  }
+}
+</script>
+</body>
+</html>

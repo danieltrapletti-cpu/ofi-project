@@ -1,0 +1,27 @@
+[
+  {
+    "idNecrologio": 1,
+    "nome": "Giovanni",
+    "testo": "Ti ricorderemo per sempre.",
+    "approvato": true,
+    "cuori": 3,
+    "rose": 1,
+    "risposte": [
+      {
+        "nome": "Famiglia Rossi",
+        "testo": "Grazie per il tuo pensiero.",
+        "cuori": 1,
+        "rose": 0
+      }
+    ]
+  },
+  {
+    "idNecrologio": 1,
+    "nome": "Luca",
+    "testo": "Un abbraccio alla famiglia.",
+    "approvato": false,
+    "cuori": 0,
+    "rose": 0,
+    "risposte": []
+  }
+]

@@ -1,0 +1,542 @@
+/* ======================================================
+   LUOGO DELLA MEMORIA — VISITA (Nuovo layout "LUOGO")
+   File: site/luogo-view.css
+   Visione: sobrio, istituzionale, persona al centro
+   Foto: ritratto "museo" (A)
+   ====================================================== */
+
+:root{
+  --max: 1120px;
+  --radius: 26px;
+
+  --gold: rgba(202,168,90,.95);
+  --goldSoft: rgba(202,168,90,.18);
+
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.72);
+  --muted2: rgba(255,255,255,.56);
+
+  --card: rgba(15,23,42,.60);
+  --card2: rgba(2,6,23,.55);
+  --line: rgba(255,255,255,.10);
+  --line2: rgba(255,255,255,.14);
+
+  --paper: rgba(255,255,255,.06);
+  --shadow: 0 26px 80px rgba(0,0,0,.60);
+
+  --ease: cubic-bezier(.18,.9,.18,1);
+}
+
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(202,168,90,.10), transparent 58%),
+    radial-gradient(circle at 85% 10%, rgba(59,130,246,.10), transparent 55%),
+    linear-gradient(180deg, #050c1c 0%, #020617 100%);
+}
+
+/* Header (usa ofi.css) */
+main.ofi-main{
+  padding-top: 5.8rem;
+  padding-bottom: 3.5rem;
+}
+
+/* ===============================
+   CONTENITORE
+   =============================== */
+.wrap{
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 1.05rem 1.05rem 0;
+}
+
+/* micro-respiro ingresso */
+.fadeIn{
+  animation: fadeIn 820ms var(--ease) both;
+}
+@keyframes fadeIn{
+  from{ opacity:0; transform: translateY(10px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+/* ===============================
+   HERO “LUOGO”
+   =============================== */
+.hero{
+  position: relative;
+  border-radius: calc(var(--radius) + 6px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(202,168,90,.12), transparent 55%),
+    radial-gradient(circle at 85% 10%, rgba(59,130,246,.10), transparent 55%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid rgba(202,168,90,.18);
+  box-shadow: var(--shadow);
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255,255,255,.10), transparent 55%),
+    linear-gradient(135deg, rgba(255,255,255,.08), transparent 42%);
+  opacity:.55;
+  pointer-events:none;
+}
+
+.heroInner{
+  position: relative;
+  z-index: 1;
+  padding: 26px 18px 22px;
+  display:grid;
+  justify-items:center;
+  text-align:center;
+}
+
+.kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.42rem .85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.38);
+  background: rgba(0,0,0,.22);
+  backdrop-filter: blur(8px);
+  color: rgba(253,230,138,.95);
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform: uppercase;
+}
+
+.kicker:before{
+  content:"";
+  width:22px;
+  height:1px;
+  background: linear-gradient(90deg, transparent, rgba(250,204,21,.95));
+}
+
+/* Nome oro */
+.heroName{
+  margin: 14px 0 10px;
+  font-size: clamp(1.85rem, 3.6vw, 3.1rem);
+  font-weight: 950;
+  letter-spacing:.03em;
+  color: rgba(253,230,138,.98);
+  text-shadow: 0 12px 34px rgba(0,0,0,.62);
+  line-height:1.06;
+}
+
+.heroMeta{
+  margin: 0 0 16px;
+  color: rgba(255,255,255,.76);
+  font-size: .98rem;
+  line-height:1.35;
+}
+
+/* Ritratto “museo” */
+.portraitWrap{
+  width: min(520px, 92vw);
+  margin: 8px 0 12px;
+  border-radius: 22px;
+  overflow:hidden;
+  border: 1px solid rgba(202,168,90,.28);
+  background: rgba(0,0,0,.18);
+  box-shadow: 0 18px 56px rgba(0,0,0,.55);
+}
+
+.portrait{
+  width:100%;
+  height: min(520px, 72vh);
+  max-height: 520px;
+  object-fit: cover;
+  display:block;
+  filter: saturate(1.02) contrast(1.02);
+}
+
+/* fallback foto assente */
+.portraitEmpty{
+  display:grid;
+  place-items:center;
+  padding: 26px 16px;
+  color: rgba(255,255,255,.78);
+  min-height: 260px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(202,168,90,.10), transparent 55%),
+    radial-gradient(circle at 85% 10%, rgba(59,130,246,.10), transparent 55%),
+    rgba(0,0,0,.12);
+}
+
+.heroActions{
+  display:flex;
+  gap:.55rem;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top: 8px;
+}
+
+/* ===============================
+   SEZIONI
+   =============================== */
+.section{
+  margin-top: 18px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(2,6,23,.35);
+  overflow:hidden;
+}
+
+.sectionHead{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap: .8rem;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.sectionTitle{
+  font-weight: 950;
+  letter-spacing:.12em;
+  text-transform: uppercase;
+  font-size:.82rem;
+  color: rgba(253,230,138,.95);
+}
+
+.sectionSub{
+  color: rgba(255,255,255,.66);
+  font-size:.86rem;
+}
+
+.sectionBody{
+  padding: 14px;
+}
+
+/* ===============================
+   RICORDI (parole)
+   =============================== */
+.memList{
+  display:grid;
+  gap:.7rem;
+}
+
+.memCard{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  padding: .9rem .95rem;
+}
+
+.memMeta{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:.75rem;
+  flex-wrap:wrap;
+  margin-bottom:.55rem;
+  color: rgba(253,230,138,.92);
+  font-size:.74rem;
+  letter-spacing:.14em;
+  text-transform: uppercase;
+}
+
+.memText{
+  margin:0;
+  color: rgba(255,255,255,.90);
+  line-height:1.65;
+  white-space: pre-wrap;
+}
+
+.pager{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:.6rem;
+  margin-top: .9rem;
+}
+
+.pagerInfo{
+  color: rgba(255,255,255,.68);
+  font-size:.86rem;
+}
+
+/* ===============================
+   ALBUM
+   =============================== */
+.gridAlbum{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: .6rem;
+}
+
+.mediaTile{
+  border-radius: 18px;
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  position:relative;
+  aspect-ratio: 4/3;
+  cursor:pointer;
+}
+.mediaTile img, .mediaTile video{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+.mediaCap{
+  position:absolute;
+  left:.5rem; right:.5rem; bottom:.5rem;
+  padding:.35rem .5rem;
+  border-radius: 12px;
+  background: rgba(2,6,23,.72);
+  border: 1px solid rgba(255,255,255,.10);
+  font-size:.78rem;
+  color: rgba(255,255,255,.88);
+  backdrop-filter: blur(6px);
+  max-height: 3.2em;
+  overflow:hidden;
+}
+
+/* ===============================
+   BOTTONI
+   =============================== */
+.btn{
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(15,23,42,.70);
+  color: rgba(255,255,255,.92);
+  padding: .52rem .95rem;
+  cursor:pointer;
+  font-weight: 850;
+  letter-spacing:.02em;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+}
+.btn.primary{
+  border-color: rgba(202,168,90,.85);
+  background: linear-gradient(135deg, rgba(202,168,90,.92), rgba(250,204,21,.86));
+  color: #111827;
+  box-shadow: 0 14px 34px rgba(202,168,90,.34);
+}
+.btn:disabled{ opacity:.55; cursor:default; box-shadow:none; }
+
+/* ===============================
+   NOTE
+   =============================== */
+.note{
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: rgba(202,168,90,.10);
+  padding: .85rem .9rem;
+  color: rgba(255,255,255,.90);
+  line-height:1.45;
+}
+.note strong{ color: rgba(253,230,138,.95); }
+
+.footerNote{
+  max-width: var(--max);
+  margin: 1.1rem auto 0;
+  padding: 0 1.05rem 2.6rem;
+  color: var(--muted2);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+/* ===============================
+   OVERLAY
+   =============================== */
+.overlay{
+  position:fixed;
+  inset:0;
+  background: rgba(2,6,23,.78);
+  display:none;
+  place-items:center;
+  z-index: 9999;
+  padding: 18px;
+  backdrop-filter: blur(7px);
+}
+.overlay.open{ display:grid; }
+
+.overlayCard{
+  width: min(900px, 96vw);
+  max-height: min(82vh, 760px);
+  overflow:hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.55);
+  background: radial-gradient(circle at top left, rgba(202,168,90,.14), transparent 55%), #020617;
+  box-shadow: 0 30px 90px rgba(0,0,0,.82);
+  color: #f9fafb;
+  display:flex;
+  flex-direction:column;
+}
+.overlayHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.overlayTitle{
+  font-weight: 950;
+  letter-spacing:.08em;
+  text-transform: uppercase;
+  font-size:.86rem;
+  color: rgba(253,230,138,.95);
+}
+.overlayClose{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.92);
+  cursor:pointer;
+}
+.overlayBody{
+  padding: 14px;
+  overflow:auto;
+}
+
+/* ===============================
+   FORM “LASCIA RICORDO”
+   =============================== */
+.formGrid{
+  display:grid;
+  gap:.6rem;
+  margin-top:.85rem;
+}
+.formRow2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:.6rem;
+}
+.inputLike{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  padding:.7rem .85rem;
+  outline:none;
+}
+.textareaLike{
+  min-height:120px;
+  resize:vertical;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  padding:.7rem .85rem;
+  line-height:1.55;
+  outline:none;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+@media (max-width: 860px){
+  .gridAlbum{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 560px){
+  .heroInner{ padding: 22px 14px 20px; }
+  .formRow2{ grid-template-columns: 1fr; }
+  .gridAlbum{ grid-template-columns: repeat(2, minmax(0,1fr)); gap:.55rem; }
+}
+
+/* Riduzione motion */
+@media (prefers-reduced-motion: reduce){
+  .fadeIn{ animation:none; opacity:1; transform:none; }
+}
+
+/* ===============================
+   THEME compatibile con ofi.js
+   =============================== */
+
+/* LIGHT quando NON theme-dark */
+body:not(.theme-dark){
+  color: rgba(15,23,42,.92);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(202,168,90,.18), transparent 55%),
+    radial-gradient(circle at 85% 12%, rgba(59,130,246,.12), transparent 55%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+body:not(.theme-dark) .hero{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(202,168,90,.18), transparent 55%),
+    radial-gradient(circle at 85% 10%, rgba(59,130,246,.12), transparent 55%),
+    rgba(255,255,255,.78);
+  border-color: rgba(15,23,42,.10);
+}
+
+body:not(.theme-dark) .heroMeta{ color: rgba(15,23,42,.70); }
+body:not(.theme-dark) .section{
+  border-color: rgba(15,23,42,.10);
+  background: rgba(255,255,255,.75);
+}
+body:not(.theme-dark) .sectionSub{ color: rgba(15,23,42,.65); }
+body:not(.theme-dark) .memCard{
+  border-color: rgba(15,23,42,.10);
+  background: rgba(255,255,255,.85);
+}
+body:not(.theme-dark) .memText{ color: rgba(15,23,42,.90); }
+body:not(.theme-dark) .pagerInfo{ color: rgba(15,23,42,.65); }
+
+body:not(.theme-dark) .btn{
+  background: rgba(255,255,255,.88);
+  color: rgba(15,23,42,.88);
+  border-color: rgba(15,23,42,.12);
+}
+body:not(.theme-dark) .note{
+  color: rgba(15,23,42,.86);
+  background: rgba(202,168,90,.12);
+  border-color: rgba(202,168,90,.28);
+}
+body:not(.theme-dark) .note strong{ color: rgba(124,90,0,.95); }
+body:not(.theme-dark) .footerNote{ color: rgba(15,23,42,.65); }
+
+
+/* ===============================
+   COPERTINA (solo ingresso)
+   =============================== */
+body.cover-only .hero{
+  min-height: calc(100vh - 5.8rem - 3.5rem);
+  display: grid;
+  align-items: center;
+}
+body.cover-only .heroInner{
+  padding: 34px 18px 28px;
+}
+.heroQuote{
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.78);
+  font-size: .96rem;
+  line-height: 1.45;
+  max-width: 44rem;
+}
+.coverHint{
+  margin: 14px 0 0;
+  color: rgba(255,255,255,.58);
+  font-size: .86rem;
+  line-height: 1.45;
+  max-width: 42rem;
+}
+
+/* link disabilitato (accesso family) */
+.btn.is-disabled,
+a.btn[aria-disabled="true"]{
+  pointer-events:none;
+  opacity:.55;
+  filter: saturate(.95);
+}
+
+/* LIGHT: quote/hint */
+body:not(.theme-dark) .heroQuote{ color: rgba(15,23,42,.72); }
+body:not(.theme-dark) .coverHint{ color: rgba(15,23,42,.55); }

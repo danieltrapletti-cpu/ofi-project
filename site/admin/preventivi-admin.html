@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>OFI · Preventivi (gestione)</title>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0f1420">
+  <link rel="apple-touch-icon" href="/images/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="ofi-admin.css">
+  <link rel="stylesheet" href="ofi-admin-fix.css">
+
+  <style>
+    .wrap{max-width:1100px;margin:0 auto;padding:1.25rem}
+    h1.section-title{font-weight:900;letter-spacing:.2px;font-size:clamp(1.6rem,2.4vw,2.4rem);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .count-badge{display:inline-block;min-width:22px;padding:0 .45rem;line-height:22px;border-radius:999px;background:var(--gold);color:#111;font-size:.75rem;font-weight:900}
+    .section-sub{opacity:.9;margin:.2rem 0 1rem}
+
+    .toolbar{
+      position:sticky; top:var(--headerH); z-index:1500;
+      display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
+      margin:.6rem 0 1rem; background:var(--surface);
+      padding:.5rem .2rem; border-bottom:1px solid var(--border)
+    }
+    .search{flex:1;min-width:220px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:.55rem .8rem}
+
+    .filters{display:flex;gap:.35rem;flex-wrap:wrap}
+    .chip-filter{
+      border-radius:999px;border:1px solid var(--border);
+      padding:.2rem .75rem;font-size:.8rem;cursor:pointer;
+      background:var(--surfaceElevated);color:var(--textSoft);
+    }
+    .chip-filter.active{
+      border-color:rgba(202,168,90,.8);
+      background:var(--goldSoft);color:#111;font-weight:800;
+    }
+
+    .kpi{display:flex;gap:.45rem;flex-wrap:wrap;margin-left:auto}
+    .kpi .pill{border:1px solid rgba(202,168,90,.35);border-radius:999px;padding:.22rem .6rem;font-weight:800;background:var(--surface);color:var(--text);font-size:.8rem}
+
+    .list{display:grid;gap:1rem}
+    .card{
+      border:1px solid rgba(202,168,90,.35);
+      background:var(--surface);color:var(--text);
+      border-radius:16px;padding:1rem;
+      box-shadow:0 12px 32px rgba(0,0,0,.06);outline:0
+    }
+    .card-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:.35rem}
+    .card-title{font-weight:800;font-size:1rem;display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+    .card-meta{font-size:.8rem;opacity:.8}
+    .badge-stato{
+      border-radius:999px;padding:.12rem .55rem;
+      font-size:.75rem;font-weight:800;
+      text-transform:uppercase;letter-spacing:.04em;
+    }
+    .badge-in_attesa{background:#34495e;color:#fff}
+    .badge-approvato{background:#1b5e20;color:#fff}
+    .badge-rifiutato{background:#b71c1c;color:#fff}
+    .badge-scaduto{background:#6d4c41;color:#fff}
+
+    .details-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:.4rem .9rem;
+      font-size:.85rem;margin-top:.35rem
+    }
+    .kv-label{font-size:.75rem;opacity:.7}
+    .kv-value{font-weight:600}
+
+    .servizi-pill{
+      display:inline-block;
+      margin:.1rem .25rem .1rem 0;
+      padding:.18rem .5rem;
+      border-radius:999px;
+      font-size:.75rem;
+      border:1px solid rgba(202,168,90,.45);
+      background:rgba(202,168,90,.04);
+    }
+
+    .card-footer{
+      margin-top:.75rem;
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      font-size:.8rem;
+    }
+    .btn-mini{
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--surfaceElevated, var(--surface));
+      padding:.25rem .7rem;
+      font-size:.78rem;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .btn-mini:hover{
+      filter:brightness(1.05);
+    }
+    .btn-mini-danger{
+      border-color:rgba(220,38,38,.85);
+      color:#fee2e2;
+    }
+    .countdown{
+      display:inline-flex;
+      align-items:center;
+      margin-top:.2rem;
+      padding:.12rem .55rem;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:700;
+    }
+    .countdown-ok{
+      background:rgba(34,197,94,.12);
+      color:#bbf7d0;
+    }
+    .countdown-warn{
+      background:rgba(245,158,11,.16);
+      color:#fed7aa;
+    }
+    .countdown-danger{
+      background:rgba(220,38,38,.16);
+      color:#fecaca;
+    }
+    .countdown-expired{
+      background:rgba(55,65,81,.8);
+      color:#f9fafb;
+    }
+
+    .empty{
+      padding:2rem 1rem;text-align:center;
+      opacity:.7;border:1px dashed var(--border);
+      border-radius:14px;font-size:.9rem
+    }
+
+    .skeleton{
+      border-radius:16px;
+      background:linear-gradient(90deg, rgba(255,255,255,.03),rgba(255,255,255,.07),rgba(255,255,255,.03));
+      height:92px;animation:pulse 1.2s linear infinite;background-size:200% 100%;
+    }
+    @keyframes pulse{0%{background-position:0 0}100%{background-position:-200% 0}}
+  </style>
+</head>
+<body>
+  <!-- HEADER come approvazioni-preventivi -->
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="/index.html">
+        <img src="/images/logo-ofi-orizzontale.png" alt="Onoranze Funebri Italia">
+      </a>
+
+      <button id="menuToggle" class="menu-toggle" aria-label="Apri il menu principale">☰</button>
+
+      <ul id="menuPanel" class="menu">
+        <li><a href="/index.html#come-funziona">Come funziona</a></li>
+        <li><a href="/index.html#per-chi">Per chi è</a></li>
+        <li><a href="/articoli/articoli.html">Articoli</a></li>
+        <li><a href="/index.html#ricordi">Ricordi</a></li>
+        <li><a href="/index.html#mappa">Vicino a te</a></li>
+        <li><a href="/index.html#video">Video</a></li>
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/admin/dashboard-admin.html">Area Admin</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" title="Tema">
+        <span class="mode mode-auto" aria-hidden="true">A</span>
+        <span class="mode mode-light" aria-hidden="true">☀</span>
+        <span class="mode mode-dark" aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <div class="app" id="appRoot">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigazione amministrazione">
+      <div class="sb-head">
+        <img alt="Badge OFI" src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23c9a227'/><stop offset='100%' stop-color='%23f4d56a'/></linearGradient></defs><circle cx='14' cy='14' r='13' fill='url(%23g)' stroke='%238f6c00' stroke-width='2'/><text x='50%' y='54%' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%230d1b2a' font-weight='700'>OFI</text></svg>">
+        <strong>Amministrazione OFI</strong>
+        <button class="sb-close" id="sbClose" aria-label="Chiudi pannello">✕</button>
+      </div>
+
+      <nav class="sb-menu" id="sbMenu">
+        <a class="sb-link" href="/admin/dashboard-admin.html">🏠 Dashboard</a>
+
+        <div class="sb-cat">📝 Approvazioni</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Approvazioni ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/approvazioni-registrazioni.html">✅ Registrazioni <span class="pill" id="cntRegTot">0</span></a></li>
+            <li><a class="sb-link" href="/admin/approvazioni-preventivi.html">📬 Preventivi <span class="pill" id="cntPrev">0</span></a></li>
+            <li><a class="sb-link" href="/admin/approvazioni-necrologi.html">🕯 Necrologi <span class="pill" id="cntNecro">0</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">📚 Anagrafiche</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Anagrafiche ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/utenti-admin.html">👤 Cittadini <span class="pill" id="cntCitt">0</span></a></li>
+            <li><a class="sb-link" href="/admin/imprese-admin.html">🏢 Imprese <span class="pill" id="cntImprese">0</span></a></li>
+            <li><a class="sb-link" href="/admin/fornitori-admin.html">📦 Fornitori <span class="pill" id="cntForn">0</span></a></li>
+            <li><a class="sb-link" href="/admin/supporto-admin.html">🧑‍💼 Figure di supporto <span class="pill" id="cntSupp">0</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">🗂 Gestione</div>
+        <div class="has-sub open">
+          <a href="#" class="sub-toggle" aria-expanded="true">Gestione ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link active" href="/admin/preventivi-admin.html">📄 Preventivi (gestione)</a></li>
+            <li><a class="sb-link" href="/admin/necrologi-admin.html">🕯 Necrologi (storico)</a></li>
+            <li><a class="sb-link" href="/admin/articoli-pubblicati-admin.html">📝 Articoli pubblicati</a></li>
+            <li><a class="sb-link" href="/admin/articoli-gestione-admin.html">🗂 Gestione articoli</a></li>
+            <li><a class="sb-link" href="/admin/presentazioni-imprese-admin.html">📣 Presentazioni imprese</a></li>
+            <li><a class="sb-link" href="/admin/segnalazioni-admin.html">🧠 Segnalazioni</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <div id="sbOverlay" class="overlay" hidden></div>
+    <button id="sbFab" class="sb-fab" aria-label="Apri Sidebar">☰</button>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar" role="region" aria-label="Barra superiore">
+        <div class="ident">
+          <div class="hint">Sei autenticato come</div>
+          <div id="adminEmail">—</div>
+        </div>
+        <div class="actions">
+          <img id="adminAvatar" class="avatar" src="./images/logo-ofi.png" alt="Admin"/>
+          <a class="btn-ghost account" href="/admin/login.html"><span>Cambia account</span></a>
+          <button class="btn-ghost" id="btnLogout">Logout</button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <h1 class="section-title">
+          Preventivi (gestione)
+          <span class="count-badge" id="countTot">0</span>
+        </h1>
+        <p class="section-sub">
+          Qui vedi <strong>tutti</strong> i preventivi registrati: in attesa, approvati, rifiutati o scaduti.
+        </p>
+
+        <div class="toolbar" role="region" aria-label="Filtri e KPI">
+          <input id="search" class="search" type="search" placeholder="Cerca per nome, email, comune o ID…" />
+
+          <div class="filters" aria-label="Filtra per stato">
+            <button type="button" class="chip-filter active" data-filter="all">Tutti</button>
+            <button type="button" class="chip-filter" data-filter="in_attesa">In attesa</button>
+            <button type="button" class="chip-filter" data-filter="approvato">Approvati</button>
+            <button type="button" class="chip-filter" data-filter="rifiutato">Rifiutati</button>
+            <button type="button" class="chip-filter" data-filter="scaduto">Scaduti</button>
+          </div>
+
+          <div class="kpi">
+            <span class="pill" id="kAtt">In attesa: 0</span>
+            <span class="pill" id="kAppr">Approvati: 0</span>
+            <span class="pill" id="kRif">Rifiutati: 0</span>
+            <span class="pill" id="kScad">Scaduti: 0</span>
+          </div>
+        </div>
+
+        <div id="list" class="list" aria-live="polite"></div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="sr-only">OFI © 2025</footer>
+
+  <!-- Script menu + tema + sidebar (copiati da approvazioni-preventivi) -->
+  <script type="module">
+    const $id = (x)=>document.getElementById(x);
+    const html = document.documentElement;
+
+    const menuToggle = $id('menuToggle');
+    const menuPanel  = $id('menuPanel');
+    const menuOverlay= $id('menuOverlay');
+
+    function openMenu(on){
+      menuPanel.classList.toggle('open', on);
+      menuPanel.setAttribute('aria-hidden', on ? 'false' : 'true');
+      menuOverlay.hidden = !on;
+      html.classList.toggle('menu-open', on);
+    }
+    menuToggle?.addEventListener('click', ()=> openMenu(true));
+    $id('menuClose')?.addEventListener('click', ()=> openMenu(false));
+    menuOverlay?.addEventListener('click', ()=> openMenu(false));
+
+    menuPanel?.querySelectorAll('.has-sub > a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const li = a.parentElement;
+        const open = !li.classList.contains('open');
+        li.classList.toggle('open', open);
+        a.setAttribute('aria-expanded', open?'true':'false');
+      });
+    });
+
+    menuPanel?.querySelectorAll('a[href]').forEach(a=>{
+      const here = location.pathname.replace(/\/+$/,'');
+      const href = a.getAttribute('href').replace(/\/+$/,'');
+      if(href && (here.endsWith(href) || here === href)) a.setAttribute('aria-current','page');
+    });
+
+    const themeBtn = $id('themeToggle');
+    const KEY = 'ofi-theme';
+    function applyTheme(v){ html.setAttribute('data-theme', v); localStorage.setItem(KEY, v); themeBtn.dataset.mode = v; }
+    function nextTheme(cur){ if(cur==='auto') return 'light'; if(cur==='light') return 'dark'; return 'auto'; }
+    applyTheme(localStorage.getItem(KEY) || 'auto');
+    themeBtn?.addEventListener('click', ()=> applyTheme(nextTheme(html.getAttribute('data-theme') || 'auto')));
+
+    const sidebar   = $id('sidebar');
+    const sbOverlay = $id('sbOverlay');
+    const sbFab     = $id('sbFab');
+    function openSidebar(on){
+      sidebar.classList.toggle('open', on);
+      sbOverlay.hidden = !on;
+      html.classList.toggle('sidebar-open', on);
+      document.body.classList.toggle('sidebar-open', on);
+    }
+    $id('sbClose')?.addEventListener('click', ()=> openSidebar(false));
+    sbOverlay?.addEventListener('click', ()=> openSidebar(false));
+    sbFab?.addEventListener('click', ()=> openSidebar(!sidebar.classList.contains('open')));
+
+    (function highlightSidebar(){
+      const here = location.pathname.replace(/\/+$/,'');
+      document.querySelectorAll('.sb-link[href]').forEach(a=>{
+        const href = a.getAttribute('href').replace(/\/+$/,'');
+        if(href && (here.endsWith(href) || here === href)) a.classList.add('active');
+      });
+    })();
+  </script>
+
+  <!-- Firebase + logica gestione preventivi -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onIdTokenChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, getDocs, where, limit, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    const $ = (s)=>document.querySelector(s);
+    function skeleton(n=4){
+      const f=document.createDocumentFragment();
+      for(let i=0;i<n;i++){
+        const d=document.createElement('div');
+        d.className='skeleton';
+        f.appendChild(d);
+      }
+      return f;
+    }
+    function fmtDate(val){
+      if(!val) return "—";
+      try{
+        if(typeof val.toDate==='function') return val.toDate().toLocaleString('it-IT');
+        if(val && typeof val==='object' && 'seconds' in val) return new Date(val.seconds*1000).toLocaleString('it-IT');
+        if(typeof val==='number') return new Date(val).toLocaleString('it-IT');
+        const t=Date.parse(val); if(!Number.isNaN(t)) return new Date(t).toLocaleString('it-IT');
+        return String(val);
+      }catch{ return "—"; }
+    }
+    const esc = (v)=>String(v ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+
+    function toMillis(val){
+      if(!val) return null;
+      try{
+        if(typeof val.toDate === 'function') return val.toDate().getTime();
+        if(val && typeof val === 'object' && 'seconds' in val) return val.seconds*1000;
+        if(typeof val === 'number') return val;
+        const t = Date.parse(val);
+        if(!Number.isNaN(t)) return t;
+      }catch{}
+      return null;
+    }
+
+    function countdownInfo(val){
+      const ts = toMillis(val);
+      if(!ts) return null;
+      const now = Date.now();
+      const diff = ts - now;
+      if(diff <= 0){
+        return { label:"Oltre la scadenza", severity:"expired" };
+      }
+      const totalMin = Math.round(diff/60000);
+      const days = Math.floor(totalMin/1440);
+      const hours = Math.floor((totalMin%1440)/60);
+      const mins  = totalMin%60;
+
+      let label;
+      if(days>0)      label = `Scade tra ${days}g ${hours}h`;
+      else if(hours>0)label = `Scade tra ${hours}h ${mins}m`;
+      else            label = `Scade tra ${mins} minuti`;
+
+      let severity = "ok";
+      if(diff <= 24*60*60*1000)      severity = "danger";
+      else if(diff <= 3*24*60*60*1000) severity = "warn";
+
+      return { label, severity };
+    }
+
+    // Mappa per rendere leggibili i servizi aggiuntivi
+    function formatServizio(val){
+      if(!val) return "";
+      const v = String(val).trim();
+
+      // solo numeri => immaginette / fotoricordo
+      if(/^\d+$/.test(v)){
+        return `Immaginette / fotoricordo: ${v} pezzi (indicativi)`;
+      }
+
+      const fioriMap = {
+        semplice: "Composizione floreale semplice",
+        "fiori_misti": "Fiori misti",
+        elegante: "Composizione floreale elegante"
+      };
+      const manifestiMap = {
+        comune_principale: "Manifesti nel comune principale",
+        piu_comuni: "Manifesti in più comuni",
+        avviso: "Avviso in bacheca / chiesa",
+        non_previsto: "Manifesti non previsti"
+      };
+
+      if(fioriMap[v]) return fioriMap[v];
+      if(manifestiMap[v]) return manifestiMap[v];
+
+      // fallback: testo così com'è
+      return v;
+    }
+
+    /* Aliases per nome collezione preventivi (come approvazioni) */
+    const ALIASES = { preventivi:["preventivi"] };
+    async function collectionExists(name){
+      try{ await getDocs(query(collection(db,name), limit(1))); return true; }
+      catch{ return false; }
+    }
+    async function firstExistingName(names){
+      for(const n of names){ if(await collectionExists(n)) return n; }
+      return null;
+    }
+
+    let ALL_ROWS = [];
+    let CURRENT_FILTER = "all";
+
+    function setKPI(rows){
+      const tot = rows.length;
+      const att = rows.filter(r=>(r.stato||"in_attesa")==="in_attesa").length;
+      const appr= rows.filter(r=>r.stato==="approvato").length;
+      const rif = rows.filter(r=>r.stato==="rifiutato").length;
+      const scad= rows.filter(r=>r.stato==="scaduto").length;
+
+      $('#countTot').textContent = String(tot);
+      $('#kAtt').textContent  = `In attesa: ${att}`;
+      $('#kAppr').textContent = `Approvati: ${appr}`;
+      $('#kRif').textContent  = `Rifiutati: ${rif}`;
+      $('#kScad').textContent = `Scaduti: ${scad}`;
+    }
+
+        function render(rows){
+      const list = $('#list');
+      list.innerHTML = "";
+      if(!rows.length){
+        list.innerHTML = `<div class="empty">Nessun preventivo trovato per i filtri selezionati.</div>`;
+        return;
+      }
+
+      rows.sort((a,b)=>{
+        const ta=(a.dataRicezione?.seconds||Date.parse(a.dataRicezione)||0);
+        const tb=(b.dataRicezione?.seconds||Date.parse(b.dataRicezione)||0);
+        return (tb - ta);
+      }).forEach(d=>{
+        const id = d.id;
+        const stato = d.stato || "in_attesa";
+        const richiedente = d.nomeCognome || d.nome || "—";
+        const email = d.email || "—";
+        const tel = d.telefono || "—";
+        const luogo = d.residenza || d.comune || "—";
+        const ricevuto = fmtDate(d.dataRicezione);
+        const appr     = fmtDate(d.dataApprovazione);
+        const rifiuto  = fmtDate(d.dataRifiuto);
+        const scadenza = fmtDate(d.dataScadenza);
+
+        const serviziArr = Array.isArray(d.servizi_aggiuntivi) ? d.servizi_aggiuntivi.map(formatServizio).filter(Boolean) : [];
+
+        const cd = countdownInfo(d.dataScadenza);
+        const countdownHtml = (stato === "approvato" && cd)
+          ? `<div class="countdown countdown-${esc(cd.severity)}">${esc(cd.label)}</div>`
+          : "";
+
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-head">
+            <div>
+              <div class="card-title">
+                <span>Preventivo</span>
+                <span>#${esc(id.slice(-6).toUpperCase())}</span>
+              </div>
+              <div class="card-meta">
+                Richiedente: <strong>${esc(richiedente)}</strong> ·
+                ${esc(luogo)} ·
+                ${esc(email)} · ${esc(tel)}
+              </div>
+            </div>
+            <div>
+              <span class="badge-stato badge-${esc(stato)}">${stato.replace('_',' ')}</span>
+            </div>
+          </div>
+
+          <div class="details-grid">
+            <div>
+              <div class="kv-label">Ricevuto il</div>
+              <div class="kv-value">${ricevuto}</div>
+            </div>
+            <div>
+              <div class="kv-label">Approvato il</div>
+              <div class="kv-value">${stato==="approvato" || d.dataApprovazione ? appr : "—"}</div>
+            </div>
+            <div>
+              <div class="kv-label">Rifiutato il</div>
+              <div class="kv-value">${stato==="rifiutato" || d.dataRifiuto ? rifiuto : "—"}</div>
+            </div>
+            <div>
+              <div class="kv-label">Scadenza</div>
+              <div class="kv-value">
+                ${d.dataScadenza ? scadenza : "—"}
+                ${countdownHtml}
+              </div>
+            </div>
+            <div>
+              <div class="kv-label">Servizi aggiuntivi</div>
+              <div class="kv-value">
+                ${serviziArr.length
+                  ? serviziArr.map(s=>`<span class="servizi-pill">${esc(s)}</span>`).join("")
+                  : "—"}
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer"></div>
+        `;
+
+        const footer = card.querySelector('.card-footer');
+        if(stato !== "in_attesa"){
+          const btnRestore = document.createElement('button');
+          btnRestore.className = 'btn-mini';
+          btnRestore.dataset.role = 'restore';
+          btnRestore.textContent = 'Riporta in attesa';
+          footer.appendChild(btnRestore);
+
+          btnRestore.addEventListener('click', async ()=>{
+            if(!PREV_COLLECTION) return;
+            btnRestore.disabled = true;
+            try{
+              const ref = doc(db, PREV_COLLECTION, id);
+              await updateDoc(ref, {
+                stato: "in_attesa",
+                dataApprovazione: null,
+                dataRifiuto: null,
+                dataScadenza: null
+              });
+              await loadPreventivi();
+            }catch(e){
+              alert("Errore nel ripristino: " + e.message);
+            }finally{
+              btnRestore.disabled = false;
+            }
+          });
+        }
+
+        if(stato === "approvato" && cd && cd.severity === "expired"){
+          const btnScad = document.createElement('button');
+          btnScad.className = 'btn-mini btn-mini-danger';
+          btnScad.dataset.role = 'mark-scaduto';
+          btnScad.textContent = 'Imposta come scaduto';
+          footer.appendChild(btnScad);
+
+          btnScad.addEventListener('click', async ()=>{
+            if(!PREV_COLLECTION) return;
+            btnScad.disabled = true;
+            try{
+              const ref = doc(db, PREV_COLLECTION, id);
+              await updateDoc(ref, {
+                stato: "scaduto",
+                dataScadenza: d.dataScadenza || serverTimestamp()
+              });
+              await loadPreventivi();
+            }catch(e){
+              alert("Errore aggiornamento scadenza: " + e.message);
+            }finally{
+              btnScad.disabled = false;
+            }
+          });
+        }
+
+        list.appendChild(card);
+      });
+    }
+
+
+    function applyFilter(){
+      const term = ($('#search').value || "").trim().toLowerCase();
+      let rows = ALL_ROWS;
+
+      if(CURRENT_FILTER !== "all"){
+        rows = rows.filter(r => (r.stato || "in_attesa") === CURRENT_FILTER);
+      }
+
+      if(term){
+        rows = rows.filter(r=>{
+          const id=(r.id||"").toLowerCase();
+          const nome=(r.nomeCognome||r.nome||"").toLowerCase();
+          const email=(r.email||"").toLowerCase();
+          const tel=(r.telefono||"").toLowerCase();
+          const comune=((r.comune||r.residenza||"")).toLowerCase();
+          const note=(r.note||"").toLowerCase();
+          return [id,nome,email,tel,comune,note].some(x=>x.includes(term));
+        });
+      }
+
+      render(rows);
+    }
+
+    let PREV_COLLECTION = null;
+
+    async function loadPreventivi(){
+      const list=$('#list'); list.innerHTML=""; list.appendChild(skeleton(4));
+
+            const colName = await firstExistingName(ALIASES.preventivi);
+      PREV_COLLECTION = colName;
+      if(!colName){
+        list.innerHTML=`<div class="empty">Collezione “preventivi” non trovata.</div>`;
+        $('#countTot').textContent='0';
+        return;
+      }
+
+      const qy = query(collection(db,colName), orderBy("dataRicezione","desc"));
+      const snap = await getDocs(qy);
+      const rows=[]; snap.forEach(docSnap=>rows.push({id:docSnap.id, ...docSnap.data()}));
+      ALL_ROWS = rows;
+      setKPI(rows);
+      applyFilter();
+    }
+
+    // Filtri per stato
+    document.querySelectorAll('.chip-filter').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.chip-filter').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        CURRENT_FILTER = btn.dataset.filter || 'all';
+        applyFilter();
+      });
+    });
+
+    // Search debounce
+    let _t=null;
+    $('#search').addEventListener('input', ()=>{
+      clearTimeout(_t); _t=setTimeout(applyFilter, 120);
+    });
+
+    // Auth guard
+    async function requireAdmin(user){
+      const token=await user.getIdTokenResult(true);
+      if(!token?.claims?.admin){
+        await signOut(auth);
+        location.replace("/admin/login.html");
+        return false;
+      }
+      return true;
+    }
+
+    document.getElementById('btnLogout')?.addEventListener('click', async ()=>{
+      try{ await signOut(auth); }finally{ location.replace('/admin/login.html'); }
+    });
+
+    onIdTokenChanged(auth, async (user)=>{
+      if(!user){ location.replace("/admin/login.html"); return; }
+      if(!(await requireAdmin(user))) return;
+      document.getElementById('adminEmail').textContent = user.email || "—";
+      if(user.photoURL) document.getElementById('adminAvatar').src = user.photoURL;
+      await loadPreventivi();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!-- site/partials/menu.html -->
+<header class="site-header" role="banner">
+  <div class="nav-wrap">
+    <a class="brand" href="/index.html" aria-label="Onoranze Funebri Italia">
+      <img src="/assets/logo-ofi.svg" alt="OFI" height="28">
+    </a>
+
+    <!-- Tasto hamburger (mobile) -->
+    <button id="menuToggle" class="hamburger" aria-label="Apri menu" aria-expanded="false" aria-controls="menuPanel">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+
+    <!-- Drawer / barra nav -->
+    <ul id="menuPanel" class="menu" role="menubar">
+      <!-- opzionale mini-logo dentro al drawer mobile -->
+      <li class="brand-mini" aria-hidden="true">
+        <img src="/assets/logo-ofi-mini.svg" alt="" height="20">
+        <button id="menuClose" class="close" aria-label="Chiudi">×</button>
+      </li>
+
+      <li role="none"><a role="menuitem" href="/necrologi.html" class="menu-link">NECROLOGI</a></li>
+      <li role="none"><a role="menuitem" href="/pensieri.html" class="menu-link">PENSIERI PUBBLICI</a></li>
+
+      <!-- Sottomenu -->
+      <li class="has-sub" role="none">
+        <a role="menuitem" aria-haspopup="true" aria-expanded="false" href="#" class="menu-link">Scopri OFI ▾</a>
+        <ul class="sub" role="menu">
+          <li role="none"><a role="menuitem" href="/chi-siamo.html">Chi siamo</a></li>
+          <li role="none"><a role="menuitem" href="/faq.html">FAQ</a></li>
+          <li role="none"><a role="menuitem" href="/contatti.html">Contatti</a></li>
+        </ul>
+      </li>
+
+      <li role="none"><a role="menuitem" href="/accesso.html" class="menu-link">Accedi / Registrati</a></li>
+    </ul>
+  </div>
+
+  <!-- Overlay -->
+  <div id="menuOverlay" hidden></div>
+</header>
+

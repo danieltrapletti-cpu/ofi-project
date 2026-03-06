@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Articoli &amp; Approfondimenti — OFI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="icon" href="../images/OFI-Social.png" type="image/png">
+
+  <style>
+    .wrap{max-width:1160px;margin:0 auto;padding:1rem 1rem 2rem;}
+    h1{font-weight:900;margin:1rem 0 .25rem;text-align:center}
+    .toolbar{display:flex;gap:.6rem;align-items:center;justify-content:center;margin:1rem 0;flex-wrap:wrap}
+    .filtro-btn,select,input[type="email"],input[type="text"]{background:var(--card);color:var(--text);border:1px solid rgba(0,0,0,.12);padding:.6rem 1rem;border-radius:10px;font-weight:800;font-size:.9rem}
+    #lista-articoli{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    @media (max-width:980px){#lista-articoli{grid-template-columns:1fr}}
+    .a-card{background:var(--card);border:1px solid rgba(202,168,90,.35);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+    .a-card .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid rgba(0,0,0,.06)}
+    .a-body{padding:1rem;display:flex;flex-direction:column;gap:.4rem}
+    .kicker{font-size:.8rem;color:var(--muted);font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+    .a-title{margin:.1rem 0 .2rem;font-size:1.1rem}
+    .a-card-actions{display:flex;gap:.5rem;margin-top:.3rem;flex-wrap:wrap}
+    .skeleton{height:330px;border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.06),rgba(255,255,255,.12),rgba(255,255,255,.06));background-size:200% 100%;animation:sh 1.2s infinite}
+    @keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .newsletter{margin:2rem auto 0;max-width:720px;background:var(--card);border:1px solid rgba(0,0,0,.12);border-radius:14px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.06);display:grid;gap:.6rem;justify-items:center;text-align:center}
+    .newsletter form{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+    .note{color:var(--muted);font-size:.9rem}
+  
+    .a-card .title{line-height:1.25}
+    .a-card .excerpt{line-height:1.6}
+    .a-card .meta{opacity:.8}
+</style>
+
+  <!-- Firebase compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <meta name="description" content="Articoli e approfondimenti di Onoranze Funebri Italia: letture semplici, moderne e utili per orientarti.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OFI — Onoranze Funebri Italia">
+  <meta property="og:title" content="Articoli & Approfondimenti — OFI">
+  <meta property="og:description" content="Selezione di articoli moderni e facili da leggere su lutto, memoria e servizi utili.">
+  <meta property="og:image" content="../images/OFI-Social.png">
+
+</head>
+<body class="theme-auto">
+  <!-- HEADER coerente con index -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="../index.html"><img src="../images/logo-ofi.png" alt="OFI" class="brand-logo"></a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-expanded="false" aria-controls="menuPanel" aria-label="Apri menù">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu"><li class="menu-divider" role="none" aria-hidden="true"></li>
+<li role="none"><a class="menu-callout" href="../necrologi.html" role="menuitem">NECROLOGI</a></li>
+<li role="none"><a class="menu-callout" href="../pensieri-pubblici.html" role="menuitem">PENSIERI PUBBLICI</a></li>
+<li class="menu-divider" role="none" aria-hidden="true"></li>
+
+      <li class="has-sub" role="none">
+        <a href="#" role="menuitem" aria-haspopup="true" aria-expanded="false">Scopri OFI ▾</a>
+        <ul class="submenu" role="menu">
+          <li role="none"><a href="../index.html#cos-e-ofi" role="menuitem">Cos'è OFI</a></li>
+          <li role="none"><a href="../index.html#pensieri" role="menuitem">Pensieri</a></li>
+          <li role="none"><a href="../articoli/articoli.html" role="menuitem">Articoli</a></li>
+          <li role="none"><a href="../index.html#ricordi" role="menuitem">Ricordi</a></li>
+          <li role="none"><a href="../index.html#mappa" role="menuitem">Vicino a te</a></li>
+          <li role="none"><a href="../index.html#video" role="menuitem">Video</a></li>
+        </ul>
+      </li>
+    
+<li role="none"><a class="btn btn-primary" href="../accesso.html" role="menuitem">Accedi / Registrati</a></li>
+</ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" title="Tema">◐</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <h1 class="section-title">Articoli &amp; Approfondimenti</h1>
+    <p class="section-sub" style="text-align:center">Spunti utili e riflessioni. L’anteprima è pubblica; il testo completo è disponibile dopo l’accesso.</p>
+
+    <div class="toolbar" role="group" aria-label="Filtra e ordina">
+      <input id="searchInput" type="text" placeholder="🔍 Cerca articoli…"/>
+      <button class="filtro-btn" onclick="filtraCategoria('Tutti')">Tutti</button>
+      <button class="filtro-btn" onclick="filtraCategoria('Lutto')">Lutto</button>
+      <button class="filtro-btn" onclick="filtraCategoria('Consigli')">Consigli</button>
+      <button class="filtro-btn" onclick="filtraCategoria('Memoria')">Memoria</button>
+      <button class="filtro-btn" onclick="filtraCategoria('Normative')">Normative</button>
+      <select id="ordina" onchange="ordinaArticoli()">
+        <option value="data-desc">Più recenti</option>
+        <option value="data-asc">Più vecchi</option>
+        <option value="titolo-asc">Titolo A–Z</option>
+        <option value="titolo-desc">Titolo Z–A</option>
+      </select>
+    </div>
+
+    <div id="lista-articoli" aria-live="polite">
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+
+    <section class="newsletter" aria-labelledby="newsTitle">
+      <h3 id="newsTitle" class="section-title" style="font-size:1.3rem">Iscriviti alla Newsletter degli articoli</h3>
+      <p class="note">Una mail quando pubblichiamo qualcosa di nuovo. Niente spam.</p>
+      <form id="newsForm">
+        <input type="email" id="newsEmail" placeholder="La tua email" required>
+        <button type="submit" class="btn btn-primary">Iscrivimi</button>
+      </form>
+      <div id="newsMsg" class="note" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img src="../images/logo-ofi.png" alt="OFI" class="footer-logo">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        </div>
+        <div class="f-links">
+          <a href="../index.html#pensieri">Pensieri</a>
+          <a href="../index.html#articoli-home">Articoli</a>
+          <a href="../index.html#video">Video</a>
+          <a href="../accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="../images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p></div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Come pubblico un necrologio?</button>
+        <button class="chip" role="listitem">Come funziona PENSIERI?</button>
+        <button class="chip" role="listitem">Come richiedo un preventivo?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">Suggerimento: scrivi parole semplici (es. “necrologio”, “pensieri”, “preventivo”).</p>
+  </section>
+
+
+  <!-- Script base (menu/theme) come in index -->
+  <script src="../ofi.js" defer></script>
+
+  <script>
+    /* Firebase */
+    if (!window.firebase || (firebase.apps && firebase.apps.length === 0)) {
+      firebase.initializeApp({
+        apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+        authDomain:"ofi2025-51ba9.firebaseapp.com",
+        projectId:"ofi2025-51ba9",
+        storageBucket:"ofi2025-51ba9.firebasestorage.app",
+        messagingSenderId:"345581339212",
+        appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+      });
+    }
+    const db=firebase.firestore();
+
+    const lista=document.getElementById('lista-articoli');
+
+    function tplCard(id,x,ms){
+      const dateStr=ms?new Date(ms).toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'}):'';
+      const img=x.immagineURL||'../images/placeholder-article.jpg';
+      return `
+        <article class="a-card" data-cat="${(x.categoria||'').toLowerCase()}">
+          <img class="thumb" src="${img}" alt="${x.titolo||'Articolo'}">
+          <div class="a-body">
+            <div class="kicker">${x.categoria||'Articolo'}</div>
+            <h3 class="a-title">${x.titolo||''}</h3>
+            <p>${(x.estratto||'').length>160?(x.estratto.substring(0,157)+'…'):(x.estratto||'')}</p>
+            <div class="a-card-actions">
+              <a class="btn btn-outline" href="articolo.html?id=${id}">Leggi tutto</a>
+              <button class="btn btn-ghost share-btn" data-url="${location.origin}${location.pathname.replace(/\/articoli\/articoli\.html$/, '/articoli/articolo.html')}?id=${id}">Condividi</button>
+            </div>
+            <div class="small" aria-hidden="true">${dateStr}</div>
+          </div>
+        </article>`;
+    }
+
+    db.collection('articoli_pubblicati').orderBy('data','desc').get().then(snap=>{
+      if(snap.empty){lista.innerHTML='<p class="small">Nessun articolo pubblicato al momento.</p>';return;}
+      lista.innerHTML=snap.docs.map(d=>{
+        const x=d.data();
+        const ms=(x.data&&typeof x.data.toDate==='function')?x.data.toDate().getTime():null;
+        return tplCard(d.id,x,ms);
+      }).join('');
+    }).catch(()=>{lista.innerHTML='<p class="small">Impossibile caricare gli articoli.</p>';});
+
+    // Ricerca live
+    document.getElementById('searchInput').addEventListener('input', e=>{
+      const q=e.target.value.toLowerCase();
+      lista.querySelectorAll('.a-card').forEach(c=>{
+        const t=c.querySelector('h3')?.textContent.toLowerCase()||'';
+        const p=c.querySelector('p')?.textContent.toLowerCase()||'';
+        c.style.display=(t.includes(q)||p.includes(q))?'block':'none';
+      });
+    });
+
+    // Filtri
+    window.filtraCategoria=function(cat){
+      const target=cat.toLowerCase();
+      lista.querySelectorAll('.a-card').forEach(c=>{
+        const ok=(cat==='Tutti') || (c.dataset.cat===target);
+        c.style.display=ok?'block':'none';
+      });
+    }
+    // Ordina
+    window.ordinaArticoli=function(){
+      const criterio=document.getElementById('ordina').value;
+      const cards=[...lista.querySelectorAll('.a-card')];
+      if(criterio.startsWith('titolo')){
+        cards.sort((a,b)=>{
+          const A=a.querySelector('h3').textContent.toLowerCase();
+          const B=b.querySelector('h3').textContent.toLowerCase();
+          return criterio==='titolo-asc'?A.localeCompare(B):B.localeCompare(A);
+        });
+      }else{
+        if(criterio==='data-asc') cards.reverse();
+      }
+      cards.forEach(c=>lista.appendChild(c));
+    }
+
+    // Condividi
+    document.addEventListener('click', async e=>{
+      const btn=e.target.closest('.share-btn'); if(!btn) return;
+      const url=btn.dataset.url;
+      try{
+        if(navigator.share){ await navigator.share({title:'Articolo OFI', url}); }
+        else{
+          await navigator.clipboard.writeText(url);
+          btn.textContent='Link copiato!';
+          setTimeout(()=>btn.textContent='Condividi',1200);
+        }
+      }catch{}
+    });
+
+    // Newsletter: salva su Firestore (newsletter_articoli)
+    document.getElementById('newsForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const email=document.getElementById('newsEmail').value.trim();
+      const msg=document.getElementById('newsMsg');
+      if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.textContent='Inserisci un\'email valida.'; return; }
+      try{
+        await db.collection('newsletter_articoli').add({ email, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        msg.textContent='Iscrizione completata!';
+        e.target.reset();
+      }catch(err){
+        msg.textContent='Errore durante l\'iscrizione. Riprova.';
+      }
+    });
+  </script>
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+
+  <script>
+    (function(){
+      function onShareClick(e){
+        const btn = e.target.closest('.share-btn');
+        if(!btn) return;
+        const url = btn.getAttribute('data-url') || location.href;
+        const data = { title: 'Articolo — OFI', url };
+        if(navigator.share){
+          navigator.share(data).catch(()=>{});
+        }else{
+          navigator.clipboard.writeText(url).then(()=>{
+            btn.textContent='Copiato ✓'; setTimeout(()=>btn.textContent='Condividi',1500);
+          }).catch(()=>{ alert('Copia non riuscita. Link: '+url); });
+        }
+      }
+      document.addEventListener('click', function(e){
+        if(e.target.closest('.share-btn')) onShareClick(e);
+      });
+    })();
+  </script>
+    
+</body>
+</html>

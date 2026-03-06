@@ -1,0 +1,130 @@
+
+
+<style>
+  #ofi-header {
+    all: unset;
+    display: block;
+    text-align: center;
+    background-color: white;
+    padding: 1rem 0 0.8rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  #ofi-header img {
+    max-width: 220px;
+    height: auto;
+  }
+
+  #ofi-nav {
+    background-color: #002c5d;
+    position: relative;
+  }
+
+  #ofi-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 0;
+    padding: 10px 0;
+    flex-wrap: wrap;
+  }
+
+  #ofi-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #ofi-nav a:hover {
+    text-decoration: underline;
+  }
+
+  /* HAMBURGER MENU MOBILE */
+  #ofi-menu-toggle, #ofi-menu-close {
+    display: none;
+    background-color: #002c5d;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: right;
+    box-sizing: border-box;
+  }
+
+  #ofi-menu-close {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #ofi-nav ul {
+      flex-direction: column;
+      gap: 10px;
+      display: none;
+    }
+
+    #ofi-nav ul.show {
+      display: flex;
+    }
+
+    #ofi-menu-toggle,
+    #ofi-menu-close {
+      display: block;
+    }
+
+    #ofi-menu-toggle.hidden,
+    #ofi-menu-close.hidden {
+      display: none;
+    }
+
+    #ofi-nav a {
+      font-size: 18px;
+      padding: 8px 0;
+    }
+  }
+</style>
+
+<header id="ofi-header">
+  <a href="index.html">
+    <img src="images/logo-ofi.png" alt="Onoranze Funebri Italia">
+  </a>
+</header>
+<nav id="ofi-nav">
+  <button id="ofi-menu-toggle" onclick="toggleMenu(true)">☰ Menu</button>
+  <button id="ofi-menu-close" class="hidden" onclick="toggleMenu(false)">✖ Chiudi</button>
+  <ul>
+    <li><a href="preventivo/preventivo.html">Richiedi Preventivo</a></li>
+    <li><a href="necrologi.html">Necrologi</a></li>
+    <li><a href="#">Info Utili</a></li>
+    <li><a href="imprese/registrazione-imprese.html">Registrati</a></li>
+    <li><a href="imprese/login.html">Accedi</a></li>
+  </ul>
+</nav>
+
+<script>
+  function toggleMenu(show) {
+    const nav = document.querySelector('#ofi-nav ul');
+    const btnOpen = document.getElementById('ofi-menu-toggle');
+    const btnClose = document.getElementById('ofi-menu-close');
+
+    if (show) {
+      nav.classList.add('show');
+      btnOpen.classList.add('hidden');
+      btnClose.classList.remove('hidden');
+    } else {
+      nav.classList.remove('show');
+      btnOpen.classList.remove('hidden');
+      btnClose.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('#ofi-nav a');
+    links.forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+  });
+</script>
+

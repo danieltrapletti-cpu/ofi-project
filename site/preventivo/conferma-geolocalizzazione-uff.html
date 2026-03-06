@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<title>Conferma Posizione | Onoranze Funebri Italia</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Conferma la tua posizione per trovare le imprese funebri più vicine con Onoranze Funebri Italia." name="description"/>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      color: #002c5d;
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #002c5d;
+    }
+    p {
+      font-size: 1.1rem;
+    }
+    #indirizzo {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #004080;
+      margin: 1rem 0;
+    }
+    .azioni {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .azioni button {
+      padding: 0.9rem 1.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    .azioni .conferma {
+      background-color: #002c5d;
+      color: white;
+    }
+    .azioni .modifica {
+      background-color: #ccc;
+      color: #002c5d;
+    }
+    #mappa {
+      width: 100%;
+      height: 300px;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+  </style>
+<style>body { font-family: 'Segoe UI', sans-serif; }</style></head>
+<body>
+<style>
+  #ofi-header {
+    all: unset;
+    display: block;
+    text-align: center;
+    background-color: white;
+    padding: 1rem 0 0.8rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  #ofi-header img {
+    max-width: 220px;
+    height: auto;
+  }
+
+  #ofi-nav {
+    background-color: #002c5d;
+    position: relative;
+  }
+
+  #ofi-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 0;
+    padding: 10px 0;
+    flex-wrap: wrap;
+  }
+
+  #ofi-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #ofi-nav a:hover {
+    text-decoration: underline;
+  }
+
+  /* HAMBURGER MENU MOBILE */
+  #ofi-menu-toggle, #ofi-menu-close {
+    display: none;
+    background-color: #002c5d;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: right;
+    box-sizing: border-box;
+  }
+
+  #ofi-menu-close {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #ofi-nav ul {
+      flex-direction: column;
+      gap: 10px;
+      display: none;
+    }
+
+    #ofi-nav ul.show {
+      display: flex;
+    }
+
+    #ofi-menu-toggle,
+    #ofi-menu-close {
+      display: block;
+    }
+
+    #ofi-menu-toggle.hidden,
+    #ofi-menu-close.hidden {
+      display: none;
+    }
+
+    #ofi-nav a {
+      font-size: 18px;
+      padding: 8px 0;
+    }
+  }
+</style>
+<header id="ofi-header">
+<a href="index.html">
+<img alt="Logo Onoranze Funebri Italia" src="../images/logo-ofi.png"/>
+</a>
+</header>
+<nav id="ofi-nav">
+<button id="ofi-menu-toggle" onclick="toggleMenu(true)">☰ Menu</button>
+<button class="hidden" id="ofi-menu-close" onclick="toggleMenu(false)">✖ Chiudi</button>
+<ul>
+<li><a href="preventivo/preventivo.html">Richiedi Preventivo</a></li>
+<li><a href="necrologi.html">Necrologi</a></li>
+<li><a href="#">Info Utili</a></li>
+<li><a href="imprese/registrazione-imprese.html">Registrati</a></li>
+<li><a href="imprese/login.html">Accedi</a></li>
+</ul>
+</nav>
+<script>
+  function toggleMenu(show) {
+    const nav = document.querySelector('#ofi-nav ul');
+    const btnOpen = document.getElementById('ofi-menu-toggle');
+    const btnClose = document.getElementById('ofi-menu-close');
+
+    if (show) {
+      nav.classList.add('show');
+      btnOpen.classList.add('hidden');
+      btnClose.classList.remove('hidden');
+    } else {
+      nav.classList.remove('show');
+      btnOpen.classList.remove('hidden');
+      btnClose.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('#ofi-nav a');
+    links.forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+  });
+</script>
+<!-- HEADER -->
+<main>
+<h1>📍 Conferma la tua posizione</h1>
+<p>Hai attivato la geolocalizzazione automatica. Secondo i nostri sistemi, ti trovi qui:</p>
+<div id="indirizzo">Caricamento in corso...</div>
+<div id="mappa"></div>
+<div class="azioni">
+<button class="conferma" onclick="prosegui()">✅ Sì, confermo</button>
+<button class="modifica" onclick="modifica()">🖊️ No, voglio cambiarla</button>
+</div>
+</main>
+<!-- FOOTER -->
+<script>
+let lat = null, lon = null, modalita = "automatica";
+
+function getQueryParam(param) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(param);
+}
+
+function prosegui() {
+  if (lat && lon) {
+    window.location.href = `selezione-imprese-automatica.html?modalita=${modalita}&lat=${lat}&lon=${lon}`;
+  }
+}
+
+function modifica() {
+  window.location.href = "ricerca-comune-manuale.html";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  lat = getQueryParam("lat");
+  lon = getQueryParam("lon");
+  modalita = getQueryParam("modalita") || "automatica";
+
+  if (!lat || !lon) {
+    document.getElementById("indirizzo").textContent = "Coordinate non disponibili.";
+    return;
+  }
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+  const mappa = new mapboxgl.Map({
+    container: 'mappa',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [lon, lat],
+    zoom: 14
+  });
+
+  new mapboxgl.Marker().setLngLat([lon, lat]).addTo(mappa);
+
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(res => res.json())
+    .then(data => {
+      const addr = data.display_name || "Indirizzo non trovato";
+      document.getElementById("indirizzo").textContent = addr;
+    })
+    .catch(() => {
+      document.getElementById("indirizzo").textContent = "Errore nel recupero dell'indirizzo.";
+    });
+});
+</script>
+<style>
+  #ofi-footer {
+    background-color: #002c5d;
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  #ofi-footer a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: underline;
+  }
+
+  #ofi-footer a:hover {
+    text-decoration: none;
+  }
+
+  #ofi-footer p {
+    margin-bottom: 1rem;
+  }
+
+  #ofi-footer .footer-links {
+    margin-top: 1rem;
+  }
+</style>
+<footer id="ofi-footer">
+<div style="max-width: 1000px; margin: auto;">
+<p>
+      © 2025 Onoranze Funebri Italia – Tutti i diritti riservati<br/>
+      Portale nazionale per il supporto al cittadino e la valorizzazione delle imprese funebri
+    </p>
+<div class="footer-links">
+<a href="privacy.html">Privacy</a>
+<a href="contatti.html">Contatti</a>
+<a href="faq.html">FAQ</a>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Pensieri — Scrivi | OFI</title>
+<meta content="Scrivi e condividi un pensiero personale su OFI. Anteprima fedele allo stile OFI, luogo opzionale (solo comune) e misuratore Lumina." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&amp;family=Noto+Serif:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="../ofi.css" rel="stylesheet"/>
+<meta content="Scrivi un Pensiero | OFI" property="og:title"/>
+<meta content="Scrivi e condividi un pensiero. Anteprima in stile OFI, con luogo opzionale (solo comune) e misuratore Lumina." property="og:description"/>
+<meta content="website" property="og:type"/><meta content="it_IT" property="og:locale"/>
+<style>
+    /* (stili identici alla tua versione, lasciati intatti) */
+    main{ padding-bottom:40px } .form-card .hint{ color:var(--muted); font-size:.92rem }
+    .form-card .input,.form-card textarea,.form-card input[type="file"]{ width:100%; border:1px solid rgba(202,168,90,.35); border-radius:12px; padding:.7rem .75rem; background:var(--surface); color:var(--surface-text); outline:none; transition: box-shadow .15s, border-color .15s; }
+    .form-card textarea{ min-height:200px; line-height:1.6; resize:vertical }
+    .form-card .input:focus,.form-card textarea:focus{ box-shadow:0 0 0 3px rgba(202,168,90,.25); border-color:var(--gold) }
+    .pill-luogo{ display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .6rem; border-radius:999px; border:1px solid rgba(202,168,90,.45); background:var(--surface); color:var(--surface-text); font-size:.85rem }
+    .preview-wrap{ margin-top:1rem }
+    .pensiero-post{ position:relative; padding:1.1rem 1.2rem 76px; border-radius:16px; background:linear-gradient(180deg, var(--blue-3), var(--blue)); color:#fff; border:2px solid var(--gold); box-shadow:0 14px 40px rgba(0,0,0,.18); min-height:340px }
+    .pensiero-post h3{ margin:.1rem 0 .35rem; font-weight:800; color:#fff }
+    .pensiero-post .testo{ font-family:"Noto Serif", serif; font-size:1.15rem; line-height:1.8; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere; margin:.25rem 0 .35rem; position:relative }
+    .testo.clamp{ --maxH:10.5em; max-height:var(--maxH); overflow:hidden }
+    .testo.clamp::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:52px; background:linear-gradient(180deg, rgba(15,39,66,0), rgba(15,39,66,.95)) }
+    .pensiero-post .meta{ margin-top:.7rem; font-size:.92rem; opacity:.95 }
+    .pensiero-post .social-watermark{ position:absolute; right:12px; bottom:10px; width:64px; opacity:.55; filter: drop-shadow(0 2px 8px rgba(0,0,0,.45)); pointer-events:none }
+    .preview-media{ position:relative; margin:.6rem 0 .7rem; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,.28); background:rgba(0,0,0,.25) }
+    .preview-media img,.preview-media video{ width:100%; display:block; max-height:420px; object-fit:contain; background:#0f2742 }
+    .preview-media .backdrop{ position:absolute; inset:0; filter:blur(24px); transform:scale(1.2); background-position:center; background-size:cover; opacity:.35; pointer-events:none }
+    .preview-media.cover img{ object-fit:cover } @media (max-width:640px){ .preview-media img,.preview-media video{ max-height:320px } }
+    .progress-lite{ height:10px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden }
+    .progress-lite>span{ display:block; height:100%; background:linear-gradient(180deg, var(--gold-2), var(--gold)) }
+    .row{ display:flex; gap:.5rem; flex-wrap:wrap } .row .btn{ min-width:0 }
+    .cta-row{ display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:.6rem; margin-top:.8rem }
+    @media (max-width:640px){ .cta-row{ grid-template-columns:1fr } }
+    .cta-row .btn{ height:48px; border-radius:12px; font-weight:800 }
+    .cta-row .btn.solid{ box-shadow:0 6px 18px rgba(0,0,0,.12) }
+    .toggle{ background:transparent; color:#fff; border:1px solid rgba(255,255,255,.6); border-radius:999px; padding:.35rem .7rem; font-weight:800 }
+    .toggle:hover{ background:rgba(255,255,255,.12) }
+    .hash-chips{ margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.4rem }
+    .hash-chip{ padding:.25rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.18); color:#fff; font-weight:700; font-size:.85rem }
+    .form-card .hash-hint{ margin-top:.35rem; color:var(--muted); font-size:.9rem; line-height:1.35 }
+    .agent-fab{ position:fixed; right:18px; bottom:18px; z-index:10000 } .agent-panel{ z-index:9999 }
+  </style>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",authDomain:"ofi2025-51ba9.firebaseapp.com",projectId:"ofi2025-51ba9",storageBucket:"ofi2025-51ba9.firebasestorage.app",messagingSenderId:"345581339212",appId:"1:345581339212:web:f0b8bc241945691c876ae9"};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const storage = getStorage(app);
+
+    const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+    const formatLuogo = (s)=> (s||"").split(",")[0]?.trim() || "";
+    const $  = (id)=>document.getElementById(id);
+
+    let userData=null, luogoScelto="", mediaBlob=null, existingMediaURL=null, existingMediaType=null;
+    const params = new URLSearchParams(location.search);
+    const editingPostId = params.get('postId');
+    let editingDoc = null;
+
+    // Auto-resize textarea
+    const autoresize = ()=>{ const ta=$('testo'); ta.style.height='auto'; ta.style.height=(ta.scrollHeight+2)+'px'; };
+    window.addEventListener('load', ()=>{ $('testo').addEventListener('input', autoresize); autoresize(); });
+
+    // Auth + profilo
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ $('notLogged').hidden=false; $('formArea').hidden=true; return; }
+      const snap = await getDoc(doc(db,'utenti_cittadini', user.uid));
+      if(snap.exists()) userData = snap.data();
+      $('notLogged').hidden=true; $('formArea').hidden=false;
+      if(editingPostId){ loadForEdit(editingPostId); }
+    });
+
+    async function loadForEdit(pid){
+      try{
+        const s = await getDoc(doc(db,'pensieri_utente', pid));
+        if(!s.exists()) return;
+        const d = s.data();
+        if (auth.currentUser?.uid !== d.uid) { alert('Non puoi modificare questo post.'); return; }
+        editingDoc = { id: pid, ...d };
+        existingMediaURL = d.media || null;
+        existingMediaType = d.mediaType || (existingMediaURL ? (/\.(mp4|webm|ogg)(\?|$)/i.test(existingMediaURL) ? 'video' : 'image') : null);
+        $('titolo').value = d.titolo || '';
+        $('testo').value  = d.testo  || '';
+        if(d.luogo){ $('luogoOpt').value = 'residenza'; aggiornaPillLuogo(d.luogo); }
+        $('anteprimaBtn').click();
+        $('pubblicaBtn').textContent = '💾 Salva modifiche';
+      }catch(e){ console.error(e); }
+    }
+
+    // Luogo — UI
+    function aggiornaPillLuogo(text){
+      $('pillLuogo').hidden = !text;
+      $('luogoPreview').textContent = text||"";
+      luogoScelto = text||"";
+      if(!$('preview').hidden){ $('pLuogo').textContent = luogoScelto ? `📍 ${luogoScelto}` : ""; }
+    }
+    $('luogoOpt').addEventListener('change', ()=>{
+      const v = $('luogoOpt').value;
+      $('rowGeo').hidden = (v!=='posizione'); $('rowRes').hidden = (v!=='residenza'); aggiornaPillLuogo("");
+    });
+    $('usaResidenza').addEventListener('click', ()=>{
+      const r = formatLuogo(userData?.luogo || userData?.luogo_residenza || "");
+      if(!r){ alert("Nessuna residenza salvata nel profilo."); return; }
+      aggiornaPillLuogo(r);
+    });
+    $('rilevaPosizione').addEventListener('click', ()=>{
+      if(!navigator.geolocation){ alert("Geolocalizzazione non disponibile."); return; }
+      $('geoMsg').textContent = "Rilevazione in corso…";
+      navigator.geolocation.getCurrentPosition(async (pos)=>{
+        try{
+          const { latitude, longitude } = pos.coords;
+          const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?types=place,locality,region&language=it&access_token=${MAPBOX_TOKEN}`;
+          const res = await fetch(url); const data = await res.json();
+          const f = data.features?.[0]; const luogo = formatLuogo(f?.place_name || f?.text);
+          $('geoInput').value = luogo; $('geoMsg').textContent = luogo ? "Posizione trovata. Controlla e conferma." : "Non sono riuscito a ottenere il comune.";
+        }catch{ $('geoMsg').textContent = "Impossibile completare il rilevamento ora."; }
+      }, ()=> $('geoMsg').textContent = "Permesso negato o posizione non disponibile.");
+    });
+    $('confermaGeo').addEventListener('click', ()=>{
+      const v = $('geoInput').value.trim(); if(!v){ alert("Inserisci o rileva un comune prima di confermare."); return; }
+      aggiornaPillLuogo(v);
+    });
+
+    // Anteprima
+    $('media').addEventListener('change', ()=>{ mediaBlob = $('media').files?.[0] || null; });
+    function smartMediaFit(imgEl, wrap){
+      const img = new Image();
+      img.onload = ()=>{
+        const ratio = img.width/img.height;
+        if(ratio>=1.4){ wrap.classList.add('cover'); }
+        else if(ratio<=0.7){
+          const url = imgEl.src; const bd = document.createElement('div');
+          bd.className='backdrop'; bd.style.backgroundImage=`url('${url}')`; wrap.prepend(bd);
+        }
+      };
+      img.src = imgEl.src;
+    }
+    function applicaClamp(){
+      const t = $('pTesto'); if(!t) return;
+      t.classList.add('clamp'); $('toggleClamp').hidden=false; $('toggleClamp').textContent='Espandi';
+    }
+    function extractHashtags(text){
+      return Array.from(new Set((text.match(/#[\p{L}\p{N}_]{2,}/gu)||[]).map(s=>s.toLowerCase().replace(/^#/,''))));
+    }
+    function renderHashtagChips(arr){
+      const wrap = document.getElementById('hashChips'); if(!wrap) return;
+      wrap.innerHTML=''; if(!arr || arr.length===0) return;
+      arr.slice(0,8).forEach(tag=>{ const span=document.createElement('span'); span.className='hash-chip'; span.textContent='#'+tag; wrap.appendChild(span); });
+    }
+
+    $('anteprimaBtn').addEventListener('click', ()=>{
+      const titolo = $('titolo').value.trim();
+      const testo  = $('testo').value.trim();
+      if(!testo){ alert("Scrivi almeno il testo del pensiero."); return; }
+
+      $('pTitolo').textContent = titolo || " ";
+      $('pTesto').textContent  = testo;
+      applicaClamp();
+
+      const hashtagsPrev = extractHashtags(testo);
+      renderHashtagChips(hashtagsPrev);
+
+      const wrapCtn = $('pMedia'); wrapCtn.innerHTML = "";
+      let url=null, type=null;
+      if(mediaBlob){
+        url = URL.createObjectURL(mediaBlob);
+        type = mediaBlob.type.startsWith("image") ? "image" : (mediaBlob.type.startsWith("video") ? "video" : null);
+      }else if(existingMediaURL){
+        url = existingMediaURL;
+        type = existingMediaType || (/\.(mp4|webm|ogg)(\?|$)/i.test(url) ? "video" : "image");
+      }
+      if(url && type==='image'){
+        const dv = document.createElement('div'); dv.className='preview-media';
+        dv.innerHTML = `<img alt="" src="${url}">`; wrapCtn.appendChild(dv);
+        const imgEl = dv.querySelector('img'); imgEl.addEventListener('load', ()=> smartMediaFit(imgEl, dv));
+      }else if(url && type==='video'){
+        wrapCtn.innerHTML = `<div class="preview-media"><video controls src="${url}"></video></div>`;
+      }
+
+      $('pLuogo').textContent = luogoScelto ? `📍 ${luogoScelto}` : "";
+      $('preview').hidden = false; $('pubblicaBtn').disabled = false;
+      window.scrollTo({ top: $('preview').offsetTop - 80, behavior:'smooth' });
+    });
+
+    $('toggleClamp').addEventListener('click', ()=>{
+      const t = $('pTesto'); const isClamped = t.classList.toggle('clamp');
+      $('toggleClamp').textContent = isClamped ? 'Espandi' : 'Riduci';
+    });
+
+    // Pubblica/Salva (SOLO i 2 campi punteggio inizializzati a 0)
+    $('pubblicaBtn').addEventListener('click', async ()=>{
+      const user = auth.currentUser; if(!user){ alert("Devi essere loggato per pubblicare."); return; }
+      $('pubblicaBtn').disabled = true; $('saveMsg').textContent = "⏳ Salvataggio in corso…";
+
+      // Upload media se presente (mantieni esistente in modifica)
+      let mediaURL=null, mediaType=null;
+      try{
+        if(mediaBlob){
+          const ext = (mediaBlob.name||"").split(".").pop() || (mediaBlob.type.startsWith("image")?"jpg":"mp4");
+          const ref = storageRef(storage, `pensieri_media/${user.uid}_${Date.now()}.${ext}`);
+          await uploadBytes(ref, mediaBlob);
+          mediaURL  = await getDownloadURL(ref);
+          mediaType = mediaBlob.type.startsWith("image") ? "image" : "video";
+        } else if (editingPostId && existingMediaURL) {
+          mediaURL  = existingMediaURL;
+          mediaType = existingMediaType;
+        }
+      }catch(e){ console.error(e); $('saveMsg').textContent="Non riesco a caricare il file. Riprova."; $('pubblicaBtn').disabled=false; return; }
+
+      // Hashtag dal testo
+      const hashtags = extractHashtags($('testo').value);
+
+      // Payload MINIMO GARANTITO (no campi duplicati legacy)
+      const payload = {
+        uid: user.uid,
+        titolo: $('titolo').value.trim(),
+        testo:  $('testo').value.trim(),
+        luogo:  luogoScelto || "",
+        tema:   "ofi",
+        font:   "noto-serif",
+        fontSize: "1.15rem",
+        textAlign: "left",
+        visibilita: "privato",
+        data: new Date(),
+        attivo: true,
+        media: mediaURL || null,
+        mediaType: mediaType || null,
+        reazioni: { cuore:0, luce:0, colomba:0, rosa:0 },
+        commenti_count: 0,
+        hashtags,
+        // 🔥 UNICI punteggi salvati
+        lumina_score: 0,
+        fioritura_progress: 0
+      };
+
+      try{
+        if(editingPostId){
+          await updateDoc(doc(db,'pensieri_utente', editingPostId), payload);
+        }else{
+          await addDoc(collection(db,'pensieri_utente'), payload);
+        }
+        $('saveMsg').textContent = "✅ Fatto! Ti porto nella tua bacheca…";
+        location.href = "pensieri-miei.html";
+      }catch(e){
+        console.error(e);
+        $('saveMsg').textContent = "Impossibile salvare ora.";
+        $('pubblicaBtn').disabled = false;
+      }
+    });
+  </script>
+<link href="https://www.onoranzefunebritalia.it/cittadini/pensieri-scrivi.html" rel="canonical"/><meta content="https://www.onoranzefunebritalia.it/images/OFI-Social.png" property="og:image"/><meta content="summary_large_image" name="twitter:card"/></head>
+<body>
+<!-- Header coerente -->
+<header class="site-header">
+<div class="brand">
+<a aria-label="Torna alla home" href="../index.html">
+<img alt="OFI" class="brand-logo" src="../images/logo-ofi.png"/>
+</a>
+</div>
+<nav aria-label="Principale" class="main-nav">
+<button aria-controls="menuPanel" aria-expanded="false" aria-label="Apri menù" class="hamburger" id="menuToggle">
+<span></span><span></span><span></span>
+</button>
+<ul class="menu" id="menuPanel" role="menu">
+<li class="menu-mobile-head"><img alt="OFI" src="../images/logo-ofi.png"/><button aria-label="Chiudi menù" class="menu-close" id="menuClose">✕</button></li>
+<li aria-hidden="true" class="menu-divider"></li>
+<li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+<li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+<li aria-hidden="true" class="menu-divider"></li>
+<li class="has-sub">
+<a aria-expanded="false" aria-haspopup="true" href="#">Scopri OFI <span class="caret">▾</span></a>
+<ul class="submenu">
+<li><a href="../vision.html">Visione di OFI</a></li>
+<li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+<li><a href="../index.html#pensieri">Pensieri</a></li>
+<li><a href="../articoli/articoli.html">Articoli</a></li>
+<li><a href="../index.html#ricordi">Ricordi</a></li>
+<li><a href="../index.html#mappa">Vicino a te</a></li>
+<li><a href="../index.html#video">Video</a></li>
+</ul>
+</li>
+<li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+</ul>
+<button aria-label="Cambia tema" class="theme-switch" id="themeToggle">◐</button>
+</nav>
+<div class="menu-overlay" hidden="" id="menuOverlay"></div>
+</header>
+<section class="page-hero">
+<div class="container">
+<h1 class="section-title">Scrivi un pensiero</h1>
+<p class="section-sub">Anteprima fedele allo stile <strong>OFI</strong>. Puoi indicare, se vuoi, <strong>solo il comune</strong> (mai la via) e misurare il valore <strong>Lumina</strong>.</p>
+</div>
+</section>
+<main class="container db-wrap">
+<section class="card subtle" id="autore-pubblico-card">
+<h3 class="kicker">Autore Pubblico</h3>
+<label class="toggle-author">
+<input id="scrivi-autore-pubblico" type="checkbox"/>
+<span>Mostra i miei Pensieri come <b>Autore pubblico</b> (impostazione del profilo)</span>
+</label>
+<p class="hint">Puoi cambiare questa preferenza anche da “Pensieri Miei”.</p>
+</section><p class="card card--md" hidden="" id="notLogged">Per scrivere un pensiero devi accedere.</p>
+<section class="grid grid-2" hidden="" id="formArea">
+<article class="card card--md form-card">
+<div class="card-head"><img alt="" class="icon-xl" src="../images/pensieri-logo.png"/><h3>Il tuo pensiero</h3></div>
+<label class="small" for="titolo">Titolo (facoltativo)</label>
+<input class="input" id="titolo" placeholder="Inserisci un titolo…" type="text"/>
+<label class="small" for="testo" style="margin-top:.6rem">Testo</label>
+<textarea class="input" id="testo" placeholder="Scrivi qui…"></textarea>
+<div class="hash-hint">Usa gli <strong>hashtag</strong> <em>dentro al testo</em> (es. <code>#ricordo</code>, <code>#gratitudine</code>).</div>
+<label class="small" for="media" style="margin-top:.6rem">Immagine o video (facoltativo)</label>
+<input accept="image/*,video/*" id="media" type="file"/>
+<hr class="separator"/>
+<h4 style="margin:.1rem 0 .3rem">Luogo (opzionale)</h4>
+<p class="hint">Se lo attivi, mostreremo solo <strong>il comune</strong>, mai la via.</p>
+<div class="row" style="margin:.2rem 0 .4rem">
+<select class="input" id="luogoOpt" style="flex:1; min-width:240px">
+<option value="nessuno">🙈 Non mostrare il luogo</option>
+<option value="residenza">📍 Mostra il comune di residenza (dal profilo)</option>
+<option value="posizione">📡 Usa il comune della posizione attuale</option>
+</select>
+<span class="pill-luogo" hidden="" id="pillLuogo">Luogo: <strong id="luogoPreview"></strong></span>
+</div>
+<div class="row" hidden="" id="rowRes"><button class="btn" id="usaResidenza" type="button">Usa la mia residenza</button></div>
+<div class="row" hidden="" id="rowGeo">
+<button class="btn" id="rilevaPosizione" type="button">Rileva posizione</button>
+<input class="input" id="geoInput" placeholder="Oppure digita il comune…" style="flex:1" type="text"/>
+<button class="btn" id="confermaGeo" type="button">Conferma</button>
+<span class="small muted" id="geoMsg"></span>
+</div>
+<div class="cta-row">
+<button class="btn solid" id="anteprimaBtn" type="button">👁️ Anteprima</button>
+<button class="btn" disabled="" id="pubblicaBtn" type="button">💾 Pubblica</button>
+<a class="btn" href="pensieri-miei.html">I miei pensieri</a>
+</div>
+<div aria-live="polite" class="small" id="saveMsg" style="margin-top:.35rem"></div>
+</article>
+<aside class="card card--md preview-wrap" hidden="" id="preview">
+<div class="card-head"><img alt="" class="icon-xl" src="../images/pensieri-logo.png"/><h3>Anteprima (stile OFI)</h3></div>
+<article class="pensiero-post">
+<h3 id="pTitolo"></h3>
+<div id="pMedia"></div>
+<div class="testo clamp" id="pTesto"></div>
+<div class="meta">
+<span id="pLuogo"></span>
+<div aria-hidden="true" class="progress-lite" style="margin-top:.5rem"><span style="width:0%"></span></div>
+<small>Lumina: Livello 0 • 0%</small>
+</div>
+<div aria-live="polite" class="hash-chips" id="hashChips"></div>
+<img alt="OFI Social" class="social-watermark" src="../images/OFI-Social.png"/>
+</article>
+<div class="cta-row" style="margin-top:.8rem; grid-template-columns:1fr">
+<button class="btn" hidden="" id="toggleClamp" type="button">Espandi</button>
+</div>
+</aside>
+</section>
+</main>
+<footer class="site-footer">
+<div class="container">
+<div class="footer-grid">
+<div class="f-brand">
+<img alt="OFI" class="footer-logo" src="../images/logo-ofi.png"/>
+<p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+<p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+</div>
+<div class="f-links"><a href="../articoli/articoli.html">Articoli</a><a href="../faq.html">FAQ</a><a href="../accesso.html">Accedi</a></div>
+<div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+</div>
+</div>
+</footer>
+<!-- Agente OFI come tua versione -->
+<button aria-label="Apri Agente OFI" class="agent-fab" id="agentFab"><img alt="Agente OFI" src="../images/agente-ofi.png"/></button>
+<section aria-hidden="true" aria-live="polite" class="agent-panel" id="agentPanel" inert="">
+<header class="agent-top">
+<div class="agent-id"><img alt="Agente OFI" src="../images/agente-ofi.png"/><div><strong>Agente OFI</strong><br/><small>Sono qui per aiutarti</small></div></div>
+<button aria-label="Chiudi" class="agent-close" id="agentClose">✕</button>
+</header>
+<div class="agent-chat">
+<div class="msg msg-in"><p>Ciao, ti aiuto a scrivere: anteprima, luogo, immagini/video e consigli per <strong>Lumina</strong>.</p></div>
+<div class="suggest">
+<button class="chip" data-q="Mostra anteprima">Mostra anteprima</button>
+<button class="chip" data-q="Imposta il luogo di residenza">Imposta residenza</button>
+<button class="chip" data-q="Rileva posizione">Rileva posizione</button>
+<button class="chip" data-q="Perché Pubblica è disattivo?">Perché “Pubblica” è disattivo?</button>
+<button class="chip" data-q="Cambia tema">Cambia tema</button>
+</div>
+</div>
+<form action="#" autocomplete="off" class="agent-form"><input aria-label="Scrivi qui la tua domanda" placeholder="Scrivi qui la tua domanda…" type="text"/><button class="btn btn-primary">Invia</button></form>
+<div class="agent-note small">Suggerimento: i pensieri crescono con il tempo e con le reazioni e i commenti degli altri. Condividilo con chi vuoi!</div>
+</section>
+<script>
+// Toggle tema (coerente con ofi.css)
+(function(){
+  const btn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('ofi-theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (prefersDark ? 'theme-dark' : 'theme-light');
+  document.body.classList.remove('theme-dark','theme-light');
+  document.body.classList.add(initial);
+  btn?.addEventListener('click', ()=>{
+    const isDark = document.body.classList.toggle('theme-dark');
+    document.body.classList.toggle('theme-light', !isDark);
+    localStorage.setItem('ofi-theme', isDark ? 'theme-dark' : 'theme-light');
+  });
+})();
+</script>
+</body>
+</html>

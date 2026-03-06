@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Utenti Registrati | Admin OFI</title>
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #002c5d;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background: #002c5d;
+      color: white;
+    }
+    .msg {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>👥 Utenti Registrati</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Nome</th>
+        <th>Data registrazione</th>
+      </tr>
+    </thead>
+    <tbody id="tabellaUtenti">
+      <tr><td colspan="3" style="text-align:center;">⏳ Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <p class="msg" id="msgError"></p>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const tbody = document.getElementById("tabellaUtenti");
+    const msg = document.getElementById("msgError");
+
+    auth.onAuthStateChanged(user => {
+      if (user && user.uid === "k1yxKXHiWyX5G5k9ZoEbwuNIXa63") {
+        db.collection("utenti_registrati").orderBy("timestamp", "desc").get()
+          .then(snapshot => {
+            tbody.innerHTML = "";
+            if (snapshot.empty) {
+              tbody.innerHTML = "<tr><td colspan='3' style='text-align:center;'>Nessun utente trovato.</td></tr>";
+              return;
+            }
+            snapshot.forEach(doc => {
+              const u = doc.data();
+              const data = u.timestamp ? new Date(u.timestamp.seconds * 1000).toLocaleString() : "—";
+              const row = `
+                <tr>
+                  <td>${u.email || "—"}</td>
+                  <td>${u.nome || "—"}</td>
+                  <td>${data}</td>
+                </tr>`;
+              tbody.innerHTML += row;
+            });
+          })
+          .catch(e => {
+            msg.textContent = "Errore nel caricamento utenti: " + e.message;
+          });
+      } else {
+        msg.textContent = "Accesso negato. Solo amministratore autorizzato.";
+        tbody.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>

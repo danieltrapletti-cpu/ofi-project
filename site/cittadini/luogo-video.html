@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Filmato Ricordo — OFI</title>
+  <meta name="description" content="Crea un Filmato Ricordo per il Luogo della Memoria OFI." />
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/cittadini/luogo-video.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a id="backToManage" href="/cittadini/luogo-manage.html" aria-label="Torna alla custodia">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <a class="topLink" id="openVisit" href="#" rel="noopener">Apri visita</a>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="hero card">
+      <div class="kicker">Filmato Ricordo</div>
+      <h1 class="title">Un filmato semplice da creare</h1>
+      <p class="sub">Scrivi una dedica e, se vuoi, scegli alcune foto. Puoi anche salvare adesso e completare più avanti. Il percorso è guidato, sobrio, rispettoso.</p>
+      <div class="noteLine">Con l’aiuto dell’<em>intelligenza artificiale</em>, OFI prepara un video armonioso, pronto da custodire nel tempo.</div>
+
+      <div class="whoRow">
+        <div class="who">
+          <div class="name" id="whoName">—</div>
+          <div class="meta"><span id="whoPlace">—</span><span class="dot">•</span><span id="whoDate">—</span></div>
+        </div>
+        <div class="actions">
+          <a class="btn" id="btnBack" href="/cittadini/luogo-manage.html">Torna alla custodia</a>
+          <a class="btn primary" id="btnVisit" href="#" rel="noopener">Apri visita</a>
+        </div>
+      </div>
+
+      <div class="note">
+        Questa funzione salva una <strong>richiesta</strong>. La generazione automatica del video verrà attivata a breve. Nel frattempo puoi preparare tutto con calma.
+      </div>
+    </section>
+
+    <section class="card" id="gateCard" hidden>
+      <h2>Accesso richiesto</h2>
+      <p class="small" id="gateText"></p>
+      <div class="actions">
+        <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+        <a class="btn" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="stepHead">
+        <div class="stepNum">1</div>
+        <div>
+          <h2>Scegli le immagini</h2>
+          <p class="small">Puoi selezionare alcune foto dall’Album. Consigliato: 6–14 immagini.</p>
+        </div>
+      </div>
+
+      <div class="gridPick" id="pickGrid"></div>
+      <p class="small empty" id="pickEmpty" hidden>Nessuna foto disponibile: aggiungi prima qualche immagine nell’Album.</p>
+    </section>
+
+    <section class="card">
+      <div class="stepHead">
+        <div class="stepNum">2</div>
+        <div>
+          <h2>Dedicazione e tono</h2>
+          <p class="small">Una frase breve, poi scegli un’atmosfera OFI sobria.</p>
+        </div>
+      </div>
+
+      <div class="form">
+        <div class="field">
+          <div class="label">Titolo (facoltativo)</div>
+          <input id="vTitle" class="input" type="text" maxlength="70" placeholder="Es. Per sempre con noi">
+        </div>
+
+        <div class="field">
+          <div class="label">Dedica (breve)</div>
+          <textarea id="vDedica" class="textarea" maxlength="260" placeholder="Es. Ti porteremo sempre con noi."></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <div class="label">Atmosfera OFI</div>
+            <select id="vStyle" class="select">
+              <option value="sobria">Sobria</option>
+              <option value="luce">Luce</option>
+              <option value="silenziosa">Silenziosa</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label">Musica</div>
+            <select id="vMusic" class="select">
+              <option value="discreta">Discreta</option>
+              <option value="silenzio">Silenzio</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="btnSaveRequest" class="btn primary" type="button">Salva richiesta</button>
+        </div>
+
+        <p class="small hint">Se non hai ancora foto, va benissimo: salva la richiesta e aggiungerai le immagini quando vorrai.</p>
+      </div>
+    </section>
+
+    <section class="card" id="requestsCard" hidden>
+      <h2>Le tue richieste</h2>
+      <p class="small">Qui trovi le ultime richieste salvate per questo Luogo.</p>
+      <div class="reqList" id="reqList"></div>
+    </section>
+
+    <div class="toast" id="toast">Salvato</div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+    const forceTheme = (params.get("theme") || "").trim();
+
+    const el = (id)=>document.getElementById(id);
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita"], "family")) || "family";
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(raw?.custody?.coUids) ? raw.custody.coUids.map(safeStr).filter(Boolean) : [];
+      return { nome, cognome, dataMorte, visibilityMode: (visibilityMode==="pubblico"?"public":visibilityMode), placeLabel, mainUid, coUids };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function isCustode(uid, luogo){
+      if (!uid) return false;
+      return uid === luogo.mainUid || luogo.coUids.includes(uid);
+    }
+
+    function mustLogin(msg){
+      el("gateCard").hidden = false;
+      el("gateText").textContent = msg;
+    }
+
+    function toast(msg="Salvato"){
+      const t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+
+    /* Theme UI */
+    (function initThemeUI(){
+      const btn = document.getElementById('themeToggle');
+      const root = document.documentElement;
+
+      function apply(theme){
+        const t = (theme === 'light' || theme === 'dark') ? theme : 'auto';
+        root.setAttribute('data-theme', t);
+        const resolved = (t === 'auto')
+          ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : t;
+        document.body.classList.toggle('theme-dark', resolved === 'dark');
+        try{ root.setAttribute('data-theme-resolved', resolved); }catch{}
+        if (btn) btn.textContent = (resolved === 'dark') ? '◐' : '☀';
+      }
+
+      function nextTheme(cur){
+        if (cur === 'dark') return 'light';
+        if (cur === 'light') return 'dark';
+        return 'dark';
+      }
+
+      const saved = localStorage.getItem('ofi_theme') || root.getAttribute('data-theme') || 'auto';
+      const start = (forceTheme === 'dark' || forceTheme === 'light') ? forceTheme : saved;
+      apply(start);
+
+      btn?.addEventListener('click', ()=>{
+        const cur = root.getAttribute('data-theme') || 'auto';
+        const nxt = nextTheme(cur);
+        localStorage.setItem('ofi_theme', nxt);
+        apply(nxt);
+      });
+
+      try{
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq?.addEventListener?.('change', ()=>{
+          const cur = root.getAttribute('data-theme') || 'auto';
+          if (cur === 'auto') apply('auto');
+        });
+      }catch{}
+    })();
+
+    async function waitAuth(){
+      return await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{ unsub(); resolve(u || null); });
+      });
+    }
+
+    const selected = new Map(); // id -> media payload
+
+    function renderPickItem(id, m){
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "pickTile";
+      tile.setAttribute("aria-pressed","false");
+
+      const img = document.createElement("img");
+      img.src = m.url;
+      img.alt = m.caption || "Foto";
+      img.loading = "lazy";
+      tile.appendChild(img);
+
+      const cap = document.createElement("div");
+      cap.className = "pickCap";
+      cap.textContent = m.caption || "—";
+      tile.appendChild(cap);
+
+      const mark = document.createElement("div");
+      mark.className = "pickMark";
+      mark.textContent = "✓";
+      tile.appendChild(mark);
+
+      tile.addEventListener("click", ()=>{
+        const on = selected.has(id);
+        if (on){
+          selected.delete(id);
+          tile.classList.remove("on");
+          tile.setAttribute("aria-pressed","false");
+        } else {
+          selected.set(id, m);
+          tile.classList.add("on");
+          tile.setAttribute("aria-pressed","true");
+        }
+      });
+
+      return tile;
+    }
+
+    async function refreshRequests(uid){
+      const card = el("requestsCard");
+      const list = el("reqList");
+      list.innerHTML = "";
+      const qR = query(collection(db, "luoghi_memoria", luogoId, "video_requests"), orderBy("createdAt","desc"), limit(6));
+      const snap = await getDocs(qR).catch(()=>null);
+      if (!snap || snap.empty){
+        card.hidden = true;
+        return;
+      }
+      card.hidden = false;
+
+      snap.forEach(d=>{
+        const r = d.data() || {};
+        const title = safeStr(r.title) || "Video Ricordo";
+        const dedica = safeStr(r.dedica);
+        const when = r.createdAt?.toDate?.() ? r.createdAt.toDate().toLocaleDateString("it-IT") : "";
+        const chips = [safeStr(r.style), safeStr(r.music)].filter(Boolean).join(" • ");
+
+        const row = document.createElement("div");
+        row.className = "req";
+        row.innerHTML = \`
+          <div class="reqTop">
+            <strong>\${title}</strong>
+            <span class="reqWhen">\${when}</span>
+          </div>
+          <div class="reqMid">\${dedica ? dedica : "—"}</div>
+          <div class="reqBot">
+            <span class="reqChip">\${chips || "—"}</span>
+            <span class="reqChip">\${Array.isArray(r.media) ? r.media.length : 0} immagini</span>
+            <span class="reqChip">\${safeStr(r.status || "draft")}</span>
+          </div>
+        \`;
+        list.appendChild(row);
+      });
+    }
+
+    async function load(){
+      if (!luogoId){
+        mustLogin("ID mancante. Torna ai tuoi Luoghi e apri quello corretto.");
+        return;
+      }
+
+      const user = await waitAuth();
+      if (!user){
+        mustLogin("Per creare un Video Ricordo devi accedere come cittadino.");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        mustLogin("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      const luogo = normalizeDoc(snap.data() || {});
+      if (!isCustode(user.uid, luogo)){
+        mustLogin("Questa funzione è riservata ai custodi del Luogo.");
+        return;
+      }
+
+      const displayName = [luogo.nome, luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      el("whoName").textContent = displayName;
+      el("whoPlace").textContent = luogo.placeLabel || "Luogo non specificato";
+      el("whoDate").textContent = fmtDate(luogo.dataMorte);
+
+      const visitUrl = `/cittadini/luogo-visit.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      el("btnVisit").href = visitUrl;
+      el("openVisit").href = visitUrl;
+
+      el("backToManage").href = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+      el("btnBack").href = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+
+      // Carica foto da Album (solo photo)
+      const grid = el("pickGrid");
+      const empty = el("pickEmpty");
+      grid.innerHTML = "";
+
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), orderBy("createdAt","desc"), limit(80));
+      const snapA = await getDocs(qA).catch(()=>null);
+
+      let count = 0;
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const type = safeStr(m.type || "photo");
+          if (type !== "photo") return;
+          const url = safeStr(m.url);
+          if (!url) return;
+          count++;
+          grid.appendChild(renderPickItem(d.id, {
+            type: "photo",
+            url,
+            caption: safeStr(m.caption || ""),
+            storageRef: safeStr(m.storageRef || "")
+          }));
+        });
+      }
+      empty.hidden = count > 0;
+
+      // Save request
+      el("btnSaveRequest").addEventListener("click", async ()=>{
+        const media = Array.from(selected.entries()).map(([id, m])=>({ id, ...m }));
+        // Le foto sono consigliate ma non obbligatorie: l’utente può salvare e completare più avanti.
+        let status = "draft";
+        if (media.length === 0) status = "needs_media";
+        else if (media.length < 3) status = "needs_more_media";
+
+        const title = safeStr(el("vTitle").value);
+        const dedica = safeStr(el("vDedica").value);
+        const style = el("vStyle").value;
+        const music = el("vMusic").value;
+
+        try{
+          await addDoc(collection(db, "luoghi_memoria", luogoId, "video_requests"), {
+            title,
+            dedica,
+            style,
+            music,
+            media,
+            status,
+            createdAt: serverTimestamp(),
+            createdByUid: user.uid
+          });
+          toast(status === "draft" ? "Richiesta salvata" : "Richiesta salvata (completa quando vuoi)");
+          await refreshRequests(user.uid);
+        }catch(e){
+          console.error(e);
+          alert("Errore nel salvataggio della richiesta.");
+        }
+      });
+
+      await refreshRequests(user.uid);
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      mustLogin("Errore nel caricamento. Riprova tra poco.");
+    });
+  </script>
+</body>
+</html>

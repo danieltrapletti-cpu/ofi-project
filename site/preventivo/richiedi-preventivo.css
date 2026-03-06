@@ -1,0 +1,450 @@
+/* ============================
+   RICHIEDI PREVENTIVO — OFI
+   Stile dedicato, più leggero
+   ============================ */
+
+/* Palette base (coerente OFI) */
+:root{
+  --gold:#caa85a;
+  --gold-brd: color-mix(in oklab, var(--gold), black 18%);
+  --card-bg:#ffffff;
+  --panel-bg:#f7f8fc;
+  --card-brd:rgba(15,23,42,.08);
+  --txt:#0f172a;
+  --muted:#6b7280;
+}
+
+/* Solo per questa pagina */
+body.pagina-preventivo{
+  background:#f3f4f8;
+  color:var(--txt);
+  font-family:"Source Sans 3", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Contenitore principale */
+.wrap{
+  max-width:1080px;
+  margin:0 auto;
+  padding:32px 16px 48px;
+  display:flex;
+  flex-direction:row;
+  gap:24px;
+  align-items:flex-start;
+}
+
+/* La card del wizard diventa la vera protagonista */
+.wizard{
+  flex:1 1 0;
+  max-width:720px;
+  margin:0 auto;
+  border-radius:24px;
+  background:var(--card-bg);
+  border:1px solid color-mix(in oklab, var(--gold), #ffffff 60%);
+  box-shadow:0 18px 60px rgba(15,23,42,.16);
+  overflow:hidden;
+}
+
+/* Testata più pulita */
+.wiz-head{
+  padding:20px 22px 18px;
+  background:
+    radial-gradient(380px 210px at 0% 0%, rgba(202,168,90,.18), transparent 60%),
+    linear-gradient(135deg, #0b1528 0%, #111827 65%, #020617 100%);
+  color:#f9fafb;
+  border-bottom:1px solid rgba(248,250,252,.18);
+}
+.head-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+.brand-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.brand-box img{
+  height:34px;
+}
+.brand-title{
+  font-weight:800;
+  font-size:1.2rem;
+  letter-spacing:.02em;
+}
+.brand-sub{
+  font-size:.95rem;
+  opacity:.9;
+}
+
+/* KPI più discreti */
+.kpi-box{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  padding:8px 10px;
+  border-radius:999px;
+  backdrop-filter:blur(6px);
+  background:rgba(15,23,42,.65);
+  border:1px solid rgba(249,250,251,.2);
+}
+.kpi-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  border-radius:999px;
+  padding:.3rem .7rem;
+  font-size:.85rem;
+  font-weight:700;
+  background:rgba(15,23,42,.8);
+  border:1px solid rgba(249,250,251,.25);
+}
+.kpi-pill span:first-child{
+  opacity:.7;
+  font-weight:600;
+}
+.progress{
+  position:relative;
+  width:120px;
+  height:10px;
+  border-radius:999px;
+  background:rgba(15,23,42,.4);
+  overflow:hidden;
+  border:1px solid rgba(249,250,251,.35);
+}
+.progress>span{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#caa85a,#e4cc83,#caa85a);
+  background-size:200% 100%;
+  animation:shine 2.6s linear infinite;
+  transition:width .4s ease;
+}
+@keyframes shine{
+  to{ background-position:200% 0; }
+}
+
+/* Messaggio finale sopra l’ultimo step */
+.celebrate{
+  margin-top:.35rem;
+  font-size:.9rem;
+  opacity:0;
+  max-height:0;
+  overflow:hidden;
+  transition:opacity .25s ease, max-height .25s ease;
+}
+.celebrate.show{
+  opacity:1;
+  max-height:60px;
+}
+
+/* Corpo del wizard */
+.wiz-body{
+  padding:18px 20px 18px;
+}
+
+/* Step cards più piccole, solo “indicatori” */
+.steps-wrap{
+  margin:4px 0 10px;
+}
+.stepbar{
+  display:flex;
+  gap:8px;
+  padding-bottom:2px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+}
+.step-card{
+  scroll-snap-align:center;
+  min-width:112px;
+  padding:7px 9px;
+  border-radius:10px;
+  border:1px solid var(--card-brd);
+  background:var(--panel-bg);
+  color:var(--muted);
+  font-size:.8rem;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  cursor:pointer;
+  box-shadow:0 1px 3px rgba(15,23,42,.06);
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.step-card .s-top{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:700;
+}
+.step-card .s-ico{
+  font-size:1rem;
+}
+.step-card .s-lbl{
+  font-size:.8rem;
+}
+.step-card .s-num{
+  font-size:.75rem;
+  opacity:.7;
+}
+.step-card.active{
+  background:linear-gradient(135deg,#fdfaf2,#f5e8c0);
+  color:#111827;
+  border-color:var(--gold);
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(202,168,90,.22);
+}
+
+/* Slide: blocco “conversazione” pulito */
+.slide{
+  display:none;
+  position:relative;
+  padding:14px 14px 18px;
+  border-radius:16px;
+  background:transparent;
+  animation:.22s fadeIn ease;
+}
+.slide.active{
+  display:block;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(249,250,251,.94));
+  box-shadow:0 12px 30px rgba(15,23,42,.12);
+  border:1px solid rgba(15,23,42,.05);
+}
+@keyframes fadeIn{
+  from{ opacity:0; transform:translateX(6px); }
+  to{ opacity:1; transform:translateX(0); }
+}
+
+/* Titoli dei campi = come parlare con l’Agente OFI */
+.slide label{
+  display:block;
+  margin-top:1rem;
+  margin-bottom:.45rem;
+  font-size:1.15rem;
+  font-weight:800;
+  letter-spacing:.015em;
+}
+
+/* Campi input/textarea coerenti, un solo font */
+.wiz-body input,
+.wiz-body textarea,
+.wiz-body select{
+  width:100%;
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,.12);
+  background:#f9fafb;
+  color:var(--txt);
+  font:500 1rem/1.5 "Source Sans 3", system-ui, sans-serif;
+  padding:.75rem .85rem;
+  box-shadow:0 1px 3px rgba(15,23,42,.04);
+  transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+.wiz-body textarea{
+  min-height:132px;
+  resize:vertical;
+}
+.wiz-body input::placeholder,
+.wiz-body textarea::placeholder{
+  color:#9ca3af;
+  font-weight:400;
+}
+.wiz-body input:focus,
+.wiz-body textarea:focus,
+.wiz-body select:focus{
+  outline:none;
+  border-color:var(--gold);
+  background:#ffffff;
+  box-shadow:0 0 0 3px rgba(202,168,90,.26);
+}
+
+/* Testi di aiuto */
+.hint{
+  font-size:.9rem;
+  color:var(--muted);
+  margin-top:.2rem;
+}
+
+/* Row per email/telefono */
+.row{
+  display:flex;
+  gap:.75rem;
+  flex-wrap:wrap;
+}
+.row > div{
+  flex:1 1 220px;
+}
+
+/* Chip per scelte tipo richiesta / rito / extra */
+.chip-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+  margin-top:.35rem;
+}
+.chip-toggle{
+  border-radius:999px;
+  padding:.45rem .8rem;
+  border:1px solid rgba(15,23,42,.14);
+  background:#f9fafb;
+  font:600 .9rem/1.3 "Source Sans 3", system-ui, sans-serif;
+  color:#111827;
+  cursor:pointer;
+  transition:background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .08s ease;
+}
+.chip-toggle:active{
+  transform:translateY(1px);
+}
+.chip-toggle.is-active,
+.chip-toggle[aria-pressed="true"]{
+  background:linear-gradient(135deg,#0b1528,#111827);
+  border-color:#0b1528;
+  color:#f9fafb;
+  box-shadow:0 6px 16px rgba(15,23,42,.35);
+}
+
+/* Footer wizard: pulsanti chiari, senza “effetto paura” */
+.wiz-foot{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 18px;
+  border-top:1px solid rgba(15,23,42,.08);
+  background:#f9fafb;
+}
+.wiz-foot .left,
+.wiz-foot .right{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+}
+
+/* Bottoni base */
+.btn{
+  border-radius:999px;
+  border:1px solid rgba(15,23,42,.14);
+  background:#ffffff;
+  color:#111827;
+  font:700 .95rem/1 "Source Sans 3", system-ui, sans-serif;
+  padding:0 14px;
+  height:40px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.3rem;
+  transition:background .16s ease, border-color .16s ease, box-shadow .16s ease, transform .08s ease;
+}
+.btn:hover{
+  background:#f3f4ff;
+}
+.btn:active{
+  transform:translateY(1px);
+}
+.btn:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+}
+
+/* Bottoni principali oro */
+.btn.solid{
+  background:linear-gradient(135deg,#caa85a,#e4cc83);
+  border-color:var(--gold-brd);
+  color:#111827;
+  box-shadow:0 6px 18px rgba(202,168,90,.35);
+}
+.btn.solid:hover{
+  filter:brightness(1.03);
+}
+.btn.solid:active{
+  transform:translateY(1px);
+}
+
+/* Messaggio errore in basso */
+#formError{
+  font-size:.88rem;
+}
+
+/* Sezione imprese (fuori dalla card, più “soft”) */
+.imprese-selezionate-lite{
+  flex: 0 0 320px;
+  border-radius:20px;
+  background:#ffffff;
+  border:1px solid rgba(15,23,42,.06);
+  box-shadow:0 12px 40px rgba(15,23,42,.15);
+  padding:16px 16px 18px;
+}
+.imprese-lite-head h2{
+  font-size:1.02rem;
+  margin:0 0 .25rem;
+}
+.imprese-lite-head p{
+  margin:0 0 .75rem;
+  font-size:.9rem;
+  color:var(--muted);
+}
+.imprese-lite-list{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+
+/* Piccole card per ogni impresa (il tuo JS le riempirà) */
+.imprese-lite-list .impresa-card{
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,.08);
+  padding:.55rem .7rem;
+  background:#f9fafb;
+  font-size:.9rem;
+}
+.imprese-lite-list .impresa-card strong{
+  display:block;
+}
+
+/* Agente OFI: lasciamo gestire lo stile a ofi.css, solo margine di sicurezza */
+.ofi-agent{
+  margin-top:24px;
+}
+
+/* Mobile: stack verticale (wizard sopra, imprese sotto) */
+@media (max-width: 900px){
+  .wrap{
+    flex-direction:column;
+  }
+  .imprese-selezionate-lite{
+    max-width:720px;
+    margin:0 auto;
+    width:100%;
+  }
+}
+
+/* Mobile: un po’ più compatto tutto */
+@media (max-width: 680px){
+  .wiz-head{
+    padding:16px 16px 14px;
+  }
+  .wiz-body{
+    padding:14px 14px 16px;
+  }
+  .wrap{
+    padding:20px 12px 32px;
+  }
+  .step-card{
+    min-width:108px;
+  }
+  .wiz-foot{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .wiz-foot .left,
+  .wiz-foot .right{
+    width:100%;
+    justify-content:space-between;
+  }
+  .wiz-foot .left .btn,
+  .wiz-foot .right .btn{
+    flex:1 1 auto;
+  }
+}

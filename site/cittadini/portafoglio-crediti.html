@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Portafoglio Crediti — OFI</title>
+  <meta name="description" content="Saldo, movimenti e regole dei crediti OFI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="icon" href="../images/OFI-Social.png" type="image/png">
+  <style>
+    .page-head{padding:1.2rem 0 .6rem;background:
+      radial-gradient(820px 360px at -10% -15%, color-mix(in oklab, var(--oro), transparent 90%), transparent 60%),
+      radial-gradient(820px 360px at 115% -15%, color-mix(in oklab, var(--salvia), transparent 92%), transparent 60%);}
+    .wallet-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:1rem}
+    @media(max-width:1060px){.wallet-grid{grid-template-columns:1fr}}
+    .balance-card{display:flex;flex-direction:column;gap:.6rem}
+    .big-balance{font-size:2.4rem;font-weight:800}
+    .wallet-badge{display:inline-flex;align-items:center;gap:.35rem;border:1px solid color-mix(in oklab,var(--text),transparent 80%);border-radius:999px;padding:.18rem .55rem;font-size:.85rem}
+    .rules li{margin:.25rem 0}
+    .toolbar{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+    .mov-table{width:100%;border-collapse:separate;border-spacing:0}
+    .mov-table th,.mov-table td{padding:.55rem;border-bottom:1px solid color-mix(in oklab,var(--text),transparent 90%)}
+    .mov-row-pos{color:var(--success);font-weight:600}
+    .mov-row-neg{color:var(--danger);font-weight:600}
+    .empty{padding:1rem;text-align:center}
+    .pill{display:inline-block;border:1px solid color-mix(in oklab,var(--text),transparent 80%);border-radius:999px;padding:.2rem .6rem;font-size:.8rem}
+    .help{font-size:.92rem}
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay" hidden></div>
+
+  <header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="../vision.html">Visione di OFI</a></li>
+          <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="../index.html#pensieri">Pensieri</a></li>
+          <li><a href="../articoli/articoli.html">Articoli</a></li>
+          <li><a href="../index.html#ricordi">Ricordi</a></li>
+          <li><a href="../index.html#mappa">Vicino a te</a></li>
+          <li><a href="../index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+  <main>
+    <section class="page-head section-cards">
+      <div class="container">
+        <h1 class="section-title" style="display:flex;align-items:center;gap:.6rem" class="section-title">
+          <img src="../images/OFI-Logo-Light.png" alt="OFI" style="height:34px" class="logo-img"> Portafoglio Crediti
+        </h1>
+        <p class="section-sub">Saldo, movimenti e regole. Usa i crediti per scontare i servizi OFI con la <strong>formula ibrida</strong> (crediti + euro).</p>
+      </div>
+    </section>
+
+    <section class="sec section-cards">
+      <div class="container wallet-grid">
+        <div class="card balance-card card--md">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <span class="wallet-badge" title="1 credito ≈ 1 euro">1⃣ = 1€</span>
+              <span class="pill">Personale</span>
+            </div>
+            <div class="toolbar">
+              <a class="btn ghost" href="dashboard-cittadino.html">⬅ Torna alla dashboard</a>
+              <a class="btn outline" href="../necrologi.html">Vai ai Necrologi</a>
+              <a class="btn outline" href="profilo-cittadino.html">Profilo</a>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-end;gap:1.2rem;margin-top:.5rem;flex-wrap:wrap">
+            <div>
+              <div class="big-balance" id="saldo">0</div>
+              <div class="muted">Crediti disponibili</div>
+            </div>
+            <div>
+              <button class="btn solid" id="copyInvite">🔗 Copia link invito</button>
+              <span id="inviteMsg" class="muted"></span>
+            </div>
+          </div>
+
+          <div class="help card card--md" style="margin-top:.8rem">
+            <h3 style="margin:0 0 .2rem 0">Come guadagnare crediti</h3>
+            <ul class="rules">
+              <li><strong>Condividi il Pensiero del Giorno</strong>: +1 credito per ogni nuova registrazione tramite il tuo link.</li>
+              <li><strong>Invita un amico</strong> dalla dashboard: +1 credito per te e +1 per chi si registra.</li>
+              <li>In futuro: missioni gentili (es. partecipare a ricorrenze o contribuire a un Luogo della Memoria).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card help">
+          <h3 style="margin-top:0">Regole e trasparenza</h3>
+          <ul class="rules">
+            <li><strong>1 credito = 1€</strong> di valore.</li>
+            <li><strong>Formula ibrida</strong>: ogni servizio richiede una parte in crediti e una parte in euro (esempio: necrologio 10€ ⇒ 5 crediti + 5€).</li>
+            <li>I crediti <strong>non sono rimborsabili</strong>, non scambiabili in denaro e <strong>scadono</strong> dopo 24 mesi di inattività.</li>
+            <li>Anti-abuso: crediti assegnati solo su registrazioni valide (no auto-inviti, no account sospetti).</li>
+            <li>Trasferibilità: potrai <strong>donare crediti</strong> a un familiare (funzione in arrivo).</li>
+          </ul>
+          <p class="muted">Dubbi? <a href="../index.html#contatti">Contattaci</a>. Il portafoglio è personale e legato al tuo account OFI.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec section-cards">
+      <div class="container card card--md">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap">
+          <h3 style="margin:0">Storico movimenti</h3>
+          <div class="toolbar">
+            <select id="filtroTipo" class="input">
+              <option value="">Tutti i tipi</option>
+              <option value="accredito">Accrediti</option>
+              <option value="addebito">Addebiti</option>
+            </select>
+            <input id="filtroTesto" class="input" placeholder="Cerca nella descrizione…">
+            <button class="btn outline" id="btnFiltra">Filtra</button>
+            <button class="btn ghost" id="btnReset">Reset</button>
+            <button class="btn outline" id="btnExport">Esporta CSV</button>
+          </div>
+        </div>
+
+        <div style="overflow:auto;margin-top:.6rem">
+          <table class="mov-table" id="tabella">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrizione</th>
+                <th>Tipo</th>
+                <th>Importo</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+              <tr><td colspan="4" class="empty">Caricamento…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cta-row" style="justify-content:center;margin-top:.6rem">
+          <button class="btn solid" id="btnAltro">Carica altri</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+  
+
+  <script src="../ofi.js" defer></script>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, doc, getDoc, collection, getDocs, query, where, orderBy, limit, startAfter } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const $ = (s)=>document.querySelector(s);
+
+    let lastDoc = null;
+    let currentFilter = { tipo:'', testo:'' };
+    let cacheRows = [];
+
+    onAuthStateChanged(auth, async (u) => {
+      if(!u){ location.href='login-cittadino.html'; return; }
+      await caricaSaldo(u.uid);
+      await caricaMovimenti(u.uid, true);
+      initInvite(u);
+      initFilters(u);
+    });
+
+    async function caricaSaldo(uid){
+      try{
+        const saldoRef = doc(db,'utenti_cittadini', uid, 'wallet', 'saldo');
+        const snap = await getDoc(saldoRef);
+        $('#saldo').textContent = snap.exists() ? (snap.data().saldo || 0) : 0;
+      }catch(e){
+        $('#saldo').textContent = 0;
+      }
+    }
+
+    function renderRows(rows){
+      const tb = $('#tbody');
+      if(!rows.length){
+        tb.innerHTML = '<tr><td colspan="4" class="empty">Nessun movimento trovato</td></tr>';
+        return;
+      }
+      tb.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        const dt = r.data?.seconds ? new Date(r.data.seconds*1000) : null;
+        tr.innerHTML = `
+          <td>${dt ? dt.toLocaleDateString('it-IT') : ''}</td>
+          <td>${r.descrizione || ''}</td>
+          <td>${r.tipo || ''}</td>
+          <td class="${(r.importo||0)>=0 ? 'mov-row-pos':'mov-row-neg'}">${(r.importo>0?'+':'') + (r.importo||0)}</td>
+        `;
+        tb.appendChild(tr);
+      });
+    }
+
+    async function caricaMovimenti(uid, reset=false){
+      const tb = $('#tbody');
+      if(reset){ tb.innerHTML = '<tr><td colspan="4" class="empty">Caricamento…</td></tr>'; cacheRows = []; lastDoc=null; }
+
+      try{
+        let qRef = query(collection(db,'utenti_cittadini', uid, 'wallet_movimenti'), orderBy('data','desc'), limit(25));
+        if(lastDoc) qRef = query(collection(db,'utenti_cittadini', uid, 'wallet_movimenti'), orderBy('data','desc'), startAfter(lastDoc), limit(25));
+        const snap = await getDocs(qRef);
+        if(snap.empty && !cacheRows.length){ tb.innerHTML = '<tr><td colspan="4" class="empty">Nessun movimento presente</td></tr>'; return; }
+
+        const newRows = [];
+        snap.forEach(d=>{
+          const v = d.data();
+          newRows.push({ ...v, id:d.id });
+        });
+        cacheRows = cacheRows.concat(newRows);
+        renderRows(applicaFiltro(cacheRows, currentFilter));
+        lastDoc = snap.docs[snap.docs.length-1] || lastDoc;
+      }catch(e){
+        tb.innerHTML = '<tr><td colspan="4" class="empty">Errore durante il caricamento</td></tr>';
+      }
+    }
+
+    function applicaFiltro(rows, f){
+      return rows.filter(r => {
+        const okTipo = !f.tipo || (r.tipo === f.tipo);
+        const okTesto = !f.testo || (String(r.descrizione||'').toLowerCase().includes(f.testo.toLowerCase()));
+        return okTipo && okTesto;
+      });
+    }
+
+    function initFilters(u){
+      $('#btnAltro').addEventListener('click', ()=> caricaMovimenti(u.uid, false));
+      $('#btnFiltra').addEventListener('click', ()=>{
+        currentFilter = { tipo: $('#filtroTipo').value, testo: $('#filtroTesto').value.trim() };
+        renderRows(applicaFiltro(cacheRows, currentFilter));
+      });
+      $('#btnReset').addEventListener('click', ()=>{
+        currentFilter = { tipo:'', testo:'' };
+        $('#filtroTipo').value=''; $('#filtroTesto').value='';
+        renderRows(cacheRows);
+      });
+      $('#btnExport').addEventListener('click', ()=>{
+        const rows = applicaFiltro(cacheRows, currentFilter);
+        const header = ['Data','Descrizione','Tipo','Importo'];
+        const csv = [header.join(',')].concat(rows.map(r => {
+          const dt = r.data?.seconds ? new Date(r.data.seconds*1000).toLocaleDateString('it-IT') : '';
+          const imp = (r.importo>0?'+':'') + (r.importo||0);
+          const cells = [dt, r.descrizione||'', r.tipo||'', imp].map(c => `"${String(c).replace(/"/g,'""')}"`);
+          return cells.join(',');
+        })).join('\\n');
+        const blob = new Blob([csv], { type:'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'movimenti_crediti.csv'; a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function initInvite(u){
+      const btn = $('#copyInvite');
+      if(!btn) return;
+      const code = encodeURIComponent(u.uid);
+      const link = `${location.origin}/accesso.html?ref=${code}`;
+      btn.addEventListener('click', async ()=>{
+        try{ await navigator.clipboard.writeText(link); $('#inviteMsg').textContent = 'Link copiato.'; setTimeout(()=>$('#inviteMsg').textContent='',1500); }
+        catch{ $('#inviteMsg').textContent = 'Copia non riuscita. Prova manualmente.'; }
+      });
+    }
+  </script>
+
+<!-- Torna su -->
+<button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+<script>
+  // Mobile submenu toggle (safe fallback)
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    if(!trigger) return;
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const open = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+<script>
+// Mobile submenu toggle + close on second tap / outside
+document.addEventListener('click', function(e){
+  const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+  const menu = document.getElementById('menuPanel');
+  if(trigger){
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const isOpen = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }else{
+    // click outside submenu: close all
+    if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+/* =========================================================
+   OFI – Onoranze Funebri Italia
+   Global stylesheet (elegante, coerente, accessibile)
+   Mobile-first · Slide-in drawer menu · OFI Blue / Gold
+   ========================================================= */
+
+/* ------------------------------
+   0) Reset + base
+------------------------------ */
+*,*::before,*::after{box-sizing:border-box}
+html{line-height:1.5;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0}
+img,svg,video,canvas{display:block;max-width:100%;height:auto}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* ------------------------------
+   1) Design tokens
+------------------------------ */
+:root{
+  /* Palette OFI */
+  --ofi-blue-900:#0c2340;   /* profondo */
+  --ofi-blue-800:#0f2744;   /* header/menu */
+  --ofi-blue-700:#18314f;
+  --ofi-gold-500:#caa85a;   /* accento */
+  --ofi-gold-300:#e8d39a;
+  --ofi-red-400:#b5545b;    /* accento leggero (rose OFI) */
+  --ofi-green-400:#4aa37e;
+
+  /* Neutri */
+  --gray-900:#0f1220;
+  --gray-800:#171a2a;
+  --gray-700:#23263a;
+  --gray-600:#3a3f57;
+  --gray-500:#59607c;
+  --gray-400:#7e86a3;
+  --gray-300:#aab1c8;
+  --gray-200:#d7dbe8;
+  --gray-100:#eff2f8;
+  --white:#ffffff;
+
+  /* Tipografia */
+  --font-sans: "Source Sans 3","Manrope",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  --font-serif:"Noto Serif",Georgia,"Times New Roman",serif;
+
+  /* Metriche */
+  --radius-sm:8px;
+  --radius-md:14px;
+  --radius-lg:20px;
+  --shadow-sm:0 6px 16px rgba(0,0,0,.12);
+  --shadow-md:0 12px 28px rgba(0,0,0,.16);
+  --shadow-lg:0 22px 44px rgba(0,0,0,.18);
+
+  /* Header */
+  --headerH:64px; /* aggiornato da menu.js */
+
+  /* Transizioni */
+  --t-fast:.18s cubic-bezier(.2,.6,.2,1);
+  --t-base:.28s cubic-bezier(.2,.6,.2,1);
+}
+
+/* Tema base */
+html,body{
+  background:linear-gradient(180deg, var(--ofi-blue-900) 0%, var(--ofi-blue-800) 100%);
+  color:var(--gray-100);
+  font-family:var(--font-sans);
+  font-weight:400;
+}
+::selection{background:rgba(202,168,90,.28)}
+
+/* Tipografia generica */
+h1,h2,h3,h4{font-weight:700;line-height:1.2;margin:0 0 .5em}
+h1{font-size:clamp(28px,4.2vw,44px);letter-spacing:.2px}
+h2{font-size:clamp(22px,3.4vw,32px)}
+h3{font-size:clamp(18px,2.6vw,24px)}
+p{margin:.7em 0;color:var(--gray-100)}
+.lead{font-size:1.125rem;color:var(--gray-200)}
+small,.small{font-size:.875rem;color:var(--gray-300)}
+em.serif{font-family:var(--font-serif);font-style:italic}
+
+/* Link accentati */
+a.link{color:var(--ofi-gold-500);text-underline-offset:2px}
+a.link:hover{color:var(--ofi-gold-300)}
+
+/* ------------------------------
+   2) Layout helpers
+------------------------------ */
+.container{
+  width:min(1200px, 92vw);
+  margin-inline:auto;
+  padding-inline: clamp(10px, 3vw, 24px);
+}
+.section{padding: clamp(28px,6vw,64px) 0}
+.section--alt{
+  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.grid{
+  display:grid;gap:clamp(12px,3vw,24px)
+}
+@media (min-width: 900px){
+  .grid.cols-2{grid-template-columns:1fr 1fr}
+  .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+}
+
+/* Spaziature rapide */
+.mt-0{margin-top:0}.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}.mt-4{margin-top:32px}
+.mb-0{margin-bottom:0}.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}.mb-4{margin-bottom:32px}
+.pt-0{padding-top:0}.pt-1{padding-top:8px}.pt-2{padding-top:16px}.pt-3{padding-top:24px}.pt-4{padding-top:32px}
+.pb-0{padding-bottom:0}.pb-1{padding-bottom:8px}.pb-2{padding-bottom:16px}.pb-3{padding-bottom:24px}.pb-4{padding-bottom:32px}
+
+/* ------------------------------
+   3) Header & Navigazione
+   (allineato a menu.html + menu.js)
+------------------------------ */
+.site-header{
+  position:sticky;top:0;z-index:60;
+  backdrop-filter:saturate(120%) blur(8px);
+  background:linear-gradient(180deg, rgba(15,39,68,.86), rgba(15,39,68,.78));
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.site-header .bar{
+  height:var(--headerH);
+  display:flex;align-items:center;gap:14px;
+  justify-content:space-between;
+}
+.brand{
+  display:flex;align-items:center;gap:12px;
+}
+.brand .logo{
+  width:38px;height:38px;border-radius:50%;
+  background: radial-gradient(ellipse at 40% 30%, #d8b66b 0%, #caa85a 40%, #9e7b33 100%);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.25), 0 0 0 1px rgba(255,255,255,.12);
+}
+.brand .title{font-weight:800;letter-spacing:.2px}
+
+/* Menu overlay */
+.menu-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  opacity:0;visibility:hidden;transition:opacity var(--t-base),visibility var(--t-base);
+  z-index:95;
+}
+.menu-overlay.show{opacity:1;visibility:visible}
+.menu-overlay[hidden]{display:none!important}
+
+/* Drawer (mobile) */
+.menu{
+  position:fixed;right:0;top:var(--headerH);
+  height:calc(100dvh - var(--headerH));
+  width:min(88vw,420px);
+  background:var(--ofi-blue-800);
+  color:var(--white);z-index:100;
+  transform:translateX(102%);
+  transition:transform var(--t-base);
+  box-shadow:-12px 0 28px rgba(0,0,0,.25);
+  border-left:1px solid rgba(255,255,255,.06);
+}
+.menu.open{transform:translateX(0)}
+.menu > ul#menuPanel{
+  margin:0;padding:16px 12px 24px;list-style:none;
+  height:100%;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable both-edges;
+}
+.menu li{border-bottom:1px solid rgba(255,255,255,.07)}
+.menu a{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 8px;font-weight:700;color:var(--white);
+}
+.menu .has-sub > a[aria-haspopup="true"]::after{
+  content:'▾';margin-left:auto;font-size:12px;opacity:.9;transform:translateY(1px)
+}
+.menu .has-sub.open > a[aria-haspopup="true"]::after{content:'▴'}
+.menu .submenu{
+  display:none;padding:6px 0 10px 12px;background:rgba(255,255,255,.06);
+  border-top:1px solid rgba(255,255,255,.06);border-radius:0 0 var(--radius-sm) var(--radius-sm);
+}
+.menu .has-sub.open > .submenu{display:block}
+
+/* Toggle buttons (icona hamburger / close) */
+#menuToggle,#menuClose{
+  appearance:none;border:0;background:transparent;color:var(--gray-100);
+  width:42px;height:42px;border-radius:12px;
+  display:grid;place-items:center;cursor:pointer;
+  transition:background var(--t-fast),transform var(--t-fast);
+}
+#menuToggle:hover,#menuClose:hover{background:rgba(255,255,255,.08)}
+#menuToggle:active,#menuClose:active{transform:scale(.96)}
+
+/* Desktop (menu inline, dropdown on hover) */
+@media (min-width:901px){
+  .menu-overlay{display:none!important}
+  .menu{
+    position:static;transform:none!important;height:auto;width:auto;
+    background:transparent;box-shadow:none;border:0;
+  }
+  .menu > ul#menuPanel{
+    display:flex;align-items:center;gap:18px;
+    padding:0;height:auto;overflow:visible;
+  }
+  .menu li{border:0}
+  .menu a{padding:10px 6px;color:var(--gray-100)}
+  .menu a:hover{color:var(--ofi-gold-300)}
+  .menu .has-sub{position:relative}
+  .menu .submenu{
+    position:absolute;top:100%;left:0;min-width:240px;z-index:200;
+    display:none;padding:8px 6px;border-radius:12px;
+    background:var(--ofi-blue-800);color:var(--white);
+    border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-lg);
+  }
+  .menu .has-sub:hover > .submenu{display:block}
+  .menu .has-sub > a[aria-haspopup="true"]::after{content:''}
+}
+
+/* Evita scroll del body quando il drawer è aperto */
+@media (max-width:900px){
+  html.menu-open, body.menu-open{overflow:hidden}
+}
+
+/* ------------------------------
+   4) Hero / masthead
+------------------------------ */
+.hero{
+  padding: clamp(38px, 10vw, 120px) 0;
+  background:
+    radial-gradient(1000px 600px at 80% -10%, rgba(202,168,90,.14), transparent 60%),
+    radial-gradient(800px 500px at 10% 10%, rgba(255,255,255,.06), transparent 60%);
+}
+.hero .eyebrow{
+  display:inline-block;padding:6px 10px;border-radius:999px;
+  background:linear-gradient(90deg, rgba(202,168,90,.22), rgba(232,211,154,.18));
+  color:var(--ofi-gold-300);font-weight:800;letter-spacing:.3px
+}
+
+/* ------------------------------
+   5) Card, panel, surface
+------------------------------ */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  padding: clamp(14px, 3.2vw, 24px);
+  color:var(--gray-100);
+}
+.card--gold{
+  border-color:rgba(202,168,90,.45);
+  box-shadow:0 12px 30px rgba(202,168,90,.15);
+}
+.card h3{margin-top:2px}
+
+/* ------------------------------
+   6) Button set
+------------------------------ */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  height:44px;padding:0 16px;border-radius:12px;
+  border:1px solid transparent;cursor:pointer;
+  font-weight:700;letter-spacing:.2px;transition:all var(--t-fast);
+}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.btn-primary{
+  background:linear-gradient(180deg, #203860, #0f2744);
+  color:#fff;border-color:rgba(255,255,255,.12);
+  box-shadow:0 8px 18px rgba(0,0,0,.22);
+}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-gold{
+  background:linear-gradient(180deg, #e8d39a, #caa85a);
+  color:#2b2b2b;border-color:#c19a4c;box-shadow:0 8px 22px rgba(202,168,90,.35);
+}
+.btn-outline{
+  background:transparent;color:#fff;border-color:rgba(255,255,255,.28)
+}
+.btn-outline:hover{background:rgba(255,255,255,.08)}
+
+/* Small/large */
+.btn-sm{height:36px;padding:0 12px;border-radius:10px;font-size:.95rem}
+.btn-lg{height:52px;padding:0 22px;border-radius:14px;font-size:1.05rem}
+
+/* Icon button (circle) */
+.icon-btn{
+  width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);
+  transition:all var(--t-fast)
+}
+.icon-btn:hover{background:rgba(255,255,255,.08)}
+
+/* ------------------------------
+   7) Badge, chip, tag
+------------------------------ */
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 10px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);color:#fff;font-weight:700
+}
+.badge.gold{
+  border-color:rgba(202,168,90,.45);
+  background:linear-gradient(180deg, rgba(232,211,154,.22), rgba(202,168,90,.18));
+  color:#2b2b2b
+}
+.badge.star::before{content:"★";color:var(--ofi-gold-500);filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+
+/* ------------------------------
+   8) Form eleganti
+------------------------------ */
+.field{
+  display:flex;flex-direction:column;gap:8px;margin:10px 0 16px
+}
+label{font-weight:700;color:var(--gray-100)}
+.input, .select, .textarea{
+  width:100%;min-height:44px;padding:10px 12px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.05);color:#fff;
+  transition:border-color var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
+}
+.input::placeholder,.textarea::placeholder{color:var(--gray-300)}
+.input:focus,.select:focus,.textarea:focus{
+  border-color:rgba(202,168,90,.55);
+  box-shadow:0 0 0 3px rgba(202,168,90,.25)
+}
+.help{color:var(--gray-300);font-size:.9rem}
+.error{color:#ffb3b8}
+
+/* Switch / checkbox inline (semplici) */
+.inline{display:flex;align-items:center;gap:10px}
+
+/* ------------------------------
+   9) Tabelle (semplici, responsive)
+------------------------------ */
+.table{
+  width:100%;border-collapse:separate;border-spacing:0 10px
+}
+.table thead th{
+  font-size:.9rem;color:var(--gray-200);text-transform:uppercase;letter-spacing:.08em;
+  padding:0 10px
+}
+.table tbody td{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  padding:10px;border-radius:10px;color:var(--gray-100)
+}
+
+/* ------------------------------
+   10) Footer
+------------------------------ */
+.site-footer{
+  border-top:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg, rgba(15,39,68,.86), rgba(12,35,64,.92));
+  padding: clamp(28px,6vw,54px) 0; color:var(--gray-200);
+}
+.site-footer a:hover{color:var(--ofi-gold-300)}
+
+/* ------------------------------
+   11) Media helpers
+------------------------------ */
+.media{
+  border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08);
+  box-shadow:var(--shadow-md)
+}
+
+/* ------------------------------
+   12) Utility visive
+------------------------------ */
+.shadow-sm{box-shadow:var(--shadow-sm)}
+.shadow-md{box-shadow:var(--shadow-md)}
+.shadow-lg{box-shadow:var(--shadow-lg)}
+.round-sm{border-radius:var(--radius-sm)}
+.round-md{border-radius:var(--radius-md)}
+.round-lg{border-radius:var(--radius-lg)}
+.border{border:1px solid rgba(255,255,255,.08)}
+.bg-glass{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02))}
+.text-gold{color:var(--ofi-gold-300)}
+.text-dim{color:var(--gray-300)}
+.kbd{display:inline-block;padding:2px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06)}
+
+/* ------------------------------
+   13) Avvisi / status
+------------------------------ */
+.alert{
+  padding:12px 14px;border-radius:12px;border:1px solid transparent;margin:10px 0;
+  display:flex;gap:10px;align-items:flex-start
+}
+.alert.info{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+.alert.success{background:rgba(74,163,126,.14);border-color:rgba(74,163,126,.45)}
+.alert.warn{background:rgba(202,168,90,.14);border-color:rgba(202,168,90,.45)}
+.alert.error{background:rgba(181,84,91,.16);border-color:rgba(181,84,91,.55)}
+
+/* ------------------------------
+   14) Breadcrumbs (se usati)
+------------------------------ */
+.breadcrumbs{
+  display:flex;gap:10px;align-items:center;color:var(--gray-300);font-size:.95rem
+}
+.breadcrumbs a:hover{color:var(--ofi-gold-300)}
+.breadcrumbs .sep{opacity:.6}
+
+/* ------------------------------
+   15) Chips azione rapida
+------------------------------ */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{
+  padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);font-weight:700
+}
+.chip.is-active{border-color:rgba(202,168,90,.55);background:rgba(202,168,90,.16)}
+
+/* ------------------------------
+   16) Progress / counters (semplici)
+------------------------------ */
+.progress{
+  height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden
+}
+.progress > span{display:block;height:100%;
+  background:linear-gradient(90deg, #e8d39a, #caa85a);
+  width:var(--value,0%)
+}
+
+/* ------------------------------
+   17) Nav underline (opzionale)
+------------------------------ */
+.nav--underline a{
+  position:relative;padding-bottom:8px
+}
+.nav--underline a::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--ofi-gold-500), transparent);
+  transform:scaleX(0);transform-origin:50% 50%;
+  transition:transform var(--t-fast)
+}
+.nav--underline a:hover::after{transform:scaleX(1)}
+
+/* ------------------------------
+   18) Print (basic)
+------------------------------ */
+@media print{
+  html,body{background:#fff;color:#111}
+  .site-header,.site-footer,.menu-overlay,.icon-btn,#menuToggle,#menuClose{display:none!important}
+  .card,.border{border-color:#ccc!important}
+}
+
+/* ======== COMPATIBILITÀ LEGACY ======== */
+
+/* 1) Menu senza wrapper .menu */
+ul.menu, nav > ul.menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: var(--headerH,60px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 39, 68, 0.97);
+  backdrop-filter: blur(6px);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 1.2rem;
+  padding-top: 4rem;
+  z-index: 999;
+  transition: opacity .3s ease, transform .3s ease;
+}
+ul.menu.active { display: flex; }
+ul.menu li a {
+  color: #fff;
+  font-size: 1.1rem;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+ul.menu li a:hover {
+  color: #e8d39a;
+}
+
+/* Overlay mobile */
+#menuOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 998;
+  display: none;
+}
+#menuOverlay.active { display: block; }
+
+/* 2) Griglie vecchie */
+.grid.grid-2, .grid.grid-3 {
+  display: grid;
+  gap: 1.5rem;
+}
+.grid.grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.grid.grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+/* 3) Bottoni legacy */
+.btn.solid {
+  background: linear-gradient(180deg, #203860, #0f2744);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.15);
+  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+}
+.btn.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.25);
+}
+.btn.btn-ghost:hover {
+  background: rgba(255,255,255,.08);
+}
+
+/* 4) Logo vecchio */
+.brand-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+}
+
+/* ===== OFI · COMPAT PACK v2 — chiude conflitti con ofi-uff.css ===== */
+
+/* 0) Tema: se la pagina chiede il tema chiaro, NON usare il fondale scuro globale */
+html.theme-light, body.theme-light{
+  background: var(--bg, #ffffff) !important;
+  color: var(--surface-text, #101418) !important;
+}
+
+/* 1) Unifica il modello di menu:
+      - Se esiste UL#menuPanel.menu (legacy), trattalo come drawer UFFICIALE
+      - Disattiva il vecchio wrapper .menu solo quando c'è la versione legacy
+*/
+@media (max-width:900px){
+  /* disinnesca eventuali stili sul wrapper .menu del modello nuovo */
+  .menu{ position: static !important; transform: none !important; background: transparent !important;
+         border:0 !important; box-shadow:none !important; padding:0 !important; overflow:visible !important; }
+
+  /* drawer legacy come unico pannello mobile (coerente e sopra all’overlay) */
+  #menuPanel.menu{
+    position: fixed !important;
+    left: 0 !important; top: 0 !important; bottom: 0 !important;
+    width: min(86vw, 420px) !important; height: 100dvh !important;
+    transform: translateX(-100%) !important;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1) !important;
+    background: radial-gradient(120% 120% at 0% 0%, #1b3b63 0%, #153453 45%, #0f2742 100%) !important;
+    border-right: 1px solid rgba(217,184,114,.28) !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.45) !important;
+    padding: calc(var(--headerH,64px) + env(safe-area-inset-top)) 18px 18px !important;
+    border-radius: 0 12px 12px 0 !important;
+    overflow-y: auto !important; -webkit-overflow-scrolling: touch !important;
+    z-index: 20012 !important; display: block !important; /* sempre renderizzato ma fuori schermo */
+  }
+  #menuPanel.menu.open{ transform: translateX(0) !important; }
+
+  /* overlay unico e coerente, sotto al pannello */
+  #menuOverlay{
+    position: fixed !important; inset: 0 !important; height: 100dvh !important;
+    background: rgba(0,0,0,.38) !important;
+    opacity: 0 !important; pointer-events: none !important;
+    transition: opacity .25s !important; z-index: 20010 !important; display: block !important;
+  }
+  body.menu-open #menuOverlay, #menuOverlay.show{ opacity:1 !important; pointer-events:auto !important; }
+
+  /* submenu dentro il drawer = statici */
+  .has-sub > .submenu{
+    position: static !important; background: transparent !important; border:0 !important;
+    box-shadow:none !important; padding:0 !important; margin:0 !important; min-width:unset !important;
+  }
+  .has-sub.open > .submenu{ display:block !important; }
+}
+
+/* Desktop: menu inline pulito (niente drawer/overlay) */
+@media (min-width:901px){
+  #menuPanel.menu{
+    position: static !important; transform: none !important; width: auto !important; height: auto !important;
+    max-width: none !important; background: transparent !important; border: 0 !important;
+    box-shadow: none !important; padding: 0 !important; overflow: visible !important; border-radius: 0 !important;
+    z-index: auto !important;
+  }
+  #menuOverlay{ display: none !important; }
+
+  /* dropdown ancorati al trigger, sopra i contenuti */
+  .has-sub{ position: relative !important; }
+  .has-sub > .submenu{
+    position: absolute !important; top: 100% !important; right: 0 !important; min-width: 220px !important;
+    z-index: 10050 !important; background: var(--ofi-blue-800, #0f2744); color: #fff;
+    border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:8px 6px; box-shadow:0 14px 40px rgba(0,0,0,.18);
+  }
+  .has-sub.open > .submenu{ display:block !important; }
+}
+
+/* 2) Griglie e bottoni legacy (alias stabili) */
+.grid.grid-2{ display:grid; gap:1.5rem; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); }
+.grid.grid-3{ display:grid; gap:1.5rem; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); }
+.btn.solid{ background: linear-gradient(180deg, #203860, #0f2744); color:#fff; border:1px solid rgba(255,255,255,.15); box-shadow:0 8px 16px rgba(0,0,0,.2); }
+.btn.btn-ghost{ background:transparent; color:#fff; border:1px solid rgba(255,255,255,.25) }
+.btn.btn-ghost:hover{ background: rgba(255,255,255,.08) }
+.brand-logo{ width:38px; height:38px; border-radius:50%; object-fit:cover; vertical-align:middle }
+
+/* 3) Z-index & overflow: valori unici per tutto il sito */
+.site-header{ position:sticky; top:0; z-index:20000 !important; }
+html, body{ overflow-x:hidden; }
+
+/* 4) Safety: niente “regole generiche” che mangiano i bottoni */
+.btn:not(.btn-primary){ border-color: var(--ofi-gold-500, #caa85a); }
+

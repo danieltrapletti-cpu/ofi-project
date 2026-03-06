@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Richiedi un preventivo | Onoranze Funebri Italia</title>
+  <meta name="description" content="Compila il percorso guidato OFI per richiedere un preventivo informativo sul servizio funebre per una persona cara." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS globale OFI + stile profilo imprese -->
+  <link rel="stylesheet" href="/ofi.css" />
+  <link rel="stylesheet" href="/imprese/profilo.css" />
+  <link rel="stylesheet" href="/imprese/imprese-dashboard.css?v=1.1">
+
+  <!-- Stile specifico per il wizard preventivo (leggero, appoggiato al profilo.css) -->
+  <style>
+    main.ofi-main {
+      padding-top: 5rem;
+    }
+
+    .wizard-shell {
+      max-width: 960px;
+      margin: 0 auto 4rem;
+      padding: 1.5rem;
+    }
+
+    .wizard-card {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06);
+      padding: 1.8rem 1.8rem 2.2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wizard-eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #6c7a89;
+      margin-bottom: 0.4rem;
+    }
+
+    .wizard-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #052441;
+      margin-bottom: 0.25rem;
+    }
+
+    .wizard-sub {
+      font-size: 0.98rem;
+      color: #4a4f57;
+      margin-bottom: 1rem;
+    }
+
+    .wizard-quote {
+      font-style: italic;
+      font-size: 0.98rem;
+      color: #555;
+      margin-bottom: 1.4rem;
+    }
+
+    .wizard-quote-step {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.8rem;
+    }
+
+    .wizard-progress {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .wizard-progress-label {
+      font-size: 0.9rem;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    .wizard-progress-bar-outer {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: #e6ebf2;
+      overflow: hidden;
+    }
+
+    .wizard-progress-bar-inner {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #caa85a, #e3c470);
+      transition: width 0.4s ease;
+    }
+
+    .wizard-steps {
+      margin-top: 0.5rem;
+    }
+
+    .wizard-step {
+      display: none;
+      animation: fadeStep 0.25s ease-out;
+    }
+
+    .wizard-step.is-active {
+      display: block;
+    }
+
+    .wizard-step h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.35rem;
+      color: #052441;
+    }
+
+    .wizard-step p.step-help {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 1.2rem;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 1.2rem 1.6rem;
+    }
+
+    .field-grid--single {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #263238;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-field small {
+      display: block;
+      font-size: 0.8rem;
+      color: #777;
+      margin-top: 0.15rem;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #ccd4e0;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+      background-color: #fdfdfd;
+    }
+
+    .form-field textarea {
+      border-radius: 16px;
+      resize: vertical;
+      min-height: 96px;
+      padding: 0.7rem 0.9rem;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: #cfa349;
+      box-shadow: 0 0 0 2px rgba(207, 163, 73, 0.12);
+      outline: none;
+      background-color: #fffdf9;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .chip-choice {
+      border-radius: 999px;
+      border: 1px solid #ccd4e0;
+      background: #f7f9fc;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .chip-choice input {
+      display: none;
+    }
+
+    .chip-choice.is-selected {
+      border-color: #cfa349;
+      background: #fff6da;
+      color: #3a2a05;
+    }
+
+    .wizard-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid #edf0f5;
+    }
+
+    .wizard-footer-left {
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .wizard-footer-right {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn-soft {
+      border-radius: 999px;
+      border: 1px solid #ccd4e0;
+      background: #f8fafc;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-soft:hover {
+      background: #eef2f7;
+    }
+
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      padding: 0.6rem 1.6rem;
+      background: linear-gradient(90deg, #002c5d, #0f3c7b);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .btn-primary span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-primary[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .note-legal {
+      font-size: 0.78rem;
+      color: #888;
+      margin-top: 0.5rem;
+    }
+
+    .check-group {
+      margin-top: 1rem;
+      font-size: 0.86rem;
+      color: #555;
+    }
+
+    .check-group label {
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .check-group input[type="checkbox"] {
+      margin-right: 0.4rem;
+    }
+
+    .summary-box {
+      border-radius: 16px;
+      background: #f7f9fc;
+      padding: 1rem 1.2rem;
+      font-size: 0.9rem;
+      color: #333;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .summary-row {
+      margin-bottom: 0.4rem;
+    }
+
+    .summary-row strong {
+      font-size: 0.88rem;
+      color: #052441;
+    }
+
+    .summary-row span {
+      font-size: 0.88rem;
+    }
+
+    .imprese-box {
+      background: #fffdf4;
+      border-radius: 16px;
+      border: 1px solid rgba(202, 168, 90, 0.45);
+      padding: 0.9rem 1rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      font-size: 0.9rem;
+    }
+
+    .imprese-box-title {
+      font-weight: 700;
+      color: #052441;
+      margin-bottom: 0.45rem;
+    }
+
+    .imprese-pill-list {
+      list-style: none;
+      margin: 0.2rem 0 0.5rem;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .imprese-pill {
+      border-radius: 999px;
+      border: 1px solid #f1e2ba;
+      background: #ffffff;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .imprese-box-note {
+      margin: 0.2rem 0 0;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .success-panel {
+      text-align: center;
+      padding: 1.2rem 0 0.4rem;
+    }
+
+    .success-panel h2 {
+      margin-bottom: 0.8rem;
+    }
+
+    .success-panel p {
+      font-size: 0.95rem;
+      color: #444;
+      margin-bottom: 0.35rem;
+    }
+
+    .success-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.4rem;
+    }
+
+    @keyframes fadeStep {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .wizard-shell {
+        padding: 1rem;
+      }
+      .wizard-card {
+        padding: 1.3rem 1.1rem 1.6rem;
+      }
+      .field-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+/* === STEP 9 – RIEPILOGO PREMIUM OFI =================================== */
+
+.wizard-step[data-step="9"] {
+  border-top: 1px solid #edf0f5;
+  margin-top: 1.4rem;
+  padding-top: 1.4rem;
+}
+
+/* titolo e testi leggermente più “importanti” */
+.wizard-step[data-step="9"] h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #052441;
+}
+
+.wizard-step[data-step="9"] .step-help {
+  font-size: 0.9rem;
+  color: #56616e;
+}
+
+/* Griglia: note a sinistra, riepilogo + imprese a destra */
+.wizard-step[data-step="9"] .field-grid {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: flex-start;
+}
+
+/* 1° form-field (note) → colonna sinistra */
+.wizard-step[data-step="9"] .field-grid .form-field:nth-child(1) {
+  grid-column: 1;
+}
+
+/* 2° e 3° (riepilogo + imprese) → colonna destra, uno sotto l’altro */
+.wizard-step[data-step="9"] .field-grid .form-field:nth-child(2),
+.wizard-step[data-step="9"] .field-grid .form-field:nth-child(3) {
+  grid-column: 2;
+}
+
+/* Mobile: torna a una sola colonna */
+@media (max-width: 768px) {
+  .wizard-step[data-step="9"] .field-grid {
+    grid-template-columns: 1fr;
+  }
+  .wizard-step[data-step="9"] .field-grid .form-field:nth-child(1),
+  .wizard-step[data-step="9"] .field-grid .form-field:nth-child(2),
+  .wizard-step[data-step="9"] .field-grid .form-field:nth-child(3) {
+    grid-column: 1;
+  }
+}
+
+/* Box riepilogo in stile OFI (blu+oro) */
+.summary-box {
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  background:
+    radial-gradient(900px 400px at 0% 0%, rgba(202,168,90,.14), transparent 60%),
+    linear-gradient(180deg, #f7f9fc 0%, #eef2f8 100%);
+  border: 1px solid rgba(202,168,90,.35);
+  box-shadow: 0 10px 26px rgba(15,39,66,.09);
+  font-size: 0.9rem;
+  color: #28323b;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+/* singola riga del riepilogo */
+.summary-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 0.25rem 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed rgba(5,36,65,.08);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row strong {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #052441;
+}
+
+.summary-row span {
+  font-size: 0.85rem;
+  color: #394553;
+}
+
+/* testo “vuoto” del riepilogo */
+.summary-box:empty,
+.summary-box:has(> :only-child) {
+  text-align: center;
+  font-style: italic;
+  color: #7a8391;
+}
+
+/* Box imprese più coerente con OFI */
+.imprese-box {
+  margin-top: 0.6rem;
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(202,168,90,.55);
+  background:
+    radial-gradient(700px 380px at 100% 0%, rgba(255,212,106,.22), transparent 65%),
+    #fffdf4;
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+}
+
+.imprese-box-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #052441;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.imprese-box-title::before {
+  content: "📍";
+}
+
+.imprese-pill-list {
+  margin: 0.15rem 0 0.5rem;
+}
+
+.imprese-pill {
+  background: #ffffff;
+  border-radius: 999px;
+  border: 1px solid #f1e2ba;
+  padding: 0.28rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+/* nota finale nel box imprese */
+.imprese-box-note {
+  font-size: 0.8rem;
+  color: #6c7480;
+  margin: 0;
+}
+
+/* === STEP 10 – Pannello successo in continuità con il riepilogo ======== */
+
+.wizard-step[data-step="10"] .success-panel {
+  margin-top: 1.4rem;
+  border-radius: 20px;
+  padding: 1.4rem 1.3rem 1.1rem;
+  background:
+    radial-gradient(800px 360px at 0% 0%, rgba(202,168,90,.18), transparent 65%),
+    #f7f9fc;
+  border: 1px solid rgba(202,168,90,.35);
+  box-shadow: 0 10px 24px rgba(15,39,66,.12);
+}
+
+.wizard-step[data-step="10"] .success-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.wizard-step[data-step="10"] .success-panel h2 {
+  font-size: 1.25rem;
+  color: #052441;
+}
+
+.wizard-step[data-step="10"] .success-panel p {
+  color: #45515f;
+}
+
+/* ===== SELECT OFI PREMIUM ===== */
+.form-field select {
+  appearance: none;
+  background: #ffffff url("data:image/svg+xml;utf8,<svg fill='%23052441' height='20' width='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path d='M5.516 7.548l4.484 4.484 4.484-4.484 1.060 1.060-5.544 5.544-5.544-5.544z'/></svg>") no-repeat right 14px center;
+  background-size: 16px;
+  border-radius: 14px;
+  border: 1px solid #c4ccd7;
+  padding: 0.7rem 2.5rem 0.7rem 0.9rem;
+  font-size: 0.95rem;
+  color: #052441;
+}
+
+.form-field select:focus {
+  border-color: #caa85a;
+  box-shadow: 0 0 0 2px rgba(202,168,90,0.25);
+  outline: none;
+}
+
+/* ===== VERSIONE UFFICIALE – STEP 9 ===== */
+
+.step9-official {
+  background: linear-gradient(135deg, #002c5d 0%, #0c3a70 100%);
+  padding: 1.5rem;
+  border-radius: 24px;
+  margin-top: 1.2rem;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.step9-official h2 {
+  color: #fff !important;
+}
+
+.step9-badge {
+  background: #b60000;
+  color: #fff;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 0.9rem;
+}
+
+/* Box riepilogo stile documento */
+.summary-box-official {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(202,168,90,0.55);
+  padding: 1.3rem 1.3rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  color: #052441;
+  margin-top: 1rem;
+  max-height: none;
+}
+
+.summary-box-official .summary-row {
+  border-bottom: 1px solid rgba(5,36,65,0.12);
+  padding: 0.5rem 0;
+}
+
+/* Box imprese */
+.imprese-box-official {
+  background: #fffdfa;
+  border: 1px solid #e3c98b;
+  border-radius: 20px;
+  padding: 1.2rem 1.2rem;
+  margin-top: 1.4rem;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.imprese-box-official .imprese-box-title {
+  color: #052441;
+  font-size: 0.95rem;
+}
+
+.imprese-pill-official {
+  background: #fff;
+  border: 1px solid #e3c98b;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* ===== Adattamento STEP 9 al tema scuro ===== */
+
+body.theme-dark .step9-official {
+  background: linear-gradient(135deg, #021529 0%, #062549 100%);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+body.theme-dark .summary-box-official,
+body.theme-dark .imprese-box-official {
+  background: #0b1724;
+  color: #f5f7fb;
+  border-color: rgba(202,168,90,0.85);
+}
+
+body.theme-dark .imprese-box-official .imprese-box-title {
+  color: #f5f7fb;
+}
+
+body.theme-dark .imprese-pill,
+body.theme-dark .imprese-pill-official {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(227,201,139,0.9);
+  color: #f5f7fb;
+}
+
+body.theme-dark .imprese-box-note {
+  color: #c5ccd8;
+}
+
+.check-group.has-error label {
+  color: #b60000;
+}
+
+.check-group.has-error input[type="checkbox"] {
+  outline: 2px solid #b60000;
+  outline-offset: 2px;
+}
+
+/* ===== FOOTER WIZARD – VERSIONE MOBILE ===== */
+
+/* Da tablet/iPad in giù: testo sopra, bottoni sotto */
+@media (max-width: 768px) {
+  .wizard-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.8rem;
+  }
+
+  .wizard-footer-left {
+    font-size: 0.8rem;
+    max-width: 100%;
+    line-height: 1.4;
+  }
+
+  .wizard-footer-right {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .wizard-footer-right .btn-soft,
+  .wizard-footer-right .btn-primary {
+    flex: 1 1 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Su telefoni molto stretti (iPhone): nascondo la frase per dare aria ai bottoni */
+@media (max-width: 480px) {
+  .wizard-footer-left {
+    display: none;
+  }
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* ===== STEP 9 - COLORE TESTI IN TEMA SCURO ===== */
+
+/* Pannello principale */
+body.theme-dark .step9-official {
+  background: linear-gradient(135deg, #021529 0%, #062549 100%);
+  color: #f5f7fb;
+}
+
+/* Titolo e frase */
+body.theme-dark .step9-official h2,
+body.theme-dark .step9-official .wizard-quote-step {
+  color: #f5f7fb;
+}
+
+/* Etichette (Note personali, Riepilogo, Imprese…) */
+body.theme-dark .step9-official .form-field > label {
+  color: #f5f7fb;
+}
+
+/* Box riepilogo */
+body.theme-dark .summary-box-official {
+  background: #04101f !important;
+  border-color: rgba(202,168,90,0.9);
+  color: #f5f7fb;
+}
+
+/* Righe dentro il riepilogo */
+body.theme-dark .summary-box-official .summary-row strong,
+body.theme-dark .summary-box-official .summary-row span {
+  color: #f5f7fb;
+}
+
+/* Box imprese */
+body.theme-dark .imprese-box-official {
+  background: #050f1d;
+  border-color: rgba(202,168,90,0.9);
+  color: #f5f7fb;
+}
+
+/* Pill con i nomi delle imprese */
+body.theme-dark .imprese-pill,
+body.theme-dark .imprese-pill-official {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(227,201,139,0.9);
+  color: #f5f7fb;
+}
+
+/* Nota sotto alle imprese */
+body.theme-dark .imprese-box-note {
+  color: #c5ccd8;
+}
+
+  </style>
+  <script defer src="/js/menu.js?v=2"></script>
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+
+<body class="theme-light">
+  <!-- HEADER standard OFI: menu popolato da js/menu.js -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+
+        <!-- Testata menù mobile -->
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- Voci SLIM -->
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+        <li><a href="/cittadini/dashboard-cittadino.html">Dashboard Cittadino</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <!-- HERO “alla profilo”, ma per il cittadino -->
+    <section class="profile-hero">
+      <div class="profile-hero__panel profile-hero--center">
+        <figure class="logo-wrap logo-wrap--free">
+          <img src="/images/agente-ofi.png"
+               alt="Agente OFI"
+               onerror="this.onerror=null; this.src='/images/rosa.png';" />
+        </figure>
+
+        <h1 class="hero-title">Richiesta preventivo OFI</h1>
+        <p class="hero-subtitle">
+          Un percorso guidato, passo dopo passo, per chiarire la situazione e ricevere un preventivo informativo
+          per una persona cara.
+        </p>
+
+        <p class="hero-share-hint">
+          Non stai prenotando nulla e non stai “impegnando” nessuno. Stai solo mettendo ordine nelle informazioni,
+          con il supporto di OFI.
+        </p>
+      </div>
+    </section>
+
+    <!-- SHELL WIZARD -->
+    <section class="wizard-shell">
+      <div class="wizard-card" id="preventivoCard">
+        <div class="wizard-eyebrow">Agente OFI</div>
+        <h2 class="wizard-title">Ti guido io nella richiesta, con calma.</h2>
+        <p class="wizard-sub">
+          Rispondi alle domande con semplicità. Se qualcosa non è chiaro, scrivilo nelle note: un agente OFI leggerà tutto.
+        </p>
+        <p class="wizard-quote">
+          “In momenti così delicati, è importante sapere a chi rivolgersi e cosa aspettarsi. Partiamo dalle basi, insieme.”
+        </p>
+
+        <!-- FORM WIZARD -->
+        <form id="preventivoForm">
+          <!-- Barra di avanzamento wizard -->
+          <div class="wizard-progress">
+            <div class="wizard-progress-label">
+              Passo <span id="stepCurrent">1</span> di <span id="stepTotal">10</span>
+            </div>
+            <div class="wizard-progress-bar-outer">
+              <div id="stepBar" class="wizard-progress-bar-inner"></div>
+            </div>
+          </div>
+
+          <!-- CONTENITORE STEP -->
+          <div class="wizard-steps">
+
+            <!-- STEP 1: Chi sei -->
+            <div class="wizard-step is-active" data-step="1">
+              <h2>1. Partiamo da te</h2>
+              <p class="wizard-quote-step">
+                “Ogni richiesta inizia da una persona: da ciò che sta vivendo e da ciò di cui ha bisogno.”
+              </p>
+              <p class="step-help">
+                Ti chiedo qualche dato di base per poterti ricontattare solo in caso di necessità e per collegare
+                la richiesta alla tua area personale OFI.
+              </p>
+
+              <div class="field-grid">
+                <div class="form-field">
+                  <label for="nome">Nome e cognome</label>
+                  <input id="nome" type="text" autocomplete="name" required />
+                  <small>Puoi anche inserire solo il nome, se preferisci.</small>
+                </div>
+
+                <div class="form-field">
+                  <label for="email">Email (collegata al tuo account OFI)</label>
+                  <input id="email" type="email" autocomplete="email" readonly />
+                  <small>Viene compilata automaticamente dopo l’accesso.</small>
+                </div>
+
+                <div class="form-field">
+                  <label for="telefono">Telefono</label>
+                  <input id="telefono" type="tel" pattern="[0-9]{8,15}" placeholder="Es: 3331234567" required />
+                  <small>Solo per comunicazioni essenziali (mai spam).</small>
+                </div>
+
+                <div class="form-field">
+                  <label for="residenza">Comune di residenza</label>
+                  <input id="residenza" type="text" required />
+                  <small>Serve per capire il contesto territoriale.</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Ruolo di chi richiede -->
+            <div class="wizard-step" data-step="2">
+              <h2>2. Che ruolo hai rispetto alla persona cara?</h2>
+              <p class="wizard-quote-step">
+                “Capire il tuo legame ci permette di rispettare il tuo punto di vista con la giusta delicatezza.”
+              </p>
+              <p class="step-help">
+                Questo ci aiuta a comprendere meglio il tuo punto di vista e come affiancarti nel modo più corretto.
+              </p>
+
+              <div class="form-field">
+                <label>In che veste stai chiedendo il preventivo?</label>
+                <div class="chip-row" id="ruoloRow">
+                  <label class="chip-choice">
+                    <input type="radio" name="ruolo_richiedente" value="Figlio/figlia" />
+                    <span>Figlio / figlia</span>
+                  </label>
+                  <label class="chip-choice">
+                    <input type="radio" name="ruolo_richiedente" value="Coniuge/partner" />
+                    <span>Coniuge / partner</span>
+                  </label>
+                  <label class="chip-choice">
+                    <input type="radio" name="ruolo_richiedente" value="Parente stretto" />
+                    <span>Parente stretto</span>
+                  </label>
+                  <label class="chip-choice">
+                    <input type="radio" name="ruolo_richiedente" value="Amico/a" />
+                    <span>Amico / conoscente</span>
+                  </label>
+                  <label class="chip-choice">
+                    <input type="radio" name="ruolo_richiedente" value="Altro" />
+                    <span>Altro</span>
+                  </label>
+                </div>
+                <small>Se nessuna opzione ti rappresenta, scegli “Altro” e spiega nelle note finali.</small>
+              </div>
+            </div>
+
+            <!-- STEP 3: Per chi è il preventivo -->
+            <div class="wizard-step" data-step="3">
+              <h2>3. Per chi stai chiedendo informazioni?</h2>
+              <p class="wizard-quote-step">
+                “Ogni storia è unica. Raccontarne un frammento ci aiuta a offrirti un orientamento più vero.”
+              </p>
+              <p class="step-help">
+                Non ti chiedo dati sensibili, ma alcuni elementi indicativi (es. età, situazione generale) possono aiutare
+                a dare un quadro più preciso del servizio.
+              </p>
+
+              <div class="field-grid field-grid--single">
+                <div class="form-field">
+                  <label for="rapporto_persona">Vuoi indicare in breve chi è per te?</label>
+                  <input id="rapporto_persona" type="text" placeholder="Es: mia madre, mio suocero, una persona assistita…" />
+                  <small>Libero: usa le parole che senti più naturali.</small>
+                </div>
+
+                <div class="form-field">
+  <label for="eta">Età approssimativa della persona</label>
+  <input id="eta" type="text" inputmode="numeric" autocomplete="off" />
+  <small>Indicativo, non è obbligatorio (puoi anche lasciare vuoto).</small>
+</div>
+              </div>
+            </div>
+
+            <!-- STEP 4: Quando potrebbe servire -->
+            <div class="wizard-step" data-step="4">
+              <h2>4. Quando pensi che potrebbe rendersi necessario il servizio?</h2>
+              <p class="wizard-quote-step">
+                “Non stai anticipando nulla: stai solo cercando serenità e chiarezza per quando sarà necessario.”
+              </p>
+              <p class="step-help">
+                Qui non stiamo “anticipando” nulla: è solo per capire se hai bisogno di un orientamento immediato
+                o di un quadro informativo per il futuro.
+              </p>
+
+              <div class="form-field">
+                <label for="tempistica">Tempistica ipotizzata</label>
+                <select id="tempistica" required>
+                  <option value="">Seleziona un'opzione</option>
+                  <option>Entro pochi giorni</option>
+                  <option>Entro qualche settimana</option>
+                  <option>Entro qualche mese</option>
+                  <option>Solo a scopo informativo</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- STEP 5: Dove vi trovate / contesto -->
+            <div class="wizard-step" data-step="5">
+              <h2>5. Dove vi trovate e qual è il contesto?</h2>
+              <p class="wizard-quote-step">
+                “Il contesto aiuta a capire quali servizi, tempi e presenze saranno davvero utili.”
+              </p>
+              <p class="step-help">
+                Qualche informazione sul luogo in cui si trova la persona e sulle possibili strutture coinvolte.
+              </p>
+
+              <div class="field-grid">
+                <div class="form-field">
+                  <label for="luogo_attuale">Dove si trova attualmente la persona interessata?</label>
+                  <select id="luogo_attuale" required>
+                    <option value="">Seleziona un'opzione</option>
+                    <option>Ospedale</option>
+                    <option>Casa di riposo</option>
+                    <option>Abitazione privata</option>
+                    <option>Altro</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label for="camera_ardente">Camera ardente prevista presso</label>
+                  <select id="camera_ardente">
+                    <option value="">Non definito / da valutare</option>
+                    <option>Abitazione privata</option>
+                    <option>Camera mortuaria di una struttura</option>
+                    <option>Sala del commiato</option>
+                  </select>
+                  <small>Puoi lasciare “Non definito” se non hai ancora deciso.</small>
+                </div>
+
+                <div class="form-field">
+                  <label for="nome_sala">Se sala del commiato, indicare quale (se già nota)</label>
+                  <input id="nome_sala" type="text" placeholder="Es: Sala Serenità - Bergamo" />
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 6: Tipo di servizio -->
+            <div class="wizard-step" data-step="6">
+              <h2>6. Come immagini il servizio funebre?</h2>
+              <p class="wizard-quote-step">
+                “Non serve avere tutte le risposte ora: possiamo iniziare da ciò che senti più vicino.”
+              </p>
+              <p class="step-help">
+                Non devi avere le idee chiarissime: puoi indicare quello che senti più vicino o le ipotesi principali.
+              </p>
+
+              <div class="field-grid">
+                <div class="form-field">
+                  <label for="cerimonia">Tipo di cerimonia</label>
+                  <select id="cerimonia" required>
+                    <option value="">Seleziona un'opzione</option>
+                    <option>Religiosa</option>
+                    <option>Laica</option>
+                    <option>Non definito / da valutare</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label for="sepoltura_tipo">Tipo di sepoltura prevista</label>
+                  <select id="sepoltura_tipo" required>
+                    <option value="">Seleziona un'opzione</option>
+                    <option>Inumazione (terra)</option>
+                    <option>Tumulazione (loculo)</option>
+                    <option>Cremazione</option>
+                    <option>Non definito / da valutare</option>
+                  </select>
+                </div>
+
+                <div class="form-field">
+                  <label for="cimitero">Cimitero previsto (se già ipotizzato)</label>
+                  <input id="cimitero" type="text" placeholder="Es: Cimitero Monumentale - Milano" />
+                </div>
+
+                <div class="form-field">
+                  <label for="cremazione_affido">Se cremazione: destinazione delle ceneri</label>
+                  <select id="cremazione_affido">
+                    <option value="">Non definito / da valutare</option>
+                    <option>Affido familiare</option>
+                    <option>Conservazione in cimitero</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 7: Aspetti importanti (budget / priorità) -->
+            <div class="wizard-step" data-step="7">
+              <h2>7. Cosa è più importante per te?</h2>
+              <p class="wizard-quote-step">
+                “In momenti complessi, sapere cosa conta davvero per te è il punto più importante.”
+              </p>
+              <p class="step-help">
+                Puoi indicare le tue priorità principali: chiarezza dei costi, sobrietà, possibilità di personalizzare…
+              </p>
+
+              <div class="field-grid field-grid--single">
+                <div class="form-field">
+                  <label for="priorita">Aspetti che senti più importanti</label>
+                  <textarea id="priorita" placeholder="Es: mantenere una certa sobrietà, avere spiegazioni chiare su ogni voce di costo…"></textarea>
+                </div>
+
+                <div class="form-field">
+                  <label for="budgetIndicativo">Vuoi indicare un budget indicativo? (facoltativo)</label>
+                  <input id="budgetIndicativo" type="text" placeholder="Es: indicativamente entro … €" />
+                  <small>Non è vincolante, aiuta solo a dare un ordine di grandezza.</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 8: Servizi aggiuntivi -->
+<div class="wizard-step" data-step="8">
+  <h2>8. Servizi aggiuntivi che ti interessano</h2>
+  <p class="wizard-quote-step">
+    “Sono dettagli che possono rendere il servizio più fedele alla persona e ai vostri desideri.”
+  </p>
+  <p class="step-help">
+    Qui puoi segnare gli elementi principali che ti piacerebbe includere o sui quali vuoi ricevere informazioni più precise
+    (fiori, manifesti, annunci, musica…). Puoi anche aggiungere altro in fondo.
+  </p>
+
+  <div class="field-grid field-grid--single">
+    <!-- Soluzione floreale principale -->
+    <div class="form-field">
+      <label for="fiori">Soluzione floreale principale</label>
+      <select id="fiori" class="campo-servizio">
+        <option value="">Da valutare / nessuna preferenza</option>
+        <option value="semplice">Soluzione semplice (mazzo o piccola composizione)</option>
+        <option value="copribara">Allestimento con copribara principale</option>
+        <option value="ciotole">Allestimento con ciotole o composizioni laterali</option>
+        <option value="importante">Allestimento più importante (corone, composizioni aggiuntive)</option>
+        <option value="consigliata">Soluzione consigliata dall’impresa</option>
+        <option value="non_previsto">Non previsto</option>
+      </select>
+      <small>È solo una linea guida indicativa: potrai rivederla insieme all’impresa scelta.</small>
+    </div>
+
+    <!-- Dettagli opzionali sui fiori -->
+    <div class="form-field">
+      <label for="fioriDettagli">Dettaglio desideri sui fiori (facoltativo)</label>
+      <textarea id="fioriDettagli" class="campo-servizio"
+        placeholder="Es: colori preferiti, fiori da evitare o da valorizzare…"></textarea>
+      <small>Compila solo se hai esigenze particolari da segnalare.</small>
+    </div>
+
+    <!-- Immaginette -->
+    <div class="form-field">
+      <label for="immaginette">Immaginette / santini (numero indicativo)</label>
+      <input id="immaginette" class="campo-servizio" type="number" min="0" placeholder="Es: 100" />
+    </div>
+
+    <!-- Manifesti / annunci murali -->
+    <div class="form-field">
+      <label for="manifesti">Manifesti / annunci murali</label>
+      <select id="manifesti" class="campo-servizio">
+        <option value="">Da valutare / nessuna preferenza</option>
+        <option value="comune_principale">Manifesti nel comune principale</option>
+        <option value="piu_comuni">Manifesti in più comuni</option>
+        <option value="avviso">Solo avviso in chiesa / sala</option>
+        <option value="non_previsto">Non previsto</option>
+      </select>
+    </div>
+
+    <!-- Comune principale per i manifesti -->
+    <div class="form-field" id="field_manifesti_comune_principale" style="display:none;">
+      <label for="manifestiComunePrincipale">Comune principale per i manifesti</label>
+      <input id="manifestiComunePrincipale" class="campo-servizio" type="text"
+        placeholder="Es: Comune di Bergamo" />
+      <small>Compila solo se hai selezionato “Manifesti nel comune principale”.</small>
+    </div>
+
+    <!-- Più comuni per i manifesti -->
+    <div class="form-field" id="field_manifesti_comuni_multipli" style="display:none;">
+      <label for="manifestiComuniMultipli">In quali comuni pensi di esporre i manifesti?</label>
+      <textarea id="manifestiComuniMultipli" class="campo-servizio"
+        placeholder="Es: Bergamo, Seriate, Torre Boldone…"></textarea>
+      <small>Compila solo se hai selezionato “Manifesti in più comuni”.</small>
+    </div>
+
+    <!-- Annunci su giornali -->
+    <div class="form-field">
+      <label for="giornali">Annuncio su giornali</label>
+      <input id="giornali" class="campo-servizio" type="text" placeholder="Es: L’Eco di Bergamo, Il Giorno" />
+    </div>
+
+    <!-- Annuncio digitale -->
+    <div class="form-field">
+      <label for="digitale">Annuncio digitale</label>
+      <input id="digitale" class="campo-servizio" type="text" placeholder="Es: OFI, sito impresa, social" />
+    </div>
+
+    <!-- Musica -->
+    <div class="form-field">
+      <label for="musica">Accompagnamento musicale</label>
+      <input id="musica" class="campo-servizio" type="text" placeholder="Es: violino, brani religiosi, canzoni significative…" />
+    </div>
+
+    <!-- Trasporto -->
+    <div class="form-field">
+      <label for="trasporto">Trasporto salma fuori regione (se previsto)</label>
+      <input id="trasporto" class="campo-servizio" type="text" placeholder="Es: Roma, Palermo, estero…" />
+    </div>
+
+    <!-- Campo libero altri servizi -->
+    <div class="form-field">
+      <label for="altriServizi">Altri servizi o dettagli che vorresti valutare</label>
+      <textarea id="altriServizi" class="campo-servizio"
+        placeholder="Es: fotografo discreto, servizio navetta, rinfresco dopo la cerimonia…"></textarea>
+    </div>
+  </div>
+</div>
+
+            <!-- STEP 9: Note + riepilogo -->
+            <div class="wizard-step" data-step="9">
+  <div class="step9-official">
+
+    <span class="step9-badge">
+  Verifica finale della tua richiesta
+</span>
+
+    <h2>9. Ultima revisione della tua richiesta</h2>
+    <p class="wizard-quote-step" style="color:#e8e8e8;">
+      “Questo riepilogo ti aiuta a controllare che tutto sia corretto prima dell’invio.”
+    </p>
+
+    <!-- NOTE -->
+    <div class="form-field" style="margin-top:1rem;">
+      <label style="color:#fff;" for="note">Note personali (facoltative)</label>
+      <textarea id="note" placeholder="Scrivi qui dubbi, situazioni particolari, desideri…" style="background:#fff;"></textarea>
+    </div>
+
+    <!-- RIEPILOGO -->
+    <div class="form-field">
+      <label style="color:#fff;">Riepilogo della situazione</label>
+      <div id="summaryBox" class="summary-box-official">
+        — Il riepilogo verrà compilato automaticamente —
+      </div>
+    </div>
+
+    <!-- IMPRESE -->
+    <div class="form-field">
+      <label style="color:#fff;">Imprese coinvolte (dopo verifica OFI)</label>
+      <div id="impreseBox" class="imprese-box-official" hidden></div>
+    </div>
+
+  </div>
+</div>
+
+            <!-- STEP 10: Consenso & invio -->
+            <div class="wizard-step" data-step="10">
+              <h2>10. Ultimo passo: invio del preventivo</h2>
+              <p class="wizard-quote-step">
+                “Grazie per esserti preso il tempo di chiarire la situazione. Ora ci prenderemo cura della tua richiesta.”
+              </p>
+              <p class="step-help">
+                Prima di inviare, ti chiedo solo di confermare che i dati sono veritieri e che hai letto l’informativa privacy.
+              </p>
+
+              <div class="check-group">
+                <label>
+                  <input id="chkVeritieri" type="checkbox" required />
+                  Dichiaro che i dati forniti sono veritieri per quanto a mia conoscenza.
+                </label>
+                <label>
+                  <input id="chkPrivacy" type="checkbox" required />
+                  Ho letto e accetto l’informativa sulla privacy di OFI.
+                </label>
+              </div>
+
+              <p class="note-legal">
+                Dopo l’invio, il preventivo verrà preso in carico da OFI, verificato e solo in seguito condiviso con le imprese
+                coinvolte. Potrai seguire lo stato dalla tua dashboard cittadino.
+              </p>
+
+              <div class="success-panel" id="successPanel" hidden>
+                <div class="success-icon">✅</div>
+                <h2>Richiesta inviata correttamente</h2>
+                <p>Riceverai una conferma via email all’indirizzo collegato al tuo account OFI.</p>
+                <p>Potrai seguire lo stato del preventivo dalla tua dashboard personale.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- FOOTER BOTTONI -->
+          <div class="wizard-footer">
+            <div class="wizard-footer-left">
+              Se hai dubbi, puoi sempre scriverli nelle note o chiedere supporto ad OFI.
+            </div>
+            <div class="wizard-footer-right">
+              <button type="button" class="btn-soft" id="btnPrevStep">Indietro</button>
+              <button type="button" class="btn-primary" id="btnNextStep">
+                <span class="icon">→</span>
+                <span>Avanti</span>
+              </button>
+              <button type="submit" class="btn-primary" id="submitPreventivo" hidden>
+                <span class="icon">✉</span>
+                <span>Invia la richiesta</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <p class="note-legal" style="margin-top:1rem;">
+          Questo modulo è pensato per richieste di preventivo informativo relative a una persona cara.
+          In caso di decesso già avvenuto o situazione di urgenza, ti invitiamo a contattare subito
+          un’impresa di fiducia o il numero indicato sul profilo OFI scelto.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER OFI (coerente) -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">
+            OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti
+            in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.
+          </p>
+        </div>
+
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+
+        <div class="f-legal small">
+          © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+          <br>
+          Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti
+          e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI (chat) riutilizzato -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="/images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="/images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Ti aiuto nella richiesta di preventivo</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in">
+        <p>
+          Ciao, sono l’Agente OFI. Se qualcosa nelle domande del preventivo non ti è chiaro,
+          puoi scriverlo qui in poche parole (es. “non so che tipo di sepoltura scegliere”).
+        </p>
+      </div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Cosa significa preventivo informativo?</button>
+        <button class="chip" role="listitem">Come vengono usati i miei dati?</button>
+        <button class="chip" role="listitem">Posso scegliere più imprese?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">
+      Suggerimento: scrivi parole semplici (es. “budget”, “cremazione”, “cimitero”).
+    </p>
+  </section>
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+
+  <!-- Firebase + logica preventivo (adattata dal vecchio file) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // ⚠️ Usa lo stesso config di profilo / progetto OFI
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+    const auth = getAuth(app);
+
+    const form          = document.getElementById("preventivoForm");
+    const btnPrev       = document.getElementById("btnPrevStep");
+    const btnNext       = document.getElementById("btnNextStep");
+    const btnSubmit     = document.getElementById("submitPreventivo");
+    const steps         = Array.from(document.querySelectorAll(".wizard-step"));
+    const stepCurrentEl = document.getElementById("stepCurrent");
+    const stepTotalEl   = document.getElementById("stepTotal");
+    const stepBar       = document.getElementById("stepBar");
+    const impreseBox    = document.getElementById("impreseBox");
+    const summaryBox    = document.getElementById("summaryBox");
+    const successPanel  = document.getElementById("successPanel");
+    let impreseSelezionate = [];
+
+    let currentStepIndex = 0;
+    stepTotalEl.textContent = String(steps.length);
+
+    // Utility
+    const $id = (id) => document.getElementById(id);
+    const getValue = id => $id(id)?.value?.trim() || "";
+
+    // Evidenziazione chip ruolo
+    document.querySelectorAll(".chip-choice input[type='radio']").forEach(radio => {
+      radio.addEventListener("change", () => {
+        document.querySelectorAll(".chip-choice").forEach(ch => ch.classList.remove("is-selected"));
+        const parent = radio.closest(".chip-choice");
+        if (parent) parent.classList.add("is-selected");
+      });
+    });
+
+    function updateStepUI() {
+      steps.forEach((step, idx) => {
+        step.classList.toggle("is-active", idx === currentStepIndex);
+      });
+
+      const stepNumber = currentStepIndex + 1;
+      stepCurrentEl.textContent = String(stepNumber);
+      const progress = (stepNumber / steps.length) * 100;
+      stepBar.style.width = progress + "%";
+
+      // Bottoni
+      btnPrev.disabled = currentStepIndex === 0;
+
+      const isLast = currentStepIndex === steps.length - 1;
+      btnNext.hidden = isLast;
+      btnSubmit.hidden = !isLast;
+
+      if (!isLast) {
+        successPanel.hidden = true;
+      }
+
+      // Aggiorno riepilogo quando entro nello step 9
+      const stepElem = steps[currentStepIndex];
+      if (stepElem && stepElem.dataset.step === "9") {
+        buildSummary();
+      }
+    }
+
+    function goNextStep() {
+      if (currentStepIndex < steps.length - 1) {
+        currentStepIndex++;
+        updateStepUI();
+      }
+    }
+
+    function goPrevStep() {
+      if (currentStepIndex > 0) {
+        currentStepIndex--;
+        updateStepUI();
+      }
+    }
+
+    btnNext.addEventListener("click", () => {
+  // Se per qualsiasi motivo fossimo già all'ultimo step, non fare nulla
+  if (currentStepIndex >= steps.length - 1) return;
+
+  // Passaggio normale agli step successivi
+  goNextStep();
+});
+
+    btnPrev.addEventListener("click", () => {
+      goPrevStep();
+    });
+
+    // Imprese selezionate (dalla selezione automatica / manuale)
+document.addEventListener("DOMContentLoaded", () => {
+  const params   = new URLSearchParams(window.location.search);
+  const modalita = params.get("modalita") || "automatica";
+
+  // 1) Provo sempre a leggere dal localStorage
+  impreseSelezionate = JSON.parse(localStorage.getItem("impreseSelezionate") || "[]");
+
+  // 2) Se è vuoto (caso raro / vecchi link), uso fallback con param "imprese"
+  if (impreseSelezionate.length === 0) {
+    const emails = (params.get("imprese") || "").split(",");
+    for (let email of emails) {
+      if (!email.trim()) continue;
+      impreseSelezionate.push({
+        email: email.trim(),
+        nomeImpresa: email.trim()
+      });
+    }
+  }
+
+  // 3) Popolo il box riepilogo imprese (step 9)
+  if (impreseSelezionate.length && impreseBox) {
+    impreseBox.hidden = false;
+
+    impreseBox.innerHTML = `
+      <div class="imprese-box-title">
+        📍 Imprese che potranno ricevere il tuo preventivo (dopo verifica OFI)
+      </div>
+      <ul class="imprese-pill-list">
+        ${impreseSelezionate
+          .map(i => `<li class="imprese-pill">💼 <span>${i.nomeImpresa}</span></li>`)
+          .join("")}
+      </ul>
+      <p class="imprese-box-note">
+        Il preventivo verrà condiviso da OFI solo dopo un controllo, nel rispetto della tua situazione.
+      </p>
+    `;
+  }
+
+  // --- Logica campi manifesti / annunci murali ---
+  const manifestiSelect       = $id("manifesti");
+  const fieldComunePrincipale = $id("field_manifesti_comune_principale");
+  const fieldComuniMultipli   = $id("field_manifesti_comuni_multipli");
+
+  if (manifestiSelect && fieldComunePrincipale && fieldComuniMultipli) {
+    const updateManifestiFields = () => {
+      const val = manifestiSelect.value;
+      fieldComunePrincipale.style.display = (val === "comune_principale") ? "block" : "none";
+      fieldComuniMultipli.style.display   = (val === "piu_comuni") ? "block" : "none";
+    };
+
+    manifestiSelect.addEventListener("change", updateManifestiFields);
+    updateManifestiFields();
+  }
+});
+
+    // Riepilogo sintetico
+   function buildSummary() {
+  const ruoloRadio = document.querySelector("input[name='ruolo_richiedente']:checked");
+  const ruolo = ruoloRadio ? ruoloRadio.value : "";
+
+  const summaryLines = [];
+
+  const line = (label, val) => {
+    if (!val) return;
+    summaryLines.push(
+      `<div class="summary-row"><strong>${label}:</strong> <span>${val}</span></div>`
+    );
+  };
+
+  // Dati principali
+  line("Nome richiedente", getValue("nome"));
+  line("Comune di residenza", getValue("residenza"));
+  line("Ruolo del richiedente", ruolo);
+  line("Per chi è il preventivo", getValue("rapporto_persona"));
+  line("Età approssimativa persona", getValue("eta"));
+  line("Tempistica", getValue("tempistica"));
+  line("Luogo attuale", getValue("luogo_attuale"));
+  line("Camera ardente", getValue("camera_ardente"));
+  line("Sala del commiato", getValue("nome_sala"));
+  line("Tipo di cerimonia", getValue("cerimonia"));
+  line("Tipo di sepoltura", getValue("sepoltura_tipo"));
+  line("Cimitero previsto", getValue("cimitero"));
+  line("Destinazione ceneri", getValue("cremazione_affido"));
+  line("Aspetti importanti", getValue("priorita"));
+  line("Budget indicativo", getValue("budgetIndicativo"));
+
+  // Servizi aggiuntivi
+  const serviziAggiuntivi = [];
+  const pushServ = (id, label) => {
+    const v = getValue(id);
+    if (v) serviziAggiuntivi.push(`${label}: ${v}`);
+  };
+
+  // Fiori
+  const fioriVal       = getValue("fiori");
+  const fioriDettagli  = getValue("fioriDettagli");
+  if (fioriVal) {
+    serviziAggiuntivi.push(`Soluzione floreale: ${fioriVal}`);
+  }
+  if (fioriDettagli) {
+    serviziAggiuntivi.push(`Dettagli fiori: ${fioriDettagli}`);
+  }
+
+  // Manifesti / annunci murali
+  const manifestiVal      = getValue("manifesti");
+  const manifestiComune   = getValue("manifestiComunePrincipale");
+  const manifestiComuni   = getValue("manifestiComuniMultipli");
+
+  if (manifestiVal) {
+    let descrManifesti = "";
+    if (manifestiVal === "comune_principale") {
+      descrManifesti = "Comune principale" + (manifestiComune ? `: ${manifestiComune}` : "");
+    } else if (manifestiVal === "piu_comuni") {
+      descrManifesti = "Più comuni" + (manifestiComuni ? `: ${manifestiComuni}` : "");
+    } else if (manifestiVal === "avviso") {
+      descrManifesti = "Solo avviso in chiesa / sala";
+    } else if (manifestiVal === "non_previsto") {
+      descrManifesti = "Non previsto";
+    } else {
+      descrManifesti = manifestiVal;
+    }
+
+    if (descrManifesti) {
+      serviziAggiuntivi.push(`Manifesti / annunci murali: ${descrManifesti}`);
+    }
+  }
+
+  // Altri servizi “semplici”
+  pushServ("immaginette", "Immaginette");
+  pushServ("giornali", "Annunci su giornali");
+  pushServ("digitale", "Annuncio digitale");
+  pushServ("musica", "Musica");
+  pushServ("trasporto", "Trasporto");
+  pushServ("altriServizi", "Altri servizi");
+
+  if (serviziAggiuntivi.length) {
+    summaryLines.push(
+      `<div class="summary-row"><strong>Servizi aggiuntivi:</strong><br><span>${serviziAggiuntivi.join("; ")}</span></div>`
+    );
+  }
+
+  // Note finali
+  const note = getValue("note");
+  if (note) {
+    summaryLines.push(
+      `<div class="summary-row"><strong>Note personali:</strong><br><span>${note}</span></div>`
+    );
+  }
+
+  summaryBox.innerHTML = summaryLines.length
+    ? summaryLines.join("")
+    : "— Il riepilogo verrà compilato automaticamente in base alle risposte —";
+}
+
+/**
+ * Validazione minima dei campi fondamentali prima dell'invio
+ * (così se uno mette dati a caso o dimentica qualcosa, lo avvisiamo chiaramente)
+ */
+function validateBeforeSubmit() {
+  const errors = [];
+
+  if (!getValue("nome")) {
+    errors.push("• Nome e cognome");
+  }
+
+  const tel = getValue("telefono");
+  if (!tel) {
+    errors.push("• Telefono");
+  } else if (!/^[0-9]{8,15}$/.test(tel)) {
+    errors.push("• Telefono: inserisci solo cifre (8–15) es. 3331234567");
+  }
+
+  if (!getValue("residenza")) {
+    errors.push("• Comune di residenza");
+  }
+
+  if (!getValue("tempistica")) {
+    errors.push("• Tempistica ipotizzata (step 4)");
+  }
+
+  if (!getValue("luogo_attuale")) {
+    errors.push("• Luogo attuale della persona (step 5)");
+  }
+
+  if (!getValue("cerimonia")) {
+    errors.push("• Tipo di cerimonia (step 6)");
+  }
+
+  if (!getValue("sepoltura_tipo")) {
+    errors.push("• Tipo di sepoltura (step 6)");
+  }
+
+  if (errors.length > 0) {
+    alert(
+      "Prima di inviare il preventivo, controlla questi campi:\n\n" +
+      errors.join("\n")
+    );
+
+    // Riporto l'utente all'inizio del percorso per correggere
+    currentStepIndex = 0;
+    updateStepUI();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return false;
+  }
+
+  return true;
+}
+
+    // Autenticazione: precompila email e blocca invio se non loggato
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("Per inviare una richiesta di preventivo devi accedere al tuo account OFI.");
+        window.location.href = "/accesso.html";
+        return;
+      }
+      const emailInput = $id("email");
+      if (emailInput) {
+        emailInput.value = user.email || "";
+      }
+
+      form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  if (!user) {
+    alert("Per inviare una richiesta di preventivo devi accedere al tuo account OFI.");
+    return;
+  }
+
+  // ✅ nuova validazione campi fondamentali
+  if (!validateBeforeSubmit()) {
+    return; // fermo l'invio se mancano dati importanti
+  }
+
+  if (!$id("chkVeritieri").checked || !$id("chkPrivacy").checked) {
+    const checkGroup = document.querySelector(".check-group");
+    if (checkGroup) checkGroup.classList.add("has-error");
+
+    alert("Per procedere devi confermare le dichiarazioni richieste.");
+    currentStepIndex = steps.length - 1;
+    updateStepUI();
+    $id("chkVeritieri")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+
+        // Modalità & imprese selezionate
+const params   = new URLSearchParams(window.location.search);
+const modalita = params.get("modalita") || "automatica";
+
+// Uso l'array globale già popolato in DOMContentLoaded.
+// Come sicurezza extra, se fosse vuoto provo a ricaricarlo.
+if (!impreseSelezionate.length) {
+  impreseSelezionate = JSON.parse(localStorage.getItem("impreseSelezionate") || "[]");
+
+  if (!impreseSelezionate.length) {
+    const emails = (params.get("imprese") || "").split(",");
+    for (let email of emails) {
+      if (!email.trim()) continue;
+      impreseSelezionate.push({
+        email: email.trim(),
+        nomeImpresa: email.trim()
+      });
+    }
+  }
+}
+
+        // Ruolo richiedente
+        const ruoloRadio = document.querySelector("input[name='ruolo_richiedente']:checked");
+        const ruolo = ruoloRadio ? ruoloRadio.value : "";
+
+        // Servizi aggiuntivi (come prima: array di testi non vuoti)
+        const serviziAggiuntivi = Array.from(document.querySelectorAll(".campo-servizio"))
+          .map(el => el.value.trim()).filter(val => val.length > 0);
+
+        // Append informazioni "nuove" alle note, così non rompiamo la struttura in admin
+        const noteBase = getValue("note");
+        const extraMeta = [
+          ruolo ? `Ruolo richiedente: ${ruolo}` : "",
+          getValue("rapporto_persona") ? `Per chi: ${getValue("rapporto_persona")}` : "",
+          getValue("priorita") ? `Aspetti importanti: ${getValue("priorita")}` : "",
+          getValue("budgetIndicativo") ? `Budget indicativo: ${getValue("budgetIndicativo")}` : ""
+        ].filter(Boolean).join(" | ");
+
+        const noteFinal = [noteBase, extraMeta].filter(Boolean).join(" || ");
+
+        const preventivo = {
+          uid_cittadino: user.uid,
+          nome: getValue("nome"),
+          email: user.email,
+          telefono: getValue("telefono"),
+          residenza: getValue("residenza"),
+          tempistica: getValue("tempistica"),
+          luogo_attuale: getValue("luogo_attuale"),
+          camera_ardente: getValue("camera_ardente"),
+          nome_sala: getValue("nome_sala"),
+          cerimonia: getValue("cerimonia"),
+          sepoltura_tipo: getValue("sepoltura_tipo"),
+          cimitero: getValue("cimitero"),
+          cremazione_affido: getValue("cremazione_affido"),
+          eta: getValue("eta"),
+          servizi_aggiuntivi: serviziAggiuntivi,
+          note: noteFinal,
+          dataRicezione: Timestamp.now(),
+          modalita,
+          impreseSelezionate,
+          stato: "in_attesa"
+        };
+
+        try {
+          btnSubmit.disabled = true;
+
+          await addDoc(collection(db, "preventivi"), preventivo);
+
+          // Email conferma utente (come nel vecchio file)
+          await fetch("/.netlify/functions/sendEmailUtente", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              destinatario: user.email,
+              nome: getValue("nome")
+            })
+          });
+
+          successPanel.hidden = false;
+
+          // Vai alla dashboard o pagina grazie dopo un attimo
+          setTimeout(() => {
+            window.location.href = "/cittadini/dashboard-cittadino.html";
+          }, 2200);
+        } catch (error) {
+          console.error("Errore invio preventivo:", error);
+          alert("Si è verificato un errore durante l'invio. Riprova tra qualche istante.");
+        } finally {
+          btnSubmit.disabled = false;
+        }
+      });
+    });
+
+    // Inizializza UI
+    updateStepUI();
+  </script>
+</body>
+</html>

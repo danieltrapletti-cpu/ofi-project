@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="is-dashboard theme-ofi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Filmato Commemorativo OFI — Wizard</title>
+  <meta name="description" content="Crea il Filmato Commemorativo OFI: un ricordo audiovisivo guidato, sobrio, custodito nel Luogo della Memoria." />
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/cittadini/luogo-video-wizard.css">
+  <script defer src="/ofi.js"></script>
+
+  <!-- SAFETY: enforce [hidden] even if global CSS overrides it -->
+  <style>[hidden]{display:none !important;}</style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a id="backToManageTop" href="/cittadini/luogo-manage.html" aria-label="Torna alla custodia">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <a class="topLink" id="openVisitTop" href="#" rel="noopener">Apri visita</a>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" type="button">◐</button>
+    </nav>
+  </header>
+
+  <main class="ofi-main page">
+    <!-- HERO / INGRESSO ISTITUZIONALE -->
+    <section class="necro-hero" id="heroCard">
+  <div class="necro-hero-inner">
+    <div class="necro-hero-content">
+      <div class="necro-hero-text">
+        <div class="necro-hero-eyebrow">Filmato commemorativo OFI</div>
+        <h1>Un ricordo audiovisivo realizzato con cura.</h1>
+        <p>
+          Questo percorso è guidato, semplice e rispettoso. Non servono competenze tecniche:
+          ti chiederemo poche informazioni e, se lo desideri, alcune immagini.
+        </p>
+
+        <div class="heroMini">
+          <span class="heroMini-item">✦ Percorso guidato: bastano poche informazioni.</span>
+          <span class="heroMini-item">✦ Se vuoi, l’Agente OFI armonizza le tue parole in uno script sobrio.</span>
+        </div>
+<div class="whoRow whoRow--necro">
+          <div class="who">
+            <div class="whoName" id="whoName">—</div>
+            <div class="whoMeta">
+              <span id="whoPlace">—</span>
+              <span class="whoSep" aria-hidden="true">·</span>
+              <span id="whoDate">—</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="btn btn-soft" id="btnBackHero" href="/cittadini/luogo-manage.html">Torna alla custodia</a>
+            <button class="btn btn-primary" id="btnStartWizard" type="button">Inizia il percorso</button>
+          </div>
+        </div>
+</div>
+
+      <div class="necro-hero-agent" aria-label="Agente OFI">
+        <div class="necro-hero-agent-photo">
+          <img src="/images/agente-ofi.png" alt="Agente OFI">
+        </div>
+        <div class="necro-hero-agent-label">Agente OFI</div>
+        <div class="necro-hero-agent-phrase" id="agentPhrase">Ti guiderò passo dopo passo.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- GATE LOGIN / PERMESSI -->
+    <section class="card gate" id="gateCard" hidden>
+      <h2>Accesso richiesto</h2>
+      <p class="small" id="gateText"></p>
+      <div class="actions">
+        <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+        <a class="btn" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- WIZARD -->
+    <section class="wizard-shell" id="wizardCard" hidden>
+  <div class="wizard-card">
+    <div class="wizard-header">
+      <div class="wizard-eyebrow">
+        Passo <span id="stepNumber">1</span> di <span id="totalSteps">6</span>
+      </div>
+
+      <div class="wizard-title-row">
+        <h2 class="wizard-title" id="stepTitle">—</h2>
+        <button class="btn btn-soft chip" id="btnSaveDraftTop" type="button" title="Salva bozza">Salva bozza</button>
+      </div>
+
+      <div class="step-progress" aria-label="Avanzamento">
+        <div class="step-progress-bar" id="progressBar"></div>
+      </div>
+
+      <p class="wizard-sub" id="stepSub">—</p>
+    </div>
+
+    <div class="wizard-layout">
+      <!-- STEP PANELS -->
+      <div class="wizBody">
+
+        <!-- STEP 1: INTENZIONE -->
+        <div class="panel" data-step="0">
+          <div class="choiceGrid" id="intentGrid">
+            <button class="choice" data-value="omaggio_silenzioso" type="button">
+              <div class="choiceTitle">Omaggio silenzioso</div>
+              <div class="choiceSub">Poche parole, molta presenza.</div>
+            </button>
+            <button class="choice" data-value="racconto_di_vita" type="button">
+              <div class="choiceTitle">Racconto di vita</div>
+              <div class="choiceSub">Un filo narrativo sobrio.</div>
+            </button>
+            <button class="choice" data-value="ricordo_familiare" type="button">
+              <div class="choiceTitle">Ricordo familiare</div>
+              <div class="choiceSub">Caldo, semplice, essenziale.</div>
+            </button>
+            <button class="choice" data-value="saluto_personale" type="button">
+              <div class="choiceTitle">Saluto personale</div>
+              <div class="choiceSub">Un messaggio diretto e intimo.</div>
+            </button>
+          </div>
+
+          <div class="help small">
+            Scegli l’intenzione: ci aiuta a mantenere un tono coerente e rispettoso.
+          </div>
+        </div>
+
+        <!-- STEP 2: DOMANDE BREVI -->
+        <div class="panel" data-step="1" hidden>
+          <div class="form">
+            <div class="field">
+              <div class="label">Una frase che la rappresenta (facoltativo)</div>
+              <input id="fFrase" class="input" type="text" maxlength="120" placeholder="Es. Sempre gentile con tutti." />
+            </div>
+
+            <div class="field">
+              <div class="label">Una qualità che non verrà dimenticata</div>
+              <input id="fQualita" class="input" type="text" maxlength="120" placeholder="Es. La sua forza, la sua dolcezza…" />
+            </div>
+
+            <div class="field">
+              <div class="label">Un ricordo speciale (facoltativo)</div>
+              <textarea id="fRicordo" class="textarea" maxlength="520" placeholder="Se vuoi, racconta in poche righe un momento che senti importante."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="btnGenScript" type="button">Armonizza con Agente OFI</button>
+            </div>
+
+            <div class="scriptBox" id="scriptBox" hidden>
+              <div class="scriptHead">Script (anteprima)</div>
+              <div class="scriptText" id="scriptText"></div>
+              <div class="actions" style="margin-top:.65rem;">
+                <button class="btn" id="btnEditScript" type="button">Modifica</button>
+              </div>
+            </div>
+
+            <div class="help small">
+              Se non vuoi usare l’AI, puoi comunque proseguire: lo script verrà composto in modo sobrio per l’anteprima.
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: IMMAGINI (SELEZIONE + UPLOAD) -->
+        <div class="panel" data-step="2" hidden>
+          <div class="small">
+            Seleziona alcune foto dall’Album del Luogo. Consigliato: <strong>6–12</strong>. (Non obbligatorie: puoi salvare e completare dopo.)
+          </div>
+
+          <!-- Upload direttamente qui -->
+          <div class="card" style="margin-top:.85rem; padding: .9rem .9rem;">
+            <div class="previewTitle" style="margin-bottom:.55rem;">Aggiungi foto (facoltativo)</div>
+            <p class="small" style="margin-top:0;">
+              Puoi caricare nuove immagini senza uscire dal wizard. Le foto verranno inserite nell’Album del Luogo.
+            </p>
+            <div class="actions" style="align-items:center;">
+              <input id="uploadPhotosInput" type="file" accept="image/*" multiple style="max-width: 360px;">
+              <button class="btn primary" id="btnUploadPhotos" type="button">Carica</button>
+              <span class="small" id="uploadStatus" aria-live="polite" style="opacity:.9;"></span>
+            </div>
+            <p class="small" style="margin:.55rem 0 0; opacity:.85;">
+              Suggerimento: immagini nitide, verticali e orizzontali va bene. Se non le hai ora, va benissimo.
+            </p>
+          </div>
+
+          <div class="gridPick" id="pickGrid"></div>
+          <p class="small empty" id="pickEmpty" hidden>Nessuna foto disponibile: aggiungi prima qualche immagine nell’Album (o usa “Aggiungi foto” qui sopra).</p>
+
+          <div class="selectSummary">
+            <span class="pill" id="selectedCount">0 selezionate</span>
+            <button class="btn" id="btnClearSelection" type="button">Svuota selezione</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: ATMOSFERA -->
+        <div class="panel" data-step="3" hidden>
+          <div class="choiceGrid">
+            <button class="choice" data-value="luce_dorata" type="button">
+              <div class="choiceTitle">Luce dorata</div>
+              <div class="choiceSub">Calda, pacata, luminosa.</div>
+            </button>
+            <button class="choice" data-value="memoria_luminosa" type="button">
+              <div class="choiceTitle">Memoria luminosa</div>
+              <div class="choiceSub">Semplice, chiara, senza tempo.</div>
+            </button>
+            <button class="choice" data-value="silenzio_profondita" type="button">
+              <div class="choiceTitle">Silenzio e profondità</div>
+              <div class="choiceSub">Sottile, intensa, discreta.</div>
+            </button>
+            <button class="choice" data-value="ricordo_delicato" type="button">
+              <div class="choiceTitle">Ricordo delicato</div>
+              <div class="choiceSub">Leggero, armonioso, rispettoso.</div>
+            </button>
+          </div>
+
+          <div class="formRow" style="margin-top:.9rem;">
+            <div class="field">
+              <div class="label">Musica</div>
+              <select class="select" id="fMusica">
+                <option value="discreta">Discreta (OFI)</option>
+                <option value="silenzio">Silenzio</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="label">Durata indicativa</div>
+              <select class="select" id="fDurata">
+                <option value="110">1:50 circa</option>
+                <option value="90">1:30 circa</option>
+                <option value="130">2:10 circa</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="help small">
+            Atmosfera e musica non devono “fare scena”: devono solo sostenere la memoria.
+          </div>
+        </div>
+
+        <!-- STEP 5: ANTEPRIMA PROGETTO -->
+        <div class="panel" data-step="4" hidden>
+          <div class="previewCard">
+            <div class="previewTitle">Anteprima del progetto</div>
+
+            <div class="previewRow">
+              <div class="previewItem">
+                <div class="previewLabel">Intenzione</div>
+                <div class="previewValue" id="pIntent">—</div>
+              </div>
+              <div class="previewItem">
+                <div class="previewLabel">Atmosfera</div>
+                <div class="previewValue" id="pAtmosfera">—</div>
+              </div>
+              <div class="previewItem">
+                <div class="previewLabel">Musica</div>
+                <div class="previewValue" id="pMusica">—</div>
+              </div>
+              <div class="previewItem">
+                <div class="previewLabel">Durata stimata</div>
+                <div class="previewValue" id="pDurata">—</div>
+              </div>
+            </div>
+
+            <div class="hr"></div>
+
+            <div class="previewLabel">Script</div>
+            <div class="previewScript" id="pScript">—</div>
+
+            <div class="hr"></div>
+
+            <div class="previewLabel">Immagini selezionate</div>
+            <div class="previewThumbs" id="pThumbs"></div>
+            <p class="small" id="pNoThumbs" hidden>Nessuna immagine selezionata (va bene: puoi completare dopo).</p>
+          </div>
+
+          <div class="solemnNote">
+            Il Filmato Commemorativo OFI sarà elaborato con attenzione.
+            Quando sarà pronto, sarà visibile nel Luogo (se il Luogo è pubblico) e scaricabile in MP4 dalla custodia.
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="btnSaveDraft" type="button">Salva bozza</button>
+          </div>
+
+          <p class="small hint">
+            Il pagamento verrà collegato nello step successivo (fase B). Ora salviamo una bozza solida e coerente.
+          </p>
+        </div>
+
+        <!-- STEP 6: CHIUSURA -->
+        <div class="panel" data-step="5" hidden>
+          <div class="finalBox">
+            <div class="finalTitle">Bozza salvata.</div>
+            <div class="finalSub">
+              Puoi tornare quando vuoi e completare.
+              A breve collegheremo qui la fase pagamento e l’elaborazione video.
+            </div>
+
+            <div class="actions" style="margin-top:.85rem;">
+              <button class="btn primary" id="btnStartProcessingTest" type="button">Avvia elaborazione (test)</button>
+              <a class="btn" id="btnBackManageEnd" href="/cittadini/luogo-manage.html">Torna alla custodia</a>
+              <a class="btn btn-soft" id="btnOpenVisitEnd" href="#" rel="noopener">Apri visita</a>
+            </div>
+            <div class="small" id="processingHint" style="margin-top:.65rem; opacity:.9;">
+              In test: viene collegato un filmato dimostrativo. Il filmato resterà visibile <strong>solo al custode</strong> finché non lo pubblichi dalla custodia.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- NAV -->
+      <div class="wizNav">
+        <button class="btn" id="btnPrev" type="button" disabled>Indietro</button>
+        <button class="btn primary" id="btnNext" type="button">Avanti</button>
+      </div>
+    </section>
+
+    <div class="toast" id="toast">Salvato</div>
+
+    <!-- Overlay AI -->
+    <div class="ai-loading" id="aiOverlay" hidden>
+      <div class="ai-loading-card" role="status" aria-live="polite">
+        <div class="ai-loading-title">Agente OFI al lavoro…</div>
+        <div class="ai-loading-sub" id="aiText">Armonizzazione…</div>
+        <div class="ai-loading-bar"><div class="ai-loading-bar-fill" id="aiFill"></div></div>
+        <div class="ai-loading-pct" id="aiPct">0%</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit,
+      getDocs, Timestamp, setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getStorage, ref as sRef, uploadBytes, getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // ---------- helpers ----------
+    const el = (id)=>document.getElementById(id);
+    const safeStr = (v)=>String(v ?? "").trim();
+
+    const fetchWithTimeout = async (url, options={}, timeoutMs=12000)=>{
+      const controller = new AbortController();
+      const id = setTimeout(()=>controller.abort(), timeoutMs);
+      try{
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(id);
+      }
+    };
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = safeStr(params.get("id"));
+    const DRAFT_KEY = `ofi_filmato_draft_${luogoId || "noid"}`;
+    // Tema: gestito globalmente da /ofi.js (toggle in header)
+function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeLuogo(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita"], "family")) || "family";
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(raw?.custody?.coUids) ? raw.custody.coUids.map(safeStr).filter(Boolean) : [];
+      return { nome, cognome, dataMorte, visibilityMode, placeLabel, mainUid, coUids };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function isCustode(uid, luogo){
+      if (!uid) return false;
+      return uid === luogo.mainUid || luogo.coUids.includes(uid);
+    }
+
+    function toast(msg="Salvato"){
+      const t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1800);
+    }
+
+    function showGate(msg){
+      el("gateText").textContent = msg;
+      el("gateCard").hidden = false;
+      el("heroCard").hidden = true;
+      el("wizardCard").hidden = true;
+    }
+
+    function showAi(on, label="Armonizzazione…"){
+      const box = el("aiOverlay");
+      if(!box) return;
+
+      if(!on){ box.setAttribute("hidden",""); box.style.display="none"; }
+      else { box.style.removeProperty("display"); box.removeAttribute("hidden"); }
+
+      const txt = el("aiText");
+      const fill = el("aiFill");
+      const pct = el("aiPct");
+      if (!on){
+        box.hidden = true;
+        return;
+      }
+      box.hidden = false;
+      txt.textContent = label;
+      fill.style.width = "0%";
+      pct.textContent = "0%";
+
+      let v = 0;
+      const tick = ()=>{
+        if (box.hidden) return;
+        v += Math.random()*14;
+        if (v >= 92) v = 92;
+        fill.style.width = `${v.toFixed(0)}%`;
+        pct.textContent = `${v.toFixed(0)}%`;
+        setTimeout(tick, 180);
+      };
+      tick();
+    }
+
+    // ---------- state ----------
+    const steps = [
+      { title: "Intenzione del ricordo", sub: "Scegli il tono generale: aiuta a mantenere coerenza e rispetto.", agent: "Iniziamo dal cuore: che tipo di ricordo desideri creare?" },
+      { title: "Poche parole, con calma", sub: "Risposte brevi. L’Agente OFI può armonizzarle in uno script sobrio.", agent: "Scrivi come ti viene. Poi, se vuoi, armonizzo io." },
+      { title: "Immagini", sub: "Seleziona o carica alcune foto. Non è obbligatorio: puoi completare più avanti.", agent: "Anche poche immagini bastano. Se ora non le hai, va bene lo stesso." },
+      { title: "Atmosfera", sub: "Una scelta discreta: luce, silenzio, delicatezza. Niente effetti invadenti.", agent: "Scegli l’atmosfera: deve sostenere, non sovrastare." },
+      { title: "Anteprima del progetto", sub: "Controlla che tutto sia coerente. Poi salva la bozza.", agent: "Questa è la forma. Se ti rispecchia, salviamo." },
+      { title: "Chiusura", sub: "Hai salvato una bozza. Torna quando vuoi e completa.", agent: "Perfetto. Da qui in poi collegheremo pagamento ed elaborazione." },
+    ];
+
+    const draft = {
+      luogoId,
+      intent: "",
+      frase: "",
+      qualita: "",
+      ricordo: "",
+      script: "",
+      selectedMedia: {},
+      atmosfera: "",
+      musica: "discreta",
+      durata: 110,
+      updatedAt: Date.now()
+    };
+
+    function loadDraft(){
+      try{
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        Object.assign(draft, d || {});
+      }catch(e){}
+    }
+
+    function saveDraftLocal(){
+      try{
+        draft.updatedAt = Date.now();
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+      }catch(e){}
+    }
+
+    // ---------- wizard UI ----------
+    let stepIndex = 0;
+
+    function setStep(i){
+      stepIndex = Math.max(0, Math.min(steps.length-1, i));
+      el("stepNumber").textContent = String(stepIndex + 1);
+      el("totalSteps").textContent = String(steps.length);
+
+      const pct = ((stepIndex) / (steps.length-1)) * 100;
+      el("progressBar").style.width = `${pct}%`;
+
+      el("stepTitle").textContent = steps[stepIndex].title;
+      el("stepSub").textContent = steps[stepIndex].sub;
+      el("agentPhrase").textContent = steps[stepIndex].agent;
+
+      document.querySelectorAll(".panel").forEach(p=>{
+        const s = Number(p.getAttribute("data-step"));
+        p.hidden = (s !== stepIndex);
+      });
+
+      el("btnPrev").disabled = (stepIndex === 0);
+      el("btnNext").textContent =
+        (stepIndex === steps.length - 2) ? "Salva e continua" :
+        (stepIndex === steps.length - 1 ? "Fine" : "Avanti");
+
+      if (stepIndex === steps.length - 1){
+        el("btnPrev").hidden = true;
+        el("btnNext").hidden = true;
+      } else {
+        el("btnPrev").hidden = false;
+        el("btnNext").hidden = false;
+      }
+
+      if (stepIndex === 4) renderPreview();
+      saveDraftLocal();
+    }
+
+    function bindChoices(root){
+      root.querySelectorAll(".choice").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
+          const v = btn.getAttribute("data-value");
+          btn.parentElement.querySelectorAll(".choice").forEach(b=>b.classList.remove("on"));
+          btn.classList.add("on");
+
+          if (stepIndex === 0) draft.intent = v;
+          if (stepIndex === 3) draft.atmosfera = v;
+
+          saveDraftLocal();
+        });
+      });
+    }
+
+    // ---------- Step2 fields ----------
+    function syncFieldsFromDraft(){
+      el("fFrase").value = draft.frase || "";
+      el("fQualita").value = draft.qualita || "";
+      el("fRicordo").value = draft.ricordo || "";
+
+      el("fMusica").value = draft.musica || "discreta";
+      el("fDurata").value = String(draft.durata || 110);
+
+      if (draft.script){
+        el("scriptBox").hidden = false;
+        el("scriptText").textContent = draft.script;
+      } else {
+        el("scriptBox").hidden = true;
+        el("scriptText").textContent = "";
+      }
+    }
+
+    function wireFieldAutosave(){
+      el("fFrase").addEventListener("input", ()=>{ draft.frase = safeStr(el("fFrase").value); saveDraftLocal(); });
+      el("fQualita").addEventListener("input", ()=>{ draft.qualita = safeStr(el("fQualita").value); saveDraftLocal(); });
+      el("fRicordo").addEventListener("input", ()=>{ draft.ricordo = safeStr(el("fRicordo").value); saveDraftLocal(); });
+
+      el("fMusica").addEventListener("change", ()=>{ draft.musica = el("fMusica").value; saveDraftLocal(); });
+      el("fDurata").addEventListener("change", ()=>{ draft.durata = Number(el("fDurata").value) || 110; saveDraftLocal(); });
+
+      el("btnEditScript").addEventListener("click", ()=>{
+        el("scriptBox").hidden = true;
+        draft.script = "";
+        saveDraftLocal();
+        toast("Puoi riscrivere o rigenerare");
+      });
+    }
+
+    // fallback sobrio se l'utente non usa AI
+    function composePreviewScriptIfMissing(){
+      if (safeStr(draft.script)) return draft.script;
+
+      const a = {
+        "omaggio_silenzioso": "In questo spazio ricordiamo con discrezione e rispetto.",
+        "racconto_di_vita": "In questo spazio ripercorriamo con gratitudine una vita che resta con noi.",
+        "ricordo_familiare": "In questo spazio custodiamo un ricordo di famiglia, semplice e vero.",
+        "saluto_personale": "In questo spazio lasciamo un saluto personale, con delicatezza."
+      }[draft.intent] || "In questo spazio custodiamo un ricordo sobrio e armonioso.";
+
+      const parts = [
+        a,
+        draft.qualita ? `Ci resterà nel cuore: ${draft.qualita}.` : "",
+        draft.frase ? `Una frase la rappresenta: “${draft.frase}”.` : "",
+        draft.ricordo ? `Un ricordo: ${draft.ricordo}` : "",
+        "Con gratitudine, nel tempo."
+      ].filter(Boolean);
+
+      return parts.join(" ");
+    }
+
+    async function generateScriptAI(){
+      const payload = {
+        intent: draft.intent,
+        frase: draft.frase,
+        qualita: draft.qualita,
+        ricordo: draft.ricordo
+      };
+
+      showAi(true, "Armonizzazione delle parole…");
+      try{
+        const res = await fetchWithTimeout("/.netlify/functions/filmatoScript", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body: JSON.stringify(payload)
+        }, 12000).catch(()=>null);
+
+        // Se la function non esiste (404), fallback locale senza bloccare l’utente.
+        if (res && res.ok){
+          const data = await res.json().catch(()=>null);
+          if (data?.ok && data?.script){
+            return safeStr(data.script);
+          }
+        }
+
+        return composePreviewScriptIfMissing();
+      } finally {
+        const fill = el("aiFill"); const pct = el("aiPct");
+        fill.style.width = "100%"; pct.textContent = "100%";
+        setTimeout(()=>showAi(false), 260);
+      }
+    }
+
+    // ---------- Step3 selection ----------
+    const selected = new Map(); // docId -> media
+
+    function renderPickItem(docId, m){
+      const btn = document.createElement("button");
+      btn.className = "pickTile";
+      btn.type = "button";
+
+      const img = document.createElement("img");
+      img.src = m.url;
+      img.alt = m.caption || "Foto";
+      img.loading = "lazy";
+      btn.appendChild(img);
+
+      const cap = document.createElement("div");
+      cap.className = "pickCap";
+      cap.textContent = m.caption || "Foto";
+      btn.appendChild(cap);
+
+      const mark = document.createElement("div");
+      mark.className = "pickMark";
+      mark.textContent = "✓";
+      btn.appendChild(mark);
+
+      btn.addEventListener("click", ()=>{
+        if (selected.has(docId)){
+          selected.delete(docId);
+          btn.classList.remove("on");
+        } else {
+          if (selected.size >= 20){
+            alert("Per ora seleziona massimo 20 immagini (consigliate 6–12).");
+            return;
+          }
+          selected.set(docId, m);
+          btn.classList.add("on");
+        }
+        syncSelectedToDraft();
+      });
+
+      return btn;
+    }
+
+    function syncSelectedToDraft(){
+      draft.selectedMedia = {};
+      selected.forEach((m, id)=>{ draft.selectedMedia[id] = m; });
+      el("selectedCount").textContent = `${selected.size} selezionate`;
+      saveDraftLocal();
+    }
+
+    function restoreSelectionFromDraft(){
+      selected.clear();
+      const obj = draft.selectedMedia || {};
+      Object.keys(obj).forEach(id=>selected.set(id, obj[id]));
+      el("selectedCount").textContent = `${selected.size} selezionate`;
+    }
+
+    // ---------- preview ----------
+    function labelIntent(v){
+      return ({
+        "omaggio_silenzioso":"Omaggio silenzioso",
+        "racconto_di_vita":"Racconto di vita",
+        "ricordo_familiare":"Ricordo familiare",
+        "saluto_personale":"Saluto personale"
+      }[v] || "—");
+    }
+
+    function labelAtmosfera(v){
+      return ({
+        "luce_dorata":"Luce dorata",
+        "memoria_luminosa":"Memoria luminosa",
+        "silenzio_profondita":"Silenzio e profondità",
+        "ricordo_delicato":"Ricordo delicato"
+      }[v] || "—");
+    }
+
+    function labelMusica(v){
+      return v === "silenzio" ? "Silenzio" : "Discreta (OFI)";
+    }
+
+    function labelDurata(sec){
+      const s = Number(sec) || 0;
+      const m = Math.floor(s/60);
+      const r = s%60;
+      return `${m}:${String(r).padStart(2,"0")} circa`;
+    }
+
+    function renderPreview(){
+      el("pIntent").textContent = labelIntent(draft.intent);
+      el("pAtmosfera").textContent = labelAtmosfera(draft.atmosfera);
+      el("pMusica").textContent = labelMusica(draft.musica);
+      el("pDurata").textContent = labelDurata(draft.durata);
+
+      // QUI: se non esiste script, compongo anteprima sobria
+      const script = safeStr(draft.script) || composePreviewScriptIfMissing();
+      el("pScript").textContent = script || "—";
+
+      const thumbs = el("pThumbs");
+      thumbs.innerHTML = "";
+      const ids = Object.keys(draft.selectedMedia || {});
+      el("pNoThumbs").hidden = ids.length > 0;
+
+      ids.slice(0, 10).forEach((id)=>{
+        const m = draft.selectedMedia[id];
+        const img = document.createElement("img");
+        img.src = m.url;
+        img.alt = m.caption || "Foto";
+        img.loading = "lazy";
+        thumbs.appendChild(img);
+      });
+    }
+
+    // ---------- save draft (Firestore) ----------
+    function buildFilmatoDocId(uid){
+      return `filmato_${luogoId}_${uid}`;
+    }
+
+    async function saveDraftFirestore(currentUser){
+      // Bozza unica (no duplicati) + merge
+      const docId = buildFilmatoDocId(currentUser.uid);
+
+      const immagini = Object.keys(draft.selectedMedia || {}).map(id=>{
+        const m = draft.selectedMedia[id];
+        return {
+          id,
+          url: m.url || "",
+          caption: m.caption || "",
+          storageRef: m.storageRef || ""
+        };
+      });
+
+      const docData = {
+        luogoId: draft.luogoId,
+        custodeUid: currentUser.uid,
+        stato: "draft",
+        tipoRicordo: draft.intent || "",
+        input: {
+          frase: draft.frase || "",
+          qualita: draft.qualita || "",
+          ricordo: draft.ricordo || ""
+        },
+        // Se non c'è script generato, salvo comunque quello "sobrio" (utile)
+        scriptGenerato: safeStr(draft.script) || composePreviewScriptIfMissing(),
+        immagini,
+        atmosfera: draft.atmosfera || "",
+        musica: draft.musica || "discreta",
+        durataStimata: Number(draft.durata) || 110,
+        updatedAt: serverTimestamp(),
+        createdAt: serverTimestamp()
+      };
+
+      await setDoc(doc(db, "filmati_luogo", docId), docData, { merge: true });
+      toast("Bozza salvata");
+    }
+
+    // ---------- processing (TEST) ----------
+    async function startProcessingTest(currentUser){
+      const btn = el("btnStartProcessingTest");
+      if (btn) btn.disabled = true;
+
+      // 1) assicura bozza salvata
+      await saveDraftFirestore(currentUser);
+
+      const docId = buildFilmatoDocId(currentUser.uid);
+      const refDoc = doc(db, "filmati_luogo", docId);
+
+      // 2) passa a processing
+      await setDoc(refDoc, {
+        stato: "processing",
+        processingStartedAt: serverTimestamp(),
+        // per default: NON pubblico (scelta A)
+        videoPublic: false
+      }, { merge: true });
+
+      toast("Elaborazione avviata…");
+
+      // 3) dopo pochi secondi collega un placeholder (demo)
+      // Placeholder MP4 (fase TEST) caricato in Firebase Storage
+      // Percorso attuale: ofi_assets/video/ofi_demo.mp4
+      const demoPath = "ofi_assets/video/ofi_demo.mp4";
+      let demoUrl = "";
+      try{
+        demoUrl = await getDownloadURL(sRef(storage, demoPath));
+      }catch(e){
+        console.warn("Demo video non trovato in Storage:", demoPath, e);
+      }
+
+      await new Promise(r=>setTimeout(r, 4000));
+
+      await setDoc(refDoc, {
+        stato: "ready",
+        processingEndedAt: serverTimestamp(),
+        video: {
+          storageRef: demoPath,
+          url: demoUrl,
+          format: "mp4"
+        }
+      }, { merge: true });
+
+      toast("Filmato pronto (test)");
+      if (btn) btn.disabled = false;
+    }
+
+
+    // ---------- load album ----------
+    async function loadAlbumTiles(){
+      const grid = el("pickGrid");
+      const empty = el("pickEmpty");
+      grid.innerHTML = "";
+
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), limit(120));
+      const snapA = await getDocs(qA).catch(()=>null);
+
+      let count = 0;
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const type = safeStr(m.type || "photo");
+          if (type !== "photo") return;
+          const url = safeStr(m.url);
+          if (!url) return;
+
+          count++;
+          const media = { url, caption: safeStr(m.caption || ""), storageRef: safeStr(m.storageRef || "") };
+          const tile = renderPickItem(d.id, media);
+
+          if (draft.selectedMedia && draft.selectedMedia[d.id]){
+            selected.set(d.id, draft.selectedMedia[d.id]);
+            tile.classList.add("on");
+          }
+          grid.appendChild(tile);
+        });
+      }
+
+      empty.hidden = count > 0;
+      el("selectedCount").textContent = `${selected.size} selezionate`;
+    }
+
+    // ---------- upload photos (Storage + Firestore album) ----------
+    function randId(len=8){
+      const a = "abcdefghijklmnopqrstuvwxyz0123456789";
+      let s = "";
+      for (let i=0;i<len;i++) s += a[Math.floor(Math.random()*a.length)];
+      return s;
+    }
+
+    async function uploadPhotos(files, currentUser){
+      if (!currentUser?.uid) throw new Error("Not authenticated");
+      if (!files || files.length === 0) return;
+
+      // soft limit per esperienza utente
+      if (files.length > 20){
+        alert("Per volta carica massimo 20 immagini.");
+        return;
+      }
+
+      el("uploadStatus").textContent = "Caricamento…";
+      el("btnUploadPhotos").disabled = true;
+
+      try{
+        // ordine: mettiamo in coda in base a time
+        let baseOrder = Date.now();
+
+        for (let i=0; i<files.length; i++){
+          const file = files[i];
+          if (!file.type.startsWith("image/")) continue;
+
+          // path storage
+          const safeName = file.name.replace(/[^\w.\-]+/g, "_");
+          const path = `luoghi_memoria/${luogoId}/album/${baseOrder}_${randId(6)}_${safeName}`;
+          const refFile = sRef(storage, path);
+
+          // upload
+          await uploadBytes(refFile, file, { contentType: file.type });
+
+          // url
+          const url = await getDownloadURL(refFile);
+
+          // scrivi doc in album
+          const albumCol = collection(db, "luoghi_memoria", luogoId, "album");
+          const albumDoc = doc(albumCol); // id automatico
+          await setDoc(albumDoc, {
+  type: "photo",
+  url,
+  storageRef: path,
+  caption: "",
+  order: baseOrder + i,
+  createdByUid: currentUser.uid,   
+  createdAt: serverTimestamp()
+}, { merge: true });
+
+          el("uploadStatus").textContent = `Caricate ${i+1}/${files.length}`;
+        }
+
+        el("uploadStatus").textContent = "Fatto. Aggiorno l’album…";
+        await loadAlbumTiles();
+        toast("Foto aggiunte");
+        el("uploadStatus").textContent = "Foto aggiunte all’Album.";
+      } finally {
+        el("btnUploadPhotos").disabled = false;
+        setTimeout(()=>{ if (el("uploadStatus")) el("uploadStatus").textContent = ""; }, 2500);
+      }
+    }
+
+    // ---------- init ----------
+    let currentUser = null;
+    let currentLuogo = null;
+
+    onAuthStateChanged(auth, (u)=>{ currentUser = u || null; });
+
+    async function requireAuthReady(){
+      return await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          currentUser = u || null;
+          unsub();
+          resolve(currentUser);
+        });
+      });
+    }
+
+    async function load(){
+      if (!luogoId){
+        showGate("ID mancante. Torna ai tuoi Luoghi e apri quello corretto.");
+        return;
+      }
+
+      const u = await requireAuthReady();
+      if (!u){
+        showGate("Per creare il Filmato Commemorativo devi accedere come cittadino.");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        showGate("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      currentLuogo = normalizeLuogo(snap.data() || {});
+      if (!isCustode(u.uid, currentLuogo)){
+        showGate("Questa funzione è riservata ai custodi del Luogo.");
+        return;
+      }
+
+      // header/who
+      const displayName = [currentLuogo.nome, currentLuogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      el("whoName").textContent = displayName;
+      el("whoPlace").textContent = currentLuogo.placeLabel || "Luogo non specificato";
+      el("whoDate").textContent = fmtDate(currentLuogo.dataMorte);
+
+      // LINKS: visita è in /site (root), non in /cittadini
+      const visitUrl = `/luogo-visit.html?id=${encodeURIComponent(luogoId)}`;
+      el("openVisitTop").href = visitUrl;
+      el("btnOpenVisitEnd").href = visitUrl;
+
+      const manageUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+      el("backToManageTop").href = manageUrl;
+      el("btnBackHero").href = manageUrl;
+      el("btnBackManageEnd").href = manageUrl;
+
+      // draft
+      loadDraft();
+      syncFieldsFromDraft();
+
+      // choices binding
+      bindChoices(el("intentGrid"));
+      document.querySelectorAll('.panel[data-step="3"] .choiceGrid').forEach(bindChoices);
+
+      // restore chosen classes
+      if (draft.intent){
+        el("intentGrid").querySelectorAll(".choice").forEach(b=>{
+          if (b.getAttribute("data-value") === draft.intent) b.classList.add("on");
+        });
+      }
+      if (draft.atmosfera){
+        document.querySelectorAll('.panel[data-step="3"] .choice').forEach(b=>{
+          if (b.getAttribute("data-value") === draft.atmosfera) b.classList.add("on");
+        });
+      }
+
+      // album tiles
+      restoreSelectionFromDraft();
+      await loadAlbumTiles();
+
+      // upload hooks
+      el("btnUploadPhotos").addEventListener("click", async ()=>{
+        const files = el("uploadPhotosInput").files;
+        try{
+          await uploadPhotos(files, u);
+          el("uploadPhotosInput").value = "";
+        }catch(e){
+          console.error(e);
+          alert("Errore nel caricamento delle immagini. Verifica permessi Storage/Firestore.");
+        }
+      });
+
+      // clear selection
+      el("btnClearSelection").addEventListener("click", ()=>{
+        if (!confirm("Svuotare la selezione immagini?")) return;
+        selected.clear();
+        draft.selectedMedia = {};
+        document.querySelectorAll(".pickTile").forEach(t=>t.classList.remove("on"));
+        el("selectedCount").textContent = "0 selezionate";
+        saveDraftLocal();
+      });
+
+      // wizard show
+      el("btnStartWizard").addEventListener("click", ()=>{
+        el("wizardCard").hidden = false;
+        el("wizardCard").scrollIntoView({ behavior:"smooth", block:"start" });
+        setStep(0);
+      });
+
+      // nav
+      el("btnPrev").addEventListener("click", ()=>setStep(stepIndex - 1));
+
+      el("btnNext").addEventListener("click", async ()=>{
+        if (stepIndex === 0 && !draft.intent){
+          toast("Scegli un’intenzione");
+          return;
+        }
+
+        if (stepIndex === 1){
+          draft.frase = safeStr(el("fFrase").value);
+          draft.qualita = safeStr(el("fQualita").value);
+          draft.ricordo = safeStr(el("fRicordo").value);
+          saveDraftLocal();
+        }
+
+        if (stepIndex === 3){
+          draft.musica = el("fMusica").value;
+          draft.durata = Number(el("fDurata").value) || 110;
+          saveDraftLocal();
+        }
+
+        if (stepIndex === 4){
+          try{
+            await saveDraftFirestore(u);
+            setStep(5);
+            return;
+          }catch(e){
+            console.error(e);
+            alert("Errore nel salvataggio della bozza.");
+            return;
+          }
+        }
+
+        setStep(stepIndex + 1);
+      });
+
+      // top save buttons
+      el("btnSaveDraftTop").addEventListener("click", async ()=>{
+        try{
+          await saveDraftFirestore(u);
+        }catch(e){
+          console.error(e);
+          alert("Errore nel salvataggio della bozza.");
+        }
+      });
+
+      el("btnSaveDraft").addEventListener("click", async ()=>{
+        try{
+          await saveDraftFirestore(u);
+          setStep(5);
+        }catch(e){
+          console.error(e);
+          alert("Errore nel salvataggio della bozza.");
+        }
+      });
+
+      // TEST: avvia elaborazione e collega un video demo
+      el("btnStartProcessingTest").addEventListener("click", async ()=>{
+        try{
+          await startProcessingTest(u);
+        }catch(e){
+          console.error(e);
+          alert("Errore durante l'elaborazione (test).");
+          const b = el("btnStartProcessingTest");
+          if (b) b.disabled = false;
+        }
+      });
+
+      // AI button
+      el("btnGenScript").addEventListener("click", async ()=>{
+        draft.frase = safeStr(el("fFrase").value);
+        draft.qualita = safeStr(el("fQualita").value);
+        draft.ricordo = safeStr(el("fRicordo").value);
+
+        if (!draft.qualita && !draft.frase && !draft.ricordo){
+          alert("Scrivi almeno una piccola informazione (anche una sola frase).");
+          return;
+        }
+
+        try{
+          const script = await generateScriptAI();
+          draft.script = script;
+          saveDraftLocal();
+          el("scriptText").textContent = script;
+          el("scriptBox").hidden = false;
+          toast("Script pronto");
+        }catch(e){
+          console.warn(e);
+          alert("Non riesco a generare lo script in questo momento.");
+        }
+      });
+
+      // autosave fields
+      wireFieldAutosave();
+
+      // start hidden
+      el("wizardCard").hidden = true;
+    }
+
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+/* =============================================================================
+   OFI · Base & Componenti
+   Architettura: CSS Cascade Layers + Design Tokens
+   Nomi classi invariati: .site-header, .main-nav, .menu, .submenu, .has-sub,
+   .hamburger, .menu-overlay, .hero, .hero-overlay, .hero-content, .btn, ecc.
+   ============================================================================ */
+
+/* ---- Strati della cascata (ordine dalla base agli override) ---- */
+@layer reset, tokens, base, layout, components, utilities, overrides;
+
+/* ======================== RESET (essenziale) ===================== */
+@layer reset {
+  *,*::before,*::after{ box-sizing:border-box }
+  html,body{ height:100% }
+  body{ margin:0; text-rendering:optimizeLegibility }
+  img{ max-width:100%; display:block }
+  button,input,select,textarea{ font:inherit; color:inherit }
+  :where(ul,ol){ margin:0; padding:0; list-style:none }
+}
+
+/* ======================== TOKENS (design) ======================== */
+@layer tokens {
+  :root{
+    /* Brand */
+    --blue:#0f2742; --blue-2:#0b1b2f; --blue-3:#173356;
+    --gold:#caa85a; --gold-2:#e2c98f;
+
+    /* Neutri */
+    --bg:#f6f8fb; --surface:#ffffff; --fg:#101418; --muted:#667085; --border:#e6e6e6;
+
+    /* Raggi/ombre */
+    --radius:16px;
+    --shadow-1:0 8px 22px rgba(0,0,0,.08);
+    --shadow-2:0 14px 40px rgba(0,0,0,.14);
+
+    /* Z-index scale (senza !important) */
+    --z-header:50; --z-nav:60; --z-menu:70; --z-overlay:65;
+    --z-sidebar:55; --z-modal:100;
+
+    /* Tipografia */
+    --font-serif:"Noto Serif", Georgia, "Times New Roman", serif;
+    --font-sans: ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  }
+}
+
+/* ======================== BASE (tipografia) ====================== */
+@layer base {
+  body{
+    font-family:var(--font-serif);
+    color:var(--fg);
+    background:var(--bg);
+  }
+  .container{ width:min(1200px,92%); margin-inline:auto }
+  .kicker{ font-weight:800; letter-spacing:.3px; color:var(--gold); text-transform:uppercase }
+  a{ color:inherit; text-decoration:none }
+}
+
+/* ======================== LAYOUT (macro-sezioni) ================= */
+@layer layout {
+  /* Header + Nav */
+  .site-header{
+    position:sticky; top:0; z-index:var(--z-header);
+    backdrop-filter:saturate(170%) blur(8px);
+    background:linear-gradient(0deg, rgba(0,0,0,.00), rgba(0,0,0,.06));
+  }
+  .brand{ padding:.5rem 1rem }
+  .brand-logo{ height:44px }
+
+  .main-nav{ display:flex; align-items:center; gap:.5rem; padding:.5rem 1rem; position:relative; z-index:var(--z-nav); }
+  .menu{
+    margin-left:auto; display:flex; align-items:center; gap:1rem;
+  }
+  .menu a{ font-weight:800 }
+  .hamburger{
+    display:none; width:40px; height:40px; background:none; border:0; position:relative;
+  }
+  .hamburger span{
+    position:absolute; left:8px; right:8px; height:2px; background:currentColor; transition:transform .25s, top .25s, opacity .2s;
+  }
+  .hamburger span:nth-child(1){ top:12px }
+  .hamburger span:nth-child(2){ top:19px }
+  .hamburger span:nth-child(3){ top:26px }
+  .hamburger.active span:nth-child(1){ top:19px; transform:rotate(45deg) }
+  .hamburger.active span:nth-child(2){ opacity:0 }
+  .hamburger.active span:nth-child(3){ top:19px; transform:rotate(-45deg) }
+
+  /* Desktop submenu (tendina) */
+  .has-sub{ position:relative }
+  .submenu{
+    position:absolute; top:100%; left:0; min-width:220px; display:none;
+    background:var(--surface); color:var(--fg); border:1px solid var(--border);
+    border-radius:12px; padding:.4rem; box-shadow:var(--shadow-2);
+    z-index:var(--z-menu);
+  }
+  .submenu a{ display:block; padding:.55rem .8rem; border-radius:10px }
+  .submenu a:hover{ background:rgba(0,0,0,.06) }
+  .has-sub:hover > .submenu,
+  .has-sub:focus-within > .submenu{ display:block }
+
+  /* Mobile drawer + overlay (≤900px) */
+  .menu-overlay{ display:none }
+  @media (max-width:900px){
+    .hamburger{ display:block }
+    .menu{
+      position:fixed; inset:72px 0 0 auto; width:min(88vw,420px);
+      background:var(--blue); color:#fff; flex-direction:column; padding:16px 18px;
+      transform:translateX(102%); transition:transform .26s ease;
+      height:calc(100dvh - 72px); overflow:auto; -webkit-overflow-scrolling:touch;
+      z-index:var(--z-menu);
+    }
+    .menu.open{ transform:translateX(0) }
+    .menu a{ color:#fff; width:100%; padding:.6rem .5rem; border-radius:10px }
+    .menu a:active{ background:rgba(255,255,255,.10) }
+
+    .menu-overlay{
+      position:fixed; inset:72px 0 0 0; background:rgba(0,0,0,.5);
+      backdrop-filter:blur(3px) saturate(1.05); z-index:var(--z-overlay); display:block;
+    }
+
+    /* Submenu nel drawer = blocchi semplici */
+    .submenu{ position:static; display:none; background:transparent; border:0; box-shadow:none; padding:0; min-width:unset }
+    .has-sub.open > .submenu{ display:block }
+  }
+
+  /* Hero */
+  .hero{ position:relative; min-height:72vh; display:grid; place-items:center; color:#fff; z-index:1 }
+  .hero-video{ width:100%; height:72vh; object-fit:cover }
+  .hero-overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(15,39,66,.72), rgba(15,39,66,.88)) }
+  .hero-content{ position:absolute; inset:0; display:grid; align-content:center; gap:1rem; text-align:center; padding-inline:1rem }
+  .hero h1{ font-size:clamp(2rem,3.6vw,3.1rem); line-height:1.12; letter-spacing:.2px }
+  .lead{ font-size:1.15rem; max-width:900px; margin-inline:auto; opacity:.98 }
+
+  /* Sezioni & Cards */
+  .section{ padding:72px 0 }
+  .section + .section{ padding-top:56px }
+  .section-head{ text-align:center; margin-bottom:1.1rem }
+  .section h2{ font-size:clamp(1.6rem,2.6vw,2.3rem); margin:0 0 .25rem; font-weight:900 }
+  .grid{ display:grid; gap:1rem }
+  .grid-2{ grid-template-columns:repeat(2,1fr) }
+  .grid-3{ grid-template-columns:repeat(3,1fr) }
+  @media (max-width:900px){ .grid-2,.grid-3{ grid-template-columns:1fr } }
+
+  .card{
+    background:var(--surface); color:var(--fg); border:1px solid var(--border);
+    border-radius:var(--radius); padding:1.1rem 1.2rem; box-shadow:var(--shadow-1);
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-2); border-color: color-mix(in oklab,var(--gold),#000 15%) }
+
+  /* Map wrap (riuso classi esistenti) */
+  .map-wrap{ background:linear-gradient(180deg, var(--blue-2), var(--blue)); color:#fff }
+  .map{ height:60vh; width:100%; border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(0,0,0,.2) }
+
+  /* Footer */
+  .site-footer{ background:var(--blue); color:#fff; padding:48px 0; margin-top:48px }
+  .footer-grid{ display:grid; grid-template-columns:1.2fr .8fr 1fr; gap:1rem; align-items:center }
+  @media (max-width:900px){ .footer-grid{ grid-template-columns:1fr } }
+}
+
+/* ======================== COMPONENTI (UI) ======================== */
+@layer components {
+  /* Bottoni (nomi invariati) */
+  .btn{ --b:2px; display:inline-flex; align-items:center; justify-content:center; padding:.8rem 1.15rem; border-radius:12px; border:var(--b) solid transparent; font-weight:800; transition:.18s; text-decoration:none; }
+  .btn-sm{ padding:.6rem .9rem; border-radius:10px; font-weight:800 }
+  .btn-primary{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414 }
+  .btn-primary:hover{ filter:brightness(1.05); transform:translateY(-1px) }
+  .btn-outline{ border-color:var(--gold); color:var(--fg); background:transparent }
+  .btn-outline:hover{ background:rgba(0,0,0,.06) }
+  .btn-ghost{ border-color:transparent; background:transparent; color:var(--gold) }
+  .btn-ghost:hover{ background:rgba(202,168,90,.10) }
+
+  /* Striscia rapida */
+  .quick-strip{
+    background:linear-gradient(180deg, rgba(202,168,90,.12), rgba(202,168,90,.06));
+    border-top:1px solid rgba(202,168,90,.35);
+    border-bottom:1px solid rgba(0,0,0,.08);
+    padding:14px 0;
+  }
+  .strip-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; align-items:stretch }
+  @media (max-width:900px){ .strip-grid{ grid-template-columns:1fr } }
+  .strip-item{
+    display:flex; flex-direction:column; gap:2px; text-decoration:none;
+    background:var(--surface); color:var(--fg);
+    border:1px solid rgba(202,168,90,.45); border-radius:14px; padding:.7rem .9rem; box-shadow:var(--shadow-1);
+    transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .strip-item:hover{ transform:translateY(-1px); box-shadow:var(--shadow-2) }
+}
+
+/* ======================== UTILITIES (piccole) ==================== */
+@layer utilities {
+  .nowrap{ white-space:nowrap } .small{ font-size:.9rem; opacity:.9 } .mb-0{ margin-bottom:0 }
+  .hidden{ display:none !important }
+  .z-10{ z-index:10 } .z-20{ z-index:20 } .z-30{ z-index:30 } .z-100{ z-index:100 }
+}
+
+/* ======================== OVERRIDES (minimi) ===================== */
+@layer overrides {
+  /* Regola d’oro: il menu deve stare SEMPRE sopra a hero e contenuti */
+  .site-header{ overflow:visible }
+  .hero, .page-hero, .profile-hero{ z-index:1 }
+}
+
+/* ========= COMPATTAZIONE HEADER & NAV ========= */
+:root{ --headerH:64px; }  /* prima era più alto */
+.site-header{
+  min-height:var(--headerH);
+  padding-block:0;                  /* elimina aria extra */
+  background:linear-gradient(180deg, rgba(0,0,0,.00), rgba(0,0,0,.05));
+}
+.brand{ padding:.35rem .75rem; }
+.brand-logo{ height:36px; }         /* prima 44px */
+.main-nav{ padding:.35rem .75rem; gap:.25rem; }
+.menu{ gap:.75rem; }                /* menu più compatto */
+.menu a{ font-weight:800; letter-spacing:.2px; }
+
+/* Submenu più vicino e preciso */
+.has-sub{ position:relative }
+.submenu{
+  margin-top:.25rem;
+  border-radius:10px;
+  padding:.35rem;
+}
+.submenu a{ padding:.5rem .7rem; border-radius:.6rem }
+
+/* ========= HERO: PIÙ WOW MA PIÙ LEGGERO ========= */
+.hero{
+  min-height:66vh;                  /* prima 72vh: ora più compatto */
+  background:
+    radial-gradient(1200px 600px at 50% 0%, rgba(202,168,90,.12), transparent 60%),
+    linear-gradient(180deg, #0c2340 0%, #0e2b4f 100%);  /* blu istituzionale */
+}
+.hero-overlay{ background:linear-gradient(180deg, rgba(10,25,44,.55), rgba(10,25,44,.85)) }
+.hero h1{
+  font-weight:900;
+  text-shadow:0 1px 0 rgba(0,0,0,.25), 0 18px 32px rgba(0,0,0,.35);
+}
+.lead{ opacity:.96 }
+
+/* ========= FOOTER PIÙ SNELLO ========= */
+.site-footer{ padding:28px 0; }     /* prima 48px */
+.footer-grid{ gap:.6rem; }
+.site-footer .brand-logo{ height:32px; }  /* logo più piccolo nel footer */
+.site-footer p, .site-footer a{ font-size:.98rem; opacity:.92 }
+
+/* ========= TOGGLE TEMA (stessi nomi se usi .theme-toggle) ========= */
+.theme-toggle{
+  --ring: rgba(202,168,90,.45);
+  display:inline-flex; align-items:center; gap:.5rem;
+  height:36px; padding:0 .8rem; border-radius:999px;
+  border:1px solid var(--border); background:var(--surface); color:var(--fg);
+  box-shadow:0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.08);
+  cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+}
+.theme-toggle:focus-visible{ outline:2px solid var(--ring); outline-offset:2px }
+.theme-toggle .dot{ width:10px; height:10px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 2px color-mix(in oklab,var(--gold),#000 40%) inset; }
+
+/* In bande scure (header sopra hero) il toggle resta leggibile */
+.site-header .theme-toggle{
+  border-color:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+}
+
+/* ========= “QUADRATINO BIANCO” A SINISTRA: KILL SWITCH SICURO ========= */
+/* Se proviene da pseudo-elementi decorativi dell’hero o overlay */
+.hero::before, .hero::after{ content:none !important; display:none !important; }
+/* Se provenisse da overlay vuoto */
+.menu-overlay:empty{ display:none !important; }
+/* Evita residui di debug */
+.debug, .sentinel, .corner-badge, .corner-square{ display:none !important; }
+
+/* ========= MICRO-RITOCCHI ACCESSIBILITÀ ========= */
+.nav a, .submenu a, .btn{ outline: none; }
+.nav a:focus-visible, .submenu a:focus-visible, .btn:focus-visible{
+  outline:2px solid color-mix(in oklab, var(--gold), #000 20%);
+  outline-offset:2px;
+}
+
+/* ========= MOBILE ========= */
+@media (max-width:900px){
+  :root{ --headerH:60px; }
+  .brand-logo{ height:32px; }
+  .menu{ width:min(86vw,400px); }
+  .site-footer{ padding:22px 0; }
+}

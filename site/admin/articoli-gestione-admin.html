@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<title>Gestione Articoli - Admin OFI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f4f6f9;
+    padding: 2rem;
+    color: #002c5d;
+  }
+  h1 {
+    text-align: center;
+    color: #002c5d;
+    margin-bottom: 2rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #003c8f;
+    color: white;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  textarea {
+    resize: vertical;
+    height: 80px;
+  }
+  button {
+    padding: 6px 12px;
+    margin-top: 4px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .save-btn {
+    background-color: #00695c;
+    color: white;
+  }
+  .delete-btn {
+    background-color: #c62828;
+    color: white;
+  }
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script type="module" src="admin-header.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+</head>
+<body>
+<h1>🗂 Articoli pubblicati</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Titolo</th>
+      <th>Categoria</th>
+      <th>Estratto</th>
+      <th>Contenuto</th>
+      <th>Data</th>
+      <th>Azioni</th>
+    </tr>
+  </thead>
+  <tbody id="lista-articoli"></tbody>
+</table>
+
+<script>
+  async function caricaArticoli() {
+    const querySnapshot = await db.collection("articoli_pubblicati").orderBy("timestamp", "desc").get();
+    const container = document.getElementById("lista-articoli");
+    container.innerHTML = "";
+    if (querySnapshot.empty) {
+      const row = document.createElement("tr");
+      row.innerHTML = "<td colspan='6' style='text-align:center;'>Nessun articolo trovato.</td>";
+      container.appendChild(row);
+      return;
+    }
+
+    for (const doc of querySnapshot.docs) {
+      const data = doc.data();
+      const ts = data.timestamp?.toDate().toLocaleDateString('it-IT') || '';
+
+      // prova a prendere il contenuto dalla collezione riservata, fallback al legacy
+      let contenuto = '';
+      try {
+        const contDoc = await db.collection("articoli_contenuti").doc(doc.id).get();
+        if (contDoc.exists) {
+          contenuto = contDoc.data().contenuto || '';
+        } else if (data.contenuto) {
+          contenuto = data.contenuto;
+        }
+      } catch(e) {
+        console.warn(e);
+      }
+
+      const row = document.createElement("tr");
+      row.innerHTML = \`
+        <td><input value="\${data.titolo || ''}" /></td>
+        <td><input value="\${data.categoria || ''}" /></td>
+        <td><textarea>\${data.estratto || ''}</textarea></td>
+        <td><textarea>\${contenuto || ''}</textarea></td>
+        <td>\${ts}</td>
+        <td>
+          <button class='save-btn' onclick="aggiornaArticolo('\${doc.id}', this)">💾</button><br/>
+          <button class='delete-btn' onclick="eliminaArticolo('\${doc.id}', this)">🗑</button>
+        </td>
+      \`;
+      container.appendChild(row);
+    }
+  }
+
+  async function aggiornaArticolo(id, btn) {
+    const row = btn.closest("tr");
+    const titolo = row.children[0].querySelector("input").value.trim();
+    const categoria = row.children[1].querySelector("input").value.trim();
+    const estratto = row.children[2].querySelector("textarea").value.trim();
+    const contenuto = row.children[3].querySelector("textarea").value.trim();
+    if (!titolo || !categoria) return alert("Titolo e categoria obbligatori.");
+
+    await db.collection("articoli_pubblicati").doc(id).update({ titolo, categoria, estratto });
+    await db.collection("articoli_contenuti").doc(id).set({ contenuto }, { merge: true });
+    alert("✔ Articolo aggiornato");
+  }
+
+  async function eliminaArticolo(id) {
+    if (!confirm("Vuoi davvero eliminare questo articolo?")) return;
+    await db.collection("articoli_pubblicati").doc(id).delete();
+    await db.collection("articoli_contenuti").doc(id).delete().catch(()=>{});
+    alert("🗑 Articolo eliminato");
+    caricaArticoli();
+  }
+
+  document.addEventListener("DOMContentLoaded", caricaArticoli);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fatture Emesse | Admin OFI</title>
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #002c5d;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background: #002c5d;
+      color: white;
+    }
+    .btn {
+      background: #002c5d;
+      color: white;
+      padding: 6px 10px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .btn:hover {
+      background: #001a3a;
+    }
+    .msg {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>📄 Fatture Emesse</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Numero</th>
+        <th>Email Impresa</th>
+        <th>Data</th>
+        <th>Importo (€)</th>
+        <th>PDF</th>
+      </tr>
+    </thead>
+    <tbody id="tabellaFatture">
+      <tr><td colspan="5" style="text-align:center;">⏳ Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <p class="msg" id="msgError"></p>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const tbody = document.getElementById("tabellaFatture");
+    const msg = document.getElementById("msgError");
+
+    db.collection("fatture").orderBy("timestamp", "desc").get().then(snapshot => {
+      tbody.innerHTML = "";
+      if (snapshot.empty) {
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Nessuna fattura trovata.</td></tr>";
+        return;
+      }
+      snapshot.forEach(doc => {
+        const f = doc.data();
+        const data = f.timestamp ? new Date(f.timestamp.seconds * 1000).toLocaleDateString() : "—";
+        const pdfLink = f.pdf_url ? `<a href="${f.pdf_url}" class="btn" target="_blank">Scarica</a>` : "—";
+        const row = `
+          <tr>
+            <td>${f.numero || doc.id}</td>
+            <td>${f.email_impresa || "—"}</td>
+            <td>${data}</td>
+            <td>${f.importo?.toFixed(2) || "—"}</td>
+            <td>${pdfLink}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }).catch(e => {
+      msg.textContent = "Errore nel caricamento fatture: " + e.message;
+    });
+  </script>
+</body>
+</html>

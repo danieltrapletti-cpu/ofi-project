@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mappa Imprese Funebri</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #mapid { height: 500px; margin: 20px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mappa delle Imprese Funebri</h1>
+  </header>
+  <main>
+    <div id="mapid"></div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Onoranze Funebri Italia</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('mapid').setView([43.7696, 11.2558], 13); // Firenze demo
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    L.marker([43.7696, 11.2558]).addTo(map)
+      .bindPopup("Impresa Funebre Demo<br>Via Esempio, Firenze")
+      .openPopup();
+  </script>
+</body>
+</html>

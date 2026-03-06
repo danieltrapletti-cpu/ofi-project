@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Richiedi un Preventivo — OFI</title>
+  <meta name="description" content="Scegli come richiedere un preventivo: automatico con geolocalizzazione o manuale. Servizio semplice e gratuito.">
+  <meta property="og:title" content="Richiedi un Preventivo — OFI">
+  <meta property="og:description" content="Avvia subito la richiesta: modalità automatica o manuale.">
+  <meta property="og:image" content="https://www.onoranzefunebritalia.it/images/og-ofi.png">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://www.onoranzefunebritalia.it/preventivo/scelta-preventivo.html">
+  <meta property="og:url" content="https://www.onoranzefunebritalia.it/preventivo/scelta-preventivo.html">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stili e script globali OFI -->
+  <link rel="stylesheet" href="/ofi.css">
+  <script src="/ofi.js?v=3" defer></script>
+
+  <style>
+    /* ===== Tocchi locali (il resto eredita da ofi.css) ===== */
+    .page-hero .section-title{margin-bottom:.25rem}
+    .container.narrow{max-width:880px}
+
+    .intro-seo{margin:1.25rem auto 0; color:var(--muted); font-size:1.05rem}
+
+    .cards-wrap{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center}
+    .pick-card{
+      background:#fff;
+      border:1px solid color-mix(in oklab, #000, #fff 90%);
+      border-radius:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+      padding:1.5rem;
+      max-width:460px;
+      flex:1 1 320px;
+      transition:transform .2s ease, box-shadow .2s ease;
+    }
+    .pick-card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 10px 26px rgba(0,0,0,.14);
+    }
+    .pick-card h3{margin:.25rem 0 .5rem}
+    .pick-card p{color:var(--muted);line-height:1.55}
+    .pick-card .btn{margin-top:1rem}
+
+    .howto{
+      background:#f5f9ff;
+      border-left:5px solid var(--gold);
+      border-radius:12px;
+      padding:1rem;
+      margin:1.25rem 0
+    }
+
+    /* Video hero */
+    .video-wrap{
+      margin:2rem auto;
+      border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 10px 28px rgba(0,0,0,.35);
+      background:#000;
+      max-width:860px;
+    }
+    .video-wrap::before{
+      content:"🎥 Introduzione rapida";
+      display:block;
+      text-align:center;
+      font-weight:600;
+      padding:.75rem;
+      background:linear-gradient(90deg,#0e2a4a,#14345d);
+      color:#fff;
+      font-size:1.05rem;
+    }
+    .video-wrap video{width:100%;display:block}
+
+    .hint{font-size:.95rem;color:var(--muted)}
+
+    /* ===== Tema scuro: forza contrasto leggibile ===== */
+    @media (prefers-color-scheme: dark){
+      .howto{
+        background:#14273f;
+        color:#f5f7fa;
+        border-left-color:var(--gold);
+      }
+      .pick-card{
+        background:#1b2e4a;
+        border:1px solid rgba(255,255,255,.14);
+        box-shadow:0 8px 22px rgba(0,0,0,.35);
+      }
+      .pick-card h3{color:#ffffff}
+      .pick-card p,
+      .hint{color:#dbe4ee}
+    }
+
+    /* Mobile piccoli aggiustamenti */
+    @media (max-width:520px){
+      .video-wrap::before{font-size:1rem}
+    }
+
+    /* Forza contrasto pulsante outline in tema scuro */
+    @media (prefers-color-scheme: dark){
+      .pick-card .btn{
+        color:#fff;
+        border:1px solid var(--gold);
+        background:transparent;
+      }
+      .pick-card .btn:hover{
+        background:var(--gold);
+        color:#0e2a4a;
+      }
+    }
+  </style>
+
+  <!-- Mapbox token già in uso nel progetto -->
+  <script>
+    window.OFI_MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+  </script>
+</head>
+<body>
+
+<!-- HEADER — versione aggiornata (come profilo imprese) -->
+<header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+
+      <!-- Testata menù mobile -->
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <!-- Voci SLIM -->
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+      <li><a href="/cittadini/dashboard-cittadino.html">Dashboard Cittadino</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- Fascia blu coerente -->
+<section class="page-hero">
+  <div class="container">
+    <h1 class="section-title">Richiedi un preventivo personalizzato</h1>
+    <p class="section-sub">Scegli la modalità più adatta a te. È semplice, gratuito e senza impegno.</p>
+  </div>
+</section>
+
+<main>
+  <section class="container narrow">
+    <p class="intro-seo">
+      Con OFI puoi richiedere un preventivo personalizzato alle imprese funebri
+      vicino a te. Nessun impegno: riceverai risposta entro 7 giorni.
+    </p>
+
+    <div class="howto" role="note" aria-label="Come funziona">
+      <strong>Come funziona</strong><br>
+      1) Guarda il breve video introduttivo · 2) Scegli modalità automatica o manuale · 3) Compila il modulo e ricevi risposta entro 7 giorni
+    </div>
+
+    <div class="video-wrap">
+      <video controls preload="metadata" poster="/images/video-cover-preventivi.jpg">
+        <source src="/videos/Scelta preventivo.mp4" type="video/mp4">
+        Il tuo browser non supporta il video.
+      </video>
+    </div>
+
+    <div class="cards-wrap">
+      <article class="pick-card">
+        <h3>🧭 Modalità Automatica</h3>
+        <p>Troviamo per te le <strong>5 imprese più vicine</strong> alla tua posizione. Potrai confermare il luogo o modificarlo.</p>
+        <button class="btn btn-primary" id="btnAuto">📍 Attiva geolocalizzazione</button>
+        <p class="hint">Se neghi il permesso o qualcosa non va, potrai inserire il comune manualmente.</p>
+      </article>
+
+      <article class="pick-card">
+        <h3>🧱 Modalità Manuale</h3>
+        <p>Preferisci scegliere tu? Inserisci il luogo (anche <em>frazione</em> o località) e seleziona le imprese da contattare.</p>
+        <a class="btn" href="ricerca-comune-manuale.html?modalita=manuale">Seleziona manualmente</a>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="/articoli/articoli.html">Articoli</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Agente OFI + back-to-top -->
+<button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+  <img src="/images/agente-ofi.png" alt="">
+</button>
+<section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+  <header class="agent-top">
+    <div class="agent-id">
+      <img src="/images/agente-ofi.png" alt="">
+      <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+    </div>
+    <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+  </header>
+  <div id="agentChat" class="agent-chat">
+    <div class="msg msg-in"><p>Ciao, posso guidarti nella richiesta di preventivo.</p></div>
+  </div>
+  <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+    <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+    <button class="btn btn-primary">Invia</button>
+  </form>
+  <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+</section>
+<button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+<script>
+  // Geolocalizzazione robusta: W3C → reverse Mapbox → fallback Nominatim → conferma
+  async function reverseMapbox(lat, lon){
+    try{
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lon},${lat}.json?access_token=${encodeURIComponent(window.OFI_MAPBOX_TOKEN)}&language=it&types=place,locality,neighborhood,hamlet,village,town,city,address,poi&limit=1`;
+      const r = await fetch(url);
+      if(!r.ok) throw new Error('mapbox http');
+      const j = await r.json();
+      const f = j?.features?.[0];
+      return f?.place_name || null;
+    }catch{ return null; }
+  }
+  async function reverseNominatim(lat, lon){
+    try{
+      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=it`);
+      const j = await r.json();
+      return j?.display_name || null;
+    }catch{ return null; }
+  }
+  async function getBestAddress(lat, lon){
+    return (await reverseMapbox(lat,lon)) || (await reverseNominatim(lat,lon)) || "";
+  }
+
+  function goConferma(lat, lon, addr){
+    const p = new URLSearchParams({lat, lon, modalita:'automatica'});
+    if (addr) p.set('addr', addr);
+    // Va alla pagina di conferma
+    window.location.href = `conferma-geolocalizzazione.html?${p.toString()}`;
+  }
+
+  function fallbackManuale(){
+    window.location.href = "ricerca-comune-manuale.html?fallback=1&modalita=automatica";
+  }
+
+  document.getElementById('btnAuto').addEventListener('click', ()=>{
+    if (!navigator.geolocation){ fallbackManuale(); return; }
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const addr = await getBestAddress(lat, lon);
+      goConferma(lat, lon, addr);
+    }, ()=>{
+      fallbackManuale();
+    }, { enableHighAccuracy:true, timeout:12000, maximumAge:0 });
+  });
+</script>
+
+<!-- Menù globale -->
+<script src="/js/menu.js?v=2" defer></script>
+</body>
+</html>
+

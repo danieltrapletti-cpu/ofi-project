@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anteprima Necrologio</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="../images/logo-ofi.png" alt="Logo OFI" />
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../preventivo.html">Richiedi Preventivo</a></li>
+        <li><a href="../necrologi/necrologi.html">Necrologi</a></li>
+        <li><a href="../info.html">Informazioni Utili</a></li>
+        <li><a href="../imprese.html">Area Imprese</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="necrologio-container">
+      <div class="necrologio-card">
+        <div class="immagine-defunto">
+          <img id="fotoDefunto" src="../images/rosa.png" alt="Foto defunto" />
+        </div>
+        <h1 id="nomeDefunto">Nome e Cognome</h1>
+        <h2 id="vedIn">In memoria di</h2>
+        <p class="frase-iniziale" id="frase">Frase iniziale commemorativa</p>
+        <p class="testo-necrologio" id="testo">Testo necrologio</p>
+        <p class="ringraziamenti" id="ringraziamenti">Ringraziamenti</p>
+        <p class="luogo" id="luogo">Luogo</p>
+        <p class="data-decesso"><strong>Data decesso:</strong> <span id="dataDecesso">--/--/----</span></p>
+
+        <div class="firma">
+          <p>Pubblicato da <span id="autore">Onoranze Funebri Italia</span></p>
+        </div>
+
+        <div class="azioni">
+          <a href="../necrologi/crea-necrologio.html" class="btn">Modifica</a>
+          <button class="btn btn-primary" onclick="inviaNecrologio()">Invia</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Onoranze Funebri Italia - Tutti i diritti riservati</p>
+  </footer>
+
+  <script src="../necrologi/script.js"></script>
+  <script>
+    // Popola l'anteprima con i dati dalla sessionStorage
+    const campi = [
+      "nome", "vedIn", "frase", "eta", "data", "testo", "ringraziamenti", "luogo", "autore", "foto"
+    ];
+
+    window.onload = () => {
+      document.getElementById("nomeDefunto").textContent = sessionStorage.getItem("nome") || "Nome e Cognome";
+      document.getElementById("vedIn").textContent = sessionStorage.getItem("vedIn") || "";
+      document.getElementById("frase").textContent = sessionStorage.getItem("frase") || "";
+      document.getElementById("testo").textContent = sessionStorage.getItem("testo") || "";
+      document.getElementById("ringraziamenti").textContent = sessionStorage.getItem("ringraziamenti") || "";
+      document.getElementById("luogo").textContent = sessionStorage.getItem("luogo") || "";
+      document.getElementById("dataDecesso").textContent = sessionStorage.getItem("data") || "--/--/----";
+      document.getElementById("autore").textContent = sessionStorage.getItem("autore") || "Onoranze Funebri Italia";
+
+      const foto = sessionStorage.getItem("foto");
+      if (foto) {
+        document.getElementById("fotoDefunto").src = `../images/${foto}`;
+      }
+    };
+
+    function inviaNecrologio() {
+      alert("Necrologio inviato correttamente. Verrà pubblicato dopo l'approvazione.");
+    }
+  </script>
+</body>
+</html>

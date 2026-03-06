@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>TEST Impresa OFI</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; color: #002c5d; }
+    .box { background: white; border-radius: 10px; padding: 2rem; max-width: 500px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    h2 { color: #002c5d; }
+    p span { font-weight: bold; color: #000; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>🔎 Test Profilo Impresa</h2>
+    <p>Nome impresa: <span id="nomeImpresa">...</span></p>
+    <p>Codice OFI: <span id="codiceOFI">...</span></p>
+    <p>Stato: <span id="statoAbbonamento">...</span></p>
+    <p>Scadenza: <span id="scadenza">...</span></p>
+    <p>Punti OFI: <span id="punti">...</span></p>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        const db = firebase.firestore();
+        db.collection("imprese_registrate").doc(user.email).get().then(doc => {
+          if (doc.exists) {
+            const dati = doc.data();
+            document.getElementById("nomeImpresa").textContent = dati.nome || "—";
+            document.getElementById("codiceOFI").textContent = dati.codice_ofi || "—";
+            document.getElementById("punti").textContent = dati.puntiOFI ?? "—";
+            document.getElementById("statoAbbonamento").textContent = dati.abbonamento_attivo ? "✅ Attivo" : "❌ Non attivo";
+
+            const scadenza = dati.abbonamento_scadenza;
+            if (scadenza && scadenza.seconds) {
+              const dataFine = new Date(scadenza.seconds * 1000);
+              document.getElementById("scadenza").textContent = dataFine.toLocaleDateString("it-IT");
+            } else {
+              document.getElementById("scadenza").textContent = "—";
+            }
+          } else {
+            document.body.innerHTML = "<h3 style='color:red;'>❌ Documento non trovato in 'imprese_registrate'.</h3>";
+          }
+        });
+      } else {
+        window.location.href = "login-imprese.html";
+      }
+    });
+  </script>
+</body>
+</html>

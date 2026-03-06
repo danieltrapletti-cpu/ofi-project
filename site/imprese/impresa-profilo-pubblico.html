@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profilo Impresa – Onoranze Funebri Italia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafc;
+      margin: 0;
+      color: #002c5d;
+    }
+    header {
+      background: #002c5d;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2.5rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .sigillo {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
+    .sigillo img {
+      max-width: 140px;
+    }
+    .descrizione {
+      margin: 1.5rem 0;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .galleria {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .galleria img {
+      height: 100px;
+      border-radius: 10px;
+    }
+    .social {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .social a {
+      display: inline-block;
+      margin: 0 10px;
+      font-size: 1.4rem;
+      text-decoration: none;
+      color: #002c5d;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .social a:hover {
+      background: #002c5d;
+      color: white;
+    }
+    .mappa {
+      height: 300px;
+      margin-top: 2rem;
+      border-radius: 12px;
+    }
+    .valore-ofi {
+      font-size: 1.1rem;
+      margin-top: 1.5rem;
+    }
+    .richiedi {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+    .richiedi button {
+      padding: 1rem 2.2rem;
+      font-size: 1.1rem;
+      background: #002c5d;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .richiedi button:hover {
+      background: #004080;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Onoranze Funebri Italia – Profilo Impresa Accreditata
+</header>
+
+<div class="container">
+  <div class="sigillo">
+    <img src="/images/sigillo-ofi.png" alt="Marchio di Affidabilità Nazionale OFI" />
+  </div>
+
+  <h1>Onoranze Funebri La Serenità</h1>
+  <div class="valore-ofi">
+    ⭐⭐⭐⭐☆ &nbsp; • &nbsp; <strong>Valore OFI:</strong> 86 pt
+  </div>
+
+  <p class="descrizione">
+    Da oltre 40 anni al servizio delle famiglie. Professionalità, discrezione e umanità in ogni gesto. Offriamo supporto completo con sensibilità, esperienza e rispetto.
+  </p>
+
+  <div class="galleria">
+    <img src="https://via.placeholder.com/150x100" alt="foto 1" />
+    <img src="https://via.placeholder.com/150x100" alt="foto 2" />
+    <img src="https://via.placeholder.com/150x100" alt="foto 3" />
+    <img src="https://via.placeholder.com/150x100" alt="foto 4" />
+  </div>
+
+  <div class="social">
+    <a href="#">📘 Facebook</a>
+    <a href="#">📷 Instagram</a>
+    <a href="#">▶️ YouTube</a>
+    <a href="#">🌐 Sito</a>
+    <a href="#">📲 WhatsApp</a>
+  </div>
+
+  <div id="map" class="mappa"></div>
+
+  <div class="richiedi">
+    <button>📨 Richiedi un preventivo</button>
+  </div>
+</div>
+
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/navigation-night-v1',
+    center: [9.8, 45.7],
+    zoom: 11
+  });
+  new mapboxgl.Marker().setLngLat([9.8, 45.7]).addTo(map);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <title>Necrologio | Onoranze Funebri Italia</title>
+  <meta name="description" content="Necrologio pubblicato su Onoranze Funebri Italia." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- Font coerenti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+
+  <!-- CSS base sito -->
+  <link rel="stylesheet" href="/ofi.css?v=20251229_2" />
+  <link rel="stylesheet" href="/necrologi.css?v=1.3" />
+  <link rel="stylesheet" href="/necrologio.css?v=1.1" />
+
+  <!-- Icone -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+  <!-- Menu + Tema -->
+  <script defer src="/js/menu.js?v=2"></script>
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+
+<body class="theme-auto">
+  <!-- HEADER OFI -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a href="/index.html">Home</a></li>
+        <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+        <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="page-hero">
+      <div class="wrap">
+        <div class="hero-panel">
+          <div class="kicker-row">
+            <div class="kicker">
+              <span class="dot"></span>
+              <span>Spazio del Ricordo</span>
+              <span class="sep">·</span>
+              <span>Onoranze Funebri Italia</span>
+            </div>
+            <div class="seal" aria-hidden="true">
+              <img src="/images/logo-ofi.png" alt="">
+            </div>
+          </div>
+          <div class="goldline" aria-hidden="true"></div>
+
+          <div class="hero-body">
+            <div class="titles">
+              <h1 class="title" id="pageTitle">Necrologio</h1>
+              <p class="sub" id="pageSub">Caricamento in corso…</p>
+            </div>
+
+            <div class="hero-nav">
+              <a class="back-link" href="#" id="btnBack" aria-label="Torna alla pagina precedente">
+  <i class="fa-solid fa-arrow-left"></i> Altri necrologi
+</a>
+            </div>
+          </div>
+
+          <!-- (publisherBox resta nel DOM ma è nascosto via CSS) -->
+          <div class="publisher" id="publisherBox">
+            <div class="left">
+              <div class="label" id="publisherLabel">A cura di</div>
+              <a id="publisherLink" href="#" aria-label="Apri profilo impresa OFI">
+                <p class="name" id="publisherName">—</p>
+              </a>
+            </div>
+            <a class="go" id="publisherCta" href="#"><i class="fa-solid fa-building-shield"></i> Profilo impresa</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="final-preview-card">
+
+        <!-- FOTO DESKTOP (a sinistra) -->
+        <div class="final-preview-photo">
+          <div class="final-photo-frame">
+            <img id="finalPhoto" src="/images/rosa.png" alt="Fotografia della persona cara">
+          </div>
+        </div>
+
+        <!-- CORPO (testo) -->
+        <div class="final-preview-body">
+
+          <!-- ORNAMENTO -->
+          <div class="final-ornament" id="finalOrnamentSlot"></div>
+
+          <!-- FOTO MOBILE (dentro al flusso del testo) -->
+          <div class="final-mobile-photo" id="finalMobilePhotoWrap">
+            <div class="final-photo-frame">
+              <img id="finalPhotoMobile" src="/images/rosa.png" alt="Fotografia della persona cara">
+            </div>
+          </div>
+
+          <article id="finalPreviewText" class="final-preview-text"></article>
+        </div>
+
+        <!-- FOOTER CARD: impresa (opzionale) + sigillo -->
+        <div class="final-card-footer">
+
+          <!-- BLOCCO IMPRESA (OPZIONALE) -->
+          <a class="final-impresa-badge hidden" id="finalImpresaBadge"
+             href="#"
+             target="_blank" rel="noopener">
+            <img id="finalImpresaLogo" class="final-impresa-logo hidden" src="/images/rosa.png" alt="Logo impresa">
+            <div class="final-impresa-meta">
+              <div class="final-impresa-label" id="finalPublisherLabel">A cura di</div>
+              <div class="final-impresa-name" id="finalImpresaName">Impresa</div>
+            </div>
+          </a>
+
+          <!-- SIGILLO (SEMPRE) -->
+          <div class="ofi-editorial-seal ofi-editorial-seal--corner">
+            <img
+              src="/images/sigillo-editoriale.png"
+              alt="Sigillo editoriale OFI"
+              class="ofi-editorial-seal-img"
+            />
+            <div class="ofi-editorial-seal-text" id="publicSealText">
+              <strong>Sigillo editoriale OFI</strong><br>
+              Testo riletto e armonizzato secondo criteri editoriali di chiarezza e rispetto.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Condivisione (dopo la lettura) -->
+      <div class="share-after" aria-label="Condivisione necrologio">
+        <div class="share-title">Condividi questo ricordo</div>
+        <div class="share-actions">
+          <button class="btn primary" id="btnShareBottom" type="button">
+            <i class="fa-solid fa-share-nodes"></i> Condividi
+          </button>
+          <button class="btn" id="btnCopyBottom" type="button">
+            <i class="fa-regular fa-copy"></i> Copia link
+          </button>
+        </div>
+      </div>
+
+      <div class="legal" id="legalNote">
+        Pubblicato su Onoranze Funebri Italia con il consenso dei familiari.
+      </div>
+
+      <!-- Reazioni + Commenti -->
+      <div class="social">
+        <div class="comfort-bar" id="comfortBar">
+          <div class="comfort-left">
+            <div class="comfort-title">Un gesto di vicinanza</div>
+            <div class="comfort-hint">Lascia un cuore: un segno discreto e rispettoso.</div>
+          </div>
+          <div class="comfort-actions">
+            <div class="react-split" role="group" aria-label="Reazioni necrologio">
+              <button class="heart-btn" id="heartBtn" type="button" aria-label="Lascia un cuore" aria-pressed="false">
+                <i class="fa-solid fa-heart"></i>
+                <span class="heart-label" id="heartLabel">Lascia un cuore</span>
+              </button>
+
+              <!-- ✅ secondario: lista reazioni -->
+              <button id="heartBadgeBtn" class="react-count-btn" type="button"
+                      aria-label="Vedi chi ha lasciato un cuore" title="Vedi chi ha lasciato un cuore">
+                <span class="n is-zero" id="heartBadge">0</span>
+                <span class="cap">Vedi</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="social-card" id="commentsCard">
+          <div class="social-head">
+            <h2>Messaggi di cordoglio e vicinanza</h2>
+            <div class="hint" id="commentsHint">Pensieri lasciati in forma pubblica, con rispetto.</div>
+          </div>
+
+          <div class="comments-list" id="commentsList"></div>
+
+          <!-- ✅ Paginazione commenti (UNICO BLOCCO) -->
+          <div class="comments-pager" id="commentsPager" style="display:none;">
+            <div class="comments-count" id="commentsCount">Messaggi visualizzati: 0</div>
+
+            <div class="pager-actions">
+              <button class="btn-more" id="btnLoadMore" type="button">
+                <i class="fa-solid fa-plus"></i> Mostra altri messaggi di vicinanza
+              </button>
+
+              <button class="btn-less" id="btnCollapse" type="button" style="display:none;">
+                <i class="fa-solid fa-chevron-up"></i> Mostra meno
+              </button>
+            </div>
+          </div>
+
+          <div class="comment-form" id="commentForm" style="display:none;">
+            <textarea id="commentText" class="comment-textarea" placeholder="Un pensiero di vicinanza, un ricordo, una parola sentita…" maxlength="600"></textarea>
+            <div class="row">
+              <div class="mini" id="commentMeta">Se lo desideri, lascia un pensiero. Anche poche parole sono sufficienti.</div>
+              <button class="btn-send" id="sendComment" type="button">
+                <i class="fa-solid fa-paper-plane"></i> Lascia il tuo pensiero
+              </button>
+            </div>
+          </div>
+
+          <div class="mini" id="loginToComment" style="display:none;">
+            Per pubblicare un commento è necessario essere loggati.
+            <a href="/accesso.html" style="font-weight:900; text-decoration: underline; text-underline-offset:3px;">Accedi</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="legal ofi-closure">Questo spazio è dedicato al ricordo.</div>
+
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        </div>
+        <div class="f-legal small">
+          © 2026 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+/* ======================================================
+   AUTO-GROW TEXTAREA (commenti, risposte, modifiche)
+====================================================== */
+function enableAutoGrow(selector, maxPx = 220) {
+
+  const attach = (el) => {
+    if (el.dataset.autogrow === "1") return;
+    el.dataset.autogrow = "1";
+
+    const grow = () => {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, maxPx) + "px";
+    };
+
+    el.addEventListener("input", grow);
+    el.addEventListener("focus", grow);
+
+    requestAnimationFrame(grow);
+  };
+
+  document.querySelectorAll(selector).forEach(attach);
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(m => {
+      m.addedNodes.forEach(node => {
+        if (!(node instanceof HTMLElement)) return;
+
+        if (node.matches?.(selector)) attach(node);
+        node.querySelectorAll?.(selector).forEach(attach);
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+  getFirestore, doc, getDoc, getDocFromServer, onSnapshot,
+  collection, query, orderBy, limit, getDocs, startAfter,
+  runTransaction, addDoc, Timestamp, updateDoc, increment,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // ✅ forza persistenza
+    try { await setPersistence(auth, browserLocalPersistence); }
+    catch (e) { console.warn("Auth persistence non impostata (ok se già gestita dal browser)", e); }
+
+    // ====== Elementi DOM ======
+    const elTitle = document.getElementById("pageTitle");
+    const elSub = document.getElementById("pageSub");
+
+    const btnCopy = document.getElementById("btnCopyBottom");
+    const btnShare = document.getElementById("btnShareBottom");
+
+    const publisherBox = document.getElementById("publisherBox");
+    const publisherName = document.getElementById("publisherName");
+    const publisherLink = document.getElementById("publisherLink");
+    const publisherCta = document.getElementById("publisherCta");
+
+    const heartBtn = document.getElementById("heartBtn");
+    const heartBadge = document.getElementById("heartBadge");
+    const heartBadgeBtn = document.getElementById("heartBadgeBtn");
+    const heartLabel = document.getElementById("heartLabel");
+
+    const commentsList = document.getElementById("commentsList");
+    const commentsPager = document.getElementById("commentsPager");
+    const commentsCount = document.getElementById("commentsCount");
+    const btnLoadMore   = document.getElementById("btnLoadMore");
+    const btnCollapse   = document.getElementById("btnCollapse");
+
+    const commentForm = document.getElementById("commentForm");
+    const commentText = document.getElementById("commentText");
+enableAutoGrow(
+  'textarea#commentText, textarea.reply-textarea, textarea.edit-textarea',
+  220
+);
+
+
+    const sendComment = document.getElementById("sendComment");
+    const commentMeta = document.getElementById("commentMeta");
+    const loginToComment = document.getElementById("loginToComment");
+    const commentsHint = document.getElementById("commentsHint");
+
+    const finalPhoto = document.getElementById("finalPhoto");
+    const finalPhotoMobile = document.getElementById("finalPhotoMobile");
+    const finalPreviewText = document.getElementById("finalPreviewText");
+    const finalOrnamentSlot = document.getElementById("finalOrnamentSlot");
+    const publicSealText = document.getElementById("publicSealText");
+
+    const finalImpresaBadge = document.getElementById("finalImpresaBadge");
+    const finalImpresaName  = document.getElementById("finalImpresaName");
+    const finalImpresaLogo  = document.getElementById("finalImpresaLogo");
+
+    const qs = new URLSearchParams(location.search);
+    const id = (qs.get("id") || "").trim();
+
+    // ====== Stato Auth ======
+    let currentUser = null;
+    let authReady = false;
+
+// ✅ Mutex anti doppia chiamata al cuore (evita 2 POST ravvicinati)
+let heartInFlight = false;
+
+    // 🔒 Disabilito subito il cuore finché Auth non è pronto
+    if (heartBtn) heartBtn.disabled = true;
+
+    // ====== Config “editoriale” ======
+    const EDIT_WINDOW_MINUTES = 20; // entro 20 minuti si può “Modifica”
+
+    const COMMENTS_FIRST = 3;
+    const COMMENTS_MORE  = 5;
+
+    let commentsLastDoc = null;
+    let commentsShownCount = 0;
+    let commentsHasMore = true;
+    let commentsExpanded = false;
+
+    function safeText(s){ return String(s || "").replace(/\s+/g," ").trim(); }
+
+    // ✅ Testi multi-linea (commenti/risposte/modifiche): preserva gli a-capo
+    function cleanMultilineText(s){
+      let t = String(s || "");
+      // Normalizza a-capo
+      t = t.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      // Evita “muri” di righe vuote
+      t = t.replace(/\n{3,}/g, "\n\n");
+      // Normalizza spazi PER RIGA (non distruggere gli \n)
+      t = t.split("\n").map(line => line.replace(/[\t ]{2,}/g," ").replace(/\s+$/g,"")).join("\n");
+      return t.trim();
+    }
+
+
+    function escapeHtml(s){
+      return String(s || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;");
+    }
+
+    function toDate(ts){
+      return ts?.toDate ? ts.toDate() : (ts instanceof Date ? ts : null);
+    }
+
+    function formatDate(ts){
+      const d = toDate(ts);
+      if(!d) return "";
+      try{
+        return new Intl.DateTimeFormat("it-IT", { day:"2-digit", month:"long", year:"numeric" }).format(d);
+      }catch{ return d.toLocaleDateString("it-IT"); }
+    }
+
+    function formatDateTime(ts){
+      const d = toDate(ts);
+      if(!d) return "";
+      try{
+        return new Intl.DateTimeFormat("it-IT", {
+          day:"2-digit", month:"long", year:"numeric",
+          hour:"2-digit", minute:"2-digit"
+        }).format(d).replace(",", " ·");
+      }catch{ return d.toLocaleString("it-IT"); }
+    }
+
+    // ✅ Chip "umano" (oggi / ieri)
+    function formatChipDateTime(ts){
+      const d = toDate(ts);
+      if(!d) return "";
+
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const startOfThatDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      const dayDiff = Math.round((startOfToday - startOfThatDay) / (24*60*60*1000));
+
+      const hhmm = new Intl.DateTimeFormat("it-IT", { hour:"2-digit", minute:"2-digit" }).format(d);
+
+      if(dayDiff === 0) return `oggi · ${hhmm}`;
+      if(dayDiff === 1) return `ieri · ${hhmm}`;
+
+      const ddMon = new Intl.DateTimeFormat("it-IT", { day:"2-digit", month:"short" }).format(d).replace(".", "");
+      return `${ddMon} · ${hhmm}`;
+    }
+
+    // ====== Autori (avatar + link a pagina pubblica) ======
+    const AUTHOR_CACHE = new Map(); // uid -> {name, photo}
+
+    function authorPublicUrl(uid){
+      return `/cittadini/autore-pubblico.html?id=${encodeURIComponent(uid)}`;
+    }
+
+    function initialsFromName(name){
+      const n = safeText(name).replace(/[@._-]+/g,' ').trim();
+      const parts = n.split(' ').filter(Boolean);
+      const a = (parts[0]||'').charAt(0);
+      const b = (parts[1]||'').charAt(0);
+      const out = (a + b).toUpperCase();
+      return out || '•';
+    }
+
+    async function fetchAuthorProfile(uid){
+      if(!uid) return null;
+      if(AUTHOR_CACHE.has(uid)) return AUTHOR_CACHE.get(uid);
+
+      try{
+        const snap = await getDoc(doc(db,'utenti_cittadini', uid));
+        if(!snap.exists()){
+          AUTHOR_CACHE.set(uid, null);
+          return null;
+        }
+        const x = snap.data() || {};
+        const pieces=[];
+        if(x.vis_nome && x.nome) pieces.push(x.nome);
+        if(x.vis_cognome && x.cognome) pieces.push(x.cognome);
+        const full = pieces.join(' ').trim();
+
+        const userOk = !!x.vis_nome_utente && !!x.nome_utente;
+        const nickname = userOk ? ('@'+x.nome_utente) : '';
+        const finalName = full || (userOk ? nickname : '');
+
+        const res = {
+          name: finalName || null,
+          photo: safeText(x.foto) || null
+        };
+        AUTHOR_CACHE.set(uid, res);
+        return res;
+      }catch(e){
+        AUTHOR_CACHE.set(uid, null);
+        return null;
+      }
+    }
+
+    async function resolveDisplayNameForUid(uid, fallback){
+      const prof = await fetchAuthorProfile(uid);
+      return safeText(prof?.name) || safeText(fallback) || "";
+    }
+
+    async function hydrateAuthorsIn(container){
+      if(!container) return;
+      const nodes = Array.from(container.querySelectorAll('[data-author-uid]'));
+      const unique = Array.from(new Set(nodes.map(n=>n.getAttribute('data-author-uid')).filter(Boolean)));
+
+      for (const uid of unique){
+        const prof = await fetchAuthorProfile(uid);
+        if(!prof) continue;
+
+        if (prof.name){
+          container.querySelectorAll(`[data-author-name-for="${uid}"]`).forEach(el=>{
+            el.textContent = prof.name;
+          });
+        }
+
+        if (prof.photo){
+          container.querySelectorAll(`[data-author-avatar-for="${uid}"]`).forEach(w=>{
+            const img = w.querySelector('img');
+            const ini = w.querySelector('.c-initials, .r-initials');
+            if(img){
+              img.src = prof.photo;
+              img.style.display = 'block';
+            }
+            if(ini) ini.style.display = 'none';
+          });
+        }
+      }
+    }
+
+    function withinEditWindow(createdAt){
+      const d = toDate(createdAt);
+      if(!d) return false;
+      const ms = Date.now() - d.getTime();
+      return ms >= 0 && ms <= (EDIT_WINDOW_MINUTES * 60 * 1000);
+    }
+
+    function syncHeartUi(isOn){
+      if (!heartBtn) return;
+      heartBtn.classList.toggle("is-on", !!isOn);
+      heartBtn.setAttribute("aria-pressed", String(!!isOn));
+      if (heartLabel) heartLabel.textContent = isOn ? "Cuore inviato" : "Lascia un cuore";
+      heartBtn.setAttribute("aria-label", isOn ? "Rimuovi il cuore" : "Lascia un cuore");
+    }
+
+
+function updateHeartBadge(total){
+  const n = Math.max(0, Number(total || 0));
+  if (heartBadge) {
+    heartBadge.textContent = String(n);
+    heartBadge.classList.toggle("is-zero", n === 0);
+    heartBadge.setAttribute("aria-label",
+  n === 0
+    ? "Nessun cuore per ora. Premi per aprire la lista."
+    : `Totale cuori: ${n}. Premi per vedere chi ha lasciato un cuore`
+);
+
+  }
+}
+
+let unsubscribeMyReact = null;
+
+function subscribeMyHeartState(){
+  if (!currentUser || !id) {
+    if (typeof unsubscribeMyReact === "function") unsubscribeMyReact();
+    unsubscribeMyReact = null;
+    syncHeartUi(false);
+    return;
+  }
+
+  const rRef = doc(db, "necrologi_pubblicati", id, "reazioni", currentUser.uid);
+
+  if (typeof unsubscribeMyReact === "function") unsubscribeMyReact();
+  unsubscribeMyReact = onSnapshot(rRef, (snap)=>{
+    syncHeartUi(snap.exists());
+  }, ()=>{
+    syncHeartUi(false);
+  });
+}
+
+// ===== Realtime subscription (cuori) — SOURCE OF TRUTH = subcollection count
+let unsubscribeNecro = null;
+
+function subscribeHearts(necroRef){
+  if (typeof unsubscribeNecro === "function") unsubscribeNecro();
+
+  const reactsCol = collection(db, "necrologi_pubblicati", id, "reazioni");
+
+  unsubscribeNecro = onSnapshot(
+    reactsCol,
+    { includeMetadataChanges: true },
+    (snap) => {
+      // ignora cache/pending
+      if (snap.metadata.fromCache) return;
+      if (snap.metadata.hasPendingWrites) return;
+
+      updateHeartBadge(snap.size);
+    },
+    (err) => console.warn("Realtime hearts non disponibile:", err)
+  );
+}
+
+    function applyAuthUI(user){
+      currentUser = user || null;
+      authReady = true;
+      subscribeMyHeartState();
+
+      if (heartBtn) heartBtn.disabled = false;
+
+      const cid = (new URLSearchParams(location.search).get("id") || "").trim();
+      if (!cid) return;
+
+      if (currentUser){
+        if (commentForm) commentForm.style.display = "";
+        if (loginToComment) loginToComment.style.display = "none";
+        if (commentsHint) commentsHint.textContent = "Scrivi un pensiero breve, con rispetto e misura.";
+        if (commentMeta) commentMeta.textContent = "Se lo desideri, lascia un pensiero. Anche poche parole sono sufficienti.";
+
+        (async ()=>{
+          try{
+            const rRef = doc(db, 'necrologi_pubblicati', cid, 'reazioni', currentUser.uid);
+            const snap = await getDocFromServer(rRef);
+            syncHeartUi(snap.exists());
+
+          }catch{ syncHeartUi(false); }
+        })();
+      }else{
+        syncHeartUi(false);
+        if (commentForm) commentForm.style.display = "none";
+        if (loginToComment) loginToComment.style.display = "";
+        if (commentsHint) commentsHint.textContent = "Leggi i messaggi. Per pubblicare o rispondere, accedi.";
+        if (commentMeta) commentMeta.textContent = "—";
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => applyAuthUI(user));
+
+    // ====== Share / Copy (✅ link con anteprima social) ======
+function getShareUrl(){
+  const cid = (new URLSearchParams(location.search).get("id") || "").trim();
+  if(!cid) return location.href;
+  return `${location.origin}/share/necrologio?id=${encodeURIComponent(cid)}`;
+}
+
+btnCopy?.addEventListener("click", async ()=>{
+  const url = getShareUrl();
+  try{
+    await navigator.clipboard.writeText(url);
+    btnCopy.innerHTML = '<i class="fa-regular fa-circle-check"></i> Copiato';
+    setTimeout(()=> btnCopy.innerHTML = '<i class="fa-regular fa-copy"></i> Copia link', 1600);
+  }catch{
+    alert("Non riesco a copiare il link. Selezionalo dalla barra in alto.");
+  }
+});
+
+btnShare?.addEventListener("click", async ()=>{
+  const url = getShareUrl();
+  const shareData = { title: document.title, url };
+  if(navigator.share){
+    try{ await navigator.share(shareData); }catch{}
+  }else{
+    btnCopy?.click();
+  }
+});
+
+    // ====== Helpers contenuto necrologio ======
+    function pickName(d){
+      const a = d?.answersSnapshot || {};
+      return safeText(d?.nome || a?.nome || d?.nomeDefunto || a?.nomeDefunto || "Necrologio");
+    }
+    function pickPlaceLabel(d){
+      const g = d?.geoFinale || {};
+      const bits = [g?.comune, g?.provincia].map(safeText).filter(Boolean);
+      return bits.join(" ");
+    }
+    function pickPhotoUrl(d){
+      const direct = safeText(d?.foto);
+      if(direct) return direct;
+      const a = d?.answersSnapshot || {};
+      return safeText(a?.foto || a?.photoURL || d?.photoURL);
+    }
+    function pickPublisherEmail(d){
+      return safeText(d?.emailImpresa || d?.publisherEmail || "");
+    }
+    function getProfileUrlByEmail(email){
+      return `/imprese/profilo.html?id=${encodeURIComponent(email)}`;
+    }
+
+    async function resolveImpresaNameByEmail(email){
+      if(!email) return "";
+      async function tryCol(colName){
+        try{
+          const ref = doc(db, colName, email);
+          const snap = await getDoc(ref);
+          if(!snap.exists()) return "";
+          const imp = snap.data() || {};
+          return safeText(imp.nomeImpresa || imp.nome || imp.ragioneSociale || imp.denominazione || "");
+        }catch{ return ""; }
+      }
+      return await tryCol("imprese_pubbliche")
+        || await tryCol("imprese_visibili")
+        || await tryCol("imprese_registrate")
+        || "";
+    }
+
+async function resolveImpresaLogoByEmail(email){
+  try{
+    if(!email) return "";
+    const emailId = String(email).trim().toLowerCase();
+
+    // Helper: prova a leggere un doc e tirare fuori un campo logo
+    async function tryDoc(colName){
+      try{
+        const snap = await getDoc(doc(db, colName, emailId));
+        if(!snap.exists()) return "";
+        const d = snap.data() || {};
+        return (
+          d.logoUrl || d.logo_url || d.logo || d.logoPath || d.logoStorageUrl || d.photoURL || ""
+        );
+      }catch{
+        return "";
+      }
+    }
+
+    // ✅ 1) PUBBLICO PRIMA (niente permessi)
+    let logo = await tryDoc("imprese_visibili");
+    if(logo) return logo;
+
+    logo = await tryDoc("imprese_pubbliche");
+    if(logo) return logo;
+
+    // ✅ 2) imprese_registrate SOLO se sono loggato e sono quell’impresa (o admin)
+    // (così evitiamo l'errore "insufficient permissions" sulle pagine pubbliche)
+    const me = currentUser?.email ? String(currentUser.email).trim().toLowerCase() : "";
+    const canTryPrivate = !!me && me === emailId;
+
+    if(canTryPrivate){
+      logo = await tryDoc("imprese_registrate");
+      if(logo) return logo;
+    }
+
+    return "";
+  }catch(e){
+    // qui non stampo warning “brutti” perché è una pagina pubblica
+    return "";
+  }
+}
+
+    function setSeo({name, place, date}){
+      document.title = `${name} | Necrologio - OFI`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if(metaDesc){
+        metaDesc.setAttribute(
+          "content",
+          `Necrologio di ${name}${place ? " — " + place : ""}${date ? " — " + date : ""}. Pubblicato su Onoranze Funebri Italia con il consenso dei familiari.`
+        );
+      }
+    }
+
+    // ====== Visualizzazioni (salvate, non mostrate) ======
+    async function trackViewOnce(necroRef){
+      if(!id) return;
+      const key = `ofi_viewed_necro_${id}`;
+      if(sessionStorage.getItem(key) === "1") return;
+      sessionStorage.setItem(key, "1");
+      try{
+        await updateDoc(necroRef, {
+          viewsTotal: increment(1),
+          lastViewedAt: Timestamp.now()
+        });
+      }catch(e){
+        console.warn("View tracking non disponibile (ok).", e);
+      }
+    }
+
+    // ====== Cuore (SECURE via Netlify Function) ======
+async function toggleHeart(necroRef){
+  if(!authReady) return;
+
+  if (heartInFlight) return;   // ✅ blocco anti doppia chiamata
+  heartInFlight = true;
+
+  if(!currentUser){
+    const cont = location.pathname + location.search;
+    location.href = `/accesso.html?continue=${encodeURIComponent(cont)}`;
+    heartInFlight = false;
+    return;
+  }
+
+  if (heartBtn) {
+    heartBtn.disabled = true;
+    heartBtn.classList.add("is-busy");
+  }
+
+  try{
+    const token = await currentUser.getIdToken(true);
+
+    const resp = await fetch("/.netlify/functions/toggleNecrologioHeart", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ necrologioId: id })
+    });
+
+    const data = await resp.json().catch(()=> ({}));
+    if (!resp.ok || !data.ok) throw new Error(data.error || "toggle failed");
+
+   // ✅ Non forzo il totale da qui: lo aggiorna il realtime onSnapshot(necroRef)
+syncHeartUi(!!data.myHeart);
+
+  }catch(e){
+    console.error(e);
+    alert("Al momento non è possibile lasciare/rimuovere un cuore.");
+  }finally{
+    if (heartBtn) {
+      heartBtn.disabled = false;
+      heartBtn.classList.remove("is-busy");
+    }
+    heartInFlight = false;     // ✅ rilascio
+  }
+}
+    
+/* ======================================================
+   REAZIONI A COMMENTI / RISPOSTE + LISTA UTENTI (modale)
+====================================================== */
+
+function mustBeLogged(){
+  if(!authReady || !currentUser){
+    const cont = location.pathname + location.search;
+    location.href = `/accesso.html?continue=${encodeURIComponent(cont)}`;
+    return false;
+  }
+  return true;
+}
+
+function commentReactDoc(necroId, commentId, uid){
+  return doc(db, "necrologi_pubblicati", necroId, "commenti", commentId, "reazioni", uid);
+}
+
+function replyReactDoc(necroId, commentId, replyId, uid){
+  return doc(db, "necrologi_pubblicati", necroId, "commenti", commentId, "risposte", replyId, "reazioni", uid);
+}
+
+async function toggleCommentReaction(necroId, commentId){
+  if(!mustBeLogged()) return null;
+  const uid = currentUser.uid;
+  const ref = commentReactDoc(necroId, commentId, uid);
+
+  let added = false;
+  await runTransaction(db, async (tx)=>{
+    const snap = await tx.get(ref);
+    if(snap.exists()){
+      tx.delete(ref);
+      added = false;
+    }else{
+      tx.set(ref, { uid, createdAt: Timestamp.now() });
+      added = true;
+    }
+  });
+  return added;
+}
+
+async function toggleReplyReaction(necroId, commentId, replyId){
+  if(!mustBeLogged()) return null;
+  const uid = currentUser.uid;
+  const ref = replyReactDoc(necroId, commentId, replyId, uid);
+
+  let added = false;
+  await runTransaction(db, async (tx)=>{
+    const snap = await tx.get(ref);
+    if(snap.exists()){
+      tx.delete(ref);
+      added = false;
+    }else{
+      tx.set(ref, { uid, createdAt: Timestamp.now() });
+      added = true;
+    }
+  });
+  return added;
+}
+
+async function getReactionStateForComment(necroId, commentId){
+  const colRef = collection(db, "necrologi_pubblicati", necroId, "commenti", commentId, "reazioni");
+  const snap = await getDocs(colRef);
+  const count = snap.size;
+  const mine = !!currentUser && snap.docs.some(d=>d.id === currentUser.uid);
+  return { count, mine };
+}
+
+async function getReactionStateForReply(necroId, commentId, replyId){
+  const colRef = collection(db, "necrologi_pubblicati", necroId, "commenti", commentId, "risposte", replyId, "reazioni");
+  const snap = await getDocs(colRef);
+  const count = snap.size;
+  const mine = !!currentUser && snap.docs.some(d=>d.id === currentUser.uid);
+  return { count, mine };
+}
+
+// ===== Modale lista reazioni =====
+const reactorsModal   = document.getElementById("reactorsModal");
+const reactorsListEl  = document.getElementById("reactorsList");
+const reactorsTitleTx = document.getElementById("reactorsTitleText");
+const reactorsLoading = document.getElementById("reactorsLoading");
+
+let lastFocusEl = null;
+
+function openReactorsModal(title){
+  lastFocusEl = document.activeElement;
+  if(reactorsTitleTx) reactorsTitleTx.textContent = title || "Reazioni";
+  if(reactorsListEl) reactorsListEl.innerHTML = "";
+  if(reactorsLoading){
+    reactorsLoading.style.display = "block";
+    reactorsLoading.textContent = "Caricamento...";
+  }
+  if(reactorsModal){
+    reactorsModal.classList.add("is-open");
+    reactorsModal.setAttribute("aria-hidden","false");
+    // ✅ porta il focus sul pulsante chiudi (evita warning aria-hidden e migliora accessibilità)
+    const closeBtn = reactorsModal.querySelector(".reactors-close");
+    closeBtn?.focus?.();
+  }
+  document.body.style.overflow = "hidden";
+}
+
+function closeReactorsModal(){
+  // prima sposto il focus fuori dal modale
+  if (lastFocusEl && typeof lastFocusEl.focus === "function") {
+    lastFocusEl.focus();
+  } else {
+    // fallback: focus sul badge cuori
+    heartBadgeBtn?.focus?.();
+  }
+
+  if(reactorsModal){
+    reactorsModal.classList.remove("is-open");
+    reactorsModal.setAttribute("aria-hidden","true");
+  }
+  document.body.style.overflow = "";
+}
+
+function initialsFromDisplayName(name){
+  const n = (name || "").trim();
+  if(!n) return "OFI";
+  const parts = n.split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] || "";
+  const last  = parts.length>1 ? (parts[parts.length-1]?.[0] || "") : "";
+  const ini = (first+last).toUpperCase();
+  return ini || "OFI";
+}
+
+function renderReactorItem(uid, prof, reactData){
+  const role = safeText(reactData?.role) || "cittadino";
+
+  const name =
+    safeText(prof?.name) ||
+    safeText(reactData?.displayName) ||
+    "Utente OFI";
+
+  const photo =
+    safeText(prof?.photo) ||
+    safeText(reactData?.photoURL) ||
+    "";
+
+  const initials = initialsFromDisplayName(name);
+
+  // ✅ Link: impresa → profileUrl (salvato dalla function), altrimenti → autore pubblico
+  const href =
+    (role === "impresa" && safeText(reactData?.profileUrl))
+      ? safeText(reactData.profileUrl)
+      : authorPublicUrl(uid);
+
+  const sub =
+    (role === "impresa")
+      ? "Apri profilo impresa"
+      : "Apri profilo autore";
+
+  const aria =
+    (role === "impresa")
+      ? `Apri profilo impresa di ${escapeHtml(name)}`
+      : `Apri profilo pubblico di ${escapeHtml(name)}`;
+
+  return `
+    <a class="reactor-item" href="${href}" target="_blank" rel="noopener" aria-label="${aria}">
+      <div class="reactor-avatar" aria-hidden="true">
+        ${photo ? `<img src="${photo}" alt="">` : `<span>${escapeHtml(initials)}</span>`}
+      </div>
+      <div class="reactor-meta">
+        <div class="reactor-name">${escapeHtml(name)}</div>
+        <div class="reactor-sub">${escapeHtml(sub)}</div>
+      </div>
+    </a>
+  `;
+}
+
+function setReactorsEmpty(msg){
+  if(reactorsListEl) reactorsListEl.innerHTML = "";
+  if(reactorsLoading){
+    reactorsLoading.style.display = "block";
+    reactorsLoading.textContent = msg || "Nessuna reazione per ora.";
+  }
+}
+
+async function showReactorsForComment(necroId, commentId){
+  openReactorsModal("Chi ha reagito al commento");
+  try{
+    const colRef = collection(db, "necrologi_pubblicati", necroId, "commenti", commentId, "reazioni");
+    const snap = await getDocs(colRef);
+
+    if(!snap.size){
+      setReactorsEmpty("Nessuna reazione per ora.");
+      return;
+    }
+
+    const pieces = [];
+    for(const d of snap.docs){
+      const uid = d.id;
+      const reactData = d.data() || {};
+      const role = safeText(reactData?.role) || "";
+const prof = (role === "impresa") ? null : await fetchAuthorProfile(uid);
+pieces.push(renderReactorItem(uid, prof, reactData));
+    }
+
+    if(reactorsListEl) reactorsListEl.innerHTML = pieces.join("");
+    if(reactorsLoading) reactorsLoading.style.display = "none";
+  }catch(e){
+    console.error(e);
+    setReactorsEmpty("Impossibile caricare le reazioni.");
+  }
+}
+
+async function showReactorsForReply(necroId, commentId, replyId){
+  openReactorsModal("Chi ha reagito alla risposta");
+  try{
+    const colRef = collection(db, "necrologi_pubblicati", necroId, "commenti", commentId, "risposte", replyId, "reazioni");
+    const snap = await getDocs(colRef);
+
+    if(!snap.size){
+      setReactorsEmpty("Nessuna reazione per ora.");
+      return;
+    }
+
+    const pieces = [];
+    for(const d of snap.docs){
+      const uid = d.id;
+      const reactData = d.data() || {};
+      const role = safeText(reactData?.role) || "";
+      const prof = (role === "impresa") ? null : await fetchAuthorProfile(uid);
+      pieces.push(renderReactorItem(uid, prof, reactData));
+    }
+
+    if(reactorsListEl) reactorsListEl.innerHTML = pieces.join("");
+    if(reactorsLoading) reactorsLoading.style.display = "none";
+  }catch(e){
+    console.error(e);
+    setReactorsEmpty("Impossibile caricare le reazioni.");
+  }
+}
+
+async function showReactorsForNecrologio(necroId){
+  openReactorsModal("Chi ha lasciato un cuore");
+  try{
+    const colRef = collection(db, "necrologi_pubblicati", necroId, "reazioni");
+    const snap = await getDocs(colRef);
+
+    if(!snap.size){
+      setReactorsEmpty("Nessun cuore per ora.");
+      return;
+    }
+
+    const pieces = [];
+    for(const d of snap.docs){
+      const uid = d.id;
+      const reactData = d.data() || {};
+      const prof = await fetchAuthorProfile(uid);
+      pieces.push(renderReactorItem(uid, prof, reactData));
+    }
+
+    if(reactorsListEl) reactorsListEl.innerHTML = pieces.join("");
+    if(reactorsLoading) reactorsLoading.style.display = "none";
+  }catch(e){
+    console.error(e);
+    setReactorsEmpty("Impossibile caricare le reazioni.");
+  }
+}
+
+// ✅ Close modale reazioni: backdrop + bottone + ESC
+document.addEventListener("click", (e) => {
+  const t = e.target?.closest?.('[data-action="close-reactors"]');
+  if (!t) return;
+  e.preventDefault();
+  closeReactorsModal();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (reactorsModal?.classList.contains("is-open")) {
+      e.preventDefault();
+      closeReactorsModal();
+    }
+  }
+});
+
+// click/tastiera sul badge cuori del necrologio → lista persone
+function bindNecroReactors(){
+  if(!heartBadgeBtn) return;
+
+  const open = ()=>{
+    if(!id) return;
+    lastFocusEl = heartBadgeBtn; // ✅ così alla chiusura torno qui
+    showReactorsForNecrologio(id);
+  };
+
+  heartBadgeBtn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    open();
+  });
+
+  heartBadgeBtn.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      e.stopPropagation();
+      open();
+    }
+  });
+}
+
+    // ====== Commenti & Risposte (render + edit/remove) ======
+    function renderComments(items){
+      if(!commentsList) return;
+
+      if(!items.length){
+        commentsList.innerHTML =
+          `<div class="mini" style="opacity:.85;">Questo spazio è aperto a un pensiero di vicinanza, quando lo sentirai.</div>`;
+        return;
+      }
+
+      const myUid = currentUser?.uid || "";
+
+      commentsList.innerHTML = items.map((c, idx)=>{
+        if(c?.status === "removed") return "";
+
+        const uid = safeText(c?.uid || "");
+        const rawName = safeText(c?.authorName || "Utente OFI");
+        const who = escapeHtml(rawName);
+        const when = escapeHtml(formatChipDateTime(c?.createdAt));
+        const isEdited = !!c?.editedAt;
+
+        const text = escapeHtml(c?.text || "");
+        const cid  = escapeHtml(c.__id || "");
+
+        const isOwner = !!myUid && uid === myUid;
+        const canEdit = isOwner && withinEditWindow(c?.createdAt);
+
+        const isFeatured = (idx === 0);
+        const featuredClass = isFeatured ? `comment comment--featured` : `comment`;
+
+        const hasPublicLink = !!uid;
+        const link = hasPublicLink ? authorPublicUrl(uid) : "#";
+
+        const replyFormId = `replyForm_${idx}`;
+        const replyTextId = `replyText_${idx}`;
+        const replyBtnId  = `replyBtn_${idx}`;
+        const repliesId   = `replies_${idx}`;
+
+        const editFormId = `editForm_${idx}`;
+        const editTextId = `editText_${idx}`;
+        const editBtnId  = `editBtn_${idx}`;
+
+        const initials = escapeHtml(initialsFromName(rawName));
+
+        return `
+          <div class="${featuredClass}" data-comment-id="${cid}" data-idx="${idx}">
+            <div class="c-head">
+              <a class="c-avatar" ${hasPublicLink ? `href="${link}"` : `href="javascript:void(0)"`}
+                 ${hasPublicLink ? `aria-label="Apri pagina pubblica dell'autore"` : `aria-label="Autore"`}
+                 data-author-uid="${escapeHtml(uid)}" data-author-avatar-for="${escapeHtml(uid)}">
+                <img alt="">
+                <span class="c-initials">${initials}</span>
+              </a>
+
+              <div class="c-meta" style="min-width:0;">
+                <div class="c-toprow">
+                  <a class="c-name" ${hasPublicLink ? `href="${link}"` : `href="javascript:void(0)"`}
+                     data-author-name-for="${escapeHtml(uid)}">${who}</a>
+
+                  <div class="c-tools">
+                    <button class="menu-btn" type="button" data-action="toggle-menu" aria-label="Azioni">
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+
+                    <div class="menu-panel" role="menu" aria-label="Azioni commento">
+                      <button type="button" data-action="toggle-reply" role="menuitem">
+                        <i class="fa-regular fa-comment-dots"></i> Rispondi
+                      </button>
+
+                      ${isOwner && canEdit ? `
+                        <button type="button" data-action="toggle-edit" role="menuitem">
+                          <i class="fa-regular fa-pen-to-square"></i> Modifica
+                        </button>
+                      ` : ""}
+
+                      ${isOwner ? `
+                        <button type="button" class="danger" data-action="remove-comment" role="menuitem">
+                          <i class="fa-regular fa-trash-can"></i> Rimuovi
+                        </button>
+                      ` : ""}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="c-submeta">
+                  <span class="c-time">${when}</span>
+                  ${isFeatured ? `<span class="c-badge c-badge--recent">Recente</span>` : ``}
+                  ${isEdited ? `<span class="c-badge c-badge--edited">rivisto</span>` : ``}
+                </div>
+              </div>
+            </div>
+
+            <div class="text" id="commentTextView_${idx}">${text}</div>
+
+<div class="react-row react-split" role="group" aria-label="Reazioni commento">
+  <button class="react-btn"
+    type="button"
+    data-action="toggle-comment-react"
+    aria-label="Lascia vicinanza al commento">
+    <i class="fa-solid fa-heart"></i>
+    <span>Vicinanza</span>
+  </button>
+
+  <button class="react-count-btn"
+    type="button"
+    data-action="open-reactors"
+    data-scope="comment"
+    aria-label="Vedi chi ha reagito al commento"
+    title="Vedi chi ha reagito al commento">
+    <span class="n is-zero" data-react-count="comment">0</span>
+    <span class="cap">Vedi</span>
+  </button>
+</div>
+
+            ${isOwner && canEdit ? `
+              <div class="edit-form" id="${editFormId}">
+                <textarea id="${editTextId}" class="edit-textarea" maxlength="600">${escapeHtml(c?.text || "")}</textarea>
+                <div class="edit-row">
+                  <div class="mini">Puoi modificare questo messaggio per alcuni minuti.</div>
+                  <button class="btn-reply" id="${editBtnId}" type="button" data-action="save-edit">
+                    <i class="fa-solid fa-check"></i> Salva
+                  </button>
+                </div>
+              </div>
+            ` : ""}
+
+            <div class="replies" id="${repliesId}">
+              <div class="mini" style="opacity:.75;">Caricamento risposte…</div>
+            </div>
+
+            <div class="reply-form" id="${replyFormId}">
+              <textarea id="${replyTextId}" class="reply-textarea" maxlength="600"
+                placeholder="Rispondi con rispetto e misura…"></textarea>
+
+              <div class="reply-row">
+                <div class="mini">Un solo livello di risposta, per mantenere ordine e rispetto.</div>
+                <button class="btn-reply" id="${replyBtnId}" type="button" data-action="send-reply">
+                  <i class="fa-solid fa-paper-plane"></i> Invia risposta
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      hydrateAuthorsIn(commentsList);
+    }
+
+    function renderReplies(items, idx){
+      const box = document.getElementById(`replies_${idx}`);
+      if(!box) return;
+
+      const filtered = (items || []).filter(r => r?.status !== "removed");
+
+      if(!filtered.length){
+        box.innerHTML = `<div class="mini" style="opacity:.75;">Nessuna risposta ancora.</div>`;
+        return;
+      }
+
+      box.innerHTML = filtered.map(r=>{
+        const uid = safeText(r?.uid || "");
+        const rawName = safeText(r?.authorName || "Utente OFI");
+        const who = escapeHtml(rawName);
+        const when = escapeHtml(formatDateTime(r?.createdAt));
+        const edited = r?.editedAt ? " · modificato" : "";
+        const text = escapeHtml(r?.text || "");
+        const initials = escapeHtml(initialsFromName(rawName));
+        const hasPublicLink = !!uid;
+        const link = hasPublicLink ? authorPublicUrl(uid) : "#";
+        const rid = escapeHtml(r.__id || "");
+
+        return `
+          <div class="reply">
+            <div class="r-head">
+              <a class="r-avatar" ${hasPublicLink ? `href="${link}"` : `href="javascript:void(0)"`}
+                 data-author-uid="${escapeHtml(uid)}" data-author-avatar-for="${escapeHtml(uid)}">
+                <img alt="">
+                <span class="r-initials">${initials}</span>
+              </a>
+              <div class="r-meta" style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;">
+                <a class="r-name" ${hasPublicLink ? `href="${link}"` : `href="javascript:void(0)"`}
+                   data-author-name-for="${escapeHtml(uid)}">${who}</a>
+                <span class="r-time">${when}${edited}</span>
+              </div>
+            </div>
+
+            <div class="text">${text}</div>
+
+            <!-- ✅ Reazione SOLO sulla risposta -->
+            <div class="react-row react-split" role="group" aria-label="Reazioni risposta">
+              <button class="react-btn" type="button"
+                data-action="toggle-reply-react"
+                data-reply-id="${rid}"
+                aria-label="Lascia vicinanza alla risposta">
+                <i class="fa-solid fa-heart"></i>
+                <span>Vicinanza</span>
+              </button>
+
+              <button class="react-count-btn"
+                type="button"
+                data-action="open-reactors"
+                data-scope="reply"
+                data-reply-id="${rid}"
+                aria-label="Vedi chi ha reagito alla risposta"
+                title="Vedi chi ha reagito alla risposta">
+                <span class="n is-zero" data-react-count="reply">0</span>
+                <span class="cap">Vedi</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      hydrateAuthorsIn(commentsList);
+
+      // aggiorna stati reazione (count + mio) sulle risposte appena renderizzate
+      updateReplyReactionStates(box);
+    }
+
+    async function updateReplyReactionStates(repliesBox){
+      try{
+        const box = repliesBox;
+        const parentComment = box?.closest?.(".comment");
+        const commentId = parentComment?.getAttribute?.("data-comment-id") || "";
+        if(!commentId) return;
+
+        const btns = Array.from(box.querySelectorAll('.react-btn[data-action="toggle-reply-react"]'));
+        for(const btn of btns){
+          const replyId = btn.getAttribute("data-reply-id");
+          if(!replyId) continue;
+
+          const st = await getReactionStateForReply(id, commentId, replyId);
+          const replyWrap = btn.closest(".reply");
+          const badge = replyWrap?.querySelector?.('[data-react-count="reply"]');
+if(badge){
+  badge.textContent = String(st.count);
+  badge.classList.toggle("is-zero", !st.count || st.count <= 0);
+}
+btn.classList.toggle("is-on", !!st.mine);
+        }
+      }catch(e){
+        // silenzioso
+      }
+    }
+
+    async function loadReplies(commentId, idx){
+      try{
+        const qy = query(
+          collection(db, "necrologi_pubblicati", id, "commenti", commentId, "risposte"),
+          orderBy("createdAt","asc"),
+          limit(10)
+        );
+        const snap = await getDocs(qy);
+        renderReplies(
+        snap.docs.map(d=>{
+          const data = d.data();
+          data.__id = d.id;
+          return data;
+        }),
+        idx
+      );
+      }catch(e){
+        console.error(e);
+        const box = document.getElementById(`replies_${idx}`);
+        if(box) box.innerHTML = `<div class="mini">Risposte non disponibili.</div>`;
+      }
+    }
+
+    async function loadComments(reset = true){
+      try{
+        if(reset){
+          commentsLastDoc = null;
+          commentsShownCount = 0;
+          commentsHasMore = true;
+          if (commentsList) commentsList.innerHTML = "";
+        }
+
+        const baseCol = collection(db, "necrologi_pubblicati", id, "commenti");
+        const pageSize = reset ? COMMENTS_FIRST : COMMENTS_MORE;
+
+        let qy;
+        if(reset || !commentsLastDoc){
+          qy = query(baseCol, orderBy("createdAt","desc"), limit(pageSize));
+        }else{
+          qy = query(baseCol, orderBy("createdAt","desc"), startAfter(commentsLastDoc), limit(pageSize));
+        }
+
+        const snap = await getDocs(qy);
+
+        commentsLastDoc = snap.docs[snap.docs.length - 1] || commentsLastDoc;
+
+        const items = snap.docs.map(d => {
+          const data = d.data();
+          data.__id = d.id;
+          return data;
+        }).filter(x => x?.status !== "removed");
+
+        if(reset && items.length === 0){
+          renderComments([]);
+          if (commentsPager) commentsPager.style.display = "none";
+          return;
+        }
+
+        if(reset){
+          renderComments(items);
+          commentsShownCount = items.length;
+        }else{
+          const newLimit = commentsShownCount + pageSize;
+          const qAll = query(baseCol, orderBy("createdAt","desc"), limit(newLimit));
+          const snapAll = await getDocs(qAll);
+          const allItems = snapAll.docs.map(d=>{ const data=d.data(); data.__id=d.id; return data; })
+            .filter(x => x?.status !== "removed");
+          renderComments(allItems);
+          commentsShownCount = allItems.length;
+        }
+
+        const container = commentsList;
+        const commentNodes = container ? Array.from(container.querySelectorAll(".comment")) : [];
+        for (const node of commentNodes){
+          const idx = Number(node.getAttribute("data-idx"));
+          const commentId = node.getAttribute("data-comment-id");
+          if(commentId) await loadReplies(commentId, idx);
+        }
+
+        
+// Stato reazioni commenti (count + mio)
+for (const node of commentNodes){
+  const commentId = node.getAttribute("data-comment-id");
+  if(!commentId) continue;
+
+  try{
+    const st = await getReactionStateForComment(id, commentId);
+    const btn = node.querySelector('.react-btn[data-action="toggle-comment-react"]');
+const badge = node.querySelector('[data-react-count="comment"]');
+
+if(badge){
+  badge.textContent = String(st.count);
+  badge.classList.toggle("is-zero", !st.count || st.count <= 0);
+}
+
+if(btn){
+  btn.classList.toggle("is-on", !!st.mine);
+}
+
+  }catch(e){}
+}
+commentsHasMore = snap.docs.length === pageSize;
+
+        if (commentsPager){
+          const shouldShowPager = (commentsShownCount > COMMENTS_FIRST) || commentsHasMore;
+          commentsPager.style.display = shouldShowPager ? "" : "none";
+        }
+
+        if (commentsCount){
+          commentsCount.textContent = `Messaggi visualizzati: ${commentsShownCount}`;
+        }
+
+        if (btnLoadMore){
+          btnLoadMore.disabled = !commentsHasMore;
+          btnLoadMore.style.opacity = commentsHasMore ? "1" : ".55";
+          btnLoadMore.innerHTML = commentsHasMore
+            ? '<i class="fa-solid fa-plus"></i> Mostra altri messaggi di vicinanza'
+            : '<i class="fa-regular fa-circle-check"></i> Tutti i messaggi sono visibili';
+        }
+
+        if (btnCollapse){
+          const canCollapse = commentsShownCount > COMMENTS_FIRST;
+          btnCollapse.style.display = canCollapse ? "" : "none";
+        }
+
+      }catch(e){
+        console.error(e);
+        if (commentsList) commentsList.innerHTML = `<div class="mini">Messaggi non disponibili al momento.</div>`;
+        if (commentsPager) commentsPager.style.display = "none";
+      }
+    }
+
+    // ====== Paginazione commenti ======
+    btnLoadMore?.addEventListener("click", async () => {
+      if (!commentsHasMore) return;
+      commentsExpanded = true;
+      await loadComments(false);
+    });
+
+    btnCollapse?.addEventListener("click", async () => {
+      commentsExpanded = false;
+      await loadComments(true);
+      document.getElementById("commentsCard")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    async function publishReply(commentId, idx){
+      const t = document.getElementById(`replyText_${idx}`);
+      const raw = cleanMultilineText(t?.value);
+
+      if(raw.length < 3){ alert("Scrivi almeno 3 caratteri."); return; }
+      if(raw.length > 600){ alert("Massimo 600 caratteri."); return; }
+
+      if(!authReady || !currentUser){
+        const cont = location.pathname + location.search;
+        location.href = `/accesso.html?continue=${encodeURIComponent(cont)}`;
+        return;
+      }
+
+      const authorName = await resolveDisplayNameForUid(
+        currentUser.uid,
+        safeText(currentUser.displayName) || safeText(currentUser.email) || "Utente OFI"
+      ) || "Utente OFI";
+
+      const btn = document.getElementById(`replyBtn_${idx}`);
+      if(btn) btn.disabled = true;
+
+      try{
+        await addDoc(
+          collection(db, "necrologi_pubblicati", id, "commenti", commentId, "risposte"),
+          {
+            text: raw,
+            authorName,
+            uid: safeText(currentUser.uid),
+            createdAt: Timestamp.now(),
+            status: "published"
+          }
+        );
+
+        if(t) t.value = "";
+        await loadReplies(commentId, idx);
+
+      }catch(e){
+        console.error(e);
+        alert("Errore durante la pubblicazione della risposta.");
+      }finally{
+        if(btn) btn.disabled = false;
+      }
+    }
+
+    async function publishComment(user){
+      const raw = cleanMultilineText(commentText?.value);
+      if(raw.length < 3){ alert("Scrivi almeno 3 caratteri."); return; }
+      if(raw.length > 600){ alert("Massimo 600 caratteri."); return; }
+
+      if (sendComment) sendComment.disabled = true;
+      try{
+        const authorName = safeText(user?.displayName) || safeText(user?.email) || "Utente OFI";
+        await addDoc(collection(db, "necrologi_pubblicati", id, "commenti"), {
+          text: raw,
+          authorName,
+          uid: safeText(user?.uid || ""),
+          createdAt: Timestamp.now(),
+          editedAt: null,
+          status: "published"
+        });
+
+        if (commentText) commentText.value = "";
+        await loadComments();
+      }catch(e){
+        console.error(e);
+        alert("Errore durante la pubblicazione del commento.");
+      }finally{
+        if (sendComment) sendComment.disabled = false;
+      }
+    }
+
+    async function saveCommentEdit(commentId, idx){
+      if(!currentUser) return;
+
+      const t = document.getElementById(`editText_${idx}`);
+      const raw = cleanMultilineText(t?.value);
+
+      if(raw.length < 3){ alert("Scrivi almeno 3 caratteri."); return; }
+      if(raw.length > 600){ alert("Massimo 600 caratteri."); return; }
+
+      const ref = doc(db, "necrologi_pubblicati", id, "commenti", commentId);
+
+      const btn = document.getElementById(`editBtn_${idx}`);
+      if(btn) btn.disabled = true;
+
+      try{
+        await updateDoc(ref, {
+          text: raw,
+          editedAt: Timestamp.now()
+        });
+        await loadComments();
+      }catch(e){
+        console.error(e);
+        alert("Non è stato possibile salvare la modifica (permessi insufficienti).");
+      }finally{
+        if(btn) btn.disabled = false;
+      }
+    }
+
+    async function removeComment(commentId){
+      if(!currentUser) return;
+
+      const ok = confirm("Questo messaggio non sarà più visibile.\nVuoi procedere?");
+      if(!ok) return;
+
+      const ref = doc(db, "necrologi_pubblicati", id, "commenti", commentId);
+      try{
+        await updateDoc(ref, {
+          status: "removed",
+          removedAt: Timestamp.now()
+        });
+        await loadComments();
+      }catch(e){
+        console.error(e);
+        alert("Non è stato possibile rimuovere il messaggio (permessi insufficienti).");
+      }
+    }
+
+    function closeAllMenus(exceptWrap){
+      commentsList?.querySelectorAll(".menu-panel.is-open").forEach(p=>{
+        if(exceptWrap && exceptWrap.contains(p)) return;
+        p.classList.remove("is-open");
+      });
+    }
+
+    document.addEventListener("click", (ev) => {
+      if(!ev.target.closest(".c-tools")) closeAllMenus(null);
+    });
+
+    commentsList?.addEventListener("click", async (e) => {
+      const btn = e.target?.closest("button");
+      if(!btn) return;
+
+      const action = btn.getAttribute("data-action");
+      if(!action) return;
+
+      const wrap = btn.closest(".comment");
+      if(!wrap) return;
+
+      const commentId = wrap.getAttribute("data-comment-id");
+      const idx = Number(wrap.getAttribute("data-idx"));
+      if(!commentId || Number.isNaN(idx)) return;
+
+
+// Se clicco sul numero (badge) apro la lista reazioni in modale (stile Facebook)
+const badge = e.target?.closest?.('[data-action="open-reactors"]') || (action === "open-reactors" ? btn : null);
+if(badge){
+  const scope = badge.getAttribute("data-scope") || "";
+  if(scope === "comment"){
+    await showReactorsForComment(id, commentId);
+  }else if(scope === "reply"){
+    const replyId = badge.getAttribute("data-reply-id");
+    if(replyId) await showReactorsForReply(id, commentId, replyId);
+  }
+  return;
+}
+
+// Toggle cuore su COMMENTO
+if(action === "toggle-comment-react"){
+  try{
+    const added = await toggleCommentReaction(id, commentId);
+    if(added === null) return;
+
+    const badgeEl = wrap.querySelector('[data-react-count="comment"]');
+    const cur = Number(badgeEl?.textContent || "0");
+    const next = added ? (cur + 1) : Math.max(0, cur - 1);
+
+    if(badgeEl){
+      badgeEl.textContent = String(next);
+      badgeEl.classList.toggle("is-zero", next <= 0);
+    }
+
+    btn.classList.toggle("is-on", !!added);
+  }catch(err){
+    console.error(err);
+    alert("Non è stato possibile salvare la reazione.");
+  }
+  return;
+}
+
+// Toggle cuore su RISPOSTA
+if(action === "toggle-reply-react"){
+  const replyId = btn.getAttribute("data-reply-id");
+  if(!replyId) return;
+
+  try{
+    const added = await toggleReplyReaction(id, commentId, replyId);
+    if(added === null) return;
+
+    const replyWrap = btn.closest(".reply");
+    const badgeEl = replyWrap?.querySelector?.('[data-react-count="reply"]');
+const cur = Number(badgeEl?.textContent || "0");
+const next = added ? (cur + 1) : Math.max(0, cur - 1);
+
+if(badgeEl){
+  badgeEl.textContent = String(next);
+  badgeEl.classList.toggle("is-zero", next <= 0);
+}
+
+btn.classList.toggle("is-on", !!added);
+
+  }catch(err){
+    console.error(err);
+    alert("Non è stato possibile salvare la reazione.");
+  }
+  return;
+}
+
+      if(action === "toggle-menu"){
+        const panel = wrap.querySelector(".menu-panel");
+        if(!panel) return;
+        const willOpen = !panel.classList.contains("is-open");
+        closeAllMenus(willOpen ? wrap : null);
+        panel.classList.toggle("is-open", willOpen);
+        return;
+      }
+
+      closeAllMenus(null);
+
+      if(action === "toggle-reply"){
+        document.getElementById(`replyForm_${idx}`)?.classList.toggle("is-open");
+        return;
+      }
+
+      if(action === "send-reply"){
+        await publishReply(commentId, idx);
+        return;
+      }
+
+      if(action === "toggle-edit"){
+        document.getElementById(`editForm_${idx}`)?.classList.toggle("is-open");
+        return;
+      }
+
+      if(action === "save-edit"){
+        await saveCommentEdit(commentId, idx);
+        return;
+      }
+
+      if(action === "remove-comment"){
+        await removeComment(commentId);
+        return;
+      }
+    });
+
+    sendComment?.addEventListener("click", async () => {
+      if(!authReady || !currentUser){
+        const cont = location.pathname + location.search;
+        location.href = `/accesso.html?continue=${encodeURIComponent(cont)}`;
+        return;
+      }
+      await publishComment(currentUser);
+    });
+
+    // ====== Ornamenti ======
+    function renderPublicOrnament(key){
+      if (!finalOrnamentSlot) return;
+      const k = (key || "none").toString().trim().toLowerCase();
+      if (!k || k === "none") {
+        finalOrnamentSlot.innerHTML = "";
+        finalOrnamentSlot.style.display = "none";
+        return;
+      }
+      const src = `/images/ornamenti/${k}.png`;
+      finalOrnamentSlot.style.display = "flex";
+      finalOrnamentSlot.innerHTML = `
+        <img class="ornament-img" src="${src}" alt=""
+             loading="lazy"
+             onerror="this.onerror=null; this.remove();">
+      `;
+    }
+
+    // ====== LOAD pagina ======
+    async function load(){
+      if(!id){
+        if (elSub) elSub.textContent = "Link non valido.";
+        if (finalPreviewText) finalPreviewText.innerHTML = "<p class='err'>Impossibile aprire il necrologio: manca l'ID.</p>";
+        return;
+      }
+
+      const necroRef = doc(db, "necrologi_pubblicati", id);
+      subscribeHearts(necroRef);
+      const snap = await getDoc(necroRef);
+
+      if(!snap.exists()){
+        if (elSub) elSub.textContent = "Non trovato.";
+        if (finalPreviewText) finalPreviewText.innerHTML = "<p class='err'>Questo necrologio non è disponibile o è stato rimosso.</p>";
+        return;
+      }
+
+      trackViewOnce(necroRef);
+
+      const data = snap.data() || {};
+      const name = pickName(data);
+      const place = pickPlaceLabel(data);
+      const date = formatDate(data.publishedAt || data.updatedAt || data.createdAt);
+
+      setSeo({name, place, date});
+
+      if (elTitle) elTitle.textContent = "Necrologio";
+      if (elSub) elSub.textContent = [place, date].filter(Boolean).join(" — ") || "Pubblicato su OFI";
+
+      const photoUrl = pickPhotoUrl(data);
+      const safePhoto = photoUrl || "/images/rosa.png";
+      if (finalPhoto) finalPhoto.src = safePhoto;
+      if (finalPhotoMobile) finalPhotoMobile.src = safePhoto;
+
+      const html = safeText(data.lastApprovedHtml);
+      if (finalPreviewText) finalPreviewText.innerHTML = html ? data.lastApprovedHtml : "<p>Contenuto non disponibile.</p>";
+
+      renderPublicOrnament(data.ornamentKey || "none");
+
+      if (publicSealText) {
+        const sorgente = (data.sorgente || "").toString();
+        if (sorgente === "necrologio-tradizionale") {
+          publicSealText.innerHTML = "<strong>Sigillo editoriale OFI</strong><br>Testo verificato (idoneità) e corretto nei soli aspetti formali.";
+        } else {
+          publicSealText.innerHTML = "<strong>Sigillo editoriale OFI</strong><br>Testo riletto e armonizzato secondo criteri editoriali di chiarezza e rispetto.";
+        }
+      }
+     
+      // ✅ bind UNA SOLA VOLTA (evita doppio listener e doppie POST)
+if (heartBtn && heartBtn.dataset.boundHeart !== "1") {
+  heartBtn.dataset.boundHeart = "1";
+
+  heartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    toggleHeart(necroRef);
+  });
+}
+
+      // 🔎 Lista cuori sul necrologio (clic sul numero)
+      bindNecroReactors();
+
+
+      // ===============================
+      // PUBBLICANTE (IMPRESA vs CITTADINO)
+      // - IMPRESA  => "A CURA DI" + link profilo impresa
+      // - CITTADINO => "REDATTO DA" (solo se showPublisher=true) senza link
+      // ===============================
+
+      const publisherLabelEl = document.getElementById("publisherLabel");
+      const finalPublisherLabelEl = document.getElementById("finalPublisherLabel");
+
+      // reset UI
+      if (publisherBox) publisherBox.style.display = "none";
+      if (publisherLabelEl) publisherLabelEl.textContent = "A cura di";
+      if (publisherCta) publisherCta.style.display = "";
+
+      if (finalImpresaBadge) {
+        finalImpresaBadge.classList.add("hidden");
+        finalImpresaBadge.classList.remove("is-cittadino");
+        // ripristino comportamento link (impresa)
+        finalImpresaBadge.setAttribute("target", "_blank");
+        finalImpresaBadge.setAttribute("rel", "noopener");
+      }
+      if (finalPublisherLabelEl) finalPublisherLabelEl.textContent = "A cura di";
+      if (finalImpresaLogo) finalImpresaLogo.classList.add("hidden");
+
+      // helper: foto cittadino (Firestore utenti_cittadini/{uid}.foto)
+      async function resolveCitizenPhotoByUid(uid){
+        if (!uid) return "";
+        try{
+          const cRef = doc(db, "utenti_cittadini", uid);
+          const cSnap = await getDoc(cRef);
+          if (cSnap.exists()) {
+            return safeText(cSnap.data()?.foto || "");
+          }
+        }catch(e){
+          console.warn("resolveCitizenPhotoByUid:", e);
+        }
+        return "";
+      }
+
+      const publisherType = safeText(data.publisherType || "").toLowerCase();
+      const pubEmail = pickPublisherEmail(data); // email impresa (se presente)
+
+      const isImpresa = publisherType === "impresa" || !!pubEmail;
+      const isCittadino = publisherType === "cittadino" || !!data.uidCittadino;
+
+      if (isImpresa && pubEmail) {
+        // ====== IMPRESA ======
+        const profileUrl = getProfileUrlByEmail(pubEmail);
+
+        const directName = safeText(data.impresaName || data.nomeImpresa || data.publisherName || "");
+        const resolved = directName || await resolveImpresaNameByEmail(pubEmail);
+
+        if (resolved && publisherBox) {
+          if (publisherLabelEl) publisherLabelEl.textContent = "A cura di";
+          publisherName.textContent = resolved;
+          publisherLink.href = profileUrl;
+          publisherCta.href = profileUrl;
+          publisherCta.style.display = "";
+          publisherBox.style.display = "flex";
+        }
+
+        if (finalImpresaBadge && resolved) {
+          if (finalPublisherLabelEl) finalPublisherLabelEl.textContent = "A cura di";
+          finalImpresaName.textContent = resolved;
+          finalImpresaBadge.href = profileUrl;
+          finalImpresaBadge.classList.remove("hidden");
+
+          let logoUrl =
+            safeText(
+              data?.impresaLogoUrl ||
+              data?.logoUrl ||
+              data?.logo_url ||
+              data?.impresa_logo ||
+              data?.publisherLogoUrl ||
+              data?.impresa?.logo_url ||
+              ""
+            );
+
+          // fallback: se il necrologio non ha il logo, lo prendo dal profilo impresa
+          if(!logoUrl){
+            logoUrl = await resolveImpresaLogoByEmail(pubEmail);
+          }
+
+          if (finalImpresaLogo) {
+            if (logoUrl) {
+              finalImpresaLogo.src = logoUrl;
+              finalImpresaLogo.classList.remove("hidden");
+            } else {
+              finalImpresaLogo.classList.add("hidden");
+            }
+          }
+        }
+      }
+
+      // ====== CITTADINO ======
+      // Nota: per i cittadini "REDATTO DA" è mostrato SOLO se showPublisher=true.
+      if (isCittadino && !!data.showPublisher) {
+        const citizenName = safeText(data.publisherName || data.autoreNome || data.displayName || "Utente OFI");
+        const citizenUid  = safeText(data.publisherUid || data.uidCittadino || "");
+        const citizenPhoto = (await resolveCitizenPhotoByUid(citizenUid)) || safeText(data.publisherPhotoURL || "");
+
+        if (publisherBox) {
+          if (publisherLabelEl) publisherLabelEl.textContent = "REDATTO DA";
+          publisherName.textContent = citizenName;
+          // no link
+          publisherLink.href = "javascript:void(0)";
+          publisherCta.style.display = "none";
+          publisherBox.style.display = "flex";
+        }
+
+        if (finalImpresaBadge) {
+          if (finalPublisherLabelEl) finalPublisherLabelEl.textContent = "REDATTO DA";
+          finalImpresaName.textContent = citizenName;
+          finalImpresaBadge.classList.add("is-cittadino");
+          finalImpresaBadge.classList.remove("hidden");
+
+          // ✅ link alla pagina autore pubblico
+finalImpresaBadge.href = authorPublicUrl(citizenUid);
+
+// apro nella stessa tab (consigliato)
+finalImpresaBadge.removeAttribute("target");
+finalImpresaBadge.removeAttribute("rel");
+
+          if (finalImpresaLogo) {
+            if (citizenPhoto) {
+              finalImpresaLogo.src = citizenPhoto;
+              finalImpresaLogo.classList.remove("hidden");
+            } else {
+              finalImpresaLogo.classList.add("hidden");
+            }
+          }
+        }
+      }
+
+      await loadComments();
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      if (elSub) elSub.textContent = "Errore di caricamento.";
+      if (finalPreviewText) finalPreviewText.innerHTML = "<p class='err'>Errore nel caricamento del necrologio. Riprova tra poco.</p>";
+    });
+
+// ====== BACK intelligente (risultati → necrologio) ======
+const btnBack = document.getElementById("btnBack");
+
+btnBack?.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  // Se esiste una history reale, torno indietro
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    // fallback sicuro
+    window.location.href = "/necrologi.html";
+  }
+});
+  </script>
+
+  <!-- =========================
+       MODALE: lista reazioni (commenti/risposte)
+       ========================= -->
+  <div class="reactors-modal" id="reactorsModal" aria-hidden="true">
+    <div class="reactors-backdrop" data-action="close-reactors"></div>
+    <div class="reactors-panel" role="dialog" aria-modal="true" aria-labelledby="reactorsTitle">
+      <div class="reactors-head">
+        <div class="title" id="reactorsTitle">
+          <i class="fa-solid fa-heart"></i>
+          <span id="reactorsTitleText">Reazioni</span>
+        </div>
+        <button class="reactors-close" type="button" data-action="close-reactors" aria-label="Chiudi">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="reactors-body">
+        <div id="reactorsLoading" class="mini" style="opacity:.85;">Caricamento...</div>
+        <div class="reactors-list" id="reactorsList"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

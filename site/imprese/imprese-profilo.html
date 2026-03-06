@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Profilo Impresa — OFI</title>
+  <meta name="description" content="Completa il profilo della tua impresa con un percorso guidato a slide. Salvataggi automatici, mappa e stelle animate.">
+
+  <!-- Font & CSS coerenti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css"/>  
+  <link href="/vendor/mapbox-gl.css" rel="stylesheet">
+  <!-- CSS esterno -->
+  <link rel="stylesheet" href="./imprese-profilo.css?v=2">
+  <meta name="disable-fog" content="1">
+  <script>
+    // Disarma qualunque errore proveniente da un file che include "fog" nel nome
+    window.onerror = function (msg, src) {
+      if (src && src.indexOf('fog') !== -1) return true;
+    };
+    // Stub neutro: se qualche script chiama fog.get(...) non va in errore
+    window.fog = window.fog || {};
+    window.fog.get = window.fog.get || function(){ return null };
+  </script>
+</head>
+<body>
+  <!-- HEADER snello -->
+ <header class="site-header">
+  <div class="brand">
+    <a href="/index.html" aria-label="Torna alla home">
+      <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <!-- Hamburger mobile, identico a login-imprese -->
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù"
+            aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Pannello menù -->
+    <ul id="menuPanel" class="menu" role="menu">
+      <!-- Testata su mobile -->
+      <li class="menu-mobile-head">
+        <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <!-- Voci specifiche per IMPRESE -->
+      <li>
+        <a class="menu-callout" href="/imprese/imprese-dashboard.html">
+          Dashboard Impresa
+        </a>
+      </li>
+      <li>
+        <a href="/faq.html">FAQ</a>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <!-- Logout: usa l'id già gestito dallo script Firebase -->
+      <li>
+        <button id="signOutBtn" class="btn btn-outline" type="button">
+          Esci / Cambia account
+        </button>
+      </li>
+    </ul>
+
+    <!-- Toggle tema (già gestito da ofi.js) -->
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <!-- Overlay per il blur del menù -->
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+  <main class="wrap">
+    <div class="wizard" id="wizard">
+      <!-- HEAD -->
+      <div class="wiz-head">
+        <div class="head-row">
+          <div class="brand-box">
+            <img src="/images/logo-ofi.png" alt="OFI">
+            <div>
+              <div class="brand-title">Completa il profilo in pochi passi</div>
+              <div class="brand-sub">Guida passo dopo passo — salvataggi automatici</div>
+            </div>
+          </div>
+          <div class="kpi-box" aria-label="Indicatori profilo">
+  <span class="kpi-pill">
+    Completezza profilo: <b id="txtProg">0%</b>
+  </span>
+  <span class="kpi-pill">
+    Punteggio profilo: <b id="puntiTot" aria-live="polite">0</b>
+  </span>
+</div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="progress" aria-label="Barra di avanzamento profilo"><span id="barProg"></span></div>
+          <div id="celebrate" class="celebrate">🎉 <b>Complimenti!</b> Profilo completo: il tuo Marchio di Affidabilità è pronto per risplendere.</div>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="wiz-body">
+        <!-- Step cards (generate da JS) -->
+        <div class="steps-wrap">
+          <div class="stepbar" id="stepper" aria-label="Avanzamento"></div>
+        </div>
+
+        <!-- ========== SLIDES (14) ========== -->
+        <section class="slide active" data-slide="1">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Benvenuto 👋</div>
+          <p class="hint" style="margin-top:0">Un breve video ti guida. Poi rispondi a una domanda per volta.</p>
+          <div style="aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--card-brd);background:#0b1627;display:grid;place-items:center;color:#fff;opacity:.95">
+            <div style="padding:14px;text-align:center">[Video introduttivo — HeyGen (inserire in futuro)]</div>
+          </div>
+        </section>
+
+        <!-- Mini Policy -->
+        <section class="slide" data-slide="2" id="slidePolicy">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Regole contenuti (foto &amp; video)</div>
+          <div class="policy-banner" id="policyBanner">
+            <div class="policy-title">✅ Veridicità e correttezza dei contenuti</div>
+            <ul class="policy-points">
+              <li>Le <b>foto</b> e il <b>video</b> devono rappresentare <b>sedi e servizi reali</b> dell’impresa.</li>
+              <li>È vietato usare immagini di <b>terzi</b> senza <b>diritto d’uso</b> o consenso.</li>
+              <li>OFI può eseguire <b>verifiche a campione</b> e oscurare contenuti non conformi.</li>
+              <li>Le sedi distaccate sono <b>incluse nel periodo gratuito</b>; poi richiedono un piano attivo.</li>
+              <li>Contenuti ingannevoli comportano <b>segnalazione</b> e <b>revoca del marchio/visibilità</b>.</li>
+            </ul>
+            <div class="policy-cta">
+              <label class="policy-check">
+                <input type="checkbox" id="policyAgree">
+                <span>Dichiaro di aver letto e di accettare queste regole.</span>
+              </label>
+              <a class="policy-link" href="/faq.html#media" target="_blank" rel="noopener">Leggi FAQ/regolamento completo</a>
+            </div>
+            <p class="policy-note">Suggerimento: usa foto luminose e coerenti con la realtà; per video più lunghi, carica su YouTube e incolla il link.</p>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="3">
+          <label>Nome Impresa</label>
+          <input id="nome" type="text" disabled>
+          <p class="hint">Il nome nasce dalla registrazione (richiesta ufficiale per modificarlo).</p>
+        </section>
+
+        <section class="slide" data-slide="4">
+          <label>Partita IVA</label>
+          <input id="piva" type="text" inputmode="numeric" minlength="11" maxlength="11" placeholder="11 cifre">
+        </section>
+
+        <!-- TELEFONI MULTIPLI -->
+        <section class="slide" data-slide="5">
+          <label>Telefono</label>
+          <p class="hint">Puoi indicare fino a <b>3 numeri</b> (es. sede, reperibilità, amministrazione).</p>
+          <div id="phonesWrap">
+            <div class="row" style="gap:.5rem;align-items:center">
+              <input type="tel" id="tel_1" placeholder="es. 035 1234567">
+              <button type="button" class="btn" id="addPhoneBtn">+ Aggiungi numero</button>
+            </div>
+            <div id="extraPhones" style="margin-top:.5rem"></div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="6">
+          <label>Email operativa</label>
+          <input id="email_op" type="email" placeholder="es. info@impresa.it">
+        </section>
+
+        <!-- NUOVA SLIDE: SITI INTERNET -->
+        <section class="slide" data-slide="7">
+          <label>Sito internet</label>
+          <p class="hint">Indica uno o più siti ufficiali della tua impresa.</p>
+          <div id="sitesWrap">
+            <div class="row" style="gap:.5rem;align-items:center">
+              <input type="url" id="site_1" placeholder="https://www.tuosito.it">
+              <button type="button" class="btn" id="addSiteBtn">+ Aggiungi altro sito</button>
+            </div>
+            <div id="extraSites" style="margin-top:.5rem"></div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="8">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Servizi offerti</div>
+          <p class="hint">Seleziona ciò che offrite. Saranno visibili nel profilo pubblico.</p>
+          <div class="services-grid">
+            <label class="checkbox"><input type="checkbox" name="servizi" value="cerimonie"> Organizzazione cerimonie funebri</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="ricomposizione_salma"> Igiene, vestizione e ricomposizione della salma</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="pratiche_burocratiche"> Pratiche burocratiche</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="addobbi_funebri"> Allestimenti e addobbi funebri</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="floreali"> Composizioni floreali</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="manifesti_affissione"> Stampa manifesti e affissione</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="necrologio_online"> Necrologio online</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="necrologi_quotidiani"> Pubblicazione necrologi su quotidiani</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="fotoricordo"> Immagini e ricordini</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="cremazione"> Cremazione</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="servizi_cimiteriali"> Servizi cimiteriali</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="trasporti_italia_estero"> Trasporto salma Italia/Estero</label>
+            <label class="checkbox"><input type="checkbox" name="servizi" value="riti_non_cattolici"> Riti religiosi e laici non cattolici</label>
+
+            <label class="checkbox">
+              <input type="checkbox" name="servizi" value="altro" id="srv_altro_cb">
+              Altro
+              <input id="srv_altro_txt" type="text"
+  placeholder="Es. tanatoprassi, assistenza estero, pratiche speciali…"
+  maxlength="40"
+  style="margin-left:.6rem;max-width:340px;display:none">
+
+            </label>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="9">
+          <label>Descrizione (max 160 caratteri)</label>
+          <textarea id="descrizione" placeholder="Racconta valori, esperienza e servizi offerti…"></textarea>
+          <div id="descCount" class="counter">0 / 160</div>
+        </section>
+
+        <section class="slide" data-slide="10">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Logo</div>
+          <input id="logo" type="file" accept="image/*">
+          <div id="logoPreview" class="media-grid" style="margin-top:.5rem"></div>
+        </section>
+
+        <section class="slide" data-slide="11" id="slideGalleryVideo">
+  <div class="q" style="font-weight:800;margin-bottom:.35rem">Galleria e video</div>
+
+  <label>Galleria immagini (max 6)</label>
+  <p class="hint">JPG/PNG, qualità alta (≤1 MB cad., max 1600 px).</p>
+
+  <div class="row" style="align-items:center;gap:.5rem">
+    <button id="addImgBtn" type="button" class="btn">+ Aggiungi immagine</button>
+    <input id="galleria" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+    <div class="hint"><b id="galleryCount">0</b>/6</div>
+  </div>
+
+  <p class="hint" style="margin-top:.25rem">
+    Suggerimento: privilegia <b>interni luminosi</b>, <b>esterno sede</b>, <b>team</b>.
+  </p>
+
+  <div id="galleryPreview" class="media-grid" style="margin-top:.6rem"></div>
+
+  <label style="margin-top:1rem">Video (MP4) opzionale</label>
+  <p class="hint">
+    Formato consigliato: <b>MP4 (H.264 + AAC)</b>, durata ≤ <b>90 s</b>, risoluzione ≤ <b>1080 p</b>.
+  </p>
+  <input id="video" type="file" accept="video/mp4">
+  <div id="videoPreview" class="media-grid" style="margin-top:.5rem"></div>
+
+  <label style="margin-top:.8rem">Video YouTube (link)</label>
+  <input id="video_yt" type="url" placeholder="https://www.youtube.com/watch?v=...">
+</section>
+
+
+        <section class="slide" data-slide="12">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Canali social (opzionali)</div>
+          <label>Facebook</label><input id="facebook" type="url" placeholder="https://facebook.com/...">
+          <label>Instagram</label><input id="instagram" type="url" placeholder="https://instagram.com/...">
+          <label>YouTube</label><input id="youtube" type="url" placeholder="https://youtube.com/@...">
+        </section>
+
+        <section class="slide" data-slide="13" id="slideSedi">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Sedi distaccate</div>
+
+          <div class="policy-banner">
+            <div class="policy-title">📍 Regole sedi distaccate</div>
+            <ul class="policy-points">
+              <li>La <b>sede principale</b> è sempre gratuita.</li>
+              <li>Durante il <b>periodo gratuito di 2 mesi</b> puoi inserire fino a <b>3 sedi distaccate</b> senza costi.</li>
+              <li>Dalla <b>4ª sede</b> in poi (anche nel periodo gratuito) contributo di <b>4,99 € per sede</b>.</li>
+              <li>Terminato il periodo gratuito, <b>tutte</b> le sedi distaccate costano <b>4,99 €</b> ciascuna.</li>
+              <li>Ogni sede deve essere <b>reale e operativa</b>. False dichiarazioni comportano revoca visibilità (art. <b>46</b> D.P.R. <b>445/2000</b>).</li>
+            </ul>
+
+            <div class="policy-cta">
+              <label class="policy-check">
+                <input type="checkbox" id="sediAck">
+                <span>Dichiaro che le sedi inserite sono reali, operative e conformi alle disposizioni di legge (art. 46 D.P.R. 445/2000).</span>
+              </label>
+              <span class="policy-link" id="sediInfo" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <button id="sx_toggle" class="btn" type="button">+ Aggiungi sede</button>
+
+          <div id="sx_form" style="display:none;margin-top:.6rem">
+            <div class="row" style="flex-wrap:wrap;gap:10px">
+              <div style="flex:1 1 180px">
+                <label>Titolo della sede</label>
+                <input id="sx_label" type="text" placeholder="Es. Filiale Zingonia o Sede di Bergamo">
+              </div>
+
+              <div style="flex:1 1 180px">
+                <label>Telefono dedicato</label>
+                <input id="sx_tel" type="tel" placeholder="es. 035 1234567">
+              </div>
+
+              <!-- Autocomplete -->
+              <div style="flex:1 1 100%">
+                <label>Indirizzo</label>
+                <input id="sx_indirizzo" type="text" placeholder="Via, numero" autocomplete="off">
+              </div>
+
+              <div style="flex:1 1 120px"><label>CAP</label><input id="sx_cap" type="text" maxlength="5"></div>
+              <div style="flex:1 1 220px"><label>Comune</label><input id="sx_comune" type="text"></div>
+              <div style="flex:1 1 120px"><label>Provincia</label><input id="sx_provincia" type="text" maxlength="2" placeholder="BG"></div>
+
+              <div id="map" class="map" style="margin-top:.6rem"></div>
+            </div>
+
+            <div class="row" style="margin-top:.5rem">
+              <button id="sx_geocode" class="btn" type="button" disabled>📍 Aggiungi sulla mappa</button>
+            </div>
+          </div>
+
+          <div id="sx_list" class="hint" style="margin-top:.5rem">Nessuna sede aggiunta.</div>
+          <button id="sx_fit" class="btn" type="button" style="margin-top:.5rem">Vedi tutte le sedi sulla mappa</button>
+        </section>
+
+        <!-- FINE -->
+        <section class="slide" data-slide="14">
+          <div class="q" style="font-weight:800;margin-bottom:.35rem">Tutto pronto ✨</div>
+          <p class="hint">Salviamo, ricalcoliamo completezza e punti, poi puoi aprire il profilo pubblico.</p>
+          <div class="wizard-footer">
+            <button id="saveAndOpen" class="btn btn-primary" type="button">💾 Salva e apri profilo pubblico</button>
+            <a id="viewPublic" class="btn btn-ghost" href="#" target="_blank" rel="noopener">🔎 Vedi profilo pubblico</a>
+            <a class="btn" href="/imprese/imprese-dashboard.html">↩️ Torna in Dashboard</a>
+          </div>
+          <div id="saveMsg" class="hint" style="margin-top:.6rem" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <!-- FOOT -->
+      <div class="wiz-foot">
+        <div class="left">
+          <button class="btn" id="prevBtn" type="button">← Indietro</button>
+          <button class="btn" id="skipBtn" type="button">Salta</button>
+        </div>
+        <div class="right">
+          <button class="btn solid" id="nextBtn" type="button"><span class="btn-txt">Avanti →</span></button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">Qualità, trasparenza e vicinanza alle famiglie.</p>
+        </div>
+        <div class="f-links">
+          <a href="/imprese/imprese-dashboard.html">Dashboard Imprese</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/contatti.html">Contatti</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="/images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="/images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in">
+        <p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p>
+      </div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Come completo il profilo impresa?</button>
+        <button class="chip" role="listitem">Come funziona il Marchio di Affidabilità?</button>
+        <button class="chip" role="listitem">Come rispondo a un preventivo?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">Suggerimento: scrivi parole semplici (es. “profilo”, “marchio”, “preventivo”).</p>
+  </section>
+
+  <!-- Librerie -->
+  <script src="/ofi.js" defer></script>
+  <script src="/vendor/browser-image-compression.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="/vendor/lucide.min.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&loading=async"></script>
+
+  <script>
+    (function ensureLocalImageCompression(){
+      if (!window.imageCompression) {
+        var s = document.createElement('script');
+        s.src = '/vendor/browser-image-compression.min.js';
+        s.async = false;
+        document.head.appendChild(s);
+      }
+    })();
+  </script>
+
+<script src="/js/menu.js?v=2" defer></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+// --- Normalizza un URL libero inserito dall'utente ---
+// Esempi: "www.sito.it" -> "https://www.sito.it"
+//         "sito.it/path" -> "https://sito.it/path"
+//         "https://ok.it" resta invariato
+function normalizeUrl(u){
+  let s = (u || '').trim();
+  if (!s) return '';
+  if (!/^https?:\/\//i.test(s)) s = 'https://' + s;  // auto-prefisso
+  try {
+    const url = new URL(s);
+    // hostname deve avere almeno un punto (evita "https://localhost")
+    if (!url.hostname || !/\./.test(url.hostname)) return '';
+    // restituisco in forma canonica (toString aggiunge la / se manca)
+    return url.toString();
+  } catch {
+    return '';
+  }
+}
+
+function attachSiteInputBehavior(inp){
+  if (!inp) return;
+  inp.addEventListener('blur', ()=>{
+    const norm = normalizeUrl(inp.value);
+    if (norm) {
+      if (norm !== inp.value) inp.value = norm;
+      try { saveProfile(true).catch(()=>{}); } catch {}
+    } else if (inp.value.trim() !== '') {
+      alert('Inserisci un URL valido, es. https://tuodominio.it');
+      inp.focus();
+    }
+  });
+}
+
+function attachSiteBehaviorToAll(){
+  document.querySelectorAll('input[id^="site_"]').forEach(attachSiteInputBehavior);
+}
+
+    function refFromURL(url) {
+  try {
+    // Supporta sia ...firebasestorage.googleapis.com/v0/b/<bucket>/o/<path>?...
+    // sia ...<bucket>.firebasestorage.app/o/<path>?...
+    const u = new URL(url);
+    const isGoogleapis = /firebasestorage\.googleapis\.com$/.test(u.hostname);
+    const afterO = isGoogleapis
+      ? u.pathname.split('/o/')[1]          // "/v0/b/<bucket>/o/<path>"
+      : u.pathname.split('/o/')[1];         // "/o/<path>" sul nuovo dominio
+
+    const objectPath = decodeURIComponent(afterO.split('?')[0]);
+    return sRef(st, objectPath);            // path tipo "imprese_media/UID/gallery/....jpg"
+  } catch (e) {
+    console.warn('refFromURL: URL non valido', url, e);
+    return null;
+  }
+}
+
+
+    /* ===== THEME MANAGER ===== */
+    const STORAGE_KEY = 'ofiTheme';
+    const root = document.documentElement;
+    function applyTheme(t){ root.setAttribute('data-theme', t); }
+    function getTheme(){ return localStorage.getItem(STORAGE_KEY) || 'auto'; }
+    function systemPrefersDark(){ return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    function isDarkActive(){ const t=getTheme(); return t==='dark' || (t==='auto' && systemPrefersDark()); }
+    function setTheme(t){ localStorage.setItem(STORAGE_KEY,t); applyTheme(t); syncMapStyle?.(); }
+    applyTheme(getTheme());
+    window.matchMedia?.('(prefers-color-scheme: dark)')?.addEventListener?.('change', ()=> syncMapStyle?.());
+    document.getElementById('themeToggle')?.addEventListener('click', ()=>{ setTheme(isDarkActive() ? 'light' : 'dark'); });
+
+    /* =============== Firebase init =============== */
+    const firebaseConfig = { apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs", authDomain:"ofi2025-51ba9.firebaseapp.com", projectId:"ofi2025-51ba9", storageBucket:"ofi2025-51ba9.firebasestorage.app" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    const st   = getStorage(app, "gs://ofi2025-51ba9.firebasestorage.app");
+
+
+    // ===== Pubblica su 'imprese_pubbliche' (coerente con MASTER) =====
+import { doc as fsDoc, setDoc as fsSetDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/**
+ * Nota importante:
+ * - Nel MASTER, la proiezione pubblica è fatta da una Function (syncPublicProfile).
+ * - Qui manteniamo una proiezione "di cortesia" lato client SOLO se approvato,
+ *   così la vetrina è già visibile. La Function potrà poi sovrascrivere.
+ */
+function buildPublicSnapshotMASTER(p = {}, email = "") {
+  const score = (typeof p.profilo_score === 'number') ? p.profilo_score : 0;
+  const stelleLocali = (typeof p.stelle === 'number') ? p.stelle : Math.round(score/20);
+
+  // Proviamo a dedurre un "comune" se presente nelle sedi
+  const comune =
+    p.sede_principale?.comune ||
+    (Array.isArray(p.sedi_distaccate) && p.sedi_distaccate[0]?.comune) ||
+    "";
+
+  // Nel MASTER: livello_affidabilita = stelle_correnti (da backend).
+  // Qui usiamo le stelle locali come placeholder.
+  const livello_affidabilita = Math.max(1, Math.min(5, Number(stelleLocali) || 1));
+
+  // Nel MASTER: grado_presenza da punti_saldo (backend). Placeholder: "Base".
+  const grado_presenza = "Base";
+
+  // Nel MASTER: reputazione_media calcolata da Function. Placeholder: 60.
+  const reputazione_media = 60;
+
+  // Nel MASTER: badge gestito lato admin/Function. Placeholder: "base".
+  const badge = p.badge || "base";
+
+  return {
+    nome: (p.nome || "").trim(),
+    comune,
+    logo_url: p.logo_url || "",
+    descrizione: (p.descrizione || "").slice(0, 300),
+    servizi: Array.isArray(p.servizi) ? p.servizi : [],
+    livello_affidabilita,
+    grado_presenza,
+    badge,
+    reputazione_media,
+    link_profilo: `https://www.onoranzefunebritalia.it/profilo.html?id=${encodeURIComponent(email || "")}`,
+    aggiornato_il: serverTimestamp()
+  };
+}
+
+async function publishToImpresePubbliche(email, profile) {
+  const pub = buildPublicSnapshotMASTER(profile, email);
+  const pubRef = fsDoc(db, "imprese_pubbliche", (email || "").toLowerCase());
+  await fsSetDoc(pubRef, pub, { merge: true });
+}
+
+
+    /* ====== Limiti media ====== */
+    const MAX_GALLERY = 6;
+    const IMAGE_MAX_MB = 1;
+    const IMAGE_MAX_WH = 1600;
+    const VIDEO_MAX_MB = 50;
+    const VIDEO_MAX_SEC = 90;
+
+    async function compressImageStrict(file){
+      const opts = { maxSizeMB: 1, maxWidthOrHeight: 1600, useWebWorker: true, libURL: '/vendor/browser-image-compression.min.js' };
+      try { /* @ts-ignore */ return await imageCompression(file, opts); }
+      catch(e1){
+        try { /* @ts-ignore */ return await imageCompression(file, { ...opts, useWebWorker:false }); }
+        catch { return file; }
+      }
+    }
+    async function compressImage(file){
+      try { /* @ts-ignore */ return await imageCompression(file, { maxSizeMB:1, maxWidthOrHeight:1600, useWebWorker:true, libURL:'/vendor/browser-image-compression.min.js' }); }
+      catch { try { /* @ts-ignore */ return await imageCompression(file, { maxSizeMB:1, maxWidthOrHeight:1600, useWebWorker:false }); } catch { return file; } }
+    }
+    function syncGalleryCount(n=0){
+      const el = document.getElementById('galleryCount');
+      if (el) el.textContent = String(n);
+    }
+
+    /* ====== Mini Policy ====== */
+    let policyAck = false;
+    function setPolicyAck(val){
+      policyAck = !!val;
+      saveProfile(true, { policy_ack: policyAck }).catch(console.warn);
+      syncPolicyUI();
+    }
+    function syncPolicyUI(){
+      const cb = document.getElementById('policyAgree');
+      if (cb) cb.checked = !!policyAck;
+      const btnNext = document.getElementById('nextBtn');
+      if (btnNext && currentIndex === 1) {
+        btnNext.disabled = !policyAck;
+        btnNext.classList.toggle('is-disabled', !policyAck);
+      }
+    }
+
+    const $  = id  => document.getElementById(id);
+    const qsa= sel => Array.from(document.querySelectorAll(sel));
+
+    /* =============== Sign out =============== */
+    $('signOutBtn')?.addEventListener('click', async ()=>{
+      try {
+        await signOut(auth);
+        sessionStorage.clear();
+        localStorage.removeItem('firebase:authUser:ofi2025-51ba9:[DEFAULT]');
+        setTimeout(()=> location.replace('/imprese/login-imprese.html?force=1'), 250);
+      } catch (e) {
+        console.warn('SignOut error', e);
+        location.replace('/imprese/login-imprese.html?force=1');
+      }
+    });
+
+    /* =============== Google Places Autocomplete (Sedi) =============== */
+    function initSediAutocomplete() {
+      if (!window.google || !google.maps || !google.maps.places) return;
+      const input = document.getElementById('sx_indirizzo');
+      if (!input) return;
+
+      const ac = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'it' },
+        types: ['geocode']
+      });
+
+      ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (!place || !place.geometry) return;
+
+        const comp = (type) => (place.address_components || []).find(c => c.types.includes(type));
+        const txt = (c) => c ? (c.short_name || c.long_name) : '';
+
+        const fraz = txt(comp('sublocality')) || txt(comp('neighborhood')) || txt(comp('locality'));
+        const comune = txt(comp('postal_town')) || txt(comp('administrative_area_level_3')) || txt(comp('locality'));
+        const cap = txt(comp('postal_code'));
+        let provincia = txt(comp('administrative_area_level_2'))
+                          .replace(/Provincia di\s*/i, '').slice(0, 2).toUpperCase();
+
+        const route = txt(comp('route'));
+        const snum = txt(comp('street_number'));
+        const street = [route, snum].filter(Boolean).join(' ');
+
+        $('sx_indirizzo').value = street || fraz || '';
+        $('sx_cap').value = cap || '';
+        $('sx_comune').value = comune || fraz || '';
+        $('sx_provincia').value = provincia || '';
+
+        const lat = place.geometry.location.lat();
+        const lng = place.geometry.location.lng();
+        if (map && typeof map.flyTo === 'function') {
+          map.flyTo({ center: [lng, lat], zoom: 14 });
+          if (marker) marker.setLngLat([lng, lat]).addTo(map);
+        }
+
+        try { saveProfile(true).catch(()=>{}); } catch {}
+      });
+    }
+    function whenGooglePlacesReady(cb) {
+      if (window.google?.maps?.places) return cb();
+      const t0 = Date.now();
+      const iv = setInterval(() => {
+        if (window.google?.maps?.places) { clearInterval(iv); cb(); }
+        else if (Date.now() - t0 > 15000) { clearInterval(iv); console.warn('Google Places non pronto'); }
+      }, 150);
+    }
+    document.addEventListener('DOMContentLoaded', () => whenGooglePlacesReady(initSediAutocomplete));
+
+    /* =============== Mapbox =============== */
+    let map, marker;
+    let mainMarker = null;
+
+    function drawMainMarker(){
+      try{
+        const sp = current.profile?.sede_principale;
+        if (!map || !sp || typeof sp.lng!=='number' || typeof sp.lat!=='number') return;
+        if (!mainMarker) mainMarker = new mapboxgl.Marker({ color:'#caa85a' });
+        mainMarker.setLngLat([sp.lng, sp.lat]).addTo(map);
+      }catch(e){ console.warn('drawMainMarker', e); }
+    }
+
+    const mapEl = document.getElementById('map');
+    try{
+      if (mapEl && window.mapboxgl) {
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+        const mapStyle = isDarkActive() ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+        map = new mapboxgl.Map({ container: mapEl, style: mapStyle, center:[12.4964,41.9028], zoom:4.7, attributionControl:false });
+        map.on('load', resizeMapSoon);
+        map.once('idle', resizeMapSoon);
+        map.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+        map.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'bottom-right');
+        marker = new mapboxgl.Marker({ color:'#caa85a' });
+      } else {
+        console.warn('MapboxGL o #map non disponibile: salto init mappa');
+      }
+    } catch (e) { console.warn('Map init error', e); }
+
+    function resizeMapSoon() {
+      if (!map || !map.resize) return;
+      requestAnimationFrame(()=> map.resize());
+      setTimeout(()=> map.resize(), 60);
+      setTimeout(()=> map.resize(), 200);
+      setTimeout(()=> map.resize(), 500);
+    }
+    function syncMapStyle() {
+      try { if (map?.setStyle) map.setStyle(isDarkActive() ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11'); }
+      catch (e) { console.warn('Errore syncMapStyle', e); }
+    }
+    window.matchMedia?.('(prefers-color-scheme: dark)')?.addEventListener?.('change',()=>{ syncMapStyle(); resizeMapSoon(); });
+    window.addEventListener('load', resizeMapSoon);
+
+    // sedi distaccate
+    let sediSecondarie = [];
+    let sediAck = false;
+    function syncSediAckUI(){
+      const cb = document.getElementById('sediAck');
+      const btn = document.getElementById('sx_geocode');
+      if (cb) cb.checked = !!sediAck;
+      if (btn) {
+        btn.disabled = !sediAck;
+        btn.classList.toggle('is-disabled', !sediAck);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.getElementById('sediAck')?.addEventListener('change', (e)=>{
+        sediAck = !!e.target.checked;
+        saveProfile(true, { sedi_ack: sediAck }).catch(()=>{});
+        syncSediAckUI();
+      });
+    });
+
+    let markersSecondari = [];
+    async function geocode(addr, comune){
+      const q = encodeURIComponent([addr, comune].filter(Boolean).join(', '));
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${q}.json?access_token=${mapboxgl.accessToken}`;
+      const j = await fetch(url).then(r=>r.json()).catch(()=>null);
+      const f = j?.features?.[0]; if(!f) return null;
+      return { lng:f.center?.[0], lat:f.center?.[1] };
+    }
+
+    function drawSediSecondarie(){
+      markersSecondari.forEach(m=>{ try{ m.remove(); }catch{} });
+      markersSecondari = [];
+      for (const s of sediSecondarie){
+        if (typeof s.lng==='number' && typeof s.lat==='number'){
+          const m = new mapboxgl.Marker({ color:'#0ea5e9' })
+            .setLngLat([s.lng, s.lat])
+            .setPopup(new mapboxgl.Popup({offset:12}).setText((s.label || s.indirizzo || 'Sede distaccata') + (s.telefono ? ` — ☎ ${s.telefono}` : '')));
+          m.addTo(map);
+          markersSecondari.push(m);
+        }
+      }
+    }
+
+    function fitAllPins(){
+      try{
+        if (!map) return;
+        const pts = [];
+        const sp = current.profile?.sede_principale;
+        if (sp && typeof sp.lng==='number' && typeof sp.lat==='number') pts.push([sp.lng, sp.lat]);
+        (sediSecondarie||[]).forEach(s=>{
+          if (typeof s.lng==='number' && typeof s.lat==='number') pts.push([s.lng, s.lat]);
+        });
+        if (pts.length===1){ map.flyTo({center:pts[0], zoom:14}); return; }
+        if (!pts.length) return;
+        const b = pts.reduce((bb, c)=> bb.extend(c), new mapboxgl.LngLatBounds(pts[0], pts[0]));
+        map.fitBounds(b, { padding: 50, duration: 700 });
+      }catch(e){ console.warn('fitAllPins', e); }
+    }
+    document.getElementById('sx_fit')?.addEventListener('click', fitAllPins);
+
+    function renderListaSedi(){
+      const box = $('sx_list');
+      if (!box) return;
+      if (!sediSecondarie.length){ box.innerHTML = 'Nessuna sede aggiunta.'; updateSediInfo(); return; }
+      box.innerHTML = sediSecondarie.map((s,idx)=>(
+        `<div class="row" style="justify-content:space-between;border:1px solid var(--card-brd);border-radius:10px;padding:.4rem .55rem;margin:.25rem 0">
+          <div>
+            <b>${s.label || 'Sede'}</b> — ${s.tipo ? `<i>${s.tipo}</i> — ` : ''}${[s.indirizzo, s.cap, s.comune, s.provincia].filter(Boolean).join(', ')}${s.telefono ? ` — ☎ ${s.telefono}` : ''}
+          </div>
+          <div class="row" style="gap:.35rem">
+            <button class="btn" data-sx="fly" data-idx="${idx}" type="button">Vedi</button>
+            <button class="btn" data-sx="del" data-idx="${idx}" type="button">Rimuovi</button>
+          </div>
+        </div>`
+      )).join('');
+
+      box.querySelectorAll('[data-sx="fly"]').forEach(b=> b.addEventListener('click', e=>{
+        const i = +e.currentTarget.dataset.idx; const s = sediSecondarie[i];
+        if(s && typeof s.lng==='number' && typeof s.lat==='number') map.flyTo({center:[s.lng,s.lat], zoom:14});
+      }));
+      box.querySelectorAll('[data-sx="del"]').forEach(b=> b.addEventListener('click', e=>{
+        const i = +e.currentTarget.dataset.idx;
+        if(!confirm('Rimuovere questa sede distaccata?')) return;
+        sediSecondarie.splice(i,1);
+        renderListaSedi(); drawSediSecondarie();
+        saveProfile(true).catch(()=>{});
+      }));
+      updateSediInfo();
+    }
+
+    $('sx_toggle')?.addEventListener('click', ()=>{
+      const box = $('sx_form');
+      const nowOpen = (box.style.display==='none' || !box.style.display);
+      box.style.display = nowOpen ? 'block' : 'none';
+      $('sx_toggle').textContent = nowOpen ? '– Chiudi aggiunta sede' : '+ Aggiungi sede';
+      if (nowOpen){ $('sx_geocode').textContent = 'Conferma questa sede'; }
+      else { $('sx_geocode').textContent = '📍 Aggiungi sulla mappa'; }
+      if (nowOpen){
+        resizeMapSoon();
+        drawMainMarker();
+        drawSediSecondarie();
+        setTimeout(resizeMapSoon, 120);
+      }
+    });
+
+    const TIPO_SEDE = ['Ufficio','Casa funeraria','Sala del commiato','Sala espositiva','Altro'];
+    (function ensureTipoSedeField(){
+      const f = document.getElementById('sx_form');
+      if (!f || f.querySelector('#sx_tipo')) return;
+      const tipoWrap = document.createElement('div');
+      tipoWrap.style.flex = '1 1 220px';
+      tipoWrap.innerHTML = `
+        <label>Tipo di sede</label>
+        <select id="sx_tipo">
+          <option value="">Seleziona…</option>
+          ${TIPO_SEDE.map(t=>`<option value="${t}">${t}</option>`).join('')}
+        </select>`;
+      f.querySelector('.row')?.prepend(tipoWrap);
+    })();
+
+    function updateSediInfo(){
+      const infoEl = document.getElementById('sediInfo');
+      if(!infoEl) return;
+      const n = sediSecondarie.length;
+      let msg = '';
+      if(n === 0) msg = 'Nessuna sede aggiunta finora.';
+      else if(n <= 3) msg = `Hai inserito ${n} ${n===1?'sede gratuita':'sedi gratuite'}. Puoi arrivare fino a 3 senza costi nel periodo gratuito.`;
+      else msg = `Hai inserito ${n} sedi: dalla 4ª in poi è previsto un contributo di 4,99 € ciascuna.`;
+      infoEl.textContent = msg;
+    }
+    updateSediInfo();
+
+    // Pulsante “Aggiungi sulla mappa”
+    $('sx_geocode')?.addEventListener('click', async ()=>{
+      const addr = $('sx_indirizzo').value.trim();
+      const comune = $('sx_comune').value.trim();
+      const tipo = $('sx_tipo').value.trim();
+      if (!addr || !comune) return alert('Inserisci almeno indirizzo e comune.');
+      if (!tipo) return alert('Specifica il tipo di sede.');
+
+      const n = sediSecondarie.length;
+      if (n >= 3) {
+        const ok = confirm(`Hai già ${n} sedi. Dalla 4ª in poi è previsto un contributo di 4,99 €.\nVuoi aggiungerla comunque?`);
+        if (!ok) return;
+      }
+
+      const res = await geocode(addr, comune);
+      if(!res) return alert('Indirizzo non trovato. Controlla i campi.');
+
+      const sede = {
+        label: $('sx_label').value.trim(),
+        tipo,
+        indirizzo: addr,
+        cap: $('sx_cap').value.trim(),
+        comune,
+        provincia: $('sx_provincia').value.trim().toUpperCase(),
+        telefono: $('sx_tel').value.trim(),
+        lat: res.lat, lng: res.lng
+      };
+      sediSecondarie.push(sede);
+      renderListaSedi(); drawSediSecondarie();
+      map.flyTo({ center:[res.lng,res.lat], zoom:14, essential:true });
+
+      ['sx_label','sx_tel','sx_indirizzo','sx_cap','sx_comune','sx_provincia'].forEach(id=>{
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      $('sx_tipo').selectedIndex = 0;
+
+      try{
+        await saveProfile(true, { sedi_distaccate: sediSecondarie });
+        const msgBox = document.createElement('div');
+        msgBox.textContent = '✅ Sede aggiunta correttamente.';
+        msgBox.style.color = 'var(--gold)';
+        msgBox.style.marginTop = '.5rem';
+        $('sx_form').appendChild(msgBox);
+        setTimeout(()=> msgBox.remove(), 2000);
+      }catch{}
+    });
+
+    // === Servizi: campo "Altro" ===
+    document.addEventListener('DOMContentLoaded', () => {
+      const cbAltro  = document.getElementById('srv_altro_cb');
+      const txtAltro = document.getElementById('srv_altro_txt');
+      if (!cbAltro || !txtAltro) return;
+      cbAltro.addEventListener('change', () => {
+        const show = cbAltro.checked;
+        txtAltro.style.display = show ? 'inline-block' : 'none';
+        if (!show) txtAltro.value = '';
+        try { saveProfile(true).catch(()=>{}); } catch {}
+      });
+      if (cbAltro.checked) txtAltro.style.display = 'inline-block';
+    });
+
+    /* =============== Upload helpers =============== */
+    async function uploadFile(file, path, contentType, timeoutMs = 180_000, onProgress){
+      const ref = sRef(st, path);
+      const meta = contentType ? { contentType } : undefined;
+      return new Promise((resolve, reject)=>{
+        const task = uploadBytesResumable(ref, file, meta);
+        const timer = setTimeout(()=>{
+          try { task.cancel(); } catch(e){}
+          reject(new Error('upload-timeout'));
+        }, timeoutMs);
+        task.on('state_changed',
+          (snap)=>{
+            if (typeof onProgress === 'function' && snap.totalBytes) {
+              const p = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+              onProgress(p);
+            }
+          },
+          (err)=>{ clearTimeout(timer); reject(err); },
+          async ()=>{ clearTimeout(timer); const url = await getDownloadURL(task.snapshot.ref); resolve(url); }
+        );
+      });
+    }
+
+    // ---- Logo ----
+    $('logo')?.addEventListener('change', async (e)=>{
+      const file = e.target.files?.[0];
+      if(!file) return;
+      const user = auth.currentUser; if(!user) return alert('Non sei loggato.');
+      const c = await compressImage(file);
+      const url = await uploadFile(c, `imprese_media/${user.uid}/logo.jpg`, c.type || 'image/jpeg');
+      renderLogo(url);
+      current.profile.logo_url = url;
+      await saveProfile(true, { logo_url: url });
+    });
+    function renderLogo(url){
+      const box = $('logoPreview'); if(!box) return;
+      if(!url){ box.innerHTML=''; return; }
+      box.innerHTML = `
+        <div class="thumb">
+          <img src="${url}" alt="Logo impresa">
+          <button id="delLogo" type="button">Rimuovi</button>
+        </div>`;
+      $('delLogo')?.addEventListener('click', async ()=>{
+        try{
+          const url = current.profile?.logo_url;
+          if (url) { await deleteObject(refFromURL(url)); }
+        }catch{}
+        await saveProfile(true, {logo_url:null});
+        renderLogo(null);
+      });
+    }
+
+// --- SANITIZE: galleria ---
+function sanitizeGalleryArray(arr){
+  const raw = Array.isArray(arr) ? arr : [];
+  const urls = raw
+    .map(u => (typeof u === 'string' ? u.trim() : ''))
+    .filter(u => u && /^https?:\/\//i.test(u)); // solo http/https
+
+  // de-duplica preservando l'ordine
+  const seen = new Set(); const clean = [];
+  for (const u of urls){ if (!seen.has(u)) { seen.add(u); clean.push(u); } }
+
+  const changed = clean.length !== raw.length || clean.some((u,i)=>u!==raw[i]);
+  return { urls: clean, changed };
+}
+
+
+    // ---- Galleria immagini ----
+function renderGallery(urls = []) {
+  const box = $('galleryPreview');
+  if (!box) return;
+  box.innerHTML = '';
+  if (!urls.length) { syncGalleryCount(0); return; }
+
+  urls.forEach((u, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'thumb';
+    wrap.innerHTML = `
+      <img alt="Immagine ${i+1}">
+      <button class="btn" data-del="${encodeURIComponent(u)}" type="button">✕</button>
+    `;
+
+    // setto lo src DOPO aver agganciato gli handler
+    const imgEl = wrap.querySelector('img');
+    imgEl.src = u;
+
+    // 🔒 Se l'immagine è rotta/non trovata → rimuovo URL dal profilo e salvo
+    imgEl.addEventListener('error', async () => {
+      console.warn('Immagine non caricabile, rimuovo URL:', u);
+      current.profile.gallery_urls = (current.profile.gallery_urls || []).filter(x => x !== u);
+      renderGallery(current.profile.gallery_urls);
+      syncGalleryCount(current.profile.gallery_urls.length);
+      try { await saveProfile(true, { gallery_urls: current.profile.gallery_urls }); } catch {}
+    });
+
+    // 🗑️ Rimozione manuale
+    wrap.querySelector('[data-del]')?.addEventListener('click', async () => {
+      if (!confirm('Vuoi eliminare questa immagine?')) return;
+      const delUrl = decodeURIComponent(wrap.querySelector('button')?.dataset.del || '');
+      try {
+        if (delUrl) {
+          const rr = refFromURL(delUrl);
+          if (rr) await deleteObject(rr); // se fallisce, proseguo comunque rimuovendo l’URL dal doc
+        }
+      } catch(e){ console.warn('Delete Storage fallita:', e); }
+
+      current.profile.gallery_urls = (current.profile.gallery_urls || []).filter(x => x !== delUrl);
+      renderGallery(current.profile.gallery_urls);
+      syncGalleryCount(current.profile.gallery_urls.length);
+      await saveProfile(true, { gallery_urls: current.profile.gallery_urls });
+    });
+
+    box.appendChild(wrap);
+  });
+
+  syncGalleryCount(urls.length);
+}
+
+$('addImgBtn')?.addEventListener('click', () => $('galleria')?.click());
+$('galleria')?.addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
+  const user = auth.currentUser;
+  if (!user) return alert('Non sei loggato.');
+
+  const already = Array.isArray(current.profile.gallery_urls) ? [...current.profile.gallery_urls] : [];
+  if (already.length >= MAX_GALLERY) return alert(`Hai già ${MAX_GALLERY} immagini.`);
+
+  const localURL = URL.createObjectURL(file);
+  const box = $('galleryPreview');
+  const temp = document.createElement('div');
+  temp.className = 'thumb uploading';
+  temp.innerHTML = `<img src="${localURL}"><div class="uptxt">Caricamento…</div><div class="upbar"><span></span></div>`;
+  box.appendChild(temp);
+
+  try {
+    const compressed = await compressImageStrict(file);
+    const path = `imprese_media/${user.uid}/gallery/${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`;
+    const bar = temp.querySelector('.upbar span');
+    const txt = temp.querySelector('.uptxt');
+
+    const url = await uploadFile(compressed, path, 'image/jpeg', 180000, (p)=>{
+      if (bar) bar.style.width = `${p}%`;
+      if (txt) txt.textContent = (p < 100) ? `Caricamento… ${p}%` : 'Finalizzo…';
+    });
+
+    current.profile.gallery_urls = [...already, url];
+    await saveProfile(true, { gallery_urls: current.profile.gallery_urls });
+    renderGallery(current.profile.gallery_urls);
+  } catch(err) {
+    console.error('Errore upload:', err);
+    alert('Caricamento immagine non riuscito.');
+  } finally {
+    URL.revokeObjectURL(localURL);
+    temp.remove();
+  }
+});
+
+
+
+    // ---- Video MP4 (limiti) ----
+    function getVideoMeta(file){
+      return new Promise((resolve)=>{
+        try{
+          const url = URL.createObjectURL(file);
+          const v = document.createElement('video');
+          v.preload = 'metadata';
+          v.muted = true;
+          v.src = url;
+
+          v.onloadedmetadata = () => {
+            resolve({ duration: v.duration || 0, width: v.videoWidth || 0, height: v.videoHeight || 0 });
+            URL.revokeObjectURL(url);
+          };
+          v.onerror = () => {
+            console.warn('Metadati video non leggibili.');
+            resolve({ duration: 0, width: 0, height: 0 });
+            URL.revokeObjectURL(url);
+          };
+        } catch (e){
+          console.warn('Errore metadati video:', e);
+          resolve({ duration: 0, width: 0, height: 0 });
+        }
+      });
+    }
+
+    $('video')?.addEventListener('change', async (e)=>{
+      const user = auth.currentUser;
+      if(!user) return alert('Non sei loggato.');
+      const file = e.target.files?.[0];
+      if(!file) return;
+
+      const sizeMB = file.size / (1024*1024);
+      if (sizeMB > VIDEO_MAX_MB){
+        alert(`Il video supera ${VIDEO_MAX_MB} MB. Carica un file più leggero o usa YouTube.`);
+        e.target.value = '';
+        return;
+      }
+
+      const meta = await getVideoMeta(file);
+      if ((meta.duration || 0) > VIDEO_MAX_SEC){
+        alert(`Durata massima ${VIDEO_MAX_SEC}s. Accorcia il video o usa YouTube.`);
+        e.target.value = '';
+        return;
+      }
+
+      try {
+        const contentType = file.type || 'video/mp4';
+        const url = await uploadFile(file, `imprese_media/${user.uid}/video.mp4`, contentType);
+        renderVideo(url);
+        await saveProfile(true, { video_url: url });
+      } catch (err) {
+        console.error('Upload video fallito:', err);
+        alert('Errore durante il caricamento del video. Riprova con un MP4 standard.');
+      }
+    });
+
+    function renderVideo(url){
+      const box = $('videoPreview'); if(!box) return;
+      if(!url){ box.innerHTML=''; return; }
+      box.innerHTML = `
+        <div class="thumb">
+          <video src="${url}" controls playsinline style="max-width:100%;border-radius:10px"></video>
+          <button id="delVideo" type="button">Rimuovi</button>
+        </div>`;
+      $('delVideo')?.addEventListener('click', async ()=>{
+        try{
+          const user = auth.currentUser; if(!user) return;
+          await deleteObject(sRef(st, `imprese_media/${user.uid}/video.mp4`));
+        }catch(e){ console.warn('Delete video fallita:', e); }
+        await saveProfile(true, { video_url: null });
+        renderVideo(null);
+      });
+    }
+
+    /* =============== WIZARD =============== */
+    const slides = qsa('.slide');
+    let currentIndex = 0; // 0-based
+    const STEP_META = [
+      {lbl:'Benvenuto',        ico:'hand'},
+      {lbl:'Regole media',     ico:'shield-check'},
+      {lbl:'Nome impresa',     ico:'badge-check'},
+      {lbl:'Partita IVA',      ico:'file-text'},
+      {lbl:'Telefono',         ico:'phone'},
+      {lbl:'Email operativa',  ico:'mail'},
+      {lbl:'Sito internet',    ico:'globe'},
+      {lbl:'Servizi',          ico:'check-square'},
+      {lbl:'Descrizione',      ico:'edit-3'},
+      {lbl:'Logo',             ico:'image'},
+      {lbl:'Galleria & Video', ico:'video'},
+      {lbl:'Social',           ico:'share-2'},
+      {lbl:'Sedi distaccate',  ico:'building-2'},
+      {lbl:'Fine',             ico:'sparkles'}
+    ];
+
+    function buildStepper(){
+      const stepper = $('stepper');
+      stepper.innerHTML = slides.map((s,i)=>{
+        const m = STEP_META[i] || { lbl: (i===0 ? 'Benvenuto' : `Step ${i}`), ico:'•' };
+        const stepNumberText = (i === 0) ? 'Intro' : `Passo ${i}`;
+        const aria = (i === 0) ? 'Vai al Benvenuto' : `Vai allo step ${i}`;
+        return `
+<button class="step-card" data-step="${i}" aria-label="${aria}">
+  <div class="s-top">
+    <span class="s-ico" data-icon="${m.ico}"></span>
+    <span class="s-lbl">${m.lbl}</span>
+  </div>
+  <div class="s-num">${stepNumberText}</div>
+</button>`;
+      }).join('');
+
+      stepper.querySelectorAll('[data-step]').forEach(btn=>{
+        btn.addEventListener('click', ()=> gotoSlide(+btn.dataset.step));
+      });
+
+      try {
+        stepper.querySelectorAll('[data-icon]').forEach(el => {
+          const name = el.getAttribute('data-icon');
+          const icon = (window.lucide && window.lucide.icons && window.lucide.icons[name]) ? window.lucide.icons[name] : null;
+          if (icon) el.innerHTML = icon.toSvg({ width: 18, height: 18, 'stroke-width': 2 });
+          else el.textContent = '•';
+        });
+      } catch {}
+
+      syncStepper();
+    }
+
+    function syncStepper(){ qsa('.step-card').forEach((c,i)=> c.classList.toggle('active', i===currentIndex)); }
+    function gotoSlide(i){
+      if(i<0||i>=slides.length) return;
+      slides[currentIndex].classList.remove('active');
+      currentIndex = i;
+      slides[currentIndex].classList.add('active');
+      syncStepper();
+
+      const isLast = currentIndex === slides.length - 1;
+
+      $('prevBtn').disabled = currentIndex === 0;
+      $('skipBtn').disabled = isLast;
+      $('nextBtn').disabled = isLast;
+      $('nextBtn').setAttribute('aria-disabled', $('nextBtn').disabled ? 'true' : 'false');
+
+      syncPolicyUI();
+      resizeMapSoon();
+    }
+
+    $('nextBtn')?.addEventListener('click', async (ev)=>{
+      if (currentIndex === 1 && !policyAck) {
+        ev.preventDefault();
+        alert('Per proseguire, conferma di aver letto e accettato le regole della mini-policy.');
+        return;
+      }
+      if (!(await guardValidation())) return;
+      gotoSlide(Math.min(currentIndex+1, slides.length-1));
+    });
+    $('prevBtn')?.addEventListener('click', ()=> gotoSlide(Math.max(currentIndex-1, 0)) );
+    $('skipBtn')?.addEventListener('click', ()=> gotoSlide(Math.min(currentIndex+1, slides.length-1)) );
+
+    async function guardValidation(){
+      // P.IVA
+      if (currentIndex === 3){
+        const v = $('piva').value.trim();
+        if (v && v.replace(/\D/g,'').length !== 11){
+          alert('La Partita IVA deve avere 11 cifre.');
+          return false;
+        }
+      }
+      // Descrizione
+      if (currentIndex === 8){
+        const d = $('descrizione').value.trim();
+        if (d.length > 160){
+          alert('La descrizione supera 160 caratteri.');
+          return false;
+        }
+      }
+      // Servizi: "Altro"
+      if (currentIndex === 7){
+        const cbAltro  = document.getElementById('srv_altro_cb');
+        const txtAltro = document.getElementById('srv_altro_txt');
+        if (cbAltro?.checked){
+          const v = (txtAltro?.value || '').trim();
+          if (!v){
+            alert('Hai selezionato "Altro": specifica il servizio nel campo di testo.');
+            txtAltro?.focus();
+            return false;
+          }
+        }
+      }
+      await saveProfile(true);
+      return true;
+    }
+
+    /* =============== COUNTERS =============== */
+    $('descrizione')?.addEventListener('input', ()=>{
+      const t = $('descrizione');
+      if (t.value.length > 160) t.value = t.value.slice(0,160);
+      $('descCount').textContent = `${t.value.length} / 160`;
+    });
+
+    /* =============== MODEL + LOAD/SAVE =============== */
+    const current = { profile:{} };
+    let saveLock = Promise.resolve();   // coda seriale delle write
+    let saveInflight = false;           // flag "scrittura in corso"
+
+
+    function computeScore(p){
+      const checks = [
+        !!p.nome,
+        // telefono: valido se c'è almeno un numero
+        (Array.isArray(p.telefoni) ? p.telefoni.length>0 : !!p.telefono),
+        !!p.email_op,
+        !!p.piva,
+        (p.descrizione||'').length > 0 && (p.descrizione||'').length <= 160,
+        !!p.logo_url,
+        Array.isArray(p.gallery_urls) && p.gallery_urls.length >= 3
+      ];
+      const base  = checks.filter(Boolean).length;
+      const extra = (Array.isArray(p.servizi) && p.servizi.length ? 1 : 0) +
+                    (Array.isArray(p.sedi_distaccate) && p.sedi_distaccate.length ? 1 : 0) +
+                    (p.video_url ? 1 : 0) +
+                    (Array.isArray(p.siti) && p.siti.length ? 1 : 0);
+      const score = Math.min(100, Math.round(((base + extra) / (checks.length + 3)) * 100));
+      return score;
+    }
+    function syncScoreUI(p){
+  const perc = computeScore(p);        // 0–100
+
+  // barra e testo percentuale
+  $('barProg').style.width = perc + '%';
+  $('txtProg').textContent = perc + '%';
+
+  // PRIMA era perc * 1.2 (0–120) -> ora rimaniamo su 0–100
+  $('puntiTot').textContent = Math.round(perc);
+
+  // festeggia solo se è al 100%
+  $('celebrate').classList.toggle('show', perc >= 100);
+}
+
+    function readForm(){
+      const p = {};
+      p.nome      = $('nome').value.trim();
+      p.piva      = $('piva').value.trim();
+
+      // Telefoni multipli
+      const phoneInputs = Array.from(document.querySelectorAll('[id^="tel_"]'));
+      p.telefoni  = phoneInputs.map(i => i.value.trim()).filter(Boolean).slice(0,3);
+      // retro-compatibilità
+      p.telefono  = p.telefoni[0] || '';
+
+      p.email_op  = $('email_op').value.trim();
+
+      // Siti multipli (normalizzati)
+const siteInputs = Array.from(document.querySelectorAll('input[id^="site_"]'));
+p.siti = siteInputs
+  .map(i => normalizeUrl(i.value))
+  .filter(Boolean); // salva solo URL validi
+
+      const serviziEls = document.querySelectorAll('input[name="servizi"]');
+      p.servizi = Array.from(serviziEls).filter(el => el && el.checked).map(el => el.value);
+
+      const altroTxt = (document.getElementById('srv_altro_txt')?.value || '').trim();
+      p.servizi_altro = (Array.isArray(p.servizi) && p.servizi.includes('altro') && altroTxt) ? altroTxt.slice(0, 40) : '';
+
+      p.descrizione = $('descrizione').value.trim();
+
+      p.social = {
+        facebook:  $('facebook').value.trim(),
+        instagram: $('instagram').value.trim(),
+        youtube:   $('youtube').value.trim()
+      };
+
+      p.video_yt = $('video_yt').value.trim();
+
+      p.sedi_distaccate = (sediSecondarie || []).map(s => ({
+        label:     s.label || '',
+        tipo:      s.tipo || '',
+        indirizzo: s.indirizzo || '',
+        cap:       s.cap || '',
+        comune:    s.comune || '',
+        provincia: s.provincia || '',
+        telefono:  s.telefono || '',
+        lat:       (typeof s.lat==='number') ? s.lat : null,
+        lng:       (typeof s.lng==='number') ? s.lng : null
+      }));
+
+      return p;
+    }
+
+    async function saveProfile(silent = false, patch = {}, goToPublic = false) {
+      const user = auth.currentUser;
+      if (!user) {
+        if (!silent) alert('Non sei loggato.');
+        return;
+      }
+      const email = (user.email || '').toLowerCase();
+      const ref = doc(db, 'imprese_registrate', email);
+      let p = Object.assign(readForm(), patch);
+
+      // servizi checked
+      p.servizi = Array.from(document.querySelectorAll('input[name="servizi"]:checked')).map(el => el.value);
+
+      const ALLOWED = new Set([
+  'nome','piva',
+  'telefono','telefoni',
+  'email_op','descrizione',
+  'servizi','servizi_altro',
+  'social','video_yt','video_url',
+  'logo_url','gallery_urls',
+  'siti',
+  'sedi_distaccate','sedi_ack',
+  'has_casa_funeraria','has_casa_commiato','commiato_note',
+  'profilo_score','stelle_profilo','codice_fiscale',
+  'onboarding_required','onboarding_completed',
+  'policy_ack','updated_at',
+]);
+
+      const safePatch = {};
+      for (const k in p) if (ALLOWED.has(k)) safePatch[k] = p[k];
+      p = safePatch;
+
+      // calcola score + stelle
+      try {
+        const tmp = { ...current.profile, ...p };
+const sc = computeScore(tmp);
+p.profilo_score  = sc;
+// stelle_profilo = "potenziale massimo", usato solo dal backend / MASTER
+p.stelle_profilo = Math.max(0, Math.min(5, Math.round(sc/20)));
+
+      } catch {}
+
+      // --- SALVATAGGIO SENZA TRANSAZIONE + SERIALIZZAZIONE ---
+const doWrite = async () => {
+  // normalizzazione soft: se nome/piva sono vuoti, non sovrascrivere con stringhe vuote
+  if (!p.nome || !p.nome.trim()) delete p.nome;
+  if (!p.piva || !p.piva.trim()) delete p.piva;
+  await setDoc(ref, p, { merge: true });
+};
+
+if (saveInflight) {
+  // accoda questa scrittura dopo la precedente
+  saveLock = saveLock.then(doWrite, doWrite);
+  await saveLock;
+} else {
+  saveInflight = true;
+  try {
+    await doWrite();
+  } catch (e) {
+    // retry leggero se il backend segnala concorrenza/condizioni
+    const msg = String(e.code || e.message || '').toLowerCase();
+    if (msg.includes('aborted') || msg.includes('precondition')) {
+      await new Promise(r => setTimeout(r, 120));
+      await doWrite();
+    } else {
+      throw e;
+    }
+  } finally {
+    saveInflight = false;
+  }
+}
+
+
+
+      if (!silent) {
+        $('saveMsg').textContent = 'Salvato correttamente.';
+        setTimeout(() => $('saveMsg').textContent = '', 1500);
+      }
+
+      current.profile = { ...current.profile, ...p };
+      syncScoreUI(current.profile);
+
+      // se approvato, aggiorna anche la versione "pubblica"
+      try {
+        if (current.profile.approvato === true) {
+                   await publishToImpresePubbliche(email, current.profile);
+               }
+      } catch (e) {
+        console.warn('publish failed (non blocco):', e);
+      }
+
+      const isLast = currentIndex === slides.length - 1;
+      if (goToPublic || isLast) {
+        location.assign(`/imprese/profilo.html?id=${encodeURIComponent(email)}`);
+      }
+    }
+
+    async function fillForm(p = {}) {
+      const setVal = (id, val='') => { const el = $(id); if (el) el.value = val; };
+      setVal('nome',      p.nome || '');
+      setVal('piva',      p.piva || '');
+
+      // Telefoni multipli
+      const phones = Array.isArray(p.telefoni) ? p.telefoni.slice(0,3)
+                      : (p.telefono ? [p.telefono] : []);
+      const mainPhone = phones[0] || '';
+      const otherPhones = phones.slice(1);
+      setVal('tel_1', mainPhone);
+      const extraPhones = document.getElementById('extraPhones');
+      if (extraPhones){
+        extraPhones.innerHTML = '';
+        otherPhones.forEach((ph, i)=>{
+          const div = document.createElement('div');
+          div.className = 'row';
+          div.innerHTML = `<input type="tel" id="tel_${i+2}" placeholder="es. 320 0000000" value="${ph}">
+                           <button type="button" class="btn" data-del>Rimuovi</button>`;
+          div.querySelector('[data-del]')?.addEventListener('click', ()=> div.remove());
+          extraPhones.appendChild(div);
+        });
+      }
+
+      setVal('email_op',  p.email_op || '');
+
+      // Siti multipli
+      const siti = Array.isArray(p.siti) ? p.siti : [];
+      setVal('site_1', siti[0] || '');
+      const extraSites = document.getElementById('extraSites');
+      if (extraSites){
+        extraSites.innerHTML = '';
+        siti.slice(1).forEach((s, i)=>{
+          const div = document.createElement('div');
+          div.className = 'row';
+          div.innerHTML = `<input type="url" id="site_${i+2}" placeholder="https://..." value="${s}">
+                           <button type="button" class="btn" data-del>Rimuovi</button>`;
+          div.querySelector('[data-del]')?.addEventListener('click', ()=> div.remove());
+          extraSites.appendChild(div);
+        });
+      }
+
+      qsa('input[name="servizi"]').forEach(el => { el.checked = false; });
+      (p.servizi || []).forEach(v=>{ const el = document.querySelector(`input[name="servizi"][value="${v}"]`); if (el) el.checked = true; });
+
+      const cbA = document.getElementById('srv_altro_cb');
+      const txA = document.getElementById('srv_altro_txt');
+      if (cbA && txA){
+        const hasAltro = Array.isArray(p.servizi) && p.servizi.includes('altro');
+        cbA.checked = hasAltro;
+        txA.style.display = hasAltro ? 'inline-block' : 'none';
+        txA.value = p.servizi_altro || '';
+      }
+
+      setVal('descrizione', (p.descrizione || '').slice(0,160));
+      if ($('descCount')) $('descCount').textContent = `${$('descrizione')?.value.length || 0} / 160`;
+
+      setVal('facebook',  p.social?.facebook  || '');
+      setVal('instagram', p.social?.instagram || '');
+      setVal('youtube',   p.social?.youtube   || '');
+
+      setVal('video_yt',  p.video_yt || '');
+renderLogo(p.logo_url || null);
+
+// --- PULIZIA GALLERIA PRIMA DEL RENDER ---
+const sg = sanitizeGalleryArray(p.gallery_urls);
+const cleanUrls = sg.urls || [];
+current.profile.gallery_urls = cleanUrls;   // tieni lo stato locale allineato
+renderGallery(cleanUrls);
+if (sg.changed) {
+  // persisti la lista ripulita per eliminare per sempre gli “slot fantasma”
+  try { await saveProfile(true, { gallery_urls: cleanUrls }); } catch {}
+}
+
+renderVideo(p.video_url || null);
+
+
+      sediSecondarie = Array.isArray(p.sedi_distaccate) ? p.sedi_distaccate.slice() : [];
+      renderListaSedi();
+
+      current.profile = { ...current.profile, ...p };
+      syncScoreUI(current.profile);
+    }
+
+    // Autosave soft
+    let tSave;
+    qsa('input, textarea, select').forEach(el=>{
+      el.addEventListener('input', ()=>{
+        clearTimeout(tSave);
+        tSave = setTimeout(()=> saveProfile(true).catch(()=>{}), 650);
+      });
+    });
+
+    // CTA finale
+    $('saveAndOpen')?.addEventListener('click', async ()=>{
+      await saveProfile(false, {}, true);
+    });
+    $('viewPublic')?.addEventListener('click', async (e)=>{
+      e.preventDefault();
+      const id = (auth.currentUser?.email || '').toLowerCase();
+      if(!id) return alert('Non sei loggato.');
+
+      await saveProfile(true).catch(()=>{});
+
+      const approved = !!current.profile?.approvato;
+      if (approved) {
+              try { await publishToImpresePubbliche(id, current.profile); } catch(e){ console.warn('publish preview', e); }
+             } else {
+        $('saveMsg').textContent = 'Il profilo non è ancora approvato: la vetrina pubblica potrebbe non essere visibile ai cittadini.';
+        setTimeout(()=> $('saveMsg').textContent = '', 2500);
+      }
+
+      window.open(`/imprese/profilo.html?id=${encodeURIComponent(id)}`, '_blank');
+    });
+
+    // Mini Policy checkbox
+    document.getElementById('policyAgree')?.addEventListener('change', (e)=> setPolicyAck(e.target.checked));
+
+    // === UI: Add phone/site rows ===
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const addPhoneBtn = document.getElementById('addPhoneBtn');
+      const extraPhones = document.getElementById('extraPhones');
+      addPhoneBtn?.addEventListener('click', ()=>{
+        const existing = document.querySelectorAll('[id^="tel_"]').length;
+        if (existing >= 3) { alert('Puoi inserire al massimo 3 numeri.'); return; }
+        const n = existing + 1;
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.innerHTML = `<input type="tel" id="tel_${n}" placeholder="es. 320 0000000">
+                         <button type="button" class="btn" data-del>Rimuovi</button>`;
+        div.querySelector('[data-del]')?.addEventListener('click', ()=> div.remove());
+        extraPhones?.appendChild(div);
+      });
+
+      const addSiteBtn = document.getElementById('addSiteBtn');
+      const extraSites = document.getElementById('extraSites');
+      addSiteBtn?.addEventListener('click', ()=>{
+        const existing = document.querySelectorAll('[id^="site_"]').length + 1;
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.innerHTML = `<input type="url" id="site_${existing}" placeholder="https://...">
+                         <button type="button" class="btn" data-del>Rimuovi</button>`;
+        div.querySelector('[data-del]')?.addEventListener('click', ()=> div.remove());
+        extraSites?.appendChild(div);
+       // >>> nuovo: normalizza/valida anche questo input
+  attachSiteInputBehavior(div.querySelector('input'));
+});
+
+// >>> inizializza sui campi già presenti
+attachSiteBehaviorToAll();
+});
+
+    // =============== AUTH LOAD ===============
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){
+        location.replace('/imprese/login-imprese.html?redirect=imprese-profilo');
+        return;
+      }
+      const email = (user.email || '').toLowerCase();
+const ref = doc(db, 'imprese_registrate', email);
+const snap = await getDoc(ref);
+const exists = snap.exists();
+const data = exists ? snap.data() : {};
+current.profile = data || {};
+policyAck = !!current.profile.policy_ack;
+
+// PULIZIA UNA-TANTUM: solo se il doc ESISTE già
+if (exists) {
+  try {
+    const sg0 = sanitizeGalleryArray(current.profile.gallery_urls);
+    if (sg0.changed) {
+      current.profile.gallery_urls = sg0.urls;
+      await saveProfile(true, { gallery_urls: sg0.urls });
+    }
+  } catch {}
+}
+
+
+      sediAck = !!current.profile.sedi_ack;
+      syncSediAckUI();
+      syncPolicyUI();
+      if (!current.profile.nome){ current.profile.nome = user.displayName || email.split('@')[0]; }
+      fillForm(current.profile);
+      const statusMsg = $('saveMsg');
+      if (statusMsg) {
+        if (current.profile.approvato === true) {
+          statusMsg.textContent = 'Profilo approvato: le modifiche salvate vengono pubblicate nella vetrina.';
+        } else {
+          statusMsg.textContent = 'Profilo in revisione: puoi salvare e rivedere, la pubblicazione avverrà dopo approvazione.';
+        }
+        setTimeout(()=> statusMsg.textContent = '', 3000);
+      }
+      buildStepper();
+      gotoSlide(0);
+      drawMainMarker();
+      drawSediSecondarie();
+      resizeMapSoon();
+    });
+  </script>
+</body>
+</html>

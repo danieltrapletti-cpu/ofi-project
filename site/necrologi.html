@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <title>Necrologi e Ricordi d’Italia | Onoranze Funebri Italia</title>
+  <meta name="description" content="Necrologi e Ricordi d’Italia su Onoranze Funebri Italia: scegli un gesto di ricerca (Vicino a me, Un luogo che conosco, In tutta Italia) e trova un ricordo con rispetto." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS globale OFI + stile profilo imprese (coerenza sito) -->
+  <link rel="stylesheet" href="/ofi.css" />
+  <link rel="stylesheet" href="/imprese/profilo.css" />
+  <!-- Nota: imprese-dashboard.css rimosso qui per evitare conflitti (overflow/scroll) nella pagina Necrologi -->
+  <link rel="stylesheet" href="/necrologi.css?v=1.3" />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+
+  <!-- Modale conferma posizione (spostato nel BODY) -->
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+
+  <!-- JS globali OFI (menu + tema) -->
+  <script defer src="/js/menu.js?v=2"></script>
+  <script defer src="/ofi.js?v=3"></script>
+</head>
+
+<body class="theme-light">
+  <!-- MODALE CONFERMA POSIZIONE (inserito correttamente nel BODY) -->
+  <div id="geoConfirmModal" class="necro-confirm-modal" aria-hidden="true">
+    <div class="necro-confirm-backdrop" data-close="1"></div>
+
+    <div class="necro-confirm-card" role="dialog" aria-modal="true" aria-label="Conferma posizione">
+      <button class="necro-confirm-close" type="button" data-close="1" aria-label="Chiudi">✕</button>
+      <h3>Confermi la tua posizione?</h3>
+      <p class="necro-confirm-sub">Serve solo per mostrarti i ricordi più vicini.</p>
+      <div class="necro-confirm-place" id="geoConfirmPlace">—</div>
+      <div class="necro-confirm-actions">
+        <button class="btn-soft-ofi" id="geoConfirmNo" type="button">No, scelgo un luogo</button>
+        <button class="btn-primary-ofi" id="geoConfirmYes" type="button">Sì, confermo</button>
+      </div>
+      <p class="necro-confirm-privacy">La tua posizione non viene pubblicata.</p>
+    </div>
+  </div>
+
+<!-- LOADER GEO (overlay) -->
+<div id="geoLoader" class="ofi-loader" aria-hidden="true">
+  <div class="ofi-loader__card" role="status" aria-live="polite">
+    <div class="ofi-loader__spinner" aria-hidden="true"></div>
+    <div class="ofi-loader__title" id="geoLoaderTitle">Un momento…</div>
+    <div class="ofi-loader__text" id="geoLoaderText">Stiamo cercando i ricordi più vicini a te.</div>
+    <button id="geoLoaderAlt" class="ofi-loader__alt" type="button">
+      Preferisco scegliere un luogo
+    </button>
+  </div>
+</div>
+
+  <!-- HEADER standard OFI -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+        <li><a href="/cittadini/dashboard-cittadino.html">Dashboard Cittadino</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <!-- HERO -->
+    <section class="profile-hero necro-hero">
+      <div class="profile-hero__panel profile-hero--center">
+        <figure class="logo-wrap logo-wrap--free">
+          <img src="/images/rosa.png" alt="OFI" onerror="this.onerror=null; this.src='/images/logo-ofi.png';" />
+        </figure>
+
+        <h1 class="hero-title">Necrologi e Ricordi d’Italia</h1>
+        <p class="hero-subtitle">
+          Un luogo nazionale della memoria, accessibile a tutti. <br>
+          Qui puoi cercare un ricordo con semplicità e rispetto.
+        </p>
+        <div class="necro-tricolor" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- SEO (non visibile): testo descrittivo per indicizzazione, senza appesantire la UX -->
+    <section class="sr-only" aria-hidden="true">
+      <h2>Necrologi e ricordi su Onoranze Funebri Italia</h2>
+      <p>Consulta i necrologi pubblicati su Onoranze Funebri Italia: nomi, luoghi e date che custodiscono un ricordo condiviso, nel rispetto della memoria e delle famiglie.</p>
+      <p>Puoi scegliere la ricerca vicino a te (con posizione), cercare per zona (comune/provincia/regione) o esplorare in tutta Italia in ordine cronologico.</p>
+    </section>
+
+    
+    <!-- RICERCA (GESTI UMANI) -->
+    <section class="necro-section">
+      <div class="necro-card">
+        <div class="necro-card-head">
+          <div>
+            <h2 class="necro-card-title" style="margin:0;">Come vuoi cercare un ricordo?</h2>
+            <p class="necro-card-sub" style="margin:0.25rem 0 0;">
+              Scegli un gesto: noi ti guidiamo.
+            </p>
+          </div>
+
+          <div class="info-wrap" id="consensoInfoWrap">
+            <span class="necro-chip" aria-label="Pubblicato con rispetto">
+              <span class="dot" aria-hidden="true"></span>
+              Con consenso dei familiari
+            </span>
+            <button class="info-bubble" type="button" aria-label="Info consenso" aria-expanded="false" data-info-bubble>
+              i
+            </button>
+            <div class="info-popover" role="tooltip">
+              <p><strong>Trasparenza:</strong> i ricordi pubblicati su OFI sono visibili solo se condivisi con il consenso dei familiari.</p>
+              <p>OFI tutela la memoria e promuove un uso rispettoso e sobrio del servizio.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="gesture-intro">
+          Se stai cercando una persona, puoi usare la modalità <strong>Cerca una persona</strong>.
+        </div>
+
+        <!-- STEP 1: scelta modalità -->
+        <div class="mode-tabs-wrap" aria-label="Modalità di ricerca">
+          <div class="mode-tabs" role="tablist" aria-label="Modalità di ricerca">
+
+            <button class="mode-btn" id="viewNear" data-mode="near" role="tab" aria-selected="false" type="button">
+              <span class="m-title"><i class="fa-solid fa-location-crosshairs"></i> Vicino a me</span>
+              <span class="m-sub">I ricordi attorno a te.</span>
+            </button>
+
+            <button class="mode-btn" id="viewZona" data-mode="zona" role="tab" aria-selected="false" type="button">
+              <span class="m-title"><i class="fa-solid fa-map-location-dot"></i> Un luogo che conosco</span>
+              <span class="m-sub">Un paese, una città, una zona.</span>
+            </button>
+
+            <button class="mode-btn" id="viewItalia" data-mode="italia" role="tab" aria-selected="false" type="button">
+              <span class="m-title"><i class="fa-regular fa-flag"></i> In tutta Italia</span>
+              <span class="m-sub">Gli ultimi ricordi pubblicati.</span>
+            </button>
+
+            <button class="mode-btn" id="viewNome" data-mode="nome" role="tab" aria-selected="false" type="button">
+              <span class="m-title"><i class="fa-solid fa-user-magnifying-glass"></i> Cerca una persona</span>
+              <span class="m-sub">Nome e cognome, se li conosci.</span>
+            </button>
+
+            <div class="mode-tabs-info info-wrap" id="modeInfoWrap">
+              <button class="info-bubble" type="button" aria-label="Info modalità di ricerca" aria-expanded="false" data-info-bubble>i</button>
+              <div class="info-popover" role="tooltip">
+                <p><strong>Come funziona:</strong> scegli una modalità e ti mostriamo solo i campi necessari.</p>
+                <p>La <strong>Mappa della Memoria</strong> resta sempre attiva: puoi zoommare e cliccare sulle luci.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mode-caption" id="modeCaption">
+            Scegli una modalità.
+          </div>
+        </div>
+
+        <!-- STEP 2: pannelli -->
+        <section class="mode-panel" id="panel-near" hidden>
+          <div class="actions-row">
+            <button class="btn-geo" id="btnGeo" type="button" title="Usa la mia posizione">
+              <i class="fa-solid fa-location-dot"></i><span>Usa la mia posizione</span>
+            </button>
+
+            <div style="display:flex; gap:.6rem; flex-wrap:wrap; justify-content:flex-end;">
+              <button class="btn-soft-ofi" id="btnReset" type="button">Annulla</button>
+            </div>
+          </div>
+
+          <div class="necro-statusline">
+            <div class="necro-mini" id="geoStatus">
+              Rileveremo la posizione e ti chiederemo una conferma.
+            </div>
+          </div>
+        </section>
+
+        <section class="mode-panel" id="panel-zona" hidden>
+          <div class="fields-grid fields-grid--single" role="search" aria-label="Ricerca per zona">
+            <input id="placeSearch" type="text" placeholder="Scrivi un luogo (es. Seriate)" autocomplete="off" />
+          </div>
+
+          <input type="hidden" id="qLat" />
+          <input type="hidden" id="qLng" />
+
+          <div class="actions-row">
+            <div class="necro-mini" id="zonaHint">
+              Scrivi un luogo e selezionalo dai suggerimenti.
+            </div>
+
+            <div style="display:flex; gap:.6rem; flex-wrap:wrap; justify-content:flex-end;">
+              <button class="btn-primary-ofi" id="btnSearch" type="button">
+                <span class="icon">🔎</span><span>Mostra i risultati</span>
+              </button>
+              <button class="btn-soft-ofi" id="btnReset2" type="button">Annulla</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="mode-panel" id="panel-nome" hidden>
+          <div class="fields-grid fields-grid--two" role="search" aria-label="Ricerca per nome e cognome">
+            <input id="qNome" type="text" placeholder="Nome" autocomplete="off" />
+            <input id="qCognome" type="text" placeholder="Cognome" autocomplete="off" />
+            <input id="placeSearch2" type="text" placeholder="Luogo (facoltativo)" autocomplete="off" />
+          </div>
+
+          <input type="hidden" id="qLat2" />
+          <input type="hidden" id="qLng2" />
+
+          <div class="actions-row">
+            <div class="necro-mini">
+              Puoi inserire solo il nome e/o il cognome. Il luogo è facoltativo.
+            </div>
+
+            <div style="display:flex; gap:.6rem; flex-wrap:wrap; justify-content:flex-end;">
+              <button class="btn-primary-ofi" id="btnSearchNome" type="button">
+                <span class="icon">🔎</span><span>Cerca</span>
+              </button>
+              <button class="btn-soft-ofi" id="btnReset3" type="button">Annulla</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </section>
+
+
+    <!-- MAPPA -->
+    <section class="necro-section" style="padding-top:0;">
+      <div class="necro-card">
+        <div class="necro-card-head">
+          <h2 class="necro-card-title" style="margin:0;">Mappa della Memoria d’Italia</h2>
+
+          <div class="info-wrap">
+            <button class="info-bubble" type="button" aria-label="Info mappa" aria-expanded="false" data-info-bubble>i</button>
+            <div class="info-popover" role="tooltip">
+              <p>Ogni luce rappresenta un ricordo pubblicato con rispetto.</p>
+              <p><strong>Clicca</strong> su una luce per aprire la pagina del necrologio completo.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="necro-map-wrap">
+          <div id="map"></div>
+        </div>
+
+        <div class="map-hint">
+          <i class="fa-regular fa-lightbulb"></i>
+          <span>Clicca su una luce per aprire un ricordo.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">
+            OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti
+            in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.
+          </p>
+        </div>
+
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+
+        <div class="f-legal small">
+          © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+          <br>
+          Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti
+          e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mapbox -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <!-- Google Places Autocomplete -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&loading=async"></script>
+
+  <!-- Firebase (modular) + logica pagina -->
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, query, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // === Firebase config (OFI2025)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ============================================================
+    // INFO ⓘ: desktop = popover; mobile = scheda leggibile (no tagli)
+    // ============================================================
+    function initInfoBubbles(){
+      const wraps = Array.from(document.querySelectorAll(".info-wrap"));
+      const bubbles = Array.from(document.querySelectorAll("[data-info-bubble]"));
+
+      const isTouch = () => (
+        window.matchMedia && (
+          window.matchMedia("(hover: none)").matches ||
+          window.matchMedia("(pointer: coarse)").matches ||
+          window.matchMedia("(max-width: 640px)").matches
+        )
+      );
+
+      function ensureModal(){
+        let modal = document.getElementById("ofiInfoModal");
+        if(modal) return modal;
+
+        modal = document.createElement("div");
+        modal.id = "ofiInfoModal";
+        modal.className = "ofi-info-modal";
+        modal.setAttribute("role","dialog");
+        modal.setAttribute("aria-hidden","true");
+        modal.innerHTML = `
+          <div class="ofi-info-modal__panel" role="document">
+            <button class="ofi-info-modal__close" type="button" aria-label="Chiudi">×</button>
+            <div class="ofi-info-modal__content" id="ofiInfoModalContent"></div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", (e)=>{ if(e.target === modal) closeModal(); });
+        modal.querySelector(".ofi-info-modal__close").addEventListener("click", closeModal);
+        document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+        return modal;
+      }
+
+      function openModal(html, openerBtn){
+        const modal = ensureModal();
+        const content = modal.querySelector("#ofiInfoModalContent");
+        content.innerHTML = html || "";
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden","false");
+        if(openerBtn) openerBtn.setAttribute("aria-expanded","true");
+      }
+
+      function closeModal(){
+        const modal = document.getElementById("ofiInfoModal");
+        if(!modal) return;
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden","true");
+        document.querySelectorAll("[data-info-bubble][aria-expanded='true']").forEach(b=>{
+          b.setAttribute("aria-expanded","false");
+        });
+      }
+
+      function closeAllPopovers(exceptWrap = null){
+        wraps.forEach(w=>{
+          if(exceptWrap && w === exceptWrap) return;
+          w.classList.remove("is-open");
+          const b = w.querySelector("[data-info-bubble]");
+          if(b) b.setAttribute("aria-expanded","false");
+        });
+      }
+
+      wraps.forEach(w=>{
+        const pop = w.querySelector(".info-popover");
+        if(pop){ pop.addEventListener("click", (e)=> e.stopPropagation()); }
+      });
+
+      bubbles.forEach(b=>{
+        b.addEventListener("click", (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+
+          const wrap = b.closest(".info-wrap");
+          if(!wrap) return;
+
+          const pop = wrap.querySelector(".info-popover");
+          const popHtml = pop ? pop.innerHTML : "";
+
+          if(isTouch()){
+            closeAllPopovers(null);
+            openModal(popHtml, b);
+            return;
+          }
+
+          const isOpen = wrap.classList.contains("is-open");
+          closeAllPopovers(wrap);
+          wrap.classList.toggle("is-open", !isOpen);
+          b.setAttribute("aria-expanded", String(!isOpen));
+
+          if(!isOpen && pop){
+            pop.style.left = "";
+            pop.style.right = "0";
+
+            const r = pop.getBoundingClientRect();
+            const pad = 12;
+            if(r.right > (window.innerWidth - pad)){
+              pop.style.right = "";
+              pop.style.left = "0";
+            }
+            const r2 = pop.getBoundingClientRect();
+            if(r2.left < pad){
+              pop.style.left = "0";
+              pop.style.right = "0";
+            }
+          }
+        });
+      });
+
+      document.addEventListener("click", ()=>{
+        closeAllPopovers(null);
+        closeModal();
+      });
+    }
+    initInfoBubbles();
+
+    // ============================================================
+    // UI MODI (gesti): mostra solo ciò che serve
+    // - Vicino a me: nessun campo, solo geolocalizzazione + conferma
+    // - Un luogo che conosco: solo luogo
+    // - In tutta Italia: redirect immediato
+    // - Cerca una persona: nome/cognome (+ luogo facoltativo)
+    // ============================================================
+    const modeCaption = document.getElementById("modeCaption");
+
+    const viewNear = document.getElementById("viewNear");
+    const viewZona = document.getElementById("viewZona");
+    const viewItalia = document.getElementById("viewItalia");
+    const viewNome = document.getElementById("viewNome");
+
+    const panelNear = document.getElementById("panel-near");
+    const panelZona = document.getElementById("panel-zona");
+    const panelNome = document.getElementById("panel-nome");
+
+    const btnGeo = document.getElementById("btnGeo");
+    const geoStatus = document.getElementById("geoStatus");
+
+    const placeSearch = document.getElementById("placeSearch");
+    const btnSearchZona = document.getElementById("btnSearch");
+    const zonaHint = document.getElementById("zonaHint");
+    const qLat = document.getElementById("qLat");
+    const qLng = document.getElementById("qLng");
+
+    const qNome = document.getElementById("qNome");
+    const qCognome = document.getElementById("qCognome");
+    const placeSearch2 = document.getElementById("placeSearch2");
+    const qLat2 = document.getElementById("qLat2");
+    const qLng2 = document.getElementById("qLng2");
+    const btnSearchNome = document.getElementById("btnSearchNome");
+
+    const btnReset = document.getElementById("btnReset");
+    const btnReset2 = document.getElementById("btnReset2");
+    const btnReset3 = document.getElementById("btnReset3");
+
+    const state = { viewMode: null };
+
+    // Pagina risultati
+    const RESULTS_PAGE = "/necrologi-risultati.html";
+
+    function qs(params){
+      const sp = new URLSearchParams();
+      Object.entries(params || {}).forEach(([k,v])=>{
+        if(v === undefined || v === null) return;
+        const s = String(v).trim();
+        if(!s) return;
+        sp.set(k, s);
+      });
+      return sp.toString();
+    }
+    function goResults(params){
+      const url = RESULTS_PAGE + "?" + qs(params);
+      window.location.href = url;
+    }
+
+    function setMode(mode){
+      state.viewMode = mode;
+
+      [viewNear, viewZona, viewItalia, viewNome].forEach(b => b?.setAttribute("aria-selected","false"));
+      if(mode === "near") viewNear.setAttribute("aria-selected","true");
+      if(mode === "zona") viewZona.setAttribute("aria-selected","true");
+      if(mode === "italia") viewItalia.setAttribute("aria-selected","true");
+      if(mode === "nome") viewNome.setAttribute("aria-selected","true");
+
+      panelNear.hidden = mode !== "near";
+      panelZona.hidden = mode !== "zona";
+      panelNome.hidden = mode !== "nome";
+
+      if(!mode){
+        modeCaption.textContent = "Scegli una modalità.";
+      } else if(mode === "near"){
+        modeCaption.textContent = "Rileviamo la posizione e poi apriamo i risultati vicino a te.";
+      } else if(mode === "zona"){
+        modeCaption.textContent = "Scrivi un luogo e selezionalo dai suggerimenti.";
+        placeSearch?.classList.add("field-emphasis");
+        zonaHint.textContent = "Scrivi un luogo e selezionalo dai suggerimenti.";
+      } else if(mode === "italia"){
+        modeCaption.textContent = "Apro i risultati nazionali…";
+        // redirect immediato (niente campi)
+        goResults({ mode: "italia", sort: "date" });
+      } else if(mode === "nome"){
+        modeCaption.textContent = "Inserisci nome e/o cognome (il luogo è facoltativo).";
+        placeSearch?.classList.remove("field-emphasis");
+      }
+    }
+
+    function resetAll(){
+      placeSearch.value = "";
+      qLat.value = "";
+      qLng.value = "";
+
+      qNome.value = "";
+      qCognome.value = "";
+      placeSearch2.value = "";
+      qLat2.value = "";
+      qLng2.value = "";
+
+      geoStatus.textContent = "Rileveremo la posizione e ti chiederemo una conferma.";
+      setMode(null);
+    }
+
+    viewNear.addEventListener("click", ()=> setMode("near"));
+    viewZona.addEventListener("click", ()=> setMode("zona"));
+    viewItalia.addEventListener("click", ()=> setMode("italia"));
+    viewNome.addEventListener("click", ()=> setMode("nome"));
+
+    btnReset?.addEventListener("click", resetAll);
+    btnReset2?.addEventListener("click", resetAll);
+    btnReset3?.addEventListener("click", resetAll);
+
+// ============================================================
+// CLICK BOTTONI: "Mostra i risultati" (zona) e "Cerca" (nome)
+// ============================================================
+
+// 1) UN LUOGO CHE CONOSCO -> Mostra i risultati
+btnSearchZona?.addEventListener("click", () => {
+  const place = (placeSearch?.value || "").trim();
+  const lat = (qLat?.value || "").trim();
+  const lng = (qLng?.value || "").trim();
+
+  if (!place) {
+    alert("Scrivi un luogo e selezionalo dai suggerimenti.");
+    return;
+  }
+
+  goResults({
+    mode: "zona",
+    place,
+    lat,
+    lng,
+    sort: "distance"
+  });
+});
+
+// 2) CERCA UNA PERSONA -> Cerca
+btnSearchNome?.addEventListener("click", () => {
+  const nome = (qNome?.value || "").trim();
+  const cognome = (qCognome?.value || "").trim();
+
+  const place = (placeSearch2?.value || "").trim(); // facoltativo
+  const lat = (qLat2?.value || "").trim();
+  const lng = (qLng2?.value || "").trim();
+
+  if (!nome && !cognome) {
+    alert("Inserisci almeno il nome o il cognome.");
+    return;
+  }
+
+  goResults({
+    mode: "nome",
+    nome,
+    cognome,
+    place,
+    lat,
+    lng
+  });
+});
+
+    // ============================================================
+    // MAPBOX: mappa nazionale (solo luci), click => pagina necrologio
+    // ============================================================
+    const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/outdoors-v12",
+      center: [12.5, 42.8],
+      zoom: 5
+    });
+
+    function pickName(docData){
+      const a = docData?.answersSnapshot || {};
+      const nome = (a.nome || "").trim();
+      const cognome = (a.cognome || "").trim();
+      return ([nome, cognome].filter(Boolean).join(" ").trim()) || "Ricordo";
+    }
+    function getDocLatLng(data){
+      const g = data?.geoFinale || {};
+      const lat = typeof g.lat === "number" ? g.lat : Number(g.lat);
+      const lng = typeof g.lng === "number" ? g.lng : Number(g.lng);
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return {lat, lng};
+    }
+
+    function makePulseDot(size = 120){
+      return {
+        width: size,
+        height: size,
+        data: new Uint8Array(size * size * 4),
+        onAdd: function(){
+          const canvas = document.createElement("canvas");
+          canvas.width = this.width;
+          canvas.height = this.height;
+          this.context = canvas.getContext("2d");
+        },
+        render: function(){
+          const duration = 1600;
+          const t = (performance.now() % duration) / duration;
+
+          const radius = (size / 10) * 1.4;
+          const outerRadius = (size / 10) * (2.6 + t);
+
+          const ctx = this.context;
+          ctx.clearRect(0, 0, this.width, this.height);
+
+          ctx.beginPath();
+          ctx.arc(this.width / 2, this.height / 2, outerRadius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(202, 168, 90, ${0.22 * (1 - t)})`;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(this.width / 2, this.height / 2, radius * 1.8, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(202, 168, 90, 0.12)";
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(202, 168, 90, 0.95)";
+          ctx.strokeStyle = "rgba(11, 44, 77, 0.55)";
+          ctx.lineWidth = 2;
+          ctx.fill();
+          ctx.stroke();
+
+          this.data = ctx.getImageData(0, 0, this.width, this.height).data;
+          map.triggerRepaint();
+          return true;
+        }
+      };
+    }
+
+    function toFeature(doc){
+      const ll = getDocLatLng(doc.data);
+      if(!ll) return null;
+      return {
+        type: "Feature",
+        properties: {
+          id: doc.id,
+          name: pickName(doc.data)
+        },
+        geometry: { type: "Point", coordinates: [ll.lng, ll.lat] }
+      };
+    }
+
+    async function loadNecrologiForMap(){
+      let docs = [];
+      try{
+        const q1 = query(
+          collection(db, "necrologi_pubblicati"),
+          where("status", "==", "published"),
+          orderBy("publishedAt", "desc"),
+          limit(220)
+        );
+        const snap = await getDocs(q1);
+        docs = snap.docs.map(d => ({ id: d.id, data: d.data() }));
+      }catch(err){
+        console.warn("Query indicizzata non disponibile, fallback…", err);
+        const q2 = query(collection(db, "necrologi_pubblicati"), orderBy("publishedAt", "desc"), limit(260));
+        const snap2 = await getDocs(q2);
+        docs = snap2.docs
+          .map(d => ({ id: d.id, data: d.data() }))
+          .filter(x => (x.data?.status || "") === "published");
+      }
+
+      const features = docs.map(toFeature).filter(Boolean);
+      const geojson = { type: "FeatureCollection", features };
+
+      if(map.getSource("necrologi-src")){
+        map.getSource("necrologi-src").setData(geojson);
+      }
+    }
+
+    map.on("load", () => {
+      map.addImage("pulsing-dot", makePulseDot(120), { pixelRatio: 2 });
+
+      map.addSource("necrologi-src", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] }
+      });
+
+      map.addLayer({
+        id: "necrologi-layer",
+        type: "symbol",
+        source: "necrologi-src",
+        layout: { "icon-image": "pulsing-dot" }
+      });
+
+      map.on("mouseenter", "necrologi-layer", () => map.getCanvas().style.cursor = "pointer");
+      map.on("mouseleave", "necrologi-layer", () => map.getCanvas().style.cursor = "");
+
+      map.on("click", "necrologi-layer", (e) => {
+        const props = e.features?.[0]?.properties || {};
+        const id = props.id || "";
+        if(!id) return;
+        window.location.href = `/necrologio.html?id=${encodeURIComponent(id)}`;
+      });
+
+      loadNecrologiForMap().catch(console.error);
+    });
+
+    // ============================================================
+    // Google Places Autocomplete (zona) — salva coords se disponibili
+    // ============================================================
+    function initAutocomplete(){
+      if(!window.google || !google.maps || !google.maps.places) return;
+
+      function attach(el, outLat, outLng, fly){
+        if(!el) return null;
+        const ac = new google.maps.places.Autocomplete(el, {
+          componentRestrictions: { country: "it" },
+          types: ["(regions)"]
+        });
+
+        ac.addListener("place_changed", ()=>{
+          const p = ac.getPlace();
+          if(!p || !p.geometry) return;
+          const lat = p.geometry.location.lat();
+          const lng = p.geometry.location.lng();
+          if(outLat) outLat.value = String(lat);
+          if(outLng) outLng.value = String(lng);
+          if(fly) map.flyTo({ center: [lng, lat], zoom: 8.6 });
+        });
+
+        return ac;
+      }
+
+      attach(placeSearch, qLat, qLng, true);
+      attach(placeSearch2, qLat2, qLng2, false);
+    }
+
+    window.addEventListener("load", ()=>{
+  const t = setInterval(()=>{
+    if(window.google && google.maps && google.maps.places){
+      clearInterval(t);
+      initAutocomplete();
+    }
+  }, 200);
+});
+
+    async function reverseGeocodeMapbox(lat, lng){
+      try{
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?language=it&limit=1&access_token=${MAPBOX_TOKEN}`;
+        const r = await fetch(url);
+        const j = await r.json();
+        return j?.features?.[0]?.place_name || null;
+      }catch(e){
+        console.warn("reverseGeocodeMapbox fail:", e);
+        return null;
+      }
+    }
+
+    // ---- Modale conferma posizione
+const geoConfirmModal = document.getElementById("geoConfirmModal");
+const geoConfirmPlace = document.getElementById("geoConfirmPlace");
+const geoConfirmYes = document.getElementById("geoConfirmYes");
+const geoConfirmNo = document.getElementById("geoConfirmNo");
+
+// ---- Stato near (variabili globali del flusso)
+let nearLat = null, nearLng = null, nearLabel = null;
+
+function openGeoConfirm(place){
+  if(!geoConfirmModal) return;
+  geoConfirmPlace.textContent = place || "Posizione rilevata";
+  geoConfirmModal.classList.add("open");
+  geoConfirmModal.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeGeoConfirm({ reset = false } = {}){
+  if(!geoConfirmModal) return;
+
+  geoConfirmModal.classList.remove("open");
+  geoConfirmModal.setAttribute("aria-hidden","true");
+  document.body.style.overflow = "";
+
+  if(reset){
+    nearLat = null;
+    nearLng = null;
+    nearLabel = null;
+    if (geoConfirmPlace) geoConfirmPlace.textContent = "—";
+  }
+}
+
+geoConfirmModal?.addEventListener("click",(e)=>{
+  const t = e.target;
+  if(t?.getAttribute?.("data-close")==="1") closeGeoConfirm();
+});
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Escape") closeGeoConfirm();
+});
+
+// ============================================================
+// LOADER GEO
+// ============================================================
+const geoLoader = document.getElementById("geoLoader");
+const geoLoaderTitle = document.getElementById("geoLoaderTitle");
+const geoLoaderText  = document.getElementById("geoLoaderText");
+const geoLoaderAlt   = document.getElementById("geoLoaderAlt");
+
+function openGeoLoader(title, text){
+  if(!geoLoader) return;
+  geoLoaderTitle.textContent = title || "Un momento…";
+  geoLoaderText.textContent  = text  || "Stiamo cercando i ricordi più vicini a te.";
+  geoLoader.classList.add("is-open");
+  geoLoader.setAttribute("aria-hidden","false");
+  document.body.style.overflow = "hidden";
+}
+function closeGeoLoader(){
+  if(!geoLoader) return;
+  geoLoader.classList.remove("is-open");
+  geoLoader.setAttribute("aria-hidden","true");
+  document.body.style.overflow = "";
+}
+
+geoLoaderAlt?.addEventListener("click", ()=>{
+  closeGeoLoader();
+  setMode("zona");
+});
+
+async function doNearFlow(){
+  if(!navigator.geolocation){
+    alert("La geolocalizzazione non è disponibile su questo dispositivo.");
+    return;
+  }
+
+openGeoLoader("Un momento…", "Stiamo cercando i ricordi più vicini a te.");
+
+  geoStatus.textContent = "Richiesta posizione…";
+  btnGeo.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(async (pos)=>{
+    btnGeo.disabled = false;
+    geoLoaderText.textContent = "Posizione rilevata. Ti chiediamo solo una conferma…";
+
+    nearLat = pos.coords.latitude;
+    nearLng = pos.coords.longitude;
+
+    const place = await reverseGeocodeMapbox(nearLat, nearLng);
+    nearLabel = place || `Lat ${nearLat.toFixed(5)}, Lng ${nearLng.toFixed(5)}`;
+
+    geoStatus.textContent = "Posizione rilevata ✅";
+
+    // ✅ Protezione: apri il modale solo quando il testo è pronto
+    if (nearLabel && nearLabel !== "—") {
+  closeGeoLoader();
+  openGeoConfirm(nearLabel);
+} else {
+  // 🔁 fallback sicuro se Mapbox non restituisce il luogo
+  closeGeoLoader();
+  openGeoConfirm(`Lat ${nearLat.toFixed(5)}, Lng ${nearLng.toFixed(5)}`);
+}
+
+  }, (err)=>{
+  btnGeo.disabled = false;
+  closeGeoLoader();
+  console.warn("geolocation error", err);
+  geoStatus.textContent = "Posizione non disponibile.";
+  alert(`Non sono riuscito a rilevare la posizione.
+Se vuoi, usa la modalità “Un luogo che conosco”.`);
+}, { enableHighAccuracy:true, timeout: 12000, maximumAge: 600000 });
+}
+
+btnGeo?.addEventListener("click",(e)=>{ e.preventDefault(); doNearFlow(); });
+
+geoConfirmYes?.addEventListener("click",(e)=>{
+  e.preventDefault();
+
+  // ✅ NON resettare qui: servono lat/lng per il redirect
+  closeGeoConfirm({ reset: false });
+
+  goResults({
+    mode: "near",
+    lat: nearLat,
+    lng: nearLng,
+    label: nearLabel || "",
+    sort: "distance"
+  });
+
+  // ✅ reset dopo aver avviato la navigazione (pulizia)
+  closeGeoConfirm({ reset: true });
+});
+
+geoConfirmNo?.addEventListener("click",(e)=>{
+  e.preventDefault();
+  closeGeoConfirm({ reset: true }); // ✅ qui sì, resettiamo tutto
+  setMode("zona");                  // ✅ e lo portiamo direttamente al pannello zona
+});
+
+    // Enter = avvia la ricerca nella modalità corrente
+    placeSearch?.addEventListener("keydown",(e)=>{ if(e.key==="Enter") btnSearchZona?.click(); });
+    qNome?.addEventListener("keydown",(e)=>{ if(e.key==="Enter") btnSearchNome?.click(); });
+    qCognome?.addEventListener("keydown",(e)=>{ if(e.key==="Enter") btnSearchNome?.click(); });
+    placeSearch2?.addEventListener("keydown",(e)=>{ if(e.key==="Enter") btnSearchNome?.click(); });
+
+    // Stato iniziale: tutto spento
+    setMode(null);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,286 @@
+/* ======================================================
+   LUOGO DELLA MEMORIA — VISIT (Interno del Luogo)
+   File: site/luogo-visit.css
+   Obiettivo: "wow istituzionale" — percezione di visita,
+   offerta del custode (Dedica / Luogo fisico / Video / Audio)
+   ====================================================== */
+
+/* Questo file lavora in override a /luogo-view.css */
+
+/* --- HERO come "ingresso interno" (non copertina) --- */
+.hero{
+  padding-top: 26px;
+  padding-bottom: 10px;
+}
+.hero:before{
+  /* più profondità, meno effetto "copertina" */
+  opacity: .82;
+  filter: blur(14px);
+}
+.heroInner{
+  padding: 28px 22px 22px;
+  max-width: var(--max);
+}
+.kicker{ letter-spacing: .16em; opacity: .85; }
+
+.heroName{
+  font-size: clamp(1.75rem, 3.8vw, 2.65rem);
+  margin-top: 10px;
+}
+
+/* Ritratto più contenuto */
+.portraitWrap{
+  width: min(260px, 74vw);
+  height: 320px;
+  margin: 14px auto 12px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+body:not(.theme-dark) .portraitWrap{
+  border-color: rgba(0,0,0,.12);
+  box-shadow: 0 16px 44px rgba(0,0,0,.18);
+}
+.portrait{ object-fit: cover; }
+.portraitEmpty{
+  border-radius: 18px;
+  padding: 18px 14px;
+  font-size: .98rem;
+}
+
+/* Azioni: meno "dashboard", più discrete */
+.heroActions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.heroActions .btn{
+  border-radius: 999px;
+  padding: 10px 14px;
+}
+.heroActions .btn.primary{
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+/* --- Offerta custode --- */
+.offerZone{
+  margin: 14px auto 6px;
+  max-width: var(--max);
+  padding: 0 14px;
+}
+.offerGrid{
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 12px;
+}
+@media (max-width: 860px){
+  .offerGrid{ grid-template-columns: 1fr; }
+}
+.offerCard{
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+  box-shadow: 0 16px 46px rgba(0,0,0,.26);
+  padding: 14px 14px;
+}
+body:not(.theme-dark) .offerCard{
+  background: rgba(255,255,255,.86);
+  border-color: rgba(0,0,0,.10);
+  box-shadow: 0 14px 40px rgba(0,0,0,.14);
+}
+.offerHead{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.offerTitle{
+  font-weight: 850;
+  letter-spacing: .02em;
+}
+.offerLink{
+  display: inline-flex;
+  align-items:center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.12);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+}
+body:not(.theme-dark) .offerLink{
+  border-color: rgba(0,0,0,.10);
+  background: rgba(255,255,255,.65);
+}
+.offerLink:hover{ transform: translateY(-1px); }
+
+/* Dedica: sfumatura + clamp */
+.dedicaClamp{
+  position: relative;
+  line-height: 1.5;
+  font-size: 1.05rem;
+  max-height: 7.2em; /* circa 4-5 righe */
+  overflow: hidden;
+  padding-right: 10px;
+}
+.dedicaClamp:after{
+  content:"";
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height: 3.2em;
+  pointer-events:none;
+  background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,.78));
+}
+body:not(.theme-dark) .dedicaClamp:after{
+  background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,.92));
+}
+.dedicaFull{
+  line-height: 1.6;
+  font-size: 1.06rem;
+  padding: 6px 2px 2px;
+}
+
+/* Fisarmonica luogo fisico */
+.accordionBtn{
+  width: 100%;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.10);
+  cursor: pointer;
+  font-weight: 850;
+}
+body:not(.theme-dark) .accordionBtn{
+  border-color: rgba(0,0,0,.10);
+  background: rgba(255,255,255,.60);
+}
+.accIcon{
+  opacity: .9;
+  transition: transform .18s ease;
+}
+.accordionBtn[aria-expanded="true"] .accIcon{
+  transform: rotate(180deg);
+}
+.accordionBody{
+  padding: 10px 10px 4px;
+}
+.fisicoText{ line-height: 1.45; opacity: .95; }
+
+/* --- Video in evidenza --- */
+.spotlight{
+  max-width: var(--max);
+  margin: 10px auto 0;
+  padding: 0 14px;
+}
+.spotlightHead{
+  display:flex;
+  align-items:flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 10px 0 10px;
+}
+.spotlightTitle{
+  font-weight: 900;
+  letter-spacing: .02em;
+  font-size: 1.08rem;
+}
+.spotlightSub{ opacity:.82; font-size: .98rem; }
+.spotlightBody{
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.16);
+  overflow: hidden;
+  box-shadow: 0 18px 56px rgba(0,0,0,.30);
+}
+body:not(.theme-dark) .spotlightBody{
+  background: rgba(255,255,255,.86);
+  border-color: rgba(0,0,0,.10);
+  box-shadow: 0 14px 44px rgba(0,0,0,.14);
+}
+.spotlightFrame{
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 0;
+  display: block;
+}
+.spotlightVideo{
+  width: 100%;
+  display: block;
+  background: #000;
+}
+
+/* --- Audio dock (discreto, sempre controllabile) --- */
+.audioDock{
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 50;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  padding: 10px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.26);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.35);
+}
+body:not(.theme-dark) .audioDock{
+  border-color: rgba(0,0,0,.12);
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 14px 44px rgba(0,0,0,.16);
+}
+.audioBtn{
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.12);
+  color: inherit;
+  padding: 9px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 850;
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+}
+body:not(.theme-dark) .audioBtn{
+  border-color: rgba(0,0,0,.10);
+  background: rgba(255,255,255,.68);
+}
+.audioBtn.subtle{
+  opacity: .92;
+}
+.audioDot{
+  width: 9px; height: 9px;
+  border-radius: 99px;
+  background: rgba(202,168,90,.95);
+  box-shadow: 0 0 0 rgba(202,168,90,0);
+  transition: box-shadow .25s ease;
+}
+.audioDock.isPlaying .audioDot{
+  box-shadow: 0 0 0 8px rgba(202,168,90,.14);
+}
+@media (max-width: 520px){
+  .audioDock{ left: 10px; right: 10px; justify-content: space-between; }
+}
+
+/* Sezioni classiche: un po' più ariose e meno "dashboard" */
+.section{
+  margin-top: 14px;
+}
+.sectionTitle{
+  font-size: 1.08rem;
+}
+.sectionSub{ font-size: .98rem; }
+
+
+/* --- VISITA RISERVATA (micro UX) --- */
+#visitStatus{ margin-top: .8rem; }

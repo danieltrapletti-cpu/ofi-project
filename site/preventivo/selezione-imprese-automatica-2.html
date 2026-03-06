@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Imprese vicino a te — OFI</title>
+  <meta name="description" content="Ecco una selezione di imprese vicine al luogo indicato. Potrai inviare la tua richiesta in un click.">
+
+  <!-- Stili & script globali coerenti -->
+  <link rel="stylesheet" href="/ofi.css">
+  <script src="/ofi.js?v=3" defer></script>
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+  <script>
+    window.OFI_MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+  </script>
+
+  <style>
+    .container.narrow{
+      max-width:1040px;
+    }
+
+    #mappa{
+      width:100%;
+      height:320px;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+      margin-bottom:1.5rem;
+    }
+
+    /* ==========================================
+       Card base (allineata a selezione manuale)
+       ========================================== */
+    .impresa-card{
+      position:relative;
+      background:#fff;
+      border:2px solid transparent;     /* colorato in base al tier */
+      border-radius:16px;
+      box-shadow:0 10px 28px rgba(0,0,0,.12);
+      padding:1rem 1.25rem 0.6rem;
+      margin:.8rem 0;
+      transition:
+        transform .18s,
+        box-shadow .18s,
+        border-color .18s,
+        background-color .18s,
+        color .18s;
+      color:#0f1b2e;                    /* testi ben leggibili */
+    }
+
+    /* Fix Safari / iOS: niente sbiancamento testo */
+    .impresa-card,
+    .impresa-card *{
+      -webkit-text-fill-color: currentColor;
+      text-shadow:none;
+    }
+
+    .impresa-card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 16px 36px rgba(0,0,0,.18);
+    }
+
+    /* Bordi per TIER */
+    .impresa-card.tier-3{ border-color:#cfa349 }     /* Top Partner → oro */
+    .impresa-card.tier-2{ border-color:#0d6efd }     /* Partner Attivo / Certificata → blu brillante */
+    .impresa-card.tier-1{ border-color:#224062 }     /* Partner → blu ardesia */
+    .impresa-card.tier-0{ border-color:#b9bec6 }     /* Presente su OFI → grigio */
+
+    /* Ribbon TOP */
+    .impresa-card.tier-3 .ribbon{
+      position:absolute;
+      right:-8px;
+      top:12px;
+      background:#cfa349;
+      color:#2d240d;
+      font-weight:800;
+      padding:4px 10px;
+      border-radius:10px 0 0 10px;
+      box-shadow:0 4px 12px rgba(0,0,0,.18);
+      letter-spacing:.2px;
+    }
+
+    .impresa-head{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .card-logo{
+      width:60px;
+      height:60px;
+      border-radius:12px;
+      object-fit:contain;
+      background:#f6f7f9;
+      border:1px solid #e3e7ee;
+    }
+
+    .impresa-head h3{
+      margin:0;
+      color:#0f1b2e;
+      font-weight:700;
+    }
+
+    .impresa-meta{
+      color:#6b7a8a;
+      margin-top:3px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+    }
+
+    .impresa-meta span{
+      color:#6b7a8a;
+    }
+
+    .impresa-meta .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:14px;
+      font-size:.82rem;
+      font-weight:700;
+      border:1px solid #e4e6ea;
+      background:#f7f8fa;
+      color:#0f1b2e;
+    }
+
+    /* Chip Valore OFI (oro brand) */
+    .impresa-meta .chip.ofi{
+      border-color:#cfa349;
+      background:#fff8e6;
+      color:#6b5414;
+    }
+
+    /* Chip spunta profilo */
+    .impresa-meta .chip.check{
+      border-color:#8bc34a;
+      background:#f2fbf1;
+      color:#2f6b1f;
+    }
+
+    /* Testo descrittivo nel piede card */
+    .small.small-muted{
+      display:block;
+      margin-bottom:2px;
+      color:#a0a7b5;
+    }
+
+    /* Badge stato */
+    .badge{
+      display:inline-block;
+      margin-top:6px;
+      padding:4px 10px;
+      border-radius:12px;
+      font-size:.85rem;
+      font-weight:800;
+      color:#fff;
+    }
+    .badge.presente{background:#6e6e6e}
+    .badge.partner{ background:#23446d}
+    .badge.base{    background:#0d6efd}
+    .badge.certificata{background:#0a66c2}
+    .badge.top{     background:#cfa349;color:#2d240d}
+
+    .stelle{
+      color:#ffcc00;
+      margin-left:6px;
+    }
+
+    .sigillo-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#fffaf2;
+      border:1px solid #cfa349;
+      color:#cfa349;
+      border-radius:10px;
+      padding:4px 8px;
+      font-size:13px;
+      font-weight:800;
+      text-decoration:none;
+    }
+
+    .impresa-foot{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:.5rem;
+      gap:.5rem;
+      flex-wrap:wrap;
+      color:#0f1b2e;
+    }
+
+    .btn-prosegui{
+      display:block;
+      margin:1.25rem auto 0;
+    }
+
+    .cta-wrap{
+      margin-top:2rem;
+      text-align:center;
+    }
+    .cta-wrap p{
+      margin-bottom:.5rem;
+    }
+    .cta-wrap .alt{
+      display:inline-block;
+      padding:10px 18px;
+      background:#f1f1f1;
+      color:#0e2a4a;
+      border-radius:10px;
+      font-weight:600;
+      text-decoration:none;
+    }
+
+    /* ============================
+       TEMA SCURO — gestito da body.theme-dark
+       ============================ */
+    body.theme-dark .impresa-card{
+      background:#1b2e4a;
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 8px 22px rgba(0,0,0,.35);
+      color:#ffffff;
+    }
+
+    body.theme-dark .impresa-head h3,
+    body.theme-dark .impresa-meta span,
+    body.theme-dark .impresa-foot,
+    body.theme-dark .impresa-card .small,
+    body.theme-dark .impresa-card .badge{
+      color:#ffffff;
+    }
+
+    body.theme-dark .impresa-meta{
+      color:#dbe4ee;
+    }
+
+    body.theme-dark .impresa-meta .chip{
+      border-color:rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:#eaf1ff;
+    }
+
+    body.theme-dark .impresa-meta .chip.ofi{
+      border-color:rgba(207,163,73,.6);
+      background:rgba(207,163,73,.08);
+      color:#ffe2a7;
+    }
+
+    body.theme-dark .impresa-meta .chip.check{
+      border-color:rgba(139,195,74,.5);
+      background:rgba(139,195,74,.12);
+      color:#d8f6c9;
+    }
+
+    body.theme-dark .sigillo-badge{
+      background:rgba(207,163,73,.08);
+      border-color:rgba(207,163,73,.7);
+      color:#ffe2a7;
+    }
+
+    /* Safari iOS: forza il fill del testo in scuro */
+    body.theme-dark .impresa-card,
+    body.theme-dark .impresa-card *{
+      -webkit-text-fill-color: currentColor;
+    }
+
+    body.theme-dark .cta-wrap .alt{
+      background:rgba(255,255,255,.08);
+      color:#eaf1ff;
+    }
+
+    @media (max-width:640px){
+      .card-logo{width:52px;height:52px}
+      .impresa-meta .chip{font-size:.78rem}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header globale -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+
+        <!-- Testata menù mobile -->
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- Voci SLIM -->
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/cittadini/servizi.html">Servizi OFI</a></li>
+        <li><a href="/cittadini/dashboard-cittadino.html">Dashboard Cittadino</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="btn btn-primary" href="/accesso.html">Accedi / Registrati</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- Fascia blu -->
+  <section class="page-hero">
+    <div class="container">
+      <h1 class="section-title">Imprese selezionate vicino a te</h1>
+      <p class="section-sub">Abbiamo scelto automaticamente le 5 più adatte. Puoi continuare o passare alla selezione manuale.</p>
+    </div>
+  </section>
+
+  <main class="container narrow">
+    <div id="mappa" role="region" aria-label="Mappa imprese vicine"></div>
+
+    <div id="imprese-container" aria-live="polite"></div>
+
+    <button class="btn btn-primary btn-prosegui" id="prosegui">✍️ Compila il modulo di richiesta</button>
+
+    <div class="cta-wrap">
+      <p>❌ Non vuoi inviare la richiesta a queste imprese?</p>
+      <a class="alt" href="ricerca-comune-manuale.html?modalita=automatica&from=auto-list">👉 Passa alla selezione manuale</a>
+    </div>
+  </main>
+
+  <!-- Footer globale -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI + back-to-top -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="/images/agente-ofi.png" alt="">
+  </button>
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="/images/agente-ofi.png" alt="">
+        <div><strong>Agente OFI</strong><br><small>Hai dubbi su come proseguire?</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Queste sono le imprese più adatte. Se preferisci, puoi anche scegliere manualmente.</p></div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+  </section>
+  <button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+  <!-- Logica pagina -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Query param helpers
+    const params  = new URLSearchParams(location.search);
+    const userLat = parseFloat(params.get('lat'));
+    const userLon = parseFloat(params.get('lon'));
+    const modalita = params.get('modalita') || 'automatica';
+
+    // salvo anche in localStorage per le pagine successive (es. profilo-light)
+    if (Number.isFinite(userLat) && Number.isFinite(userLon)) {
+      localStorage.setItem(
+        'ofi_user_coords',
+        JSON.stringify({ lat: userLat, lng: userLon })
+      );
+    }
+
+    // Mappa
+    mapboxgl.accessToken = window.OFI_MAPBOX_TOKEN;
+    const map = new mapboxgl.Map({
+      container: 'mappa',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [userLon, userLat],
+      zoom: 10
+    });
+    new mapboxgl.Marker({ color: '#cfa349' })
+      .setLngLat([userLon, userLat])
+      .setPopup(new mapboxgl.Popup().setText('La tua posizione indicativa'))
+      .addTo(map);
+
+    const container = document.getElementById('imprese-container');
+    let impreseSelezionate = [];
+
+    // --- Utilità
+    function distanzaKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 +
+                Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+                Math.sin(dLon/2)**2;
+      return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
+    }
+
+    function abbonamentoAttivo(d){
+      if(!d) return false;
+      const tipo = d.tipoAbbonamento || d.piano || null;
+      const scad = d.abbonamentoScadenza?.seconds
+        ? new Date(d.abbonamentoScadenza.seconds*1000)
+        : (d.abbonamento_scadenza?.seconds ? new Date(d.abbonamento_scadenza.seconds*1000) : null);
+      return (tipo === "base" || tipo === "top") && scad && (Date.now() <= scad.getTime());
+    }
+
+    // 1) Badge esplicito da Firestore (se presente)
+    function badgeEsplicito(d){
+      const raw = (d.badge ?? d.badgePubblico ?? d.statoBadge ?? d.livelloBadge ?? d.stato ?? d.grado ?? '')
+        .toString()
+        .trim()
+        .toLowerCase();
+      if(!raw) return null;
+      if(raw.includes('presente'))     return {code:'presente',    label:'Presente su OFI', tier:0};
+      if(raw.includes('partner att') ) return {code:'base',        label:'Partner Attivo',  tier:2};
+      if(raw === 'partner')            return {code:'partner',     label:'Partner',         tier:1};
+      if(raw.includes('certificat'))   return {code:'certificata', label:'Certificata',     tier:2};
+      if(raw.includes('top'))          return {code:'top',         label:'Top Partner',     tier:3};
+      if(raw === 'base')               return {code:'base',        label:'Partner Attivo',  tier:2};
+      return null;
+    }
+
+    // 2) Fallback: derivazione da registrazione/abbonamento
+    function badgeDerivato(d){
+      const registrata = d.registrata === true;
+      const tipo = d.tipoAbbonamento || d.piano || null;
+      if(!registrata) return {code:'presente', label:'Presente su OFI', tier:0};
+      if(tipo === 'top'  && abbonamentoAttivo(d))  return {code:'top',  label:'Top Partner',    tier:3};
+      if(tipo === 'base' && abbonamentoAttivo(d))  return {code:'base', label:'Partner Attivo', tier:2};
+      return {code:'partner', label:'Partner', tier:1};
+    }
+
+    function deriveBadgePubblico(d){
+      return badgeEsplicito(d) || badgeDerivato(d);
+    }
+
+    function marchioVisibile(d){
+      return (d.registrata === true) &&
+             (d.tipoAbbonamento==='base' || d.tipoAbbonamento==='top' || d.piano==='standard' || d.piano==='pro') &&
+             abbonamentoAttivo(d);
+    }
+
+    function stelleHtmlFrom(d){
+      const s = Number(d.stelleAttuali || d.stelle || 0);
+      const n = isFinite(s) ? Math.max(0, Math.min(5, Math.round(s))) : 0;
+      return n
+        ? ` <span class="stelle" title="${n} stelle">${'★'.repeat(n)}${'☆'.repeat(5-n)}</span>`
+        : '';
+    }
+
+    function puntiValore(d){
+      return Number(d.punti_ofi ?? d.puntiOfi ?? d.punti ?? 0) || 0;
+    }
+
+    function profiloCompleto(d){
+      return d.profiloCompleto === true || d.completamentoProfilo === 100;
+    }
+
+    function tier(d){
+      return deriveBadgePubblico(d).tier;
+    }
+
+    async function leggiImprese() {
+      const datasets = [];
+
+      // 1) IMPRESE VISIBILI (registrate / approvate)
+      try {
+        const snapVis = await getDocs(collection(db, 'imprese_visibili'));
+        snapVis.forEach(doc => {
+          const d = doc.data();
+
+          const lat = d.lat ?? d.sede_principale?.lat;
+          const lon = d.lon ?? d.sede_principale?.lng;
+          if (lat == null || lon == null) return;
+
+          d.lat = lat;
+          d.lon = lon;
+
+          d.email      = d.email || doc.id;
+          d.registrata = true;
+
+          d.nomeImpresa = d.nomeImpresa || d.nome || d.ragione_sociale || 'Impresa';
+          d.comune      = d.comune      || d.sede_principale?.citta || d.citta || '';
+
+          datasets.push(d);
+        });
+      } catch (e) {
+        console.warn("imprese_visibili non disponibile", e);
+      }
+
+      // 2) IMPRESE NON REGISTRATE
+      try {
+        const snapNon = await getDocs(collection(db, 'imprese_non_registrate'));
+        snapNon.forEach(doc => {
+          const d = doc.data();
+          if (d.lat == null || d.lon == null) return;
+
+          d.idFirestore = doc.id;
+          d.email       = d.email || d.email_impresa || doc.id;
+          d.registrata  = d.registrata ?? false;
+
+          d.nomeImpresa = d.nomeImpresa || d.ragione_sociale || d.nome || 'Impresa';
+          d.comune      = d.comune      || d.citta || '';
+
+          datasets.push(d);
+        });
+      } catch (e) {
+        console.warn("imprese_non_registrate non disponibile", e);
+      }
+
+      // 3) Fallback demo (solo se non troviamo nulla)
+      if (datasets.length === 0) {
+        const snapDemo = await getDocs(collection(db, 'imprese_demo'));
+        snapDemo.forEach(doc => {
+          const d = doc.data();
+          if (d.lat && d.lon) datasets.push(d);
+        });
+      }
+
+      return datasets;
+    }
+
+    async function caricaImprese() {
+      const tutte = await leggiImprese();
+      const arr   = [];
+
+      for (const d of tutte) {
+        if (d.lat == null || d.lon == null) continue;
+        d.distanza = distanzaKm(userLat, userLon, d.lat, d.lon);
+        arr.push(d);
+      }
+
+      // Ordiniamo per distanza crescente (le 5 più vicine)
+      arr.sort((a, b) => a.distanza - b.distanza);
+
+      impreseSelezionate = arr.slice(0, 5);
+
+      renderCards(impreseSelezionate);
+
+      // Marker mappa per le 5 selezionate
+      impreseSelezionate.forEach(imp => {
+        const t = tier(imp);
+        const color = t === 3 ? '#cfa349'
+                   : t === 2 ? '#0d6efd'
+                   : t === 1 ? '#23446d'
+                   : '#6e6e6e';
+        new mapboxgl.Marker({ color })
+          .setLngLat([imp.lon, imp.lat])
+          .setPopup(new mapboxgl.Popup().setText(imp.nomeImpresa || imp.nome || 'Impresa'))
+          .addTo(map);
+      });
+    }
+
+    function renderCards(imprese){
+      container.innerHTML = '';
+
+      imprese.forEach(imp => {
+        const b           = deriveBadgePubblico(imp);
+        const stelle      = stelleHtmlFrom(imp);
+        const punti       = puntiValore(imp);
+        const sigillo     = marchioVisibile(imp);
+        const checkProfilo = profiloCompleto(imp);
+        const isRegistrata = imp.registrata === true;
+
+        const card = document.createElement('article');
+        card.className = `impresa-card tier-${b.tier}`;
+        card.style.cursor = 'pointer';
+
+        const chipValore = isRegistrata
+          ? `<span class="chip ofi" title="Punteggio merito operativo interno OFI">Valore OFI: ${punti}</span>`
+          : '';
+
+        const chipProfilo = (isRegistrata && checkProfilo)
+          ? `<span class="chip check" title="Profilo pubblico completo">✔ Profilo attivo</span>`
+          : '';
+
+        const sigilloHtml = sigillo
+          ? `<a href="../preventivo/marchio.html" class="sigillo-badge" title="Marchio di Affidabilità OFI">
+               <img src="../images/sigillo-ofi.png" alt="Marchio di Affidabilità OFI" width="20" height="20">
+               <span>Marchio di Affidabilità</span>
+             </a>`
+          : '';
+
+        const logoRaw = imp.logo_url || imp.logo || 'rosa.png';
+        const logoSrc = logoRaw.startsWith('http') ? logoRaw : `../images/${logoRaw}`;
+
+        const testoRichiesta = !isRegistrata
+          ? '<small class="small small-muted">OFI invierà la tua richiesta a questa impresa per tuo conto.</small>'
+          : '';
+
+        card.innerHTML = `
+          ${b.tier === 3 ? '<div class="ribbon">TOP</div>' : ''}
+          <div class="impresa-head">
+            <img class="card-logo" src="${logoSrc}" alt="Logo ${imp.nomeImpresa || imp.nome || 'Impresa'}">
+            <div>
+              <h3>${imp.nomeImpresa || imp.nome || 'Impresa'}</h3>
+              <div class="impresa-meta">
+                <span>${imp.comune || ''} • ${Math.round(imp.distanza)} km</span>
+                ${stelle}
+                ${chipValore}
+                ${chipProfilo}
+              </div>
+              <span class="badge ${b.code}">${b.label}</span>
+            </div>
+          </div>
+          <div class="impresa-foot">
+            ${testoRichiesta}
+            <small class="small">${imp.id_ofi || imp.codice_ofi || ''}</small>
+            <div>${sigilloHtml}</div>
+          </div>
+        `;
+
+        // Click card → profilo corretto
+        card.addEventListener('click', () => {
+          const id = imp.idFirestore || imp.email || imp.id || '';
+          if (!id) return;
+
+          if (isRegistrata) {
+            const url = new URL('/imprese/profilo.html', window.location.origin);
+            url.searchParams.set('id', id);
+            url.searchParams.set('src', 'auto');
+            location.href = url.toString();
+            return;
+          }
+
+          const url = new URL('/imprese/profilo-light.html', window.location.origin);
+          url.searchParams.set('id', id);
+          url.searchParams.set('src', 'auto');
+
+          if (Number.isFinite(userLat) && Number.isFinite(userLon)) {
+            url.searchParams.set('lat', userLat);
+            url.searchParams.set('lon', userLon);
+          }
+
+          location.href = url.toString();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    caricaImprese();
+
+    // Prosegui → salva selezione e vai al modulo
+    document.getElementById('prosegui').addEventListener('click', ()=> {
+      const selezionate = impreseSelezionate.map(imp => {
+        const b = deriveBadgePubblico(imp);
+        return {
+          email:        imp.email || imp.emailImpresa || '',
+          nomeImpresa:  imp.nomeImpresa || imp.nome || 'Impresa',
+          codice_ofi:   imp.codice_ofi || imp.id_ofi || '',
+          badge:        b.label,
+          punti_ofi:    puntiValore(imp),
+          distanza_km:  Math.round(imp.distanza)
+        };
+      });
+      localStorage.setItem('impreseSelezionate', JSON.stringify(selezionate));
+      const p = new URLSearchParams({ modalita });
+      location.href = `richiedi-preventivo.html?${p.toString()}`;
+    });
+  </script>
+
+  <!-- Menù globale -->
+  <script src="/js/menu.js?v=2" defer></script>
+</body>
+</html>

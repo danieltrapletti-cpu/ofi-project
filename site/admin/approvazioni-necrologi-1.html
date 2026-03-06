@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OFI · Approvazioni · Necrologi</title>
+
+  <!-- Stili admin -->
+  <link rel="stylesheet" href="/ofi-admin.css">
+  <link rel="stylesheet" href="/ofi-admin-fix.css">
+
+  <!-- Firebase v10 (modular) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onIdTokenChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // --- CONFIG OFI ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+    function fmtTS(ts){
+      if(!ts) return "—";
+      try {
+        const d = ts.toDate ? ts.toDate() : new Date(ts);
+        return d.toLocaleDateString();
+      } catch { return "—"; }
+    }
+
+    async function requireAdmin(user){ return !!user; }
+
+    async function loadInbox(){
+      const wrap = $("#cardsWrap");
+      wrap.innerHTML = `<div class="loading">Carico necrologi in attesa…</div>`;
+
+      const q = query(
+        collection(db, "necrologi"),
+        where("stato", "==", "in_attesa"),
+        orderBy("dataCreazione", "desc")
+      );
+      const snap = await getDocs(q);
+
+      $("#countTot").textContent = snap.size;
+      $("#countAttesa").textContent = snap.size;
+
+      if (snap.empty){
+        wrap.innerHTML = `<div class="empty">Nessun necrologio in attesa.</div>`;
+        return;
+      }
+
+      const term = $("#search").value?.trim().toLowerCase();
+      const frag = document.createDocumentFragment();
+
+      snap.forEach(docu=>{
+        const d = docu.data();
+        const searchable = [
+          d.nome, d.cognome, d.comune, d.testo, docu.id
+        ].filter(Boolean).join(" ").toLowerCase();
+        if (term && !searchable.includes(term)) return;
+
+        const nomeCompleto = [d.nome, d.cognome].filter(Boolean).join(" ") || "—";
+
+        const card = document.createElement("div");
+        card.className = "card item";
+        card.innerHTML = `
+          <div class="item-head">
+            <h3 class="item-title">Necrologio · <span class="muted">${nomeCompleto}</span></h3>
+            <div class="chip chip-wait">in_attesa</div>
+          </div>
+
+          <div class="item-body">
+            <div class="row">
+              <div><b>Comune</b>: ${d.comune || "—"}</div>
+              <div><b>Data decesso</b>: ${fmtTS(d.dataDecesso)}</div>
+              <div><b>Creazione</b>: ${fmtTS(d.dataCreazione)}</div>
+            </div>
+            ${d.testo ? `<div class="row"><div class="multiline"><b>Testo</b>: ${d.testo}</div></div>` : ""}
+          </div>
+
+          <div class="item-actions">
+            <button class="btn btn-success" data-approve="${docu.id}">Approva</button>
+            <button class="btn btn-danger" data-reject="${docu.id}">Rifiuta</button>
+          </div>
+        `;
+        frag.appendChild(card);
+      });
+
+      wrap.innerHTML = "";
+      wrap.appendChild(frag);
+
+      $$("#cardsWrap [data-approve]").forEach(btn=>{
+        btn.addEventListener("click", () => approve(btn.dataset.approve));
+      });
+      $$("#cardsWrap [data-reject]").forEach(btn=>{
+        btn.addEventListener("click", () => reject(btn.dataset.reject));
+      });
+    }
+
+    async function approve(id){
+      try {
+        const ref = doc(db, "necrologi", id);
+        await updateDoc(ref, {
+          stato: "pubblicato",
+          dataPubblicazione: serverTimestamp()
+        });
+        toast("Necrologio approvato e pubblicato.");
+        await loadInbox();
+      } catch(e){
+        console.error(e);
+        toast("Errore: impossibile approvare.");
+      }
+    }
+
+    async function reject(id){
+      try {
+        const ref = doc(db, "necrologi", id);
+        await updateDoc(ref, {
+          stato: "rifiutato",
+          dataRifiuto: serverTimestamp()
+        });
+        toast("Necrologio rifiutato.");
+        await loadInbox();
+      } catch(e){
+        console.error(e);
+        toast("Errore: impossibile rifiutare.");
+      }
+    }
+
+    function toast(msg){
+      const t = $("#ofiToast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 2200);
+    }
+
+    onIdTokenChanged(auth, async (user) => {
+      if (!user) { location.replace("/admin/login.html"); return; }
+      const ok = await requireAdmin(user); if (!ok) return;
+      $("#adminEmail").textContent = user.email || "—";
+      await loadInbox();
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      $("#search").addEventListener("input", ()=>loadInbox());
+    });
+  </script>
+  <style>
+    .headerbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+    .chips{display:flex;gap:8px;align-items:center}
+    .chip{padding:.25rem .5rem;border-radius:999px;font-size:.85rem}
+    .chip-wait{background:#3b82f626;border:1px solid #3b82f6;color:#dbeafe}
+    .muted{opacity:.8}
+    .toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .search{min-width:260px}
+    .item{margin-bottom:12px}
+    .item-head{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .item-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .loading,.empty{opacity:.75;padding:12px}
+    #ofiToast{position:fixed;right:16px;bottom:16px;background:#0ea5e9;color:#fff;padding:.6rem .8rem;border-radius:.75rem;opacity:0;transform:translateY(8px);transition:.2s}
+    #ofiToast.show{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body class="ofi-admin">
+  <aside class="sidebar">
+    <div class="brand">OFI</div>
+    <nav class="nav">
+      <div class="nav-section">APPROVAZIONI</div>
+      <a href="/admin/approvazioni-registrazioni.html" class="nav-link">Registrazioni</a>
+      <a href="/admin/approvazioni-preventivi.html" class="nav-link">Preventivi</a>
+      <a href="/admin/approvazioni-necrologi.html" class="nav-link active">Necrologi</a>
+
+      <div class="nav-section">REGISTRI</div>
+      <a href="/admin/imprese-admin.html" class="nav-link">Anagrafiche</a>
+
+      <div class="nav-section">CONTENUTI</div>
+      <a href="/admin/preventivi-admin.html" class="nav-link">Preventivi (gestione)</a>
+      <a href="/admin/necrologi-admin.html" class="nav-link">Necrologi (storico)</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="left">
+        <h1>Approvazioni · Necrologi</h1>
+        <p class="muted">Questa pagina mostra <b>solo</b> i necrologi con <b>stato: in_attesa</b>. Dopo l’approvazione risultano <i>pubblicati</i> e li gestisci nello <i>storico necrologi</i>.</p>
+      </div>
+      <div class="right">
+        <span id="adminEmail" class="admin-email">—</span>
+        <a class="btn" href="/admin/login.html">Logout</a>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="headerbar">
+        <div class="toolbar">
+          <input id="search" class="input search" placeholder="Cerca per nome, cognome, comune, ID…" />
+        </div>
+        <div class="chips">
+          <div class="chip">Tot: <span id="countTot">0</span></div>
+          <div class="chip chip-wait">In attesa: <span id="countAttesa">0</span></div>
+        </div>
+      </div>
+
+      <div id="cardsWrap" class="cards-list"></div>
+    </section>
+  </main>
+
+  <div id="ofiToast"></div>
+</body>
+</html>

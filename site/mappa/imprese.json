@@ -1,0 +1,23 @@
+[
+  {
+    "nome": "Impresa Funebre La Pace",
+    "indirizzo": "Via Roma 1, Firenze",
+    "telefono": "0551234567",
+    "lat": 43.7696,
+    "lng": 11.2558
+  },
+  {
+    "nome": "Onoranze Rossi",
+    "indirizzo": "Piazza Duomo, Milano",
+    "telefono": "0234567890",
+    "lat": 45.4642,
+    "lng": 9.1900
+  },
+  {
+    "nome": "Funerali Sereni",
+    "indirizzo": "Via Napoli 88, Roma",
+    "telefono": "0612345678",
+    "lat": 41.9028,
+    "lng": 12.4964
+  }
+]

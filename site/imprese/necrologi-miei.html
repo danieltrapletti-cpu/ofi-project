@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>I miei Necrologi & Anniversari — OFI</title>
+  <meta name="description" content="Gestisci i necrologi e gli anniversari pubblicati dalla tua impresa su Onoranze Funebri Italia." />
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS base sito -->
+  <link rel="stylesheet" href="/ofi.css?v=3" />
+
+  <!-- JS globale coerente con dashboard -->
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+
+  <style>
+    :root{
+      --pageMax: 1100px;
+      --cardBg: rgba(255,255,255,.06);
+      --cardBrd: rgba(255,255,255,.12);
+      --shadow: 0 10px 28px rgba(0,0,0,.25);
+    }
+    body{ background: radial-gradient(1200px 600px at 20% -10%, rgba(255,215,100,.10), transparent 60%),
+                        radial-gradient(900px 500px at 110% 10%, rgba(90,160,255,.10), transparent 55%),
+                        var(--bg); }
+
+    .wrap{ max-width: var(--pageMax); margin: 0 auto; padding: 1.2rem 1rem 2.2rem; }
+    .hero{
+      margin-top: 1rem;
+      border-radius: 22px;
+      padding: 1.2rem 1.2rem;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(15,35,60,.82), rgba(15,35,60,.55));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 260px at 20% 20%, rgba(255,215,100,.12), transparent 60%),
+                  radial-gradient(520px 240px at 90% 30%, rgba(255,80,80,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .hero > *{ position:relative; z-index:1; }
+    .hero-top{ display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .hero-id{ display:flex; align-items:center; gap:.9rem; }
+    .logo{
+      width:56px; height:56px; border-radius:16px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; }
+    .hero h1{ margin:0; font-size:1.55rem; letter-spacing:.2px; }
+    .hero p{ margin:.25rem 0 0; color: var(--muted); max-width: 62ch; }
+    .hero-actions{ display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .hero-actions .btn{ white-space:nowrap; }
+
+    .toolbar{
+      margin-top: 1rem;
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .tabs{
+      display:flex; gap:.5rem; flex-wrap:wrap;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      padding:.35rem;
+      border-radius: 999px;
+    }
+    .tab{
+      border:0;
+      background: transparent;
+      color: var(--text);
+      padding:.55rem .9rem;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor:pointer;
+      display:flex; align-items:center; gap:.45rem;
+      opacity:.86;
+    }
+    .tab[aria-selected="true"]{
+      background: rgba(255,215,100,.16);
+      border:1px solid rgba(255,215,100,.38);
+      opacity:1;
+    }
+    .tab .count{
+      font-size:.85rem;
+      opacity:.9;
+      padding:.18rem .45rem;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+    }
+
+    .search{
+      display:flex; gap:.5rem; align-items:center;
+      min-width: min(520px, 100%);
+      flex: 1 1 320px;
+      justify-content:flex-end;
+    }
+    .search input{
+      width: min(520px, 100%);
+      padding:.75rem .85rem;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+    }
+    .search input::placeholder{ color: rgba(255,255,255,.55); }
+
+    .grid{
+      margin-top: 1rem;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: .9rem;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 640px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 220px;
+    }
+    .thumb{
+      height: 140px;
+      background: rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb img{
+      width:100%; height:100%;
+      object-fit:cover;
+      filter: saturate(1.02);
+      transform: scale(1.02);
+    }
+    .thumb .badgeType{
+      position:absolute; left:.7rem; top:.7rem;
+      padding:.35rem .55rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size:.8rem;
+      background: rgba(15,35,60,.78);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(6px);
+    }
+    .thumb .badgeNew{
+      position:absolute; right:.7rem; top:.7rem;
+      padding:.35rem .55rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size:.8rem;
+      background: rgba(255,80,80,.18);
+      border:1px solid rgba(255,80,80,.35);
+      backdrop-filter: blur(6px);
+    }
+
+    .card-body{ padding: .9rem .95rem .85rem; display:flex; flex-direction:column; gap:.35rem; flex:1; }
+    .title{ font-family: "Noto Serif", serif; font-size:1.1rem; margin:0; line-height:1.25; }
+    .meta{ color: var(--muted); font-size:.92rem; display:flex; flex-wrap:wrap; gap:.5rem; }
+    .meta span{ display:inline-flex; gap:.35rem; align-items:center; }
+    .meta .dot::before{ content:"•"; opacity:.55; margin-right:.25rem; }
+
+    .card-actions{
+      padding: .85rem .95rem 1rem;
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+    }
+    .btn-mini{
+      padding:.55rem .7rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: .92rem;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+    }
+    .btn-mini.primary{
+      border-color: rgba(255,215,100,.45);
+      background: rgba(255,215,100,.14);
+    }
+    .btn-mini.danger{
+      border-color: rgba(255,80,80,.45);
+      background: rgba(255,80,80,.12);
+    }
+    .empty{
+      margin-top: 1rem;
+      padding: 1.1rem 1rem;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.20);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+
+    /* (Modale rimossa: ora la gestione avviene su pagina dedicata) */
+
+
+
+    /* Stampa locandina */
+    @media print{
+      body * { visibility:hidden !important; }
+      #printArea, #printArea * { visibility: visible !important; }
+      #printArea{ position: fixed; left:0; top:0; width:100vw; height:100vh; background:#fff; }
+    }
+    #printArea{ display:none; }
+    #printArea.show{ display:block; }
+    .poster{
+      width: 297mm; height: 210mm; /* A4 orizzontale */
+      padding: 18mm 18mm;
+      box-sizing:border-box;
+      font-family: "Noto Serif", serif;
+      color:#0f2340;
+    }
+    .poster .topline{
+      display:flex; justify-content:space-between; align-items:flex-start;
+      gap: 16mm;
+    }
+    .poster .brandline{
+      display:flex; align-items:center; gap: 6mm;
+      font-family: "Source Sans 3", sans-serif;
+    }
+    .poster .brandline img{ width: 22mm; height:22mm; object-fit:contain; }
+    .poster .h{
+      margin-top: 10mm;
+      font-size: 16mm;
+      line-height: 1.05;
+      font-weight: 700;
+    }
+    .poster .sub{
+      margin-top: 5mm;
+      font-size: 6mm;
+      font-family: "Source Sans 3", sans-serif;
+      opacity:.9;
+    }
+    .poster .qrrow{
+      margin-top: 14mm;
+      display:flex; justify-content:space-between; align-items:flex-end; gap: 10mm;
+    }
+    .poster .callout{
+      flex: 1 1 auto;
+      border-left: 2mm solid #c9a03a;
+      padding-left: 6mm;
+      font-family: "Source Sans 3", sans-serif;
+    }
+    .poster .callout .big{
+      font-size: 11mm;
+      font-weight: 800;
+      margin:0 0 2mm;
+    }
+    .poster .callout .small{
+      font-size: 5.2mm;
+      margin:0;
+      opacity:.95;
+    }
+    .poster .qr{ width: 58mm; height:58mm; display:grid; place-items:center; border:1px solid #ddd; border-radius: 4mm; padding: 4mm; }
+    .poster .qr canvas{ width: 100% !important; height: 100% !important; }
+    .poster .foot{
+      margin-top: 10mm;
+      font-family: "Source Sans 3", sans-serif;
+      font-size: 4.2mm;
+      opacity:.85;
+      display:flex; justify-content:space-between; align-items:center;
+      border-top: 0.6mm solid #e8e8e8;
+      padding-top: 4mm;
+    }
+  
+    /* ===== Tema CHIARO: leggibilità alta (coerente con scelta-necrologi) ===== */
+    body:not(.theme-dark) .hero{
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(245,248,255,.86));
+      border: 1px solid rgba(10,20,40,.10);
+      box-shadow: 0 10px 28px rgba(0,0,0,.10);
+    }
+    body:not(.theme-dark) .hero h1{ color:#0f2340; }
+    body:not(.theme-dark) .hero p{ color:#4b5a6f; }
+
+    body:not(.theme-dark) .tabs{
+      background: rgba(15,35,60,.04);
+      border-color: rgba(15,35,60,.10);
+    }
+    body:not(.theme-dark) .tab{ color:#0f2340; opacity:.9; }
+    body:not(.theme-dark) .tab .count{
+      background: rgba(15,35,60,.06);
+      border-color: rgba(15,35,60,.12);
+    }
+    body:not(.theme-dark) .tab[aria-selected="true"]{
+      background: rgba(255,215,100,.26);
+      border-color: rgba(201,160,58,.55);
+    }
+
+    body:not(.theme-dark) .search input{
+      background: #ffffff;
+      border-color: rgba(15,35,60,.14);
+      color:#0f2340;
+    }
+    body:not(.theme-dark) .search input::placeholder{ color: rgba(15,35,60,.45); }
+
+    body:not(.theme-dark) .card{
+      background: #ffffff;
+      border-color: rgba(15,35,60,.12);
+      box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    }
+    body:not(.theme-dark) .card-actions{
+      background: rgba(15,35,60,.03);
+      border-top-color: rgba(15,35,60,.08);
+    }
+    body:not(.theme-dark) .meta{ color:#516079; }
+    body:not(.theme-dark) .btn-mini{
+      background: rgba(15,35,60,.04);
+      border-color: rgba(15,35,60,.12);
+      color:#0f2340;
+    }
+    body:not(.theme-dark) .btn-mini.primary{
+      background: rgba(255,215,100,.22);
+      border-color: rgba(201,160,58,.55);
+    }
+    body:not(.theme-dark) .btn-mini.danger{
+      background: rgba(255,80,80,.10);
+      border-color: rgba(255,80,80,.35);
+    }
+    body:not(.theme-dark) .empty{
+      background: rgba(255,255,255,.8);
+      border-color: rgba(15,35,60,.18);
+      color:#516079;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="../images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+      <li class="menu-divider" aria-hidden="true"></li>
+
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../cittadini/servizi.html">Servizi OFI</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="btn btn-primary" href="./imprese-dashboard.html">Dashboard Impresa</a></li>
+      <li><a href="./scelta-necrologi.html">Crea nuovo necrologio</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a href="#" id="logoutTop">Esci</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" aria-label="I miei necrologi e anniversari">
+    <div class="hero-top">
+      <div class="hero-id">
+        <div class="logo">
+          <img id="impLogo" src="../images/rosa.png" alt="Logo impresa" onerror="this.onerror=null; this.src='../images/rosa.png';">
+        </div>
+        <div>
+          <h1>I miei Necrologi &amp; Anniversari</h1>
+          <p class="small">
+            Qui trovi lo storico pubblicato dalla tua impresa su OFI.
+            Puoi aprire ogni contenuto in una pagina dedicata (gestione completa), oppure stampare una locandina con QR code.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./scelta-necrologi.html">+ Nuovo</a>
+        <a class="btn" href="./imprese-dashboard.html">Torna in dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="toolbar" aria-label="Filtri">
+    <div class="tabs" role="tablist" aria-label="Seleziona contenuto">
+      <button class="tab" id="tab-nec" role="tab" aria-selected="true" aria-controls="panel-nec">
+        🕯️ Necrologi <span class="count" id="countNec">0</span>
+      </button>
+      <button class="tab" id="tab-ann" role="tab" aria-selected="false" aria-controls="panel-ann">
+        🗓️ Anniversari <span class="count" id="countAnn">0</span>
+      </button>
+    </div>
+
+    <div class="search">
+      <input id="searchBox" type="search" placeholder="Cerca per nome, luogo, data…" autocomplete="off" />
+    </div>
+  </section>
+
+  <section id="panel-nec" role="tabpanel" aria-labelledby="tab-nec">
+    <div id="gridNec" class="grid" aria-live="polite"></div>
+    <div id="emptyNec" class="empty" hidden>
+      Nessun necrologio trovato. Quando pubblichi un necrologio, qui vedrai lo storico.
+    </div>
+  </section>
+
+  <section id="panel-ann" role="tabpanel" aria-labelledby="tab-ann" hidden>
+    <div id="gridAnn" class="grid" aria-live="polite"></div>
+    <div id="emptyAnn" class="empty" hidden>
+      Nessun anniversario trovato. Quando pubblichi un anniversario, qui vedrai lo storico.
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+    </div>
+  </div>
+</footer>
+
+
+
+<!-- (Modale dettaglio rimossa) -->
+
+<!-- AREA STAMPA (locandina) -->
+<section id="printArea">
+  <div class="poster" id="poster">
+    <div class="topline">
+      <div class="brandline">
+        <img id="posterLogo" src="../images/logo-ofi.png" alt="OFI">
+        <div>
+          <div style="font-weight:900; letter-spacing:.3px;">Onoranze Funebri Italia</div>
+          <div style="opacity:.8; font-size:4.4mm;">Locandina ufficiale — QR per lasciare un pensiero</div>
+        </div>
+      </div>
+      <div style="text-align:right; font-family:'Source Sans 3',sans-serif;">
+        <div style="font-weight:900;" id="posterImpresa">Impresa</div>
+        <div style="opacity:.8; font-size:4.4mm;" id="posterId">ID: —</div>
+      </div>
+    </div>
+
+    <div class="h" id="posterNome">Nome Cognome</div>
+    <div class="sub" id="posterSub">Scansiona per aprire il necrologio e lasciare un pensiero.</div>
+
+    <div class="qrrow">
+      <div class="callout">
+        <p class="big">Lascia un pensiero</p>
+        <p class="small">Questo spazio digitale è dedicato al ricordo. Un messaggio anche breve può essere di grande conforto alla famiglia.</p>
+      </div>
+      <div class="qr" id="posterQr"></div>
+    </div>
+
+    <div class="foot">
+      <span>Pubblicato tramite OFI • Riservato e rispettoso</span>
+      <span id="posterUrl">—</span>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<!-- Firebase + Logica (ES Module) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, query, where, orderBy, limit, getDocs, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const $  = (s,sc=document)=>sc.querySelector(s);
+  const $$ = (s,sc=document)=>Array.from(sc.querySelectorAll(s));
+
+  // Collezioni (robusto): se in futuro cambi nome, modifica qui.
+  const COLL = {
+    NECROLOGI: ['necrologi_pubblicati','necrologi','necrologiOfi'],
+    ANNIVERSARI: ['anniversari_pubblicati','anniversari','anniversariOfi']
+  };
+
+  // campi possibili per associare il contenuto all'impresa
+  const OWNER_FIELDS = ['uidImpresa','ownerUid','uid','impresaUid','impresaEmail','impresa_id','impresaId','impresa','publisherEmail','autoreEmail'];
+
+  let CURRENT_EMAIL = null;
+  let IMPRESA_DOC = null;
+
+  function safeText(v, fallback='—'){ return (v ?? '').toString().trim() || fallback; }
+
+  function toDateMaybe(v){
+    if (!v) return null;
+    if (typeof v === 'object' && typeof v.toDate === 'function') return v.toDate();
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function formatDate(d){
+    if (!d) return '';
+    try{
+      return d.toLocaleDateString('it-IT', { year:'numeric', month:'2-digit', day:'2-digit' });
+    }catch{ return ''; }
+  }
+
+  function isNew(d){
+    const dt = toDateMaybe(d);
+    if (!dt) return false;
+    const diff = Date.now() - dt.getTime();
+    return diff >= 0 && diff < 24*60*60*1000;
+  }
+
+  function publicUrlFor(item){
+    // Se esiste già una URL salvata, usala
+    const direct = item.publicUrl || item.urlPubblica || item.url || '';
+    if (direct && /^https?:\/\//i.test(direct)) return direct;
+
+    // Se c'è un path relativo, normalizza
+    if (direct && direct.startsWith('/')) return location.origin + direct;
+
+    // Default OFI: pagina singola necrologio
+    // (se in futuro hai una pagina diversa, cambia qui)
+    const id = encodeURIComponent(item.id || item.docId || '');
+    const tipo = (item._type || 'necrologio');
+    // convenzione suggerita: /necrologio.html?id=DOCID (o /anniversario.html?id=DOCID)
+    const page = tipo === 'anniversario' ? '/anniversario.html' : '/necrologio.html';
+    return location.origin + `${page}?id=${id}`;
+  }
+
+  async function loadImpresa(email){
+    const ref = doc(db, 'imprese_registrate', email);
+    const snap = await getDoc(ref).catch(()=>null);
+    const d = snap && snap.exists() ? snap.data() : {};
+    IMPRESA_DOC = d || {};
+    const nome = d.nomeImpresa || d.nome || (email.split('@')[0]);
+    const logo = d.logoUrl || d.logo_url || d.logo || '';
+    const codice = d.codiceOFI || d.codice_ofi || '—';
+
+    $('#impLogo').src = logo || '../images/rosa.png';
+    $('#posterImpresa').textContent = nome;
+    $('#posterId').textContent = `ID: ${codice}`;
+    return { nome, logo, codice };
+  }
+
+  function normalizeDoc(docSnap, type){
+    const raw = docSnap.data() || {};
+    const snap = (raw.answersSnapshot && typeof raw.answersSnapshot === 'object') ? raw.answersSnapshot : {};
+    // Merge: i campi "snapshot" contengono spesso nome/cognome/dati principali
+    const data = { ...raw, ...snap };
+    return { id: docSnap.id, _type: type, ...data };
+  }
+
+  function bestName(x){
+    const full = [x.nome, x.cognome].filter(Boolean).join(' ').trim();
+    if (full) return full;
+    const a = x.nomeCompleto || x.nominativo || x.defunto || x.titolo || '';
+    return safeText(a, 'Senza titolo');
+  }
+
+  function bestMeta(x){
+    const luogo =
+      x.comuneRigaFinale || x.comuneFunerale || x.comune || x.citta || x.localita || x.luogo || x.comuneDecesso || '';
+
+    // date principali (necrologio / anniversario)
+    const dt =
+      toDateMaybe(x.dataNecrologio) ||
+      toDateMaybe(x.dataRicorrenza) ||
+      toDateMaybe(x.data_anniversario) ||
+      toDateMaybe(x.dataDecesso) ||
+      toDateMaybe(x.data_decesso) ||
+      toDateMaybe(x.publishedAt) ||
+      toDateMaybe(x.createdAt) ||
+      null;
+
+    const dts = formatDate(dt);
+    const parts = [];
+    if (dts) parts.push(`📅 ${dts}`);
+    if (luogo) parts.push(`📍 ${luogo}`);
+    return parts.join('  ');
+  }
+
+  function bestThumb(x){
+    return (
+      x.photoURL || x.photoUrl || x.fotoURL || x.fotoUrl || x.foto ||
+      x.photoDataUrl || x.photoDataURL || x.photo_data_url ||
+      x.immagineUrl || x.imgUrl || x.imageUrl || ''
+    );
+  }
+
+  async function queryFirstMatch(collectionNames, uid, email){
+    for (const name of collectionNames){
+      try{
+        // 1) prima prova per UID impresa (più affidabile)
+        for (const f of ['uidImpresa','ownerUid','impresaUid','uid']){
+          try{
+            const qRef = query(collection(db, name), where(f, '==', uid), limit(120));
+            const qs = await getDocs(qRef);
+            if (!qs.empty) return { name, docs: qs.docs };
+          }catch(e){}
+        }
+
+        // 2) poi prova per email impresa
+        for (const f of ['impresaEmail','publisherEmail','autoreEmail']){
+          try{
+            const qRef2 = query(collection(db, name), where(f, '==', email), limit(120));
+            const qs2 = await getDocs(qRef2);
+            if (!qs2.empty) return { name, docs: qs2.docs };
+          }catch(e){}
+        }
+      }catch(e){
+        // collezione assente o indice mancante -> continua
+      }
+    }
+    return { name: collectionNames[0], docs: [] };
+  }
+
+  function renderCard(x){
+    const title = bestName(x);
+    const meta = bestMeta(x);
+    const thumb = bestThumb(x);
+    const tipoLabel = x._type === 'anniversario' ? 'Anniversario' : 'Necrologio';
+    const created = x.createdAt || x.dataCreazione || x.timestamp || null;
+
+    const newBadge = isNew(created) ? `<span class="badgeNew">NUOVO</span>` : '';
+    const typeBadge = `<span class="badgeType">${tipoLabel}</span>`;
+
+    const img = thumb
+      ? `<img src="${thumb}" alt="Foto ricordo" loading="lazy" onerror="this.remove()">`
+      : '';
+
+    return `
+      <article class="card" data-id="${x.id}" data-type="${x._type}">
+        <div class="thumb">
+          ${img}
+          ${typeBadge}
+          ${newBadge}
+        </div>
+        <div class="card-body">
+          <h3 class="title">${title}</h3>
+          <div class="meta"><span>🕯️</span><span>${meta || '—'}</span></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-mini primary" data-action="open">Apri</button>
+          <button class="btn-mini" data-action="poster">Locandina</button>
+          <button class="btn-mini danger" data-action="delete">Elimina</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function mountGrid(gridEl, emptyEl, list){
+    gridEl.innerHTML = list.map(renderCard).join('');
+    emptyEl.hidden = list.length > 0;
+  }
+
+  function applySearch(list, q){
+    const s = (q||'').toLowerCase().trim();
+    if (!s) return list;
+    return list.filter(x=>{
+      const hay = [
+        bestName(x),
+        x.luogo, x.comune, x.citta, x.localita,
+        x.testo, x.testoHtml, x.estratto, x.note
+      ].filter(Boolean).join(' ').toLowerCase();
+      return hay.includes(s);
+    });
+  }
+
+  // ===== UI Tabs =====
+  function setTab(which){
+    const nec = which === 'nec';
+    $('#tab-nec').setAttribute('aria-selected', nec ? 'true' : 'false');
+    $('#tab-ann').setAttribute('aria-selected', nec ? 'false' : 'true');
+    $('#panel-nec').hidden = !nec;
+    $('#panel-ann').hidden = nec;
+  }
+  $('#tab-nec')?.addEventListener('click', ()=> setTab('nec'));
+  $('#tab-ann')?.addEventListener('click', ()=> setTab('ann'));
+
+  // (Modale rimossa: ora si apre una pagina dedicata)
+
+
+  // ===== Locandina / PDF =====
+  async function printPoster(item){
+    const url = publicUrlFor(item);
+    const nome = bestName(item);
+    const impNome = (IMPRESA_DOC?.nomeImpresa || IMPRESA_DOC?.nome || (CURRENT_EMAIL||'').split('@')[0] || 'Impresa').toString();
+
+    $('#posterNome').textContent = nome;
+    $('#posterSub').textContent = item._type === 'anniversario'
+      ? 'Scansiona per aprire la pagina e lasciare un pensiero nel ricordo.'
+      : 'Scansiona per aprire il necrologio e lasciare un pensiero.';
+    $('#posterImpresa').textContent = impNome;
+    $('#posterUrl').textContent = url.replace(/^https?:\/\//,'');
+    $('#posterQr').innerHTML = '';
+    const c = document.createElement('canvas');
+    $('#posterQr').appendChild(c);
+    try{ await QRCode.toCanvas(c, url, { margin:1, width: 640 }); }catch{}
+
+    const pa = $('#printArea');
+    pa.classList.add('show');
+    window.print();
+    setTimeout(()=> pa.classList.remove('show'), 400);
+  }
+
+  // (Commenti: gestiti nella pagina di dettaglio)
+
+  // (Consegna a cittadino: gestita nella pagina di dettaglio)
+
+  // (Consegna a cittadino: gestita nella pagina di dettaglio)
+
+
+
+  // ===== Eliminazione (da fare in sicurezza) =====
+  async function deleteItem(item){
+    const ok = confirm('Vuoi eliminare definitivamente questo contenuto?\n\n⚠️ Nota: per evitare abusi, l’eliminazione deve anche stornare i punti assegnati (+10) e registrare il log.\nQuesta parte va gestita lato server.');
+    if (!ok) return;
+
+    // Fallback: eliminazione diretta (SOLO se le regole la permettono).
+    // In produzione: sostituire con Netlify Function (consigliato).
+    try{
+      const col = item._type === 'anniversario' ? (window._ANN_COLL || COLL.ANNIVERSARI[0]) : (window._NEC_COLL || COLL.NECROLOGI[0]);
+      await deleteDoc(doc(db, col, item.id));
+      alert('Eliminato.\n\nRicorda: ora dobbiamo aggiungere la Function per stornare i punti e fare log azione.');
+      await refresh();
+    }catch(e){
+      console.error('delete error', e);
+      alert('Non posso eliminare da qui (probabile regola sicurezza). La soluzione corretta è una Function server-side.');
+    }
+  }
+
+  // ===== Fetch & Render =====
+  let NEC_ALL = [];
+  let ANN_ALL = [];
+
+  async function refresh(){
+    const q = $('#searchBox')?.value || '';
+    const nec = applySearch(NEC_ALL, q);
+    const ann = applySearch(ANN_ALL, q);
+
+    mountGrid($('#gridNec'), $('#emptyNec'), nec);
+    mountGrid($('#gridAnn'), $('#emptyAnn'), ann);
+
+    $('#countNec').textContent = NEC_ALL.length;
+    $('#countAnn').textContent = ANN_ALL.length;
+  }
+
+  async function loadAll(uid, email){
+    // necrologi
+    const necRes = await queryFirstMatch(COLL.NECROLOGI, uid, email);
+    window._NEC_COLL = necRes.name;
+    NEC_ALL = (necRes.docs||[]).map(d=>normalizeDoc(d,'necrologio'));
+    NEC_ALL.sort((a,b)=> (toDateMaybe(b.publishedAt||b.createdAt||b.updatedAt||b.dataNecrologio)||0) - (toDateMaybe(a.publishedAt||a.createdAt||a.updatedAt||a.dataNecrologio)||0));
+
+    // anniversari
+    const annRes = await queryFirstMatch(COLL.ANNIVERSARI, uid, email);
+    window._ANN_COLL = annRes.name;
+    ANN_ALL = (annRes.docs||[]).map(d=>normalizeDoc(d,'anniversario'));
+    ANN_ALL.sort((a,b)=> (toDateMaybe(b.publishedAt||b.createdAt||b.updatedAt||b.dataRicorrenza)||0) - (toDateMaybe(a.publishedAt||a.createdAt||a.updatedAt||a.dataRicorrenza)||0));
+
+    await refresh();
+  }
+  // click delegato sulle card
+  function goToDetail(item){
+    const url = `./necrologio-mio.html?id=${encodeURIComponent(item.id)}&type=${encodeURIComponent(item._type || 'necrologio')}`;
+    location.href = url;
+  }
+
+  document.addEventListener('click', (e)=>{
+    const card = e.target.closest('.card[data-id]');
+    if (!card) return;
+
+    const id = card.getAttribute('data-id');
+    const type = card.getAttribute('data-type');
+    const action = e.target.getAttribute('data-action');
+
+    const list = type === 'anniversario' ? ANN_ALL : NEC_ALL;
+    const item = list.find(x=>x.id===id);
+    if (!item) return;
+
+    // Se clicchi in qualunque punto della card (o su "Apri"), vai alla pagina gestione completa
+    if (!action || action === 'open'){
+      goToDetail(item);
+      return;
+    }
+
+    if (action === 'poster') printPoster(item);
+    if (action === 'delete') deleteItem(item);
+  });
+
+  $('#searchBox')?.addEventListener('input', ()=> refresh());
+
+  // Logout top
+  $('#logoutTop')?.addEventListener('click', async (e)=>{
+    e.preventDefault();
+    try{ await signOut(auth); }catch{}
+    location.href = './login-imprese.html';
+  });
+
+  // Auth gate
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+      location.replace('./login-imprese.html?redirect=necrologi-miei.html');
+      return;
+    }
+    CURRENT_EMAIL = (user.email || '').toLowerCase();
+    await loadImpresa(CURRENT_EMAIL);
+    await loadAll(user.uid, CURRENT_EMAIL);
+  });
+</script>
+
+</body>
+</html>

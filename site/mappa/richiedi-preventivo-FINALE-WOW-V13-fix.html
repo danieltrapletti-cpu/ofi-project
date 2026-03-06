@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<title>Richiedi preventivo funebre | Onoranze Funebri Italia</title>
+<meta content="Compila il modulo ufficiale OFI per ricevere un preventivo personalizzato da imprese funebri affidabili nella tua zona." name="description"/>
+<meta content="index, follow" name="robots"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Richiesta Preventivo Funebre - OFI</title>
+<style>
+    body {
+      font-family: 'Segoe UI', sans-serif; color: #1a1a1a;
+      background: linear-gradient(to bottom, #f5f7fa, #ffffff);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* HEADER */
+    #ofi-header {
+      all: unset;
+      display: block;
+      text-align: center;
+      background-color: white;
+      padding: 1rem 0 0.8rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #ofi-header img {
+      max-width: 220px;
+      height: auto;
+    }
+
+    #ofi-nav {
+      background-color: #002c5d;
+      position: relative;
+    }
+
+    #ofi-nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin: 0;
+      padding: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    #ofi-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    #ofi-nav a:hover {
+      text-decoration: underline;
+    }
+
+    #ofi-menu-toggle, #ofi-menu-close {
+      display: none;
+      background-color: #002c5d;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      padding: 0.5rem 1rem;
+      width: 100%;
+      text-align: right;
+      box-sizing: border-box;
+    }
+
+    #ofi-menu-close {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      #ofi-nav ul {
+        flex-direction: column;
+        gap: 10px;
+        display: none;
+      }
+
+      #ofi-nav ul.show {
+        display: flex;
+      }
+
+      #ofi-menu-toggle,
+      #ofi-menu-close {
+        display: block;
+      }
+
+      #ofi-menu-toggle.hidden,
+      #ofi-menu-close.hidden {
+        display: none;
+      }
+
+      #ofi-nav a {
+        font-size: 18px;
+        padding: 8px 0;
+      }
+    }
+
+    /* CONTENUTO */
+    .container {
+      max-width: 850px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    h1, h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.3rem;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin-top: 0.25rem;
+  font-size: 1rem;
+  background-color: #ffffff;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
+
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 0.25rem;
+    }
+
+    .checkbox-group {
+      margin-top: 1rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: normal;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    .intro {
+      background: #fff3cd;
+      border-left: 5px solid #ffc107;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+
+    button {
+  background-color: #b91c1c;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+      background-color: #001d3d;
+      color: white;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 2rem;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+  transform: scale(1.03);
+  background-color: #9e1b1b;
+
+      background-color: #003060;
+    }
+
+    /* FOOTER */
+    #ofi-footer {
+      background-color: #002c5d;
+      color: white;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    #ofi-footer a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: underline;
+    }
+
+    #ofi-footer a:hover {
+      text-decoration: none;
+    }
+
+    #ofi-footer p {
+      margin-bottom: 1rem;
+    }
+
+    #ofi-footer .footer-links {
+      margin-top: 1rem;
+    }
+  
+input[type="checkbox"] {
+  transform: scale(1.4);
+}
+select {
+  font-size: 1rem;
+}
+button {
+  background-color: #b91c1c;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+  display: block;
+  margin: 2rem auto 0;
+  padding: 1rem 2.5rem;
+  background-color: #8a2e2e;
+}
+button:hover {
+  transform: scale(1.03);
+  background-color: #9e1b1b;
+
+  background-color: #5f1f1f;
+}
+
+.frase-emozionale {
+  font-size: 1.2rem;
+  color: #444;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.progress-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 50px;
+  margin: 1rem 0 2rem 0;
+}
+.progress-bar {
+  background-color: #cfa349;
+  height: 20px;
+  border-radius: 50px;
+  width: 100%;
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 20px;
+}
+
+.progress-wrapper {
+  width: 100%;
+  background-color: #eee;
+  border-radius: 30px;
+  height: 26px;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+}
+.progress-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #cfa349, #b88a2c);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.imprese-box {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border-left: 8px solid #cfa349;
+}
+.imprese-box strong {
+  font-size: 1.1rem;
+  color: #002c5d;
+}
+.imprese-box ul {
+  padding-left: 1.2rem;
+  margin-top: 0.8rem;
+  margin-bottom: 1rem;
+}
+.imprese-box li {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+
+.imprese-box {
+  background: linear-gradient(to right, #fffefc, #fef7e0);
+  border-left: 6px solid #cfa349;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem auto;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  max-width: 800px;
+  animation: fadeIn 1s ease-in-out;
+}
+.imprese-box strong {
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #001d3d;
+}
+.imprese-box ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+}
+.imprese-box li {
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
+<body>
+<header id="ofi-header">
+<a href="../index.html">
+<img alt="Onoranze Funebri Italia" src="../images/logo-ofi.png"/>
+</a>
+</header>
+<nav id="ofi-nav">
+<div style="text-align:center;"><button id="ofi-menu-toggle" onclick="toggleMenu(true)">☰ Menu</button></div>
+<div style="text-align:center;"><button class="hidden" id="ofi-menu-close" onclick="toggleMenu(false)">✖ Chiudi</button></div>
+<ul>
+<li><a href="preventivo.html">Richiedi Preventivo</a></li>
+<li><a href="../necrologi.html">Necrologi</a></li>
+<li><a href="#">Info Utili</a></li>
+<li><a href="../imprese/registrazione-imprese.html">Registrati</a></li>
+<li><a href="../imprese/login.html">Accedi</a></li>
+</ul>
+</nav>
+<div class="container">
+<p class="frase-emozionale">“Ogni dettaglio conta, quando ci si affida a mani attente. Raccontaci come possiamo aiutarti.”</p>
+<div class="intro">
+      Compila questo modulo per ricevere un preventivo informativo, anche per uso futuro.<br/>
+      I dati saranno trattati con rispetto e attenzione. Nessun impegno.
+    </div>
+<form>
+<h2>🧾 Dati del Richiedente</h2>
+<label for="nome">Nome e Cognome</label>
+<input id="nome" required="" type="text"/>
+<label for="email">Email</label>
+<input id="email" placeholder="nome@esempio.it" required="" type="email"/>
+<label for="telefono">Telefono</label>
+<input id="telefono" pattern="[0-9]{8,15}" placeholder="Es: 3331234567" required="" type="tel"/>
+<label for="residenza">Comune di Residenza</label>
+<input id="residenza" required="" type="text"/>
+<h2>Informazioni dettagliate sul Servizio</h2>
+<label for="tempistica">Quando potrebbe servire il servizio?</label>
+<select id="tempistica" required="">
+<option value="">Seleziona un'opzione</option>
+<option>Entro pochi giorni</option>
+<option>Entro qualche settimana</option>
+<option>Entro qualche mese</option>
+<option>Solo a scopo informativo</option>
+</select>
+<label for="luogo_attuale">Dove si trova attualmente la persona interessata?</label>
+<select id="luogo_attuale" required="">
+<option value="">Seleziona un'opzione</option>
+<option>Ospedale</option>
+<option>Casa di riposo</option>
+<option>Abitazione privata</option>
+<option>Altro</option>
+</select>
+<label for="camera_ardente">Camera ardente prevista presso:</label>
+<select id="camera_ardente">
+<option value="">Seleziona un'opzione</option>
+<option>Abitazione privata</option>
+<option>Camera mortuaria di una struttura</option>
+<option>Sala del commiato</option>
+<option>Non definito</option>
+</select>
+<label for="nome_sala">Se sala del commiato, indicare quale:</label>
+<input id="nome_sala" placeholder="Es: Sala Serenità - Bergamo" type="text"/>
+<label for="cerimonia">Che tipo di cerimonia pensate di volere?</label>
+<select id="cerimonia" required="">
+<option value="">Seleziona un'opzione</option>
+<option>Religiosa</option>
+<option>Laica</option>
+<option>Nessuna</option>
+</select>
+<label for="sepoltura_tipo">Tipo di sepoltura prevista</label>
+<select id="sepoltura_tipo" required="">
+<option value="">Seleziona un'opzione</option>
+<option>Inumazione (terra)</option>
+<option>Tumulazione (loculo)</option>
+<option>Cremazione</option>
+</select>
+<label for="cimitero">In quale cimitero si prevede la sepoltura?</label>
+<input id="cimitero" placeholder="Es: Cimitero Monumentale - Milano" type="text"/>
+<label for="cremazione_affido">Se cremazione: destinazione delle ceneri</label>
+<select id="cremazione_affido">
+<option value="">Seleziona un'opzione</option>
+<option>Affido familiare</option>
+<option>Conservazione in cimitero</option>
+<option>Non definito</option>
+</select>
+<label for="eta">Età approssimativa della persona</label>
+<input id="eta" max="120" min="0" type="number"/>
+<h2>Servizi Aggiuntivi</h2>
+<label for="fiori">🌹 Fiori o composizioni floreali</label>
+<select id="fiori">
+<option value="">Seleziona un'opzione</option>
+<option>Ciotole floreali</option>
+<option>Copribara</option>
+<option>Cesti decorativi</option>
+<option>Composizione consigliata dall’impresa</option>
+<option>Non previsto</option>
+</select>
+<label for="immaginette">Immaginette / Santini (numero indicativo)</label>
+<input id="immaginette" min="0" placeholder="Es: 100" type="number"/>
+<label for="giornali">Annuncio su giornali – Specificare testate desiderate</label>
+<input id="giornali" placeholder="Es: L’Eco di Bergamo, Il Giorno" type="text"/>
+<label for="digitale">Annuncio digitale – Dove desideri pubblicarlo?</label>
+<input id="digitale" placeholder="Es: Onoranze Funebri Italia, sito impresa, social" type="text"/>
+<label for="musica">🎵 Accompagnamento musicale – Tipo richiesto (facoltativo)</label>
+<input id="musica" placeholder="Es: Violino, brani religiosi, canzoni significative…" type="text"/>
+<label for="trasporto">🚚 Trasporto salma fuori regione (se previsto) – Dove?</label>
+<input id="trasporto" placeholder="Es: Roma, Palermo, estero…" type="text"/>
+<label for="note">Note personali (facoltative)</label>
+<textarea id="note" rows="4"></textarea>
+<div class="checkbox-group">
+<label class="checkbox-item"><input required="" type="checkbox"/>Dichiaro che i dati forniti sono veritieri</label>
+<label class="checkbox-item"><input required="" type="checkbox"/>Accetto l’informativa sulla privacy</label>
+</div>
+<div style="text-align:center;"><button id="submitPreventivo" type="submit">Invia la Richiesta</button></div>
+</form><div class="intro" style="margin-top: 2rem; background: #e8f7ee; border-left: 5px solid #28a745;">
+<strong>Cosa succede dopo l’invio?</strong><br/>
+✅ Riceverai un’email di conferma.<br/>
+✅ Il tuo preventivo verrà esaminato e approvato da OFI.<br/>
+✅ Solo dopo approvazione sarà visibile alle imprese.<br/>
+✅ Potrai seguire lo stato direttamente nella tua <strong><a href="../login.html">Dashboard personale</a></strong>.
+</div>
+</div>
+<footer id="ofi-footer">
+<div style="max-width: 1000px; margin: auto;">
+<p>
+        © 2025 Onoranze Funebri Italia – Tutti i diritti riservati<br/>
+        Portale nazionale per il supporto al cittadino e la valorizzazione delle imprese funebri
+      </p>
+<div class="footer-links">
+<a href="../privacy.html">Privacy</a>
+<a href="../contatti.html">Contatti</a>
+<a href="../faq.html">FAQ</a>
+</div>
+</div>
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const imprese = JSON.parse(localStorage.getItem("impreseSelezionate") || "[]");
+  if (imprese.length && form) {
+    const box = document.createElement('div');
+    box.className = 'imprese-box';
+    box.innerHTML = "<strong>📍 Imprese che riceveranno la tua richiesta:</strong><ul>" +
+      imprese.map(i => `<li>💼 ${i.nomeImpresa}</li>`).join('') +
+      "</ul>";
+    form.parentNode.insertBefore(box, form);
+  }
+});
+</script></body>
+</html>
+<style>
+input:focus, textarea:focus, select:focus {
+  border-color: #cfa349;
+  box-shadow: 0 0 5px rgba(207, 163, 73, 0.5);
+  outline: none;
+}
+.blocco-form {
+  background: #fdfdfd;
+  padding: 2rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+.intro strong {
+  color: #002c5d;
+}
+
+.imprese-box {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  border-left: 8px solid #cfa349;
+}
+.imprese-box strong {
+  font-size: 1.1rem;
+  color: #002c5d;
+}
+.imprese-box ul {
+  padding-left: 1.2rem;
+  margin-top: 0.8rem;
+  margin-bottom: 1rem;
+}
+.imprese-box li {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+
+.imprese-box {
+  background: linear-gradient(to right, #fffefc, #fef7e0);
+  border-left: 6px solid #cfa349;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem auto;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  max-width: 800px;
+  animation: fadeIn 1s ease-in-out;
+}
+.imprese-box strong {
+  font-size: 1.3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #001d3d;
+}
+.imprese-box ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.5rem;
+}
+.imprese-box li {
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+  color: #333;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+</style>

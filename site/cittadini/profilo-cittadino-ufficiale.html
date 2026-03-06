@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Profilo Cittadino — OFI</title>
+
+  <!-- Font & stile base -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+
+  <!-- Mapbox -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css">
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+
+  <!-- Script utilità sito -->
+  <script defer src="../ofi.js"></script>
+
+  <style>
+    .wrap{max-width:1100px;margin:0 auto;padding:28px 1rem 40px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media (max-width:900px){ .form-grid{grid-template-columns:1fr} }
+    .field{display:flex;flex-direction:column}
+    .field label{font-weight:800;margin:.35rem 0 .25rem}
+
+    /* Input leggibili in entrambi i temi */
+    .input,
+    .field input[type="date"],
+    .field input[type="tel"],
+    .field input[type="text"],
+    .field input[type="email"]{
+      height:42px;padding:.5rem .7rem;border-radius:10px;
+      border:1px solid color-mix(in oklab, var(--surface-text), transparent 70%);
+      background:var(--surface); color:var(--surface-text); outline:none;
+      transition:border-color .15s, box-shadow .15s; min-width:0;
+    }
+    .field input::placeholder{color:var(--muted)}
+    .field input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(202,168,90,.25)}
+    .hint{font-size:.9rem;color:var(--muted)}
+
+    /* Avatar row: mobile-safe */
+    .avatar-box{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+    .avatar-box img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid rgba(0,0,0,.1)}
+    .avatar-right{flex:1 1 260px;min-width:260px}
+    .actions{display:flex;gap:.6rem;flex-wrap:wrap}
+    .actions.small label{font-weight:700}
+    input[type="file"]{max-width:100%}
+
+    .card--tight{padding:1rem}
+    #mappa{height:340px;border-radius:14px;border:1px solid rgba(0,0,0,.12); overflow:hidden}
+    #geocoder{margin:.5rem 0}
+
+    /* Geocoder: nascondi lente e togli padding sinistro extra */
+    .mapboxgl-ctrl-geocoder--icon-search{display:none !important}
+    .mapboxgl-ctrl-geocoder--input{padding-left:.75rem !important}
+    .mapboxgl-ctrl-geocoder, .mapboxgl-ctrl-geocoder .suggestions{
+      color:var(--surface-text); background:var(--surface);
+    }
+    .mapboxgl-ctrl-geocoder{border-radius:10px;border:1px solid rgba(202,168,90,.35)}
+    .mapboxgl-ctrl-geocoder--input::placeholder{color:var(--muted)}
+
+    /* Coach & checklist */
+    .coach{display:grid;grid-template-columns:1fr;gap:.8rem;margin:1rem 0}
+    .coach .progress{height:10px}
+    .coach-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
+    .pill.check{border-color:rgba(0,0,0,.1)}
+    .pill.ok{border-color:rgba(96,168,110,.45); color:rgb(33,111,50)}
+    .pill.todo{border-color:rgba(202,168,90,.5)}
+    .pill.optional{opacity:.9}
+    .coach .next{margin-left:auto}
+
+    /* Evita che lo scroll nasconda la sezione sotto l'header sticky */
+    .card[id^="s_"]{ scroll-margin-top: 92px }
+
+    /* Username UI */
+    .chip{display:inline-flex;align-items:center;padding:.25rem .6rem;border-radius:999px;border:1px solid rgba(0,0,0,.15);cursor:pointer}
+    .chip:hover{background:rgba(202,168,90,.12)}
+    .ok{color:#216f32}.error{color:#8b1d2c}
+
+    /* Fix dimensione Agente OFI */
+    .agent-panel{ width:360px; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="../vision.html">Visione di OFI</a></li>
+          <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="../index.html#pensieri">Pensieri</a></li>
+          <li><a href="../articoli/articoli.html">Articoli</a></li>
+          <li><a href="../index.html#ricordi">Ricordi</a></li>
+          <li><a href="../index.html#mappa">Vicino a te</a></li>
+          <li><a href="../index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1 class="section-title" style="text-align:center">Il tuo profilo</h1>
+    <p class="section-sub" style="text-align:center">Completa i dati: ti aiutano in dashboard e nelle sezioni pubbliche (se abiliti la visibilità).</p>
+  </div>
+</section>
+
+<main class="wrap">
+  <!-- Coach -->
+  <section class="card card--md">
+    <div class="card-head">
+      <img class="icon-xl" src="../images/OFI-Logo-3.png" alt=""><h3>Completamento profilo</h3>
+    </div>
+    <div class="coach">
+      <div class="coach-row">
+        <strong id="pctText">0% completo</strong>
+        <div class="progress" style="flex:1"><span id="pctBar" style="display:block;height:100%;width:0;background:var(--gold)"></span></div>
+        <button id="nextBtn" type="button" class="btn btn-sm btn-outline next">Vai al prossimo passo</button>
+        <a href="dashboard-cittadino.html" class="btn btn-sm btn-ghost">Torna alla dashboard</a>
+      </div>
+      <div class="coach-row" id="checklist" aria-live="polite">
+        <span class="pill small" id="c_foto">📷 Foto/Avatar</span>
+        <span class="pill small" id="c_anagrafica">👤 Dati anagrafici</span>
+        <span class="pill small optional" id="c_social">🤝 Social (opzionale)</span>
+        <span class="pill small" id="c_residenza">📍 Residenza</span>
+        <span class="pill small" id="c_frase">📝 Frase</span>
+      </div>
+      <p class="small muted">Suggerimenti di OFI Agent: <em id="coachTip">carica una foto oppure scegli un avatar.</em></p>
+    </div>
+  </section>
+
+  <!-- Avatar -->
+  <section class="card card--md" id="s_foto">
+    <div class="card-head">
+      <img class="icon-xl" src="../images/OFI-Logo-3.png" alt="">
+      <h3>Immagine profilo</h3>
+    </div>
+    <div class="avatar-box">
+      <img id="preview-img" src="../images/avatar-uomo.png" alt="Anteprima">
+      <div class="avatar-right">
+        <div class="actions" style="margin-bottom:.35rem">
+          <input id="upload" type="file" accept="image/*">
+        </div>
+        <div class="actions small">
+          <label><input type="radio" name="avatar" value="uomo" checked> Avatar uomo</label>
+          <label><input type="radio" name="avatar" value="donna"> Avatar donna</label>
+        </div>
+        <div id="foto-msg" class="hint">Se non carichi una foto, useremo l’avatar selezionato.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <form id="profilo-form" class="section" style="padding-top:32px">
+    <div class="grid grid-2">
+      <!-- Anagrafica -->
+      <article class="card card--md" id="s_anagrafica">
+        <div class="card-head"><h3>Dati anagrafici</h3></div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" placeholder="Il tuo nome">
+            <label class="small"><input id="vis_nome" type="checkbox"> Mostra pubblicamente</label>
+          </div>
+          <div class="field">
+            <label for="cognome">Cognome</label>
+            <input id="cognome" name="cognome" type="text" placeholder="Il tuo cognome">
+            <label class="small"><input id="vis_cognome" type="checkbox"> Mostra pubblicamente</label>
+          </div>
+
+          <!-- USERNAME UNICO -->
+          <div class="field" style="grid-column:1/-1">
+            <label for="nome_utente">Nome utente (unico) <span class="small muted">(facoltativo)</span></label>
+            <input id="nome_utente" name="nome_utente" type="text" placeholder="@nomeutente">
+            <label class="small"><input id="vis_nome_utente" type="checkbox"> Mostra pubblicamente</label>
+            <div class="hint" id="username-hint" aria-live="polite"></div>
+            <div class="actions small" id="username-suggest" style="display:flex;gap:.35rem;flex-wrap:wrap"></div>
+          </div>
+
+          <div class="field">
+            <label for="data_nascita">Data di nascita <span class="small muted">(facoltativa)</span></label>
+            <input id="data_nascita" name="data_nascita" type="date">
+            <label class="small"><input id="vis_data_nascita" type="checkbox"> Mostra pubblicamente</label>
+          </div>
+        </div>
+      </article>
+
+      <!-- Contatti & Social -->
+      <article class="card card--md" id="s_contatti">
+        <div class="card-head"><h3>Contatti</h3></div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="esempio@email.com">
+            <label class="small"><input id="vis_email" type="checkbox"> Mostra pubblicamente</label>
+          </div>
+          <div class="field">
+            <label for="telefono">Telefono <span class="small muted">(consigliato per contatti privati)</span></label>
+            <input id="telefono" name="telefono" type="tel" inputmode="tel" placeholder="+39 …">
+            <label class="small"><input id="vis_telefono" type="checkbox"> Mostra pubblicamente</label>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label class="small"><input type="checkbox" id="no_social"> Non uso i social</label>
+          </div>
+          <div class="field">
+            <label for="facebook">Facebook <span class="small muted">(opzionale)</span></label>
+            <input id="facebook" name="facebook" type="text" placeholder="https://facebook.com/…">
+          </div>
+          <div class="field">
+            <label for="instagram">Instagram <span class="small muted">(opzionale)</span></label>
+            <input id="instagram" name="instagram" type="text" placeholder="https://instagram.com/…">
+          </div>
+          <div class="field">
+            <label for="youtube">YouTube <span class="small muted">(opzionale)</span></label>
+            <input id="youtube" name="youtube" type="text" placeholder="https://youtube.com/@…">
+          </div>
+          <label class="small" style="grid-column:1/-1"><input id="vis_social" type="checkbox"> Rendi visibili i social</label>
+        </div>
+      </article>
+    </div>
+
+    <!-- Residenza -->
+    <article class="card card--md" style="margin-top:1rem" id="s_residenza">
+      <div class="card-head"><h3>Residenza</h3></div>
+      <div class="form-grid">
+        <div class="field" style="grid-column:1/-1">
+          <label for="geocoder">Comune di residenza</label>
+          <div id="geocoder" aria-label="Cerca comune…"></div>
+          <div class="hint">Seleziona il comune. Salviamo anche latitudine e longitudine.</div>
+          <input id="luogo" name="luogo" type="hidden">
+          <input id="lat" type="hidden"><input id="lng" type="hidden">
+        </div>
+        <div style="grid-column:1/-1"><div id="mappa" aria-label="Mappa residenza"></div></div>
+        <label class="small" style="grid-column:1/-1"><input id="vis_luogo" type="checkbox"> Mostra pubblicamente il comune</label>
+      </div>
+    </article>
+
+    <!-- Frase & interessi -->
+    <article class="card card--md" style="margin-top:1rem" id="s_frase">
+      <div class="card-head"><h3>Profilo & interessi</h3></div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="frase">Frase di copertina</label>
+          <input id="frase" name="frase" type="text" placeholder="Una frase che ti rappresenta…">
+          <label class="small"><input id="vis_frase" type="checkbox"> Mostra pubblicamente</label>
+          <p class="small muted">Questa frase comparirà anche nella <strong>Bacheca Pensieri</strong>. Potrai modificarla rapidamente da lì (frase e autore).</p>
+        </div>
+        <div class="field">
+          <label for="autore">Autore frase</label>
+          <input id="autore" name="autore" type="text" placeholder="(facoltativo)">
+          <label class="small"><input id="vis_autore" type="checkbox"> Mostra pubblicamente</label>
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label for="interessi">Interessi o parole chiave <span class="small muted">(opzionale)</span></label>
+          <input id="interessi" name="interessi" type="text" placeholder="es: musica, lettura, natura…">
+          <label class="small"><input id="vis_interessi" type="checkbox"> Mostra pubblicamente</label>
+        </div>
+      </div>
+    </article>
+
+    <!-- Salvataggio -->
+    <div class="card card--md card--tight" style="margin-top:1rem">
+      <label class="small" style="display:block;margin-bottom:.6rem">
+        <input id="checkbox-dichiarazione" type="checkbox" required> Dichiaro che le informazioni inserite sono veritiere e accetto i termini di utilizzo.
+      </label>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="salva-profilo-btn">💾 Salva e torna alla dashboard</button>
+        <a class="btn btn-ghost" href="dashboard-cittadino.html">Annulla</a>
+      </div>
+      <div id="saveMsg" class="hint" role="status" aria-live="polite"></div>
+    </div>
+  </form>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Agente OFI -->
+<button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+  <img src="../images/agente-ofi.png" alt="">
+</button>
+<section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+  <header class="agent-top">
+    <div class="agent-id">
+      <img src="../images/agente-ofi.png" alt="">
+      <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+    </div>
+    <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+  </header>
+  <div id="agentChat" class="agent-chat">
+    <div class="msg msg-in"><p>Ciao! Posso aiutarti a completare il profilo passo passo.</p></div>
+    <div class="suggest">
+      <button class="chip" data-q="Mostrami il prossimo passo del profilo">Mostrami il prossimo passo del profilo</button>
+      <button class="chip" data-q="Dove cambio la Frase di copertina?">Dove cambio la Frase di copertina?</button>
+      <button class="chip" data-q="Come torno alla dashboard?">Come torno alla dashboard?</button>
+    </div>
+  </div>
+  <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+    <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+    <button class="btn btn-primary">Invia</button>
+  </form>
+  <div class="agent-note small">Suggerimento: il 100% si raggiunge con Foto, Nome+Congome, Comune e Frase.</div>
+</section>
+
+<!-- Firebase + logica -->
+<script type="module">
+  import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, deleteField, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  // ===== Firebase app (usa esistente se presente) =====
+  const firebaseConfig = { apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs", authDomain:"ofi2025-51ba9.firebaseapp.com", projectId:"ofi2025-51ba9", storageBucket:"ofi2025-51ba9.firebasestorage.app", messagingSenderId:"345581339212", appId:"1:345581339212:web:f0b8bc241945691c876ae9" };
+  const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+  const storage = getStorage(app);
+
+  // ===== Helpers DOM =====
+  const $ = (id)=>document.getElementById(id);
+  const previewImg=$('preview-img'), fileInput=$('upload'), saveBtn=$('salva-profilo-btn'), saveMsg=$('saveMsg');
+
+  /* === USERNAME unico: normalizzazione + check + suggerimenti === */
+  const nomeEl=$('nome'), cognomeEl=$('cognome'), usernameEl=$('nome_utente'),
+        hintEl=$('username-hint'), sugEl=$('username-suggest');
+  function normalizeUsername(raw){
+    return (raw||'').toLowerCase()
+      .normalize('NFD').replace(/\p{Diacritic}/gu,'')  // rimuove accenti
+      .replace(/[^a-z0-9._]/g,'')                      // consenti solo [a-z0-9._]
+      .replace(/^\.+|\.+$/g,'')                        // niente . all'inizio/fine
+      .replace(/\.{2,}/g,'.')                          // niente .. consecutivi
+      .slice(0,24);
+  }
+  async function isUsernameFree(u){
+    if(!u) return false;
+    const snap = await getDoc(doc(db,'username_claims',u));
+    return !snap.exists();
+  }
+  function makeSuggestions(base,nome,cognome){
+    const n=normalizeUsername(nome||''), c=normalizeUsername(cognome||'');
+    const list=[base,`${n}${c}`,`${n}.${c}`,`${n}${c[0]||''}`,`${n}.${c[0]||''}`,`${base}${Math.floor(Math.random()*90)+10}`]
+      .map(normalizeUsername).filter(Boolean);
+    return [...new Set(list)].slice(0,6);
+  }
+  function renderSuggestions(list){
+    sugEl.innerHTML='';
+    list.forEach(s=>{
+      const b=document.createElement('button');
+      b.type='button'; b.className='chip'; b.textContent='@'+s;
+      b.onclick=()=>{ usernameEl.value=s; usernameEl.dispatchEvent(new Event('input')); };
+      sugEl.appendChild(b);
+    });
+    sugEl.style.display = list.length ? 'flex' : 'none';
+  }
+  let currentUid=null, originalUsername='';
+  let checkTimer=null;
+  function debounceCheck(){
+    clearTimeout(checkTimer);
+    checkTimer=setTimeout(async()=>{
+      const u=normalizeUsername(usernameEl.value); usernameEl.value=u;
+      if(!u){ hintEl.textContent=''; renderSuggestions([]); return; }
+      if(u===originalUsername){ hintEl.innerHTML='<span class="ok">✓ Nome utente confermato.</span>'; renderSuggestions([]); return; }
+      const free=await isUsernameFree(u);
+      if(free){ hintEl.innerHTML='<span class="ok">✓ Disponibile.</span>'; renderSuggestions([]); }
+      else { hintEl.innerHTML='<span class="error">✕ Non disponibile.</span>'; renderSuggestions(makeSuggestions(u,nomeEl.value,cognomeEl.value).filter(s=>s!==u)); }
+    },300);
+  }
+  usernameEl.addEventListener('input',debounceCheck);
+  nomeEl.addEventListener('input',debounceCheck);
+  cognomeEl.addEventListener('input',debounceCheck);
+
+  // Social toggle
+  const noSocial = $('no_social');
+  const socialInputs = ['facebook','instagram','youtube'].map(id => $(id));
+  noSocial?.addEventListener('change', ()=>{
+    socialInputs.forEach(i=>{ i.disabled = noSocial.checked; if(noSocial.checked){ i.value=''; } });
+    recalc();
+  });
+
+  // Avatar
+  fileInput.addEventListener('change', ()=>{
+    const f=fileInput.files[0]; if(!f) return;
+    const r=new FileReader(); r.onload=e=>previewImg.src=e.target.result; r.readAsDataURL(f);
+    recalc();
+  });
+  document.querySelectorAll('input[name="avatar"]').forEach(r=>
+    r.addEventListener('change',()=>{
+      previewImg.src = r.value==='donna' ? '../images/avatar-donna.png':'../images/avatar-uomo.png';
+      fileInput.value=''; recalc();
+    })
+  );
+
+  // ===== MAPBOX =====
+  let map, marker, geocoder;
+  function initMap(){
+    mapboxgl.accessToken = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+    map = new mapboxgl.Map({ container:'mappa', style:'mapbox://styles/mapbox/navigation-night-v1', center:[12.4964,41.9028], zoom:5 });
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    marker = new mapboxgl.Marker({ color:'#caa85a' });
+
+    geocoder = new MapboxGeocoder({
+      accessToken:mapboxgl.accessToken, mapboxgl, marker:false,
+      countries:'it', types:'place,locality,region', placeholder:'Cerca comune…'
+    });
+    geocoder.addTo('#geocoder');
+
+    geocoder.on('result', (e)=>{
+      const c = e.result.center;
+      $('luogo').value = e.result.place_name || '';
+      $('lat').value = c[1]; $('lng').value = c[0];
+      marker.setLngLat(c).addTo(map);
+      map.flyTo({ center:c, zoom:11 });
+      recalc();
+    });
+
+    const lat = parseFloat($('lat').value), lng = parseFloat($('lng').value);
+    if(!isNaN(lat) && !isNaN(lng)){ const c=[lng,lat]; marker.setLngLat(c).addTo(map); map.setCenter(c); map.setZoom(11); }
+  }
+
+  // ===== Progress / Checklist =====
+  function computeProgress(){
+    let score = 0;
+    score += 20; // avatar/foto (consideriamo base)
+    const nomeOk = $('nome').value.trim().length>0;
+    const cogOk  = $('cognome').value.trim().length>0;
+    if (nomeOk) score += 15;
+    if (cogOk)  score += 15;
+    const luogoOk = $('luogo').value.trim().length>0 && $('lat').value && $('lng').value;
+    if (luogoOk) score += 30;
+    const fraseOk = $('frase').value.trim().length>0;
+    if (fraseOk) score += 20;
+    return Math.min(100, score);
+  }
+
+  const tipEl = $('coachTip');
+  function updateChecklist(){
+    const set = (id, ok, optional=false)=>{
+      const el = $(id); if(!el) return;
+      el.classList.remove('ok','todo','optional');
+      el.classList.add(optional ? 'optional' : (ok ? 'ok' : 'todo'));
+      el.textContent = (ok ? '✓ ' : '• ') + el.textContent.replace(/^(\✓|•)\s*/,'').replace('✓ ','').replace('• ','');
+    };
+    set('c_foto', true);
+    set('c_anagrafica', $('nome').value || $('cognome').value);
+    set('c_residenza', $('luogo').value);
+    set('c_frase', $('frase').value);
+    set('c_social', noSocial?.checked || socialInputs.some(i=>i.value.trim().length>0), true);
+
+    const pct = computeProgress();
+    if(pct < 40) tipEl.textContent = 'Compila Nome e Cognome, poi scegli il Comune.';
+    else if(pct < 70) tipEl.textContent = 'Scrivi la tua frase di copertina: apparirà in Bacheca Pensieri.';
+    else if(pct < 100) tipEl.textContent = 'Aggiungi (se vuoi) interessi o un contatto telefonico.';
+    else tipEl.textContent = 'Ottimo! Il tuo profilo è completo.';
+  }
+
+  function recalc(){
+    const pct = computeProgress();
+    $('pctText').textContent = pct + '% completo';
+    $('pctBar').style.width = pct + '%';
+    updateChecklist();
+    return pct;
+  }
+
+  function scrollToNext(){
+    const order = [
+      ['s_anagrafica', ()=>!($('nome').value && $('cognome').value)],
+      ['s_residenza', ()=>!$('luogo').value],
+      ['s_frase', ()=>!$('frase').value],
+    ];
+    for(const [id, test] of order){
+      if(test()){
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+        return;
+      }
+    }
+    const saveBlock = document.querySelector('.card.card--md.card--tight');
+    if(saveBlock){ saveBlock.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }
+
+  $('nextBtn').addEventListener('click', scrollToNext);
+  ['nome','cognome','frase','autore','interessi','telefono','email'].forEach(id=>{
+    const el = $(id); if(el) el.addEventListener('input', recalc);
+  });
+
+  // ===== Bootstrap dati utente + salvataggio =====
+  onAuthStateChanged(auth, async (user)=>{
+    initMap(); // mostra subito la mappa
+    if(!user){ recalc(); return; }
+    currentUid = user.uid;
+
+    const ref = doc(db,'utenti_cittadini', user.uid);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      const x=snap.data();
+      $('nome').value = x.nome||''; $('cognome').value = x.cognome||'';
+      $('nome_utente').value = x.nome_utente||'';
+      $('data_nascita').value = x.data_nascita||'';
+      $('email').value = x.email||'';
+      $('telefono').value = x.telefono||'';
+
+      $('facebook').value = x.social_facebook||'';
+      $('instagram').value = x.social_instagram||'';
+      $('youtube').value = x.social_youtube||'';
+      if(!x.social_facebook && !x.social_instagram && !x.social_youtube){
+        noSocial.checked = true; noSocial.dispatchEvent(new Event('change'));
+      }
+
+      $('frase').value=x.frase||''; $('autore').value=x.autore||''; $('interessi').value=x.interessi||'';
+      $('luogo').value=x.luogo||''; $('lat').value=x.lat||''; $('lng').value=x.lng||'';
+
+      $('vis_nome').checked=!!x.vis_nome; $('vis_cognome').checked=!!x.vis_cognome;
+      $('vis_nome_utente').checked=!!x.vis_nome_utente; $('vis_data_nascita').checked=!!x.vis_data_nascita;
+      $('vis_email').checked=!!x.vis_email; $('vis_telefono').checked=!!x.vis_telefono;
+      $('vis_social').checked=!!x.vis_social; $('vis_interessi').checked=!!x.vis_interessi; $('vis_luogo').checked=!!x.vis_luogo;
+      $('vis_frase').checked=!!x.vis_frase; $('vis_autore').checked=!!x.vis_autore;
+
+      if(x.foto){ previewImg.src=x.foto; $('foto-msg').textContent='Immagine attualmente salvata.'; }
+      originalUsername = normalizeUsername(x.nome_utente||'');
+    }
+
+    recalc();
+    debounceCheck();
+
+    // ===== SALVA =====
+    saveBtn.addEventListener('click', async ()=>{
+      if(!$('checkbox-dichiarazione').checked){
+        saveMsg.textContent='Accetta la dichiarazione per continuare.'; return;
+      }
+      saveBtn.disabled=true; saveBtn.textContent='⏳ Salvataggio…'; saveMsg.textContent='';
+
+      const desiredRaw = $('nome_utente').value.trim();
+      const desired = normalizeUsername(desiredRaw);
+
+      try{
+        // 1) Claim username atomica (se cambiato)
+        if (desired && desired !== originalUsername) {
+          await runTransaction(db, async (tx)=>{
+            const newRef = doc(db,'username_claims', desired);
+            const newSnap = await tx.get(newRef);
+            if (newSnap.exists()) throw new Error('USERNAME_TAKEN');
+            if (originalUsername) { tx.delete(doc(db,'username_claims', originalUsername)); }
+            tx.set(newRef, { uid: currentUid, ts: Date.now() });
+          });
+          originalUsername = desired;
+        }
+
+        // 2) Foto/Avatar
+        const imgRef=storageRef(storage, `foto_profili/${currentUid}.jpg`);
+        const file=fileInput.files[0];
+        const avatar=document.querySelector('input[name="avatar"]:checked')?.value;
+        const dati={};
+        if(file){ await uploadBytes(imgRef,file); dati.foto=await getDownloadURL(imgRef); }
+        else if(avatar){
+          dati.foto = (avatar==='donna') ? '../images/avatar-donna.png' : '../images/avatar-uomo.png';
+          try{ await deleteObject(imgRef) }catch(_){}
+        }
+
+        // 3) Dati profilo + visibilità
+        Object.assign(dati,{
+          nome:$('nome').value, cognome:$('cognome').value, nome_utente:desired,
+          data_nascita:$('data_nascita').value,
+          email:$('email').value, telefono:$('telefono').value,
+          social_facebook:noSocial.checked ? '' : $('facebook').value,
+          social_instagram:noSocial.checked ? '' : $('instagram').value,
+          social_youtube:noSocial.checked ? '' : $('youtube').value,
+          luogo:$('luogo').value, lat:$('lat').value, lng:$('lng').value,
+          frase:$('frase').value, autore:$('autore').value, interessi:$('interessi').value,
+
+          vis_nome:$('vis_nome').checked, vis_cognome:$('vis_cognome').checked, vis_nome_utente:$('vis_nome_utente').checked,
+          vis_data_nascita:$('vis_data_nascita').checked, vis_email:$('vis_email').checked, vis_telefono:$('vis_telefono').checked,
+          vis_social:$('vis_social').checked, vis_interessi:$('vis_interessi').checked, vis_luogo:$('vis_luogo').checked,
+          vis_frase:$('vis_frase').checked, vis_autore:$('vis_autore').checked,
+
+          progress: computeProgress(),
+
+          // pulizia legacy
+          fraseAutore: deleteField(), frase_autore: deleteField(),
+          autoreCopertina: deleteField(), autore_copertina: deleteField(),
+          fraseCopertina: deleteField(), frase_copertina: deleteField(),
+          autorePubblico: deleteField(), autore_pubblico: deleteField(),
+          visibilita: deleteField(), geo: deleteField(),
+          latitudine: deleteField(), longitudine: deleteField()
+        });
+
+        await setDoc(ref, dati, { merge:true });
+
+        saveMsg.textContent='Profilo salvato con successo.';
+        location.href='dashboard-cittadino.html';
+      }catch(e){
+        console.error(e);
+        if (e?.message==='USERNAME_TAKEN'){
+          saveMsg.textContent='Nome utente già occupato: scegline un altro.';
+          hintEl.innerHTML='<span class="error">✕ Non disponibile.</span>';
+          debounceCheck();
+        } else {
+          saveMsg.textContent='Impossibile salvare al momento.';
+        }
+      }finally{
+        saveBtn.disabled=false; saveBtn.textContent='💾 Salva e torna alla dashboard';
+      }
+    });
+  });
+</script>
+</body>
+</html>

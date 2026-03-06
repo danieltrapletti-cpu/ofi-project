@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pensiero del giorno — OFI</title>
+  <meta name="description" content="Un pensiero quotidiano di conforto: parole semplici che scaldano.">
+
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Stile principale del sito -->
+  <link rel="stylesheet" href="/ofi.css">
+
+  <!-- JS globale (menu + tema) -->
+  <script defer src="/js/menu.js?v=2"></script>
+  <script defer src="/ofi.js?v=3"></script>
+
+  <style>
+    :root{ --gold:#caa85a; }
+    main.page{ padding: clamp(16px, 4vw, 32px); min-height: calc(100vh - 160px); display:grid; place-items:center; }
+    .wrap{ width:min(980px, 94vw); }
+    .page-title{
+      margin:.2rem 0 1.2rem; font-weight:800; letter-spacing:.2px; color:#e8d39a;
+      text-transform:uppercase; font-size:.9rem; opacity:.9; text-align:center;
+    }
+    .thought-card{
+      position:relative;
+      border:1px solid rgba(202,168,90,.35);
+      background:
+        radial-gradient(1200px 240px at 50% -20%, rgba(202,168,90,.06), transparent 60%),
+        linear-gradient(180deg, rgba(12,30,46,.88), rgba(12,30,46,.96));
+      color:#fff; border-radius:20px; padding:1.2rem 1.2rem 1.1rem;
+      box-shadow:0 18px 40px rgba(2,10,20,.22), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .t-head{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.25rem; }
+    .t-left{ display:flex; align-items:center; gap:.6rem; }
+    .t-title{ margin:0; font-weight:800; letter-spacing:.2px; }
+    .t-chip{
+      font-size:.78rem; padding:.18rem .5rem; border-radius:999px;
+      border:1px solid rgba(202,168,90,.6); color:#0b2b52; background:#e8d39a; font-weight:800;
+      box-shadow: 0 4px 10px rgba(232,211,154,.22);
+    }
+    .t-quote{
+      font-family:'Noto Serif',serif; font-size: clamp(1.05rem, 1.25rem + .3vw, 1.35rem);
+      line-height:1.62; margin:.6rem 0 .8rem; position:relative; padding-left:1.6rem;
+    }
+    .t-quote:before{ content:'“'; position:absolute; left:.2rem; top:-.3rem; font-size:2rem; opacity:.5; }
+    .t-author{ color:#e8d39a; margin:-.2rem 0 .8rem; }
+    .t-cta{ display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+    .btn{ background:#caa85a; color:#102845; border:0; border-radius:10px; padding:.5rem .9rem; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:.45rem; }
+    .btn-ghost{ border:1px solid rgba(255,255,255,.22); background:transparent; color:#fff; border-radius:10px; padding:.45rem .8rem; text-decoration:none; font-weight:700; }
+    .btn-outline{ border:1px solid rgba(202,168,90,.55); background:transparent; color:#e8d39a; border-radius:10px; padding:.45rem .8rem; text-decoration:none; font-weight:800; }
+    .t-status{ font-size:.9rem; opacity:.9; margin-top:.5rem; }
+    .links{ margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap; justify-content:center; }
+    .nav-days{ margin-top:.9rem; display:flex; justify-content:space-between; gap:.8rem; }
+    .nav-days a{ flex:1; text-align:center; }
+    .center{ text-align:center; }
+  </style>
+</head>
+<body>
+
+  <!-- Header coerente con il sito -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-expanded="false"><span></span><span></span><span></span></button>
+      <ul id="menuPanel" class="menu" role="menu"></ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="page">
+    <div class="wrap">
+      <h2 class="page-title">Pensiero del giorno</h2>
+
+      <article class="thought-card" id="card">
+        <div class="t-head">
+          <div class="t-left">
+            <h1 class="t-title">Parole che scaldano</h1>
+            <span class="t-chip" id="dateChip">—</span>
+          </div>
+          <a class="btn-outline" href="/articoli/articoli.html">Articoli</a>
+        </div>
+
+        <p id="pensieroTxt" class="t-quote">“Nel ricordo, ogni assenza trova una forma gentile di presenza.”</p>
+        <p id="pensieroAutore" class="t-author"></p>
+
+        <div class="t-cta">
+          <button id="shareBtn" class="btn" type="button">📤 Condividi</button>
+          <button id="copyBtn" class="btn-ghost" type="button">📋 Copia testo</button>
+          <a id="homeBtn" class="btn-ghost" href="/index.html">🏠 Home</a>
+        </div>
+
+        <p id="status" class="t-status center" aria-live="polite"></p>
+
+        <div class="nav-days">
+          <a id="prevDay" class="btn-ghost" href="#">← Giorno precedente</a>
+          <a id="nextDay" class="btn-ghost" href="#">Giorno successivo →</a>
+        </div>
+
+        <div class="links">
+          <a id="fbShare" class="btn-ghost" href="#" target="_blank" rel="noopener">📘 Condividi su Facebook</a>
+          <a id="waShare" class="btn-ghost" href="#" target="_blank" rel="noopener">📲 Condividi su WhatsApp</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ====== Utility URL / date ======
+    const $ = (s, sc=document)=>sc.querySelector(s);
+    const todayISO = (d=new Date()) => d.toISOString().slice(0,10);
+    const parseDate = (iso)=>{ const [y,m,dd] = iso.split('-').map(Number); return new Date(y, m-1, dd); };
+    const addDays = (d, n)=>{ const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+    const dayOfYear = (d)=>{ const start=new Date(d.getFullYear(),0,0); return Math.floor((d - start)/86400000); };
+
+    function qp(name){
+      const u = new URL(location.href);
+      const v = u.searchParams.get(name);
+      return v && v.trim() ? v.trim() : null;
+    }
+
+    // ====== Loader pensiero ======
+    async function fetchPensieri(){
+      try{
+        const res = await fetch('/data/pensieri_2025.json', {cache:'no-cache'});
+        if (!res.ok) throw new Error('http');
+        return await res.json();
+      }catch{
+        // Fallback minimo
+        return [
+          "Nel ricordo, ogni assenza trova una forma gentile di presenza.",
+          "La memoria è una casa: apri le finestre alla luce.",
+          "Il bene donato non svanisce: diventa eredità per chi resta.",
+          "Cammina piano: il cuore sa la strada."
+        ];
+      }
+    }
+
+    function pickText(items, date){
+      // items può essere: array di stringhe o array di oggetti {text|frase|t, author|a}
+      const idx = Math.max(0, (dayOfYear(date) - 1) % items.length);
+      const raw = items[idx];
+
+      if (typeof raw === 'string') return { text: raw, author: '' };
+
+      if (raw && typeof raw === 'object'){
+        const text = raw.text || raw.frase || raw.t || raw.quote || '';
+        const author = raw.author || raw.autore || raw.a || '';
+        if (text) return { text, author };
+      }
+      return { text: "Oggi abito il silenzio con gratitudine. Ogni ricordo è una luce gentile che non si spegne.", author: "" };
+    }
+
+    function setQuote({text, author}){
+      const t = text?.trim() || '';
+      const a = author?.trim() || '';
+      $('#pensieroTxt').textContent = t ? `“${t}”` : '';
+      $('#pensieroAutore').textContent = a ? `— ${a}` : '';
+    }
+
+    function buildShareUrl(dateISO, text, author){
+      // URL "bello" → /p/YYYY-MM-DD + query per coerenza (non necessaria ai social, utile per app)
+      const base = `${location.origin}/p/${dateISO}`;
+      const q = [];
+      if (text) q.push(`t=${encodeURIComponent(text)}`);
+      if (author) q.push(`a=${encodeURIComponent(author)}`);
+      return q.length ? `${base}?${q.join('&')}` : base;
+    }
+
+    function setDayChip(date){
+      const it = new Intl.DateTimeFormat('it-IT', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+      $('#dateChip').textContent = it.format(date);
+    }
+
+    async function initPage(){
+      const paramD = qp('d');                         // dalla function pensiero-page
+      const overrideT = qp('t');                      // eventuale testo passato in query
+      const overrideA = qp('a');                      // eventuale autore
+
+      const date = paramD ? parseDate(paramD) : new Date();
+      setDayChip(date);
+
+      let text = overrideT, author = overrideA;
+
+      if (!text){
+        const items = await fetchPensieri();
+        const picked = pickText(items, date);
+        text = picked.text; author = picked.author;
+      }
+      setQuote({text, author});
+
+      const dateISO = todayISO(date);
+      const shareUrl = buildShareUrl(dateISO, text, author);
+
+      // Bottoni share
+      $('#shareBtn')?.addEventListener('click', async ()=>{
+        const payload = { title: 'Pensiero del giorno — OFI', text, url: shareUrl };
+        try{
+          if (navigator.share){ await navigator.share(payload); }
+          else{ window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + shareUrl)}`, '_blank'); }
+          $('#status').textContent = 'Condiviso! Grazie.';
+        }catch{}
+      });
+
+      $('#fbShare').setAttribute('href', `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
+      $('#waShare').setAttribute('href', `https://wa.me/?text=${encodeURIComponent(text + ' ' + shareUrl)}`);
+
+      $('#copyBtn')?.addEventListener('click', async ()=>{
+        try{ await navigator.clipboard.writeText(text); $('#status').textContent = 'Testo copiato negli appunti.'; }catch{}
+      });
+
+      // Navigazione a giorni
+      $('#prevDay')?.addEventListener('click', (e)=>{ e.preventDefault(); const d2 = addDays(date, -1); location.search = `?d=${todayISO(d2)}`; });
+      $('#nextDay')?.addEventListener('click', (e)=>{ e.preventDefault(); const d2 = addDays(date, +1); location.search = `?d=${todayISO(d2)}`; });
+    }
+
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>

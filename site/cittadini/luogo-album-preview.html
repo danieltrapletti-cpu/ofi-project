@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Anteprima Album — OFI</title>
+  <meta name="description" content="Anteprima pubblica di Foto e Video del Luogo della Memoria OFI." />
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <!-- Se questo file vive in /site (root), usa /luogo-album-preview.css.
+       Se invece è in /site/cittadini, usa /cittadini/luogo-album-preview.css.
+       Qui impostiamo root (consigliato) per coerenza col visit in root. -->
+  <link rel="stylesheet" href="/cittadini/luogo-album-preview.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a id="backLink" href="/luogo-visit.html" aria-label="Torna al Luogo">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <a class="topLink" id="openVisit" href="#" rel="noopener">Apri visita</a>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="page">
+    <section class="hero card">
+      <div class="kicker">Anteprima</div>
+      <h1 class="title">Foto e video</h1>
+      <p class="sub" id="heroSub">Questa è un’anteprima di come l’Album può apparire nella visita pubblica.</p>
+
+      <div class="heroRow">
+        <div class="who">
+          <div class="name" id="whoName">—</div>
+          <div class="meta"><span id="whoPlace">—</span><span class="dot">•</span><span id="whoDate">—</span></div>
+        </div>
+        <div class="actions">
+          <a class="btn" id="btnBack" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+          <a class="btn primary" id="btnVisit" href="#" rel="noopener">Apri visita</a>
+        </div>
+      </div>
+
+      <div class="note">
+        Nella visita pubblica l’Album appare in modo sobrio ed elegante. Nessun confronto, nessun effetto “social”.
+      </div>
+    </section>
+
+    <section class="card" id="gateCard" hidden>
+      <h2>Accesso richiesto</h2>
+      <p class="small" id="gateText"></p>
+      <div class="actions">
+        <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+        <a class="btn" href="/cittadini/luogo-memoria.html">I miei Luoghi</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="grid" id="grid"></div>
+      <p class="small empty" id="empty" hidden>Nessun contenuto ancora.</p>
+    </section>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden aria-hidden="true">
+    <button class="lbClose" id="lbClose" aria-label="Chiudi">✕</button>
+    <div class="lbBody" id="lbBody"></div>
+    <div class="lbCap" id="lbCap"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+    const forceTheme = (params.get("theme") || "").trim();
+
+    const el = (id)=>document.getElementById(id);
+
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita"], "family")) || "family";
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(raw?.custody?.coUids) ? raw.custody.coUids.map(safeStr).filter(Boolean) : [];
+      return { nome, cognome, dataMorte, visibilityMode: (visibilityMode==="pubblico"?"public":visibilityMode), placeLabel, mainUid, coUids };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function isCustode(uid, luogo){
+      if (!uid) return false;
+      return uid === luogo.mainUid || luogo.coUids.includes(uid);
+    }
+
+    function mustLogin(msg){
+      el("gateCard").hidden = false;
+      el("gateText").textContent = msg;
+    }
+
+    /* Theme UI (coerente) */
+    (function initThemeUI(){
+      const btn = document.getElementById('themeToggle');
+      const root = document.documentElement;
+
+      function apply(theme){
+        const t = (theme === 'light' || theme === 'dark') ? theme : 'auto';
+        root.setAttribute('data-theme', t);
+        const resolved = (t === 'auto')
+          ? (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : t;
+        document.body.classList.toggle('theme-dark', resolved === 'dark');
+        try{ root.setAttribute('data-theme-resolved', resolved); }catch{}
+        if (btn) btn.textContent = (resolved === 'dark') ? '◐' : '☀';
+      }
+
+      function nextTheme(cur){
+        if (cur === 'dark') return 'light';
+        if (cur === 'light') return 'dark';
+        return 'dark';
+      }
+
+      const saved = localStorage.getItem('ofi_theme') || root.getAttribute('data-theme') || 'auto';
+      const start = (forceTheme === 'dark' || forceTheme === 'light') ? forceTheme : saved;
+      apply(start);
+
+      btn?.addEventListener('click', ()=>{
+        const cur = root.getAttribute('data-theme') || 'auto';
+        const nxt = nextTheme(cur);
+        localStorage.setItem('ofi_theme', nxt);
+        apply(nxt);
+      });
+
+      try{
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq?.addEventListener?.('change', ()=>{
+          const cur = root.getAttribute('data-theme') || 'auto';
+          if (cur === 'auto') apply('auto');
+        });
+      }catch{}
+    })();
+
+    // Lightbox
+    const lb = el("lightbox");
+    const lbBody = el("lbBody");
+    const lbCap = el("lbCap");
+    function openLB(node, caption=""){
+      lbBody.innerHTML = "";
+      lbBody.appendChild(node);
+      lbCap.textContent = caption || "";
+      lb.hidden = false;
+      lb.setAttribute("aria-hidden","false");
+      document.body.classList.add("lbLock");
+    }
+    function closeLB(){
+      lb.hidden = true;
+      lb.setAttribute("aria-hidden","true");
+      lbBody.innerHTML = "";
+      lbCap.textContent = "";
+      document.body.classList.remove("lbLock");
+    }
+    el("lbClose").addEventListener("click", closeLB);
+    lb.addEventListener("click", (e)=>{ if (e.target === lb) closeLB(); });
+    window.addEventListener("keydown", (e)=>{ if (e.key === "Escape") closeLB(); });
+
+    async function waitAuth(){
+      return await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{ unsub(); resolve(u || null); });
+      });
+    }
+
+    async function load(){
+      if (!luogoId){
+        mustLogin("ID mancante. Torna ai tuoi Luoghi e apri quello corretto.");
+        return;
+      }
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        mustLogin("Questo Luogo non esiste oppure non è più disponibile.");
+        return;
+      }
+
+      const luogo = normalizeDoc(snap.data() || {});
+      const displayName = [luogo.nome, luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+
+      el("whoName").textContent = displayName;
+      el("whoPlace").textContent = luogo.placeLabel || "Luogo non specificato";
+      el("whoDate").textContent = fmtDate(luogo.dataMorte);
+
+      // NOTE: luogo-visit.html è in /site (root)
+      const visitUrl = `/luogo-visit.html?id=${encodeURIComponent(luogoId)}&theme=dark`;
+      el("btnVisit").href = visitUrl;
+      el("openVisit").href = visitUrl;
+      el("backLink").href = visitUrl;
+
+      // se NON pubblico => serve custode loggato
+      if (luogo.visibilityMode !== "public"){
+        const user = await waitAuth();
+        if (!user){
+          mustLogin("Questo Album è riservato ai familiari/custodi. Accedi per continuare.");
+          return;
+        }
+        if (!isCustode(user.uid, luogo)){
+          mustLogin("Non risulti custode di questo Luogo. Se hai un invito, usa lo stesso account cittadino.");
+          return;
+        }
+      }
+
+      const grid = el("grid");
+      const empty = el("empty");
+
+      // UX: skeleton mentre carica (riduce la sensazione di "pagina vuota")
+      grid.innerHTML = "";
+      empty.hidden = true;
+      const skCount = 9;
+      for (let i=0;i<skCount;i++){
+        const sk = document.createElement('div');
+        sk.className = 'tile sk';
+        sk.innerHTML = '<div class="skImg"></div><div class="skCap"></div>';
+        grid.appendChild(sk);
+      }
+
+      // Evita indice composito: basta "order".
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), limit(80));
+      const snapA = await getDocs(qA).catch((e)=>{ console.error("Album preview query failed", e); return null; });
+
+      let count = 0;
+      grid.innerHTML = ""; // rimuove skeleton
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          if (!url) return;
+          count++;
+
+          const type = safeStr(m.type || "photo");
+          const cap = safeStr(m.caption || "");
+
+          const tile = document.createElement("button");
+          tile.type = "button";
+          tile.className = "tile";
+          tile.setAttribute("aria-label", cap ? cap : (type==="video" ? "Video" : "Foto"));
+
+          if (type === "video"){
+            // Performance: evitare download immediati di tanti preview video.
+            // Mostriamo un placeholder; il video si apre in lightbox.
+            const ph = document.createElement('div');
+            ph.className = 'videoPh';
+            ph.innerHTML = '<span class="play">▶</span>';
+            tile.appendChild(ph);
+
+            const badge = document.createElement("div");
+            badge.className = "badge";
+            badge.textContent = "VIDEO";
+            tile.appendChild(badge);
+
+            tile.addEventListener("click", ()=>{
+              const vv = document.createElement("video");
+              vv.src = url;
+              vv.controls = true;
+              vv.autoplay = true;
+              vv.playsInline = true;
+              openLB(vv, cap);
+            });
+          } else {
+            const img = document.createElement("img");
+            img.src = url;
+            img.alt = cap || "Foto";
+            img.loading = "lazy";
+            tile.appendChild(img);
+
+            tile.addEventListener("click", ()=>{
+              const big = document.createElement("img");
+              big.src = url;
+              big.alt = cap || "Foto";
+              openLB(big, cap);
+            });
+          }
+
+          if (cap){
+            const c = document.createElement("div");
+            c.className = "cap";
+            c.textContent = cap;
+            tile.appendChild(c);
+          }
+
+          grid.appendChild(tile);
+        });
+      }
+
+      empty.hidden = count > 0;
+    }
+
+    load().catch((e)=>{
+      console.error(e);
+      mustLogin("Errore nel caricamento. Riprova tra poco.");
+    });
+  </script>
+</body>
+</html>

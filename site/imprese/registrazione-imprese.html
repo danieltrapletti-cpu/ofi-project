@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Registrazione Impresa — OFI</title>
+  <meta name="description" content="Crea l’account della tua impresa su OFI. Dopo la verifica email, lo stato resta “in attesa” finché l’amministratore non approva.">
+
+  <!-- Font & CSS coerenti -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+
+  <!-- Mapbox GL CSS -->
+  <link href="/vendor/mapbox-gl.css" rel="stylesheet">
+
+  <style>
+    .auth-wrap{display:grid;place-items:center;padding:2rem 0;}
+    .auth-card{max-width:980px;width:100%;padding:1.5rem;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.18);border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--surface-text)}
+    .auth-title{font-size:1.1rem;margin:0 0 .8rem;font-weight:800;letter-spacing:.2px;color:var(--surface-text)}
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .auth-grid .full{grid-column:1/-1}
+    .auth-field label{display:block;font-size:.95rem;margin:0 0 .35rem;font-weight:700;color:var(--surface-text)}
+    .auth-field input, .auth-field select{width:100%;height:46px;border-radius:12px;padding:0 .9rem;border:1px solid rgba(202,168,90,.35);background:transparent;color:var(--surface-text)}
+    .auth-field input.invalid, .auth-field select.invalid{border-color:#c62828;background:#fff7f7}
+    .auth-actions{display:flex;gap:12px;align-items:center;margin-top:.4rem;flex-wrap:wrap}
+    .auth-actions .btn{height:46px;border-radius:14px;font-weight:800}
+    .hint{font-size:.95rem;color:var(--muted)}
+    .error{color:#ffb3b3;font-weight:800}
+    .success{color:#3cc482;font-weight:800}
+    .small{font-size:.9rem}
+    @media (max-width: 760px){ .auth-grid{grid-template-columns:1fr} }
+
+    /* Sede principale */
+    .sede-block{margin-top:.4rem;border:1px dashed rgba(202,168,90,.45);border-radius:14px;padding:12px}
+    .map-wrap{border-radius:14px;overflow:hidden;border:1px solid rgba(202,168,90,.35)}
+    #map{width:100%;height:260px}
+
+    /* reCAPTCHA badge */
+    .grecaptcha-badge{position:fixed !important; left:14px !important; right:auto !important; bottom:14px !important; z-index:9999 !important; transform:scale(0.9) !important;}
+    @media (max-width:480px){
+      .grecaptcha-badge{left:8px !important; bottom:8px !important; transform:scale(0.75) !important;}
+    }
+
+    /* Select accessibile – tema scuro */
+    html[data-theme*="dark"] .auth-field select {
+      background-color: #0f1420; color: #f1f5f9; border-color: rgba(202,168,90,.55);
+      appearance:none; -webkit-appearance:none; -moz-appearance:none;
+      background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAAA5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat:no-repeat;background-position:right .8rem center;background-size:18px 18px;padding-right:2.4rem;
+    }
+    html[data-theme*="dark"] .auth-field select:focus { outline:none;border-color:#d7b66a;box-shadow:0 0 0 3px rgba(202,168,90,.25); }
+    html[data-theme*="dark"] .auth-field select option { background-color:#0f1420;color:#f1f5f9; }
+    .auth-field select option[value=""] { color: var(--muted, #94a3b8); }
+    html[data-theme*="dark"] .auth-field select:-moz-focusring { color:transparent; text-shadow:0 0 0 #f1f5f9; }
+    html[data-theme*="dark"] .auth-field select { color-scheme: light; }
+    html[data-theme*="dark"] #settore option, html[data-theme*="dark"] .auth-field select option {
+      background:#ffffff !important; color:#0f1420 !important; -webkit-text-fill-color:#0f1420 !important;
+    }
+
+    /* Readonly look */
+    .auth-field input[readonly]{ background:rgba(255,255,255,0.03); cursor:not-allowed; opacity:.9; }
+
+    /* Checkbox eleganti OFI */
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(202,168,90,0.8);
+      border-radius: 5px;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      transition: all .2s ease;
+    }
+    input[type="checkbox"]:checked {
+      background-color: rgba(202,168,90,0.9);
+      border-color: rgba(202,168,90,1);
+    }
+    input[type="checkbox"]:checked::after {
+      content: "✓";
+      position: absolute;
+      color: #0f1420;
+      font-weight: 800;
+      font-size: 0.9rem;
+      left: 3px;
+      top: 0;
+    }
+    label.checkbox, 
+    label[for="toggleManual"] {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .95rem;
+      color: var(--surface-text);
+      line-height: 1.4;
+    }
+
+    /* Banner rivendicazione profilo */
+    .claim-banner{
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border-left: 4px solid var(--ofi-gold, #CAAA5A);
+  background: rgba(9, 16, 30, 0.92); /* sfondo scuro standard */
+  color: #f7f7f7 !important;         /* testo sempre leggibile */
+  font-size: .9rem;
+  line-height: 1.5;
+  display: flex;
+  gap: .75rem;
+  align-items: flex-start;
+}
+
+/* Assicura contrasto anche per i figli e le scritte secondarie */
+.claim-banner .claim-banner-main,
+.claim-banner .claim-banner-main .claim-name,
+.claim-banner .claim-banner-main .claim-loc,
+.claim-banner strong,
+.claim-banner .small {
+  color: #f7f7f7 !important;
+}
+
+/* Opacità più morbida per la località */
+.claim-banner .claim-loc {
+  opacity: .8;
+}
+    .claim-banner-icon{
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #fef9c3, #eab308);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    }
+    .claim-banner-icon img{
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+    .claim-banner strong{
+      font-weight: 800;
+    }
+    .claim-banner-main{
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .claim-banner-main .claim-name{
+      font-weight: 800;
+    }
+    .claim-banner-main .claim-loc{
+      font-size: .85rem;
+      opacity: .9;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head"><img src="/images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="/necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="/pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="/vision.html">Visione di OFI</a></li>
+            <li><a href="/index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="/index.html#pensieri">Pensieri</a></li>
+            <li><a href="/articoli/articoli.html">Articoli</a></li>
+            <li><a href="/index.html#ricordi">Ricordi</a></li>
+            <li><a href="/index.html#mappa">Vicino a te</a></li>
+            <li><a href="/index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="/imprese/login-imprese.html">Accedi</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1 class="section-title">Registrazione Impresa</h1>
+        <p class="section-sub">Dopo la verifica email, lo stato resterà <strong>“in attesa”</strong> finché l’amministratore non approva.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container auth-wrap">
+        <div class="auth-card">
+          <div class="auth-title">Dati dell’impresa</div>
+
+          <form id="regForm" class="auth-grid" novalidate>
+            <div class="auth-field"><label for="nome">Nome Impresa</label><input id="nome" type="text" required placeholder="Es. Onoranze Funebri La Pace" autocomplete="organization"></div>
+
+            <div class="auth-field"><label for="piva">Partita IVA</label>
+              <input id="piva" type="text" inputmode="numeric" minlength="11" maxlength="11" required placeholder="11 cifre" pattern="[0-9]{11}" aria-describedby="pivaHelp">
+              <div id="pivaHelp" class="small hint">Inserisci solo cifre (11).</div>
+            </div>
+
+            <div class="auth-field"><label for="cf">Codice Fiscale (opzionale)</label>
+              <input id="cf" type="text" minlength="16" maxlength="16" placeholder="16 caratteri se disponibile">
+            </div>
+
+            <div class="auth-field full"><label for="settore">Settore</label>
+              <select id="settore" required>
+                <option value="">Seleziona…</option>
+                <option value="onoranze_funebri">Onoranze Funebri</option>
+              </select>
+            </div>
+
+            <!-- BLOCCO: SEDE PRINCIPALE -->
+            <div class="full sede-block">
+              <div class="auth-title" style="margin-top:0">Sede principale</div>
+
+              <div class="auth-field full">
+                <label for="placeSearch">Cerca indirizzo/località (Google)</label>
+                <input id="placeSearch" type="text" placeholder="Es. Via Roma 12, Zingonia">
+                <div class="small hint">
+                  Seleziona <strong>l’indirizzo completo (via + numero)</strong> dal campo qui sopra.
+                </div>
+                <label class="small" style="display:flex;gap:.5rem;align-items:center;margin:.35rem 0 .2rem">
+                  <input id="toggleManual" type="checkbox">
+                  Consenti modifica manuale dell’indirizzo (solo se l’indirizzo non appare correttamente)
+                </label>
+              </div>
+
+              <div class="auth-grid">
+                <div class="auth-field"><label for="indirizzo">Indirizzo</label><input id="indirizzo" type="text" placeholder="Via e numero" required readonly></div>
+                <div class="auth-field"><label for="citta">Città/Comune</label><input id="citta" type="text" placeholder="Comune" required readonly></div>
+                <div class="auth-field"><label for="frazione">Frazione/Località (opz.)</label><input id="frazione" type="text" placeholder="Zingonia, …" readonly></div>
+                <div class="auth-field"><label for="provincia">Provincia</label><input id="provincia" type="text" minlength="2" maxlength="2" placeholder="BG" required readonly></div>
+                <div class="auth-field"><label for="cap">CAP (opzionale)</label><input id="cap" type="text" inputmode="numeric" minlength="5" maxlength="5" placeholder="24030" readonly></div>
+                <input type="hidden" id="lat"><input type="hidden" id="lng">
+                <div class="auth-field full map-wrap">
+                  <div id="map" aria-label="Mappa sede principale"></div>
+                </div>
+                <div class="auth-field full">
+                  <div class="small hint">📍 Controlla il pin. Puoi trascinarlo per rifinire la posizione.</div>
+                </div>
+              </div>
+            </div>
+            <!-- FINE BLOCCO SEDE -->
+
+            <div class="auth-field full"><label for="email">Email</label><input id="email" type="email" required placeholder="azienda@email.it" autocomplete="email"></div>
+            <div class="auth-field"><label for="password">Password</label><input id="password" type="password" required minlength="6" placeholder="Min 6 caratteri" autocomplete="new-password"></div>
+            <div class="auth-field"><label for="confirm">Conferma password</label><input id="confirm" type="password" required minlength="6" placeholder="Ripeti password" autocomplete="new-password"></div>
+
+            <div class="auth-field full">
+              <label class="checkbox"><input id="autodichiarazione" type="checkbox" required> Dichiaro che i dati inseriti sono veritieri e che l’impresa è regolarmente operativa.</label>
+              <div class="hint">Dopo l’approvazione potrai scaricare il certificato e attivare il Marchio di Affidabilità.</div>
+            </div>
+
+            <!-- reCAPTCHA v3 -->
+            <input type="hidden" id="recaptchaToken" name="recaptchaToken"/>
+
+            <div class="auth-actions full">
+              <button id="submitBtn" class="btn btn-primary" type="submit">Registrati</button>
+              <a class="btn btn-outline" href="/imprese/login-imprese.html" role="button" style="display:inline-grid;place-items:center">Hai già un account?</a>
+            </div>
+            <div id="msg" class="hint full" aria-live="polite"></div>
+          </form>
+
+          <p class="small hint" style="margin-top:.6rem">Questa pagina è protetta da reCAPTCHA; si applicano la <a class="link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> e i <a class="link" href="https://policies.google.com/terms" target="_blank" rel="noopener">Termini di Google</a>.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="/images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce cittadini e imprese in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="/articoli/articoli.html">Articoli</a>
+          <a href="/faq.html">FAQ</a>
+          <a href="/imprese/login-imprese.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/ofi.js" defer></script>
+
+  <!-- reCAPTCHA v3 -->
+  <script>window.RECAPTCHA_SITE_KEY = "6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb";</script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6Ld0JKgrAAAAAGFmincv4B2uK3qrlbW73i4Uuexb"></script>
+
+  <!-- Mapbox GL -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+
+  <!-- Google Places (autocomplete) -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM_iZPkckUoosfo6nlG95vbtE4yOXFIuQ&libraries=places&loading=async"></script>
+
+  <!-- Firebase v10 (modular) + logica pagina -->
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.appspot.com",
+    messagingSenderId: "345581339212",
+    appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ===== URL parameters (per rivendicazione profilo) =====
+  const urlParams = new URLSearchParams(window.location.search);
+  const claimId   = urlParams.get("claimId") || null;
+
+  // === Helpers UI
+  const $ = (id)=>document.getElementById(id);
+  const msg = $('msg');
+  function setMsg(type,text){ msg.className = type||"hint"; msg.textContent = text||""; }
+  function invalid(el,text){ el.classList.add('invalid'); setMsg('error',text); if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth', block:'center'}); }
+  function clearInvalid(){ document.querySelectorAll('.invalid').forEach(x=>x.classList.remove('invalid')); setMsg(); }
+  function isDigits11(v){ return /^[0-9]{11}$/.test((v||"").trim()); }
+  function isCF(v){ if(!v) return true; return /^[A-Z0-9]{16}$/.test((v||"").trim().toUpperCase()); }
+  function isCAP(v){ if(!v) return true; return /^[0-9]{5}$/.test((v||"").trim()); }
+  function isProv(v){ return /^[A-Z]{2}$/.test((v||"").trim().toUpperCase()); }
+  function pad6(n){ return String(n).padStart(6,'0'); }
+
+  // reCAPTCHA token helper
+  async function getToken(action){
+    try{
+      if(!window.grecaptcha) return '';
+      await grecaptcha.ready();
+      return await grecaptcha.execute(window.RECAPTCHA_SITE_KEY, { action });
+    }catch{ return ''; }
+  }
+
+  // Contatore OFI
+  async function nextOFICode(){
+    const counterRef = doc(db, 'meta', 'counter_imprese');
+    const n = await runTransaction(db, async (tx) => {
+      const snap = await tx.get(counterRef);
+      let val = 0;
+      if (!snap.exists()){
+        tx.set(counterRef, { value: 1 });
+        val = 1;
+      } else {
+        val = (snap.data().value || 0) + 1;
+        tx.update(counterRef, { value: val });
+      }
+      return val;
+    });
+    return "OFI-" + pad6(n);
+  }
+
+  // ===== Funzioni rivendicazione (prefill da imprese_non_registrate) =====
+
+  function showClaimBanner(data){
+    const card = document.querySelector('.auth-card');
+    if (!card) return;
+
+    const nome   = data.ragione_sociale || data.nome || "Impresa funebre";
+    const comune = data.comune || "";
+    const prov   = (data.provincia || "").slice(0,2).toUpperCase();
+
+    const banner = document.createElement('div');
+    banner.className = 'claim-banner';
+    banner.innerHTML = `
+      <div class="claim-banner-icon">
+        <img src="/images/rosa.png" alt="OFI">
+      </div>
+      <div class="claim-banner-main">
+        <div><strong>Stai rivendicando una scheda OFI già presente.</strong></div>
+        <div>
+          Abbiamo trovato il profilo:
+          <span class="claim-name">${nome}</span>
+          <span class="claim-loc">${[comune, prov].filter(Boolean).join(" · ")}</span>
+        </div>
+        <div class="small">
+          Dopo la registrazione potrai <strong>completare, correggere</strong> i dati
+          e richiedere la <strong>verifica ufficiale</strong> dell’impresa.
+        </div>
+      </div>
+    `;
+    card.prepend(banner);
+  }
+
+  function prefillFromNonRegistrata(data){
+    // Nome impresa
+    const nomeImp = data.ragione_sociale || data.nome || "";
+    if (nomeImp) $('nome').value = nomeImp;
+
+    // Settore (se categoria combacia)
+    if ((data.categoria || "").toLowerCase().includes("onoranze")) {
+      $('settore').value = 'onoranze_funebri';
+    }
+
+    // Email se esiste nel DB (l’utente può sempre cambiarla)
+    if (data.email && !$('email').value) {
+      $('email').value = data.email;
+    }
+
+    // Sede: indirizzo / comune / provincia / cap
+    const indirizzo = data.indirizzo || "";
+    const comune    = data.comune || "";
+    const cap       = data.cap || "";
+    let provincia   = data.provincia || "";
+    provincia = provincia.slice(0,2).toUpperCase();
+
+    const prevManual = $('toggleManual')?.checked === true;
+
+    // Sblocca temporaneamente per scrivere
+    setReadonly(false);
+    if (indirizzo) $('indirizzo').value = indirizzo;
+    if (comune) $('citta').value       = comune;
+    if (provincia) $('provincia').value = provincia;
+    if (cap) $('cap').value            = cap;
+    // Ripristina readonly se manuale non attivo
+    setReadonly(!prevManual);
+
+    // Coordinate
+    const lat = typeof data.lat === 'number' ? data.lat : parseFloat(data.lat);
+    const lng = (typeof data.lng === 'number' ? data.lng :
+                typeof data.lon === 'number' ? data.lon :
+                parseFloat(data.lng || data.lon));
+
+    if (Number.isFinite(lat) && Number.isFinite(lng)) {
+      $('lat').value = lat.toFixed(6);
+      $('lng').value = lng.toFixed(6);
+
+      try{
+        marker.setLngLat([lng, lat]).addTo(map);
+        map.flyTo({ center:[lng,lat], zoom: 14 });
+      }catch(e){
+        console.warn("Impossibile posizionare marker da claim:", e);
+      }
+    }
+  }
+
+  async function loadClaimImpresa(){
+    if (!claimId) return; // nessuna rivendicazione, esci
+
+    try{
+      const docRef = doc(db, "imprese_non_registrate", claimId);
+      const snap   = await getDoc(docRef);
+      if (!snap.exists()) {
+        console.warn("claimId non trovato in imprese_non_registrate:", claimId);
+        return;
+      }
+
+      const data = snap.data();
+      showClaimBanner(data);
+      prefillFromNonRegistrata(data);
+    }catch(err){
+      console.error("Errore nel prefill da imprese_non_registrate:", err);
+    }
+  }
+
+  // ===== Mappa Mapbox =====
+  const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+  mapboxgl.accessToken = MAPBOX_TOKEN;
+
+  const mapEl = document.getElementById('map');
+  if (mapEl) mapEl.replaceChildren();
+
+  const isDark = (document.documentElement.getAttribute('data-theme') || '').toLowerCase().includes('dark');
+  const baseStyle = isDark ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11';
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: baseStyle,
+    center: [9.1900, 45.4642], // Milano
+    zoom: 10,
+    attributionControl: false
+  });
+  map.addControl(new mapboxgl.AttributionControl({compact:true}), 'bottom-right');
+  map.addControl(new mapboxgl.NavigationControl({showCompass:false}), 'bottom-right');
+
+  const marker = new mapboxgl.Marker({ color:'#CAAA5A', draggable:true });
+  marker.on('dragend', ()=>{
+    const p = marker.getLngLat();
+    $('lat').value = p.lat.toFixed(6);
+    $('lng').value = p.lng.toFixed(6);
+    window._fromGoogle = false;     // posizione manuale intenzionale
+    window._googleLevel = 'street'; // considerala precisa
+  });
+
+  // Se arrivo da profilo-light con claimId, precompilo subito dopo che la mappa è pronta
+  if (claimId) {
+    map.once('load', () => {
+      loadClaimImpresa().catch(console.error);
+    });
+  }
+
+  // Flag Google
+  window._fromGoogle = false;
+  window._googleLevel = 'unknown'; // 'street' | 'locality' | 'unknown'
+
+  // Switch stile se cambi tema
+  document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const darkNow = (document.documentElement.getAttribute('data-theme') || '').toLowerCase().includes('dark');
+    map.setStyle(darkNow ? 'mapbox://styles/mapbox/dark-v11' : 'mapbox://styles/mapbox/light-v11');
+  });
+
+  // Readonly helper + toggle manuale
+  function setReadonly(on){
+    ['indirizzo','citta','frazione','provincia','cap'].forEach(id=>{
+      const el = $(id);
+      if(!el) return;
+      el.readOnly = on;
+      el.style.cursor = on ? 'not-allowed' : '';
+    });
+  }
+  setReadonly(true);
+
+  $('toggleManual')?.addEventListener('change', (e)=>{
+    const manual = e.target.checked;
+    setReadonly(!manual);
+    if (manual){
+      window._fromGoogle = false;
+      window._googleLevel = 'unknown';
+    }
+  });
+
+  // ===== Google Places Autocomplete (prioritario) =====
+  function initGoogleAutocomplete(){
+    if(!window.google || !google.maps || !google.maps.places) return;
+
+    const ac = new google.maps.places.Autocomplete(document.getElementById('placeSearch'), {
+      componentRestrictions: { country: 'it' },
+      types: ['geocode']
+    });
+
+    ac.addListener('place_changed', ()=>{
+      const place = ac.getPlace();
+      if(!place || !place.geometry) return;
+
+      const comp = (type) => (place.address_components||[]).find(c => c.types.includes(type));
+      const txt  = (c) => c ? (c.short_name || c.long_name) : '';
+
+      const fraz = txt(comp('sublocality')) || txt(comp('neighborhood')) || txt(comp('locality'));
+      const comune = txt(comp('postal_town')) || txt(comp('administrative_area_level_3')) || txt(comp('locality'));
+      const cap = txt(comp('postal_code'));
+      let provincia = txt(comp('administrative_area_level_2'))
+                        .replace(/Provincia di\s*/i,'').slice(0,2).toUpperCase();
+
+      const route = txt(comp('route'));
+      const snum  = txt(comp('street_number'));
+      const street = [route, snum].filter(Boolean).join(' ');
+
+      const hasStreet = !!route || !!snum;
+      window._googleLevel = hasStreet ? 'street' : 'locality';
+
+      // riempi campi in modo protetto (temporaneamente sblocca)
+      const prevReadonly = $('indirizzo').readOnly;
+      setReadonly(false);
+      if (street) $('indirizzo').value = street;
+      if (fraz) $('frazione').value = fraz;            // solo UI, non salva in CREATE
+      if (comune) $('citta').value = comune;
+      if (cap) $('cap').value = cap;
+      if (provincia) $('provincia').value = provincia;
+      setReadonly(!$('toggleManual')?.checked);
+
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      $('lat').value = lat.toFixed(6);
+      $('lng').value = lng.toFixed(6);
+
+      marker.setLngLat([lng, lat]).addTo(map);
+      map.flyTo({center:[lng,lat], zoom:15});
+
+      window._fromGoogle = true; // evita override
+    });
+  }
+
+  // Avvio quando Google è pronto
+  window.addEventListener('load', ()=>{
+    const t = setInterval(()=>{
+      if(window.google && google.maps && google.maps.places){
+        clearInterval(t); initGoogleAutocomplete();
+      }
+    }, 200);
+  });
+
+  // ===== Submit =====
+  $('regForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    clearInvalid();
+    const btn = $('submitBtn'); btn.disabled = true;
+
+    const nome = $('nome').value.trim();
+    const piva = $('piva').value.trim();
+    const cf   = $('cf').value.trim();
+    const settore = $('settore').value;
+    const email = $('email').value.trim().toLowerCase();
+    const pw = $('password').value;
+    const pw2= $('confirm').value;
+    const okAuto = $('autodichiarazione').checked;
+
+    // Sede
+    const indirizzo = $('indirizzo').value.trim();
+    const citta = $('citta').value.trim();
+    const frazione = $('frazione').value.trim(); // usata solo UI
+    const provincia = $('provincia').value.trim().toUpperCase();
+    const cap = $('cap').value.trim();
+    const lat = $('lat').value.trim();
+    const lng = $('lng').value.trim();
+
+    // Validazioni base
+    if(!nome) return btn.disabled=false, invalid($('nome'), "Inserisci il nome dell’impresa.");
+    if(!isDigits11(piva)) return btn.disabled=false, invalid($('piva'), "La Partita IVA deve avere 11 cifre.");
+    if(!isCF(cf)) return btn.disabled=false, invalid($('cf'), "Codice Fiscale non valido (16 caratteri).");
+    if(settore !== 'onoranze_funebri') return btn.disabled=false, invalid($('settore'), "Seleziona il settore corretto.");
+    if(!indirizzo) return btn.disabled=false, invalid($('placeSearch'), "Seleziona l’indirizzo completo dal campo Google.");
+    if(!citta) return btn.disabled=false, invalid($('placeSearch'), "Seleziona l’indirizzo completo dal campo Google.");
+    if(!isProv(provincia)) return btn.disabled=false, invalid($('placeSearch'), "Seleziona l’indirizzo completo dal campo Google.");
+    if(!isCAP(cap)) { if(cap) return btn.disabled=false, invalid($('placeSearch'), "CAP non valido (5 cifre)."); }
+    if(!email) return btn.disabled=false, invalid($('email'), "Inserisci un’email valida.");
+    if(pw.length < 6) return btn.disabled=false, invalid($('password'), "La password deve contenere almeno 6 caratteri.");
+    if(pw !== pw2) return btn.disabled=false, invalid($('confirm'), "Le password non coincidono.");
+    if(!okAuto) { setMsg('error',"Devi accettare l’autodichiarazione."); btn.disabled=false; return; }
+
+    // Se manuale NON attivo → obbligo Google street-level
+    const manualOn = $('toggleManual')?.checked === true;
+    if (!manualOn && window._googleLevel !== 'street') {
+      btn.disabled = false;
+      return invalid($('placeSearch'), "Seleziona dal campo Google l’indirizzo completo (via + numero).");
+    }
+
+    // Serve comunque il pin (lat/lng)
+    if(!$('lat').value || !$('lng').value){
+      btn.disabled = false;
+      return invalid($('placeSearch'), "Manca la posizione sulla mappa. Seleziona l’indirizzo completo o trascina il pin.");
+    }
+
+    setMsg('hint','Invio in corso…');
+
+    // reCAPTCHA (soft + Netlify Function)
+    try{
+      const token = await getToken('register');
+      $('recaptchaToken').value = token || '';
+      if (token){
+        try{
+          const r = await fetch('/.netlify/functions/recaptcha-verify', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ token })
+          });
+          const j = await r.json().catch(()=>({ok:true}));
+          if(!j.ok){ setMsg('error','Verifica anti-bot non superata. Riprova.'); btn.disabled=false; return; }
+        }catch{}
+      }
+    }catch{}
+
+    // ===== Registrazione =====
+    try{
+      // 1) Auth
+      const cred = await createUserWithEmailAndPassword(auth, email, pw);
+      try{ await updateProfile(cred.user, { displayName: nome }); }catch{}
+
+      // 2) Codice OFI
+      const codice_ofi = await nextOFICode();
+
+      // 3) Doc impresa — SOLO i campi ammessi dalle regole
+      const payload = {
+        nome, email, piva, settore,
+        stato: "in_attesa",
+        onboarding_required: true,
+        onboarding_completed: false,
+        profilo_score: 0,
+        codice_ofi,
+        registrata_il: serverTimestamp(),
+        sede_principale: {
+          indirizzo,
+          citta,
+          provincia,
+          cap: cap || null,
+          lat: lat ? Number(lat) : null,
+          lng: lng ? Number(lng) : null
+        }
+      };
+      if (cf) payload.codice_fiscale = cf.toUpperCase();
+
+      // Se arriva da una scheda già presente nel database iniziale, traccio l'origine
+      if (claimId) {
+        payload.claim_origin = {
+          collection: "imprese_non_registrate",
+          id: claimId,
+          at: serverTimestamp()
+        };
+      }
+
+      await setDoc(doc(db,'imprese_registrate', email), payload);
+
+      // 4) Verifica email
+      try {
+        auth.languageCode = 'it';
+        const actionCodeSettings = {
+          url: 'https://ofi-test-daniel.netlify.app/imprese/verifica-email.html?email=' + encodeURIComponent(email),
+          handleCodeInApp: false
+        };
+        await sendEmailVerification(cred.user, actionCodeSettings);
+
+        setMsg('success', `✅ Registrazione completata. Codice: ${codice_ofi}. Ti abbiamo inviato la verifica via email.`);
+        setTimeout(() => {
+          window.location.href = '/imprese/verifica-email.html?email=' + encodeURIComponent(email);
+        }, 900);
+      } catch (err) {
+        console.error(err);
+        setMsg('error','Registrazione completata ma invio verifica non riuscito. Riprova dal tuo profilo.');
+      }
+
+    } catch(err){
+      console.error(err);
+      let friendly = "Registrazione non riuscita.";
+      if (err?.code === 'auth/api-key-not-valid') friendly = "Configurazione Firebase non valida. Verifica apiKey e authDomain.";
+      else if (err?.code === 'auth/email-already-in-use') friendly = "Questa email risulta già registrata.";
+      else if (err?.code === 'auth/invalid-email') friendly = "Indirizzo email non valido.";
+      else if (err?.code === 'auth/weak-password') friendly = "Password troppo debole.";
+      setMsg('error', friendly);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // Chiudi sottomenu al click fuori
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    const menu = document.getElementById('menuPanel');
+    if(trigger){
+      e.preventDefault();
+      const li = trigger.parentElement;
+      const isOpen = li.classList.toggle('open');
+      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }else if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  });
+  </script>
+
+  <script>
+  // select “Settore” migliorata
+  function enhanceSelect(selector){
+    const select = document.querySelector(selector);
+    if(!select || select.dataset.enhanced==="1") return;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'custom-select';
+    wrap.setAttribute('role','combobox');
+    wrap.setAttribute('aria-haspopup','listbox');
+    wrap.setAttribute('aria-expanded','false');
+    wrap.setAttribute('aria-owns', `${select.id}-list`);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cs-trigger';
+
+    const placeholder = select.options[0]?.text || 'Seleziona…';
+    const setLabel = () => {
+      btn.textContent = select.selectedIndex>0 ? select.options[select.selectedIndex].text : placeholder;
+    };
+    setLabel();
+
+    const list = document.createElement('ul');
+    list.className = 'cs-options';
+    list.setAttribute('role','listbox');
+    list.id = `${select.id}-list`;
+    list.tabIndex = -1;
+
+    [...select.options].forEach((opt)=>{
+      if(opt.value==="") return;
+      const li = document.createElement('li');
+      li.className = 'cs-option';
+      li.setAttribute('role','option');
+      li.dataset.value = opt.value;
+      li.textContent = opt.text;
+      if(opt.selected) li.setAttribute('aria-selected','true');
+
+      li.addEventListener('click', ()=>{
+        select.value = opt.value;
+        select.dispatchEvent(new Event('change', {bubbles:true}));
+        setLabel();
+        [...list.children].forEach(n=>n.removeAttribute('aria-selected'));
+        li.setAttribute('aria-selected','true');
+        close(); btn.focus();
+      });
+
+      li.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' ') { e.preventDefault(); li.click(); }
+        if(e.key==='Escape') { e.preventDefault(); close(); btn.focus(); }
+      });
+
+      list.appendChild(li);
+    });
+
+    function open(){ wrap.setAttribute('aria-expanded','true'); list.style.display='block'; list.focus(); }
+    function close(){ wrap.setAttribute('aria-expanded','false'); list.style.display='none'; }
+
+    btn.addEventListener('click', ()=>{ (wrap.getAttribute('aria-expanded')==='true') ? close() : open(); });
+    document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) close(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+
+    btn.addEventListener('keydown', (e)=>{
+      const items = [...list.children];
+      const idxSel = items.findIndex(li => li.getAttribute('aria-selected')==='true');
+      if(e.key==='ArrowDown'){ e.preventDefault(); open(); (items[idxSel+1]||items[0]).focus(); }
+      if(e.key==='ArrowUp'){   e.preventDefault(); open(); (items[idxSel-1]||items.at(-1)).focus(); }
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); open(); }
+    });
+
+    select.insertAdjacentElement('afterend', wrap);
+    wrap.appendChild(btn);
+    wrap.appendChild(list);
+    select.dataset.enhanced = "1";
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=> enhanceSelect('#settore'));
+  </script>
+</body>
+</html>

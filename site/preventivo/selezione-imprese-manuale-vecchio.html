@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seleziona Imprese – Manuale</title>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<link href="../style.css" rel="stylesheet"/>
+<style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f7fa;
+      color: #002c5d;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin: 2rem auto 1rem;
+    }
+    #mappa {
+      width: 90%;
+      height: 300px;
+      margin: 1rem auto 2rem;
+      border-radius: 10px;
+    }
+    .card-impresa {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin: 1.5rem auto;
+      padding: 1rem;
+      max-width: 1000px;
+      transition: all 0.3s ease;
+    }
+    .card-impresa:hover {
+      transform: translateY(-2px);
+    }
+    .badge {
+      background: #cfa349;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .checkbox-custom {
+      margin-top: 1rem;
+    }
+    .checkbox-custom input {
+      transform: scale(1.3);
+      margin-right: 8px;
+    }
+    .btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+      text-align: center;
+      margin: 3rem 0 2rem;
+    }
+    .btn-continua, .btn-altre {
+      padding: 12px 24px;
+      margin: 0.5rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+    }
+    .btn-continua {
+      background: #ccc;
+      color: #444;
+    }
+    .btn-altre {
+      background: #003366;
+      color: white;
+    }
+  
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+}
+.sigillo-badge img {
+  width: 36px;
+  height: auto;
+}
+.sigillo-badge:hover {
+  background: #fff3d1;
+}
+
+</style>
+<style>
+.card-impresa {
+  border: 1px solid #e0e0e0;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  background-color: #fff;
+}
+.card-impresa:hover {
+  transform: scale(1.01);
+}
+.card-copertina {
+  width: 100%;
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+}
+.card-contenuto {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.card-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: contain;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.card-header h2 {
+  font-size: 20px;
+  margin: 0;
+  color: #222;
+}
+.card-info {
+  font-size: 14px;
+  color: #666;
+}
+.badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: white;
+  font-weight: bold;
+}
+.badge.base { background-color: #2e7d32; }
+.badge.presente { background-color: #6e6e6e; }
+.badge.certificata { background-color: #007BFF; }
+.badge.top { background-color: #cfa349; }
+.stelle {
+  margin-top: 4px;
+  color: #ffcc00;
+  font-size: 16px;
+}
+.card-descrizione {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.4;
+}
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+.card-footer small {
+  font-size: 12px;
+  color: #777;
+}
+.card-footer img.sigillo {
+  width: 40px;
+  height: auto;
+}
+.btn-profilo {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #006699;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<style>
+  #ofi-header {
+    all: unset;
+    display: block;
+    text-align: center;
+    background-color: white;
+    padding: 1rem 0 0.8rem;
+    border-bottom: 1px solid #ccc;
+  }
+
+  #ofi-header img {
+    max-width: 220px;
+    height: auto;
+  }
+
+  #ofi-nav {
+    background-color: #002c5d;
+    position: relative;
+  }
+
+  #ofi-nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 0;
+    padding: 10px 0;
+    flex-wrap: wrap;
+  }
+
+  #ofi-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  #ofi-nav a:hover {
+    text-decoration: underline;
+  }
+
+  /* HAMBURGER MENU MOBILE */
+  #ofi-menu-toggle, #ofi-menu-close {
+    display: none;
+    background-color: #002c5d;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    text-align: right;
+    box-sizing: border-box;
+  }
+
+  #ofi-menu-close {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #ofi-nav ul {
+      flex-direction: column;
+      gap: 10px;
+      display: none;
+    }
+
+    #ofi-nav ul.show {
+      display: flex;
+    }
+
+    #ofi-menu-toggle,
+    #ofi-menu-close {
+      display: block;
+    }
+
+    #ofi-menu-toggle.hidden,
+    #ofi-menu-close.hidden {
+      display: none;
+    }
+
+    #ofi-nav a {
+      font-size: 18px;
+      padding: 8px 0;
+    }
+  }
+</style>
+<header id="ofi-header">
+<a href="index.html">
+<img alt="Onoranze Funebri Italia" src="../images/logo-ofi.png"/>
+</a>
+</header>
+<nav id="ofi-nav">
+<button id="ofi-menu-toggle" onclick="toggleMenu(true)">☰ Menu</button>
+<button class="hidden" id="ofi-menu-close" onclick="toggleMenu(false)">✖ Chiudi</button>
+<ul>
+<li><a href="preventivo/preventivo.html">Richiedi Preventivo</a></li>
+<li><a href="necrologi.html">Necrologi</a></li>
+<li><a href="#">Info Utili</a></li>
+<li><a href="imprese/registrazione-imprese.html">Registrati</a></li>
+<li><a href="imprese/login.html">Accedi</a></li>
+</ul>
+</nav>
+<script>
+  function toggleMenu(show) {
+    const nav = document.querySelector('#ofi-nav ul');
+    const btnOpen = document.getElementById('ofi-menu-toggle');
+    const btnClose = document.getElementById('ofi-menu-close');
+
+    if (show) {
+      nav.classList.add('show');
+      btnOpen.classList.add('hidden');
+      btnClose.classList.remove('hidden');
+    } else {
+      nav.classList.remove('show');
+      btnOpen.classList.remove('hidden');
+      btnClose.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('#ofi-nav a');
+    links.forEach(link => {
+      link.addEventListener('click', () => toggleMenu(false));
+    });
+  });
+</script>
+<h1>Seleziona le Imprese per il Servizio</h1>
+<div id="mappa"></div>
+<div id="imprese-container"></div>
+<div class="btn-container" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:40px;">
+<button class="btn-altre" onclick="caricaAltre()">📍 Vedi altre imprese</button>
+<button class="btn-continua" onclick="prosegui()">✅ Continua con queste imprese</button>
+</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const userLat = parseFloat(params.get('lat'));
+    const userLon = parseFloat(params.get('lon'));
+    const comune = params.get('comune');
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+    const map = new mapboxgl.Map({
+      container: 'mappa',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [userLon, userLat],
+      zoom: 10
+    });
+
+    new mapboxgl.Marker({ color: '#cfa349' })
+      .setLngLat([userLon, userLat])
+      .addTo(map);
+
+    const container = document.getElementById('imprese-container');
+    let tutte = [];
+    let bloccoCorrente = 0;
+
+    function distanzaKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLon/2)**2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    async function caricaImprese() {
+      const snap = await getDocs(collection(db, 'imprese_demo'));
+      snap.forEach(doc => {
+        const d = doc.data();
+        if (!d.lat || !d.lon) return;
+        d.distanza = distanzaKm(userLat, userLon, d.lat, d.lon);
+        tutte.push(d);
+      });
+      tutte.sort((a, b) => a.distanza - b.distanza);
+      caricaAltre();
+    }
+
+    window.__caricaAltreFunzione = function() {
+      const inizio = bloccoCorrente * 10;
+      const fine = inizio + 10;
+      const subset = tutte.slice(inizio, fine);
+      subset.forEach(imp => {
+        let badgeLabel = "";
+        let fallbackCopertina = "rosa.png";
+        switch (imp.badge) {
+          case "base": badgeLabel = "Partner Attivo"; fallbackCopertina = "base-copertina.png"; break;
+          case "presente": badgeLabel = "Presente su OFI"; fallbackCopertina = "presente-copertina.png"; break;
+          case "certificata": badgeLabel = "Certificata"; fallbackCopertina = "certificate-copertina.png"; break;
+          case "top": badgeLabel = "Top Partner"; fallbackCopertina = "top-copertina.png"; break;
+        }
+
+        const stelle = (imp.stelleAttuali && imp.stelleAttuali > 0) ? '⭐'.repeat(imp.stelleAttuali) + ` <span style="color:#666; font-size:13px;">Valutazione</span>` : "";
+        const badgeHtml = badgeLabel ? `<span class="badge ${imp.badge}">${badgeLabel}</span>` : "";
+        const sigilloHtml = (imp.sigillo === true && imp.tipoAbbonamento) ? `
+  <a href="../preventivo/marchio.html" class="sigillo-badge">
+    <img src="../images/sigillo-ofi.png" alt="Sigillo OFI"/>
+    <span>Marchio di Affidabilità Nazionale</span>
+  </a>
+` : "";
+        const logo = imp.logo ? imp.logo : 'rosa.png';
+        const copertinaImg = imp.copertina ? imp.copertina : fallbackCopertina;
+        const copertina = `style="background-image:url('../images/${copertinaImg}');"`;
+        const descrizione = imp.descrizione ? (imp.descrizione.length > 200 ? imp.descrizione.slice(0, 200) + '…' : imp.descrizione) : "";
+        const social = `
+          ${imp.facebook ? `<a href="${imp.facebook}" target="_blank" aria-label="Facebook"><img src="../images/facebook.svg" width="20"/></a>` : ''}
+          ${imp.instagram ? `<a href="${imp.instagram}" target="_blank" aria-label="Instagram"><img src="../images/instagram.svg" width="20"/></a>` : ''}
+          ${imp.youtube ? `<a href="${imp.youtube}" target="_blank" aria-label="YouTube"><img src="../images/youtube.svg" width="20"/></a>` : ''}
+        `;
+
+        const div = document.createElement('div');
+        div.className = 'card-impresa';
+        div.innerHTML = `
+          <div class="card-copertina" ${copertina}></div>
+          <div class="card-contenuto">
+            <div class="card-header">
+              <img class="card-logo" src="../images/${logo}" alt="Logo ${imp.nomeImpresa || 'Impresa'}"/>
+              <div>
+                <h2>${imp.nomeImpresa}</h2>
+                <div class="card-info">${imp.comune} • ${Math.round(imp.distanza)} km</div>
+                ${badgeHtml}
+                <div class="stelle">${stelle}</div>
+              </div>
+            </div>
+            <div class="card-descrizione">${descrizione}</div>
+            <div class="card-footer">
+              <small>${imp.id_ofi || ''}</small>
+              <div>${sigilloHtml} ${social}</div>
+            </div>
+            <div class="checkbox-custom">
+              <input type="checkbox" value="${imp.email}" data-nome="${imp.nomeImpresa}"> Seleziona
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+        new mapboxgl.Marker({ color: '#002c5d' })
+          .setLngLat([imp.lon, imp.lat])
+          .addTo(map);
+      });
+      bloccoCorrente++;
+    }
+
+    
+    
+function prosegui() {
+  const checkboxes = document.querySelectorAll('.checkbox-custom input:checked');
+  if (checkboxes.length === 0) {
+    alert("Seleziona almeno un’impresa per proseguire.");
+    return;
+  }
+  const selezionate = Array.from(checkboxes).map(c => ({
+    email: c.value,
+    nomeImpresa: c.dataset.nome
+  }));
+  localStorage.setItem('impreseSelezionate', JSON.stringify(selezionate));
+  window.location.href = 'richiedi-preventivo.html?modalita=manuale';
+}
+
+// Limita massimo 10 selezioni
+document.addEventListener("change", (e) => {
+  if (e.target.matches('.checkbox-custom input')) {
+    const selezionate = document.querySelectorAll('.checkbox-custom input:checked');
+    if (selezionate.length > 10) {
+      e.target.checked = false;
+      alert("Puoi selezionare al massimo 10 imprese.");
+    }
+  }
+});
+
+caricaImprese();
+  
+
+
+// Attiva/disattiva pulsante continua
+function aggiornaStatoPulsante() {
+  const checked = document.querySelectorAll('.checkbox-custom input:checked').length;
+  const btn = document.querySelector('.btn-continua');
+  if (checked > 0) {
+    btn.disabled = false;
+    btn.style.background = '#003366';
+    btn.style.color = 'white';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.background = '#ccc';
+    btn.style.color = '#444';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+document.addEventListener("change", (e) => {
+  if (e.target.matches('.checkbox-custom input')) {
+    const selezionate = document.querySelectorAll('.checkbox-custom input:checked');
+    if (selezionate.length > 10) {
+      e.target.checked = false;
+      alert("Puoi selezionare al massimo 10 imprese.");
+    }
+    aggiornaStatoPulsante();
+  }
+});
+window.addEventListener("DOMContentLoaded", aggiornaStatoPulsante);
+</script>
+<style>
+  #ofi-footer {
+    background-color: #002c5d;
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  #ofi-footer a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: underline;
+  }
+
+  #ofi-footer a:hover {
+    text-decoration: none;
+  }
+
+  #ofi-footer p {
+    margin-bottom: 1rem;
+  }
+
+  #ofi-footer .footer-links {
+    margin-top: 1rem;
+  }
+</style>
+<footer id="ofi-footer">
+<div style="max-width: 1000px; margin: auto;">
+<p>
+      © 2025 Onoranze Funebri Italia – Tutti i diritti riservati<br/>
+      Portale nazionale per il supporto al cittadino e la valorizzazione delle imprese funebri
+    </p>
+<div class="footer-links">
+<a href="privacy.html">Privacy</a>
+<a href="contatti.html">Contatti</a>
+<a href="faq.html">FAQ</a>
+</div>
+</div>
+</footer>
+<script>
+// Queste funzioni devono essere globali per funzionare con i bottoni onclick
+
+window.caricaAltre = function() {
+  if (!window.__caricaAltreFunzione) return;
+  window.__caricaAltreFunzione();
+};
+
+window.prosegui = function() {
+  const checkboxes = document.querySelectorAll('.checkbox-custom input:checked');
+  if (checkboxes.length === 0) {
+    alert("Seleziona almeno un’impresa per proseguire.");
+    return;
+  }
+  const selezionate = Array.from(checkboxes).map(c => ({
+    email: c.value,
+    nomeImpresa: c.dataset.nome
+  }));
+  localStorage.setItem('impreseSelezionate', JSON.stringify(selezionate));
+  window.location.href = 'richiedi-preventivo.html?modalita=manuale';
+};
+</script>
+</body>
+</html>

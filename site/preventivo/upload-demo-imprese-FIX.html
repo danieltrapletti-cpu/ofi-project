@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Imprese Demo</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.appspot.com",
+      messagingSenderId: "345581339212",
+      appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const status = document.getElementById("status");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        status.innerText = "✅ Autenticato come: " + user.email;
+        document.getElementById("uploadBtn").style.display = "inline-block";
+      } else {
+        status.innerText = "⚠️ Non autenticato.";
+      }
+    });
+
+    window.login = () => {
+      signInWithPopup(auth, provider)
+        .then(result => {
+          const user = result.user;
+          status.innerText = "✅ Autenticato come: " + user.email;
+          document.getElementById("uploadBtn").style.display = "inline-block";
+        })
+        .catch(error => {
+          console.error("Errore autenticazione:", error);
+        });
+    };
+
+    window.caricaDati = async () => {
+      const response = await fetch("imprese_demo.json");
+      const dati = await response.json();
+
+      for (let impresa of dati) {
+        try {
+          await addDoc(collection(db, "imprese_demo"), impresa);
+          console.log("✅ Caricata:", impresa.nome);
+        } catch (e) {
+          console.error("❌ Errore con:", impresa.nome, e);
+        }
+      }
+      alert("✅ Caricamento completato.");
+    };
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+  <h1>Upload Imprese Demo su Firebase</h1>
+  <p id="status">Verifica autenticazione...</p>
+  <button onclick="login()" style="padding: 10px 20px; font-size: 1em;">Accedi con Google</button><br><br>
+  <button id="uploadBtn" onclick="caricaDati()" style="padding: 12px 30px; font-size: 1.2em; display: none;">Carica imprese demo</button>
+  <p style="margin-top:20px;">Apri la console (F12) per vedere i dettagli.</p>
+</body>
+</html>

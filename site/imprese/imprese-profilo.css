@@ -1,0 +1,776 @@
+/* ====== OFI – Imprese Profilo (estratto base) ====== */  :root{
+    --gold:#caa85a;
+    --gold-brd: color-mix(in oklab, var(--gold), black 18%);
+    --hero: radial-gradient(1200px 600px at 20% -10%, rgba(202,168,90,.18), transparent 55%),
+            linear-gradient(135deg, rgba(8,26,52,1) 0%, rgba(10,20,40,1) 60%, rgba(7,16,32,1) 100%);
+
+    /* superfici */
+    --card-bg: rgba(255,255,255,.96);
+    --panel-bg: rgba(250,252,255,.92);
+    --card-brd: rgba(0,0,0,.08);
+
+    /* testi */
+    --txt: #0e1b2b;
+    --muted:#677089;
+    --muted-strong:#505b72;
+
+    /* state */
+    --focus: rgba(202,168,90,.22);
+  }
+  :root[data-theme="dark"]{
+    --hero: radial-gradient(1200px 600px at 20% -10%, rgba(202,168,90,.12), transparent 55%),
+            linear-gradient(135deg, #0b1528 0%, #0a1324 60%, #08101e 100%);
+    --card-bg: rgba(14,20,32,.92);
+    --panel-bg: rgba(10,14,22,.95);
+    --card-brd: rgba(255,255,255,.18);
+    --txt:#eef3ff;
+    --muted: rgba(235,241,255,.78);
+    --muted-strong: rgba(235,241,255,.92);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Source Sans 3", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--hero);
+    color: var(--txt);
+  }
+
+  /* ====== CONTAINER CARD ====== */
+  .wrap{ display:flex; justify-content:center; padding: 32px 16px; }
+  .wizard{
+    width:100%; max-width: 980px; margin: 12px auto;
+    border-radius:24px; background:var(--card-bg);
+    border:1px solid color-mix(in oklab, var(--gold), white 35%);
+    box-shadow: 0 24px 80px rgba(5,12,28,.55), inset 0 0 0 1px rgba(255,255,255,.05);
+    overflow:hidden;
+  }
+
+  /* ====== HEAD (brand + KPI) ====== */
+  .wiz-head{
+    padding:22px 22px 18px;
+    background:
+      radial-gradient(500px 220px at 10% 0%, rgba(202,168,90,.18), transparent 60%),
+      linear-gradient(135deg, rgba(15,28,54,.94), rgba(10,20,40,.94));
+    color:#fff; border-bottom:1px solid rgba(255,255,255,.14);
+  }
+  .head-row{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .brand-box{display:flex; align-items:center; gap:12px}
+  .brand-box img{height:36px}
+  .brand-title{font-weight:800; font-size:1.35rem; letter-spacing:.2px}
+  .brand-sub{opacity:.85; font-weight:600; font-size:.92rem}
+
+  .kpi-box{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    padding:10px 12px; border-radius:14px; backdrop-filter: blur(6px);
+    background: rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.18);
+  }
+  .kpi-pill{
+    display:inline-flex; align-items:center; gap:.45rem;
+    border-radius:999px; padding:.35rem .7rem; font-size:.9rem; font-weight:700;
+    color:#fff; background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.2)
+  }
+  :root[data-theme="light"] .kpi-pill{ color:#0e1b2b; background:rgba(255,255,255,.85); border-color:rgba(0,0,0,.08) }
+  .kpi-stars{display:inline-flex; align-items:center; gap:4px}
+  .kpi-stars .star{font-size:1.05rem; color:#ffd771; text-shadow:0 1px 0 rgba(0,0,0,.35)}
+
+  /* progress luminosa */
+  .progress{height:12px;border-radius:999px;background:color-mix(in oklab, var(--gold), #fff 88%);overflow:hidden;border:1px solid var(--gold-brd); position:relative}
+  .progress>span{display:block;height:100%;background:linear-gradient(90deg, #b48a3a, #d7b96a, #b48a3a);background-size:200% 100%; animation:shine 2.6s linear infinite; width:0%; transition:width .55s ease}
+  @keyframes shine{to{background-position:200% 0}}
+  .celebrate{display:none;margin-top:.45rem;color:#fff}
+  .celebrate.show{display:block}
+
+  /* ====== STEPPER: STEP-CARDS ====== */
+  .steps-wrap{ margin:12px 0 6px }
+  .stepbar{
+    display:flex; gap:10px; align-items:stretch; overflow:auto; padding-bottom:4px;
+    scroll-snap-type: x mandatory;
+  }
+  .step-card{
+    min-width: 148px; scroll-snap-align:center;
+    display:flex; flex-direction:column; justify-content:center; gap:4px;
+    padding:10px 12px; border-radius:12px; text-align:left; cursor:pointer;
+    border:1px solid var(--card-brd); background: var(--panel-bg); color: var(--muted-strong);
+    transition: transform .20s ease, border-color .20s ease, background .20s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .step-card .s-top{display:flex; align-items:center; gap:8px; font-weight:800}
+  .step-card .s-ico{font-size:1.05rem}
+  .step-card .s-num{opacity:.75; font-weight:700}
+  .step-card .s-lbl{font-size:.92rem}
+  .step-card .s-ico svg{ display:block; vertical-align:middle }
+  .step-card.active{
+  background: color-mix(in oklab, var(--gold), white 90%);
+  border-color: var(--gold);
+  color:#0e1b2b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(202,168,90,.28);
+}
+
+
+  /* ====== BODY ====== */
+  .wiz-body{padding:18px 20px 20px}
+  .slide{display:none;animation:.28s fadeIn ease}
+  .slide.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateX(8px)} to{opacity:1;transform:translateX(0)}}
+
+  label{display:block;font-weight:800;margin:.35rem 0 .25rem}
+  textarea{min-height:120px;line-height:1.55;padding:.8rem}
+  .counter{font-size:.85rem;color:var(--muted);text-align:right;margin-top:.25rem}
+  .hint{font-size:.95rem;color:var(--muted)}
+  .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+
+  /* === INPUTS: Manrope + focus glow oro === */
+  input, textarea, select {
+    font-family: 'Manrope','Source Sans 3',system-ui,sans-serif !important;
+    font-weight:500; letter-spacing:0.01em; font-size:1rem;
+    border-radius:12px; border:1px solid rgba(0,0,0,.08);
+    background:var(--panel-bg); color:var(--txt);
+    height:44px; padding:0 .8rem; transition:all .25s ease;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);
+    width:100%;
+  }
+  textarea{height:auto}
+  input:focus, textarea:focus, select:focus{
+    font-weight:600; letter-spacing:0.02em; background-color:#fff;
+    border-color:var(--gold); box-shadow:0 0 0 3px rgba(202,168,90,.25); outline:none;
+  }
+  ::placeholder{ color:#8b92a1; font-weight:400; opacity:.95; }
+
+ :root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select{
+  background:#0f172a !important; color:#f1f5f9 !important;
+  border-color:rgba(255,255,255,.15) !important;
+}
+:root[data-theme="dark"] ::placeholder{ color:#94a3b8 !important; }
+
+
+  /* media grid */
+  .media-grid{display:grid;grid-template-columns:repeat(5, minmax(80px,1fr)); gap:8px}
+  .thumb{position:relative;border:1px solid var(--card-brd);border-radius:10px;overflow:hidden;background:#0b1627}
+  .thumb img{display:block;width:100%;height:100%;object-fit:cover}
+  .thumb video{display:block;width:100%;height:100%;object-fit:cover}
+  .thumb button{position:absolute;right:4px;top:4px;border:none;background:rgba(0,0,0,.45);color:#fff;border-radius:8px;height:26px;padding:0 8px;cursor:pointer}
+
+  /* mappa */
+  .map{height:320px;border-radius:14px;border:1px solid var(--card-brd);overflow:hidden}
+
+  /* FOOTER DEL WIZARD */
+  .wiz-foot{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--card-brd);padding:12px 20px;background:var(--panel-bg)}
+  .btn{border:1px solid var(--card-brd);background:transparent;border-radius:12px;height:42px;padding:0 14px;font-weight:700;cursor:pointer;color:var(--txt)}
+  .btn.solid{
+    background: linear-gradient(135deg, #caa85a, #e4cc83);
+    border:1px solid var(--gold-brd); color:#111;
+    box-shadow: 0 6px 16px rgba(202,168,90,.25);
+    transition: transform .12s ease;
+  }
+  .btn.solid:active{ transform: translateY(1px) }
+
+  /* MOBILE */
+  @media(max-width:900px){ .media-grid{grid-template-columns:repeat(3, minmax(80px,1fr));} }
+  @media(max-width:680px){
+    .wiz-head{padding:16px 16px 12px}
+    .wiz-body{padding:14px}
+    .kpi-box{gap:6px}
+    .brand-title{font-size:1.15rem}
+    .step-card{min-width: 140px}
+  }
+
+.kpi-stars .star{
+  text-shadow:
+    0 0 0 rgba(0,0,0,0),
+    0 0 6px rgba(255,215,113,.35),
+    0 0 12px rgba(255,215,113,.25);
+}
+
+.progress::after{
+  content:"";
+  position:absolute; top:0; left:0; height:100%; width:24px;
+  background: radial-gradient(12px 8px at 12px 6px, rgba(255,255,255,.9), rgba(255,255,255,0));
+  mix-blend-mode: screen;
+  transform: translateX(-24px);
+  animation: spark 2.6s linear infinite;
+  pointer-events:none;
+}
+@keyframes spark{
+  to{ transform: translateX(100%); }
+}
+
+/* === FIX VISIBILITÀ PULSANTI (iOS Safari & disabled) === */
+button, .btn {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  text-shadow: none;
+  -webkit-text-fill-color: currentColor; /* forza il colore del testo su iOS */
+}
+
+/* Ghost buttons: colore e fondo esplicito per tema */
+:root[data-theme="light"] .btn{
+  background: rgba(0,0,0,.03);
+  border-color: rgba(0,0,0,.12);
+  color: #0e1b2b;
+}
+:root[data-theme="dark"] .btn{
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.18);
+  color: #eef3ff;
+}
+
+/* Pulsanti "solid" già OK, ma ribadisco il colore testo */
+.btn.solid { color:#111 !important; }
+
+/* Stato :disabled con contrasto leggibile (niente testo “sparito”) */
+.btn:disabled,
+.btn[disabled]{
+  opacity: .85;             /* non troppo sbiadito */
+  cursor: not-allowed;
+}
+:root[data-theme="light"] .btn:disabled{
+  color:#475467; background:rgba(0,0,0,.04); border-color:rgba(0,0,0,.15);
+}
+:root[data-theme="dark"] .btn:disabled{
+  color:#cbd5e1; background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.25);
+}
+
+/* Migliora rendering font su iOS */
+body, button { -webkit-font-smoothing: antialiased; }
+
+/* === Fix contrasto bottone Avanti su iOS / dark === */
+.btn.solid{
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important; /* iOS */
+}
+
+/* Quando è disabilitato, mantieni leggibile il testo */
+.btn.solid:disabled,
+.btn.solid[disabled]{
+  opacity:.70;                         /* non troppo sbiadito */
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important; /* iOS */
+  background: linear-gradient(135deg, #c6a256, #dfc87c); /* oro leggermente spento */
+  border-color: var(--gold-brd);
+}
+
+/* ——— Fix definitivo contrasto bottone Avanti (dark + iOS) ——— */
+:root[data-theme="dark"] #nextBtn.btn.solid {
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important; /* iOS */
+  text-shadow:none !important;
+}
+
+:root[data-theme="dark"] #nextBtn.btn.solid:disabled {
+  opacity:.92 !important;                 /* niente testo “evanescente” */
+  background: linear-gradient(135deg, #d4b76c, #f1de9b) !important; /* oro più chiaro */
+  border-color: var(--gold-brd) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important; /* iOS */
+}
+
+/* fallback: se qualcosa sovrascrive il colore del testo del bottone */
+#nextBtn .btn-txt {
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+  font-weight:800;
+}
+
+/* === OVERRIDE FORTI PER AVANTI (tema scuro) === */
+:root[data-theme="dark"] .btn.solid {
+  background: linear-gradient(135deg, #caa85a, #e4cc83) !important;
+  border-color: var(--gold-brd) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+  text-shadow:none !important;
+  box-shadow: 0 6px 16px rgba(202,168,90,.28), 0 0 0 1px rgba(0,0,0,.08);
+}
+:root[data-theme="dark"] .btn.solid:hover {
+  filter: brightness(1.05);
+}
+:root[data-theme="dark"] .btn.solid:active {
+  transform: translateY(1px);
+}
+
+/* Stato disabilitato: leggibile anche in dark */
+:root[data-theme="dark"] #nextBtn.btn.solid:disabled {
+  opacity:.92 !important;
+  background: linear-gradient(135deg, #d4b76c, #f1de9b) !important;
+  border-color: var(--gold-brd) !important;
+  color:#111 !important;
+  -webkit-text-fill-color:#111 !important;
+}
+
+/* Micro-style: testo dentro al bottone sempre ereditato */
+#nextBtn .btn-txt{
+  color:inherit !important;
+  -webkit-text-fill-color:inherit !important;
+  font-weight:800;
+  letter-spacing:.01em;
+}
+
+/* alone e bordo oro morbido quando è attivo/cliccabile */
+:root[data-theme="dark"] #nextBtn.btn.solid:not(:disabled){
+  box-shadow:
+    0 10px 26px rgba(202,168,90,.35),
+    0 0 0 1px rgba(255,255,255,.05),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+/* === Migliora spaziatura pulsanti da mobile === */
+@media (max-width: 680px) {
+  .wiz-foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px; /* maggiore distanza verticale */
+  }
+  .wiz-foot .left,
+  .wiz-foot .right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wiz-foot button {
+    width: 100%;
+  }
+}
+
+/* ============ OFI — Override gerarchia e mobile  ============ */
+
+/* 1) Gerarchia: titolo campo e campo di input */
+.wiz-body label{
+  font-size: 1.2rem;        /* + peso visivo */
+  font-weight: 800;
+  letter-spacing: .015em;
+  margin: .25rem 0 .5rem;
+}
+.wiz-body input,
+.wiz-body textarea,
+.wiz-body select{
+  height: 50px;             /* campo più “importante” */
+  font-size: 1.05rem;
+  border-width: 1px;
+}
+.wiz-body textarea{ min-height: 140px; }
+.wiz-body input:hover,
+.wiz-body textarea:hover,
+.wiz-body select:hover{
+  border-color: color-mix(in oklab, var(--gold), #000 10%);
+}
+
+/* Focus ancora più evidente sul campo attivo */
+.wiz-body input:focus,
+.wiz-body textarea:focus,
+.wiz-body select:focus{
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(202,168,90,.28);
+  background: #fff;
+}
+
+/* 2) Step-cards più piccole (meno “pulsanti”, più “indicatori”) */
+.step-card{
+  min-width: 118px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  opacity: .95;
+}
+.step-card .s-lbl{ font-size: .86rem; }
+.step-card .s-num{ font-size: .78rem; opacity: .65; }
+.step-card.active{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(202,168,90,.22);
+  background: color-mix(in oklab, var(--gold), white 92%);
+}
+
+/* 3) Pulsanti: dimensione più sobria (desktop) */
+.btn{ height: 40px; padding: 0 12px; font-weight: 700; }
+
+/* 4) Mobile: pulsanti più compatti + spaziatura maggiore */
+@media (max-width: 680px){
+  .wiz-foot{ gap: 12px; }
+  .wiz-foot .left,
+  .wiz-foot .right{
+    gap: 10px;
+  }
+  .btn{ height: 38px; font-size: .95rem; }
+  .btn.solid{ font-weight: 800; }
+}
+
+/* 5) Micro-tocco: testo di aiuto più discreto per far risaltare label+campo */
+.hint{ color: var(--muted); font-size: .92rem; }
+
+/* === Evidenziazione step attivo (cornice elegante + luce leggera) === */
+.slide{ position: relative; border-radius: 14px; }
+
+.slide.active{
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015));
+  box-shadow: 0 10px 28px rgba(0,0,0,.26), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+.slide.active::before{
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius: 16px;
+  /* cornice oro molto sottile con lieve sfumatura */
+  background:
+    linear-gradient(135deg, rgba(202,168,90,.45), rgba(202,168,90,.12) 35%, rgba(202,168,90,.45) 85%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  padding: 1.5px;
+  pointer-events:none;
+  box-shadow: 0 0 18px rgba(202,168,90,.15);
+}
+
+/* micro-header luminoso sopra lo step attivo */
+.slide.active::after{
+  content:"";
+  position:absolute; left:18px; right:18px; top:-6px; height:6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(202,168,90,.75), rgba(202,168,90,.25));
+  filter: blur(.2px);
+  opacity:.9;
+}
+
+/* ——— Migliora impatto visivo del titolo e spaziatura campo ——— */
+.slide label {
+  font-size: 1.35rem;         /* più grande */
+  font-weight: 800;
+  letter-spacing: .02em;
+  margin-top: 1.8rem;         /* spazio maggiore sopra */
+  margin-bottom: .65rem;
+}
+
+.slide input,
+.slide textarea {
+  height: 54px;               /* campo più alto */
+  font-size: 1.08rem;
+  border-radius: 14px;
+}
+
+/* spazio visivo sopra ogni blocco slide */
+.slide {
+  padding-top: 12px;
+}
+
+/* Riduci dimensione step-card (meno invadenti visivamente) */
+.step-card {
+  min-width: 110px;
+  padding: 6px 8px;
+  font-size: .85rem;
+}
+.step-card .s-lbl {
+  font-size: .8rem;
+}
+
+/* Nascondi qualsiasi elemento con [hidden] anche se layout/JS lo sovrascrivono */
+[hidden] { display: none !important; }
+.btn[hidden] { display: none !important; }
+
+.policy-banner{
+  margin-top:1rem; padding:.9rem 1rem; border:1px solid var(--border,#2a2f3b);
+  border-radius:.8rem; background:rgba(255,255,255,.04);
+}
+[data-theme="light"] .policy-banner{ background:rgba(0,0,0,.035); }
+.policy-title{ font-weight:800; margin-bottom:.35rem; }
+.policy-points{ margin:.35rem 0 .5rem; padding-left:1.2rem; font-size:.92rem; line-height:1.45; }
+.policy-points li{ margin:.15rem 0; }
+.policy-cta{ display:flex; gap:.75rem; align-items:center; flex-wrap:wrap; margin-top:.25rem; }
+.policy-check{ display:flex; gap:.5rem; align-items:center; font-weight:600; }
+.policy-link{ font-size:.9rem; opacity:.85; text-decoration:underline; }
+.policy-note{ margin:.35rem 0 0; font-size:.86rem; opacity:.8; }
+
+#nextBtn.is-disabled {
+  opacity:.7;
+  cursor:not-allowed;
+  filter:grayscale(0.5);
+}
+
+/* === Checkbox eleganti OFI (come in Registrazione) === */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(202,168,90,0.85);
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all .18s ease;
+  flex: 0 0 20px; /* non si deforma accanto al testo */
+}
+input[type="checkbox"]:hover { box-shadow: 0 0 0 3px rgba(202,168,90,.18); }
+input[type="checkbox"]:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(202,168,90,.28); }
+
+input[type="checkbox"]:checked {
+  background-color: rgba(202,168,90,0.95);
+  border-color: rgba(202,168,90,1);
+}
+input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: #0f1420;
+  font-weight: 800;
+  font-size: 0.9rem;
+  left: 3px;
+  top: -1px;
+}
+
+/* Etichette checkbox: layout flessibile + testo che va a capo */
+label.checkbox,
+.policy-check {
+  display: flex;
+  align-items: flex-start;      /* allinea in alto, utile con testo su 2-3 righe */
+  gap: .6rem;
+  line-height: 1.4;
+}
+
+/* Nella mini-policy il testo accanto al checkbox occupa lo spazio restante e va a capo */
+.policy-check > input[type="checkbox"] { margin-top: 2px; }
+.policy-check > span {
+  flex: 1 1 auto;               /* prendi spazio rimanente */
+  min-width: 0;                 /* consenti il wrapping */
+  overflow-wrap: anywhere;      /* evita lo “sbordo” a destra su mobile */
+  word-break: break-word;
+}
+
+/* Migliora il layout del blocco azioni policy su schermi piccoli */
+@media (max-width: 640px) {
+  .policy-cta { 
+    flex-direction: column; 
+    align-items: flex-start; 
+    gap: .6rem; 
+  }
+}
+
+/* ——— Dark mode fixes per checkbox e link policy ——— */
+:root[data-theme="dark"] input[type="checkbox"] {
+  border-color: rgba(202,168,90,.95);
+  background: transparent;
+}
+:root[data-theme="dark"] input[type="checkbox"]:checked {
+  background: rgba(202,168,90,.98);
+  border-color: rgba(202,168,90,1);
+}
+:root[data-theme="dark"] input[type="checkbox"]:checked::after {
+  color: #111;                 /* spunta ben visibile sul fondo oro */
+  text-shadow: none;
+}
+
+/* Link “Leggi FAQ/regolamento completo” più leggibile */
+.policy-link { color: #1b4fd8; }
+.policy-link:hover { text-decoration: none; filter: brightness(1.1); }
+:root[data-theme="dark"] .policy-link { color: #b9ccff; }
+:root[data-theme="dark"] .policy-link:hover { color: #d9e3ff; }
+
+/* === FIX spunta checkbox in dark mode (alta visibilità) === */
+.policy-check input[type="checkbox"]{
+  appearance: none;
+  -webkit-appearance: none;
+  accent-color: initial;          /* disattiva il colore di sistema */
+  position: relative;
+  width: 20px; height: 20px;
+  border: 2px solid #caa85a;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: all .18s ease;
+}
+
+/* default: nessun contenuto sopra */
+.policy-check input[type="checkbox"]::after{ content: none; }
+
+/* DARK: sfondo oro pieno + segno di spunta disegnato (bordo) */
+:root[data-theme="dark"] .policy-check input[type="checkbox"]:checked{
+  background-color: #e4c67a !important;  /* oro più chiaro, visibilissimo */
+  border-color: #caa85a !important;
+}
+:root[data-theme="dark"] .policy-check input[type="checkbox"]:checked::after{
+  content: "";
+  position: absolute;
+  left: 4px; top: 2px;
+  width: 10px; height: 6px;
+  border: 3px solid #0b0e14;     /* quasi nero su oro: contrasto alto */
+  border-top: 0; border-right: 0;
+  transform: rotate(-45deg);
+}
+
+/* LIGHT: mantieni lo stile coerente (oro + spunta scura) */
+:root:not([data-theme="dark"]) .policy-check input[type="checkbox"]:checked{
+  background-color: #d9bf76;
+  border-color: #caa85a;
+}
+:root:not([data-theme="dark"]) .policy-check input[type="checkbox"]:checked::after{
+  content: "";
+  position: absolute;
+  left: 4px; top: 2px;
+  width: 10px; height: 6px;
+  border: 3px solid #0b0e14;
+  border-top: 0; border-right: 0;
+  transform: rotate(-45deg);
+}
+
+/* link policy leggibile in dark */
+:root[data-theme="dark"] .policy-link { color:#cdd9ff; }
+:root[data-theme="dark"] .policy-link:hover { color:#e7eeff; }
+
+.services-grid{
+  display:grid; gap:.5rem;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+@media (max-width: 700px){
+  .services-grid{ grid-template-columns: 1fr; }
+}
+
+/* dimensione testo più sobria nei servizi */
+.services-grid label.checkbox { font-size: 1rem; line-height: 1.45; }
+
+/* su schermi piccoli, colonna singola (già presente) e un po' più di spazio verticale */
+@media (max-width:700px){
+  .services-grid label.checkbox { padding: .15rem 0; }
+}
+
+/* ✅ Spunta visibile in dark per TUTTI i checkbox (Servizi inclusi) */
+:root[data-theme="dark"] input[type="checkbox"]:checked{
+  background-color:#e4c67a !important;
+  border-color:#caa85a !important;
+}
+:root[data-theme="dark"] input[type="checkbox"]:checked::after{
+  color:#0b0e14 !important;  /* segno ✓ scuro su oro */
+}
+
+/* Stato "uploading" sulla thumb: overlay + progress bar */
+.thumb.uploading::before{
+  content:"";
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.35);
+}
+.thumb .upbar{
+  position:absolute; left:6px; right:6px; bottom:6px; height:6px;
+  border-radius:999px; overflow:hidden; background:rgba(255,255,255,.25);
+}
+.thumb .upbar > span{
+  display:block; height:100%; width:0%;
+  background:linear-gradient(90deg,#b48a3a,#e4cc83,#b48a3a);
+  background-size:200% 100%; animation:shine 2.3s linear infinite;
+}
+.thumb .uptxt{
+  position:absolute; left:8px; top:8px; padding:.15rem .4rem; border-radius:8px;
+  background:rgba(0,0,0,.55); color:#fff; font-weight:700; font-size:.82rem;
+}
+
+/* textarea descrizione immagini */
+.media-grid .thumb { position: relative; }
+.media-grid .thumb .img-descr{
+  margin-top:.35rem;
+  width:100%;
+  min-height:60px;
+  resize:vertical;
+  border:1px solid var(--card-brd);
+  border-radius:8px;
+  padding:.5rem .65rem;
+  font:inherit;
+}
+.media-grid .thumb button.btn{
+  position:absolute; top:6px; right:6px;
+}
+
+/* === Fix galleria: mostra textarea descrizione sotto la foto === */
+.media-grid .thumb{
+  display: flex;
+  flex-direction: column;
+  overflow: visible;              /* prima era hidden: nascondeva la textarea */
+}
+
+.media-grid .thumb img{
+  width: 100%;
+  height: auto;                   /* prima 100%: occupava tutta la card */
+  aspect-ratio: 4 / 3;            /* mantiene un rapporto elegante */
+  object-fit: cover;
+  border-bottom: 1px solid var(--card-brd);
+}
+
+.media-grid .thumb .img-descr{
+  display: block;
+  margin-top: .35rem;
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  border: 1px solid var(--card-brd);
+  border-radius: 8px;
+  padding: .5rem .65rem;
+  font: inherit;
+}
+
+/* === Galleria: contatore descrizione + feedback salvato === */
+.img-descr-wrap{ position: relative; }
+.img-descr-counter{
+  position:absolute; right:8px; bottom:8px;
+  font-size:.8rem; opacity:.75;
+}
+.img-descr-saved{
+  position:absolute; left:8px; bottom:8px;
+  font-size:.8rem; opacity:.85; display:none;
+}
+.img-descr-saved.show{ display:inline; }
+
+.thumb.uploading img {
+  opacity: 0.6;
+  filter: grayscale(0.3);
+}
+.thumb.uploading .upbar {
+  height: 4px;
+  background: var(--card-brd);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.thumb.uploading .upbar span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transition: width .2s;
+}
+.thumb.uploading .uptxt {
+  font-size: .75rem;
+  color: var(--gold);
+  text-align: center;
+}
+
+/* =======================================================
+   OVERRIDES PROFILO IMPRESA
+   - Alleggerisce il blu di sfondo
+   - Sistema z-index di menù e Agente OFI
+   ======================================================= */
+
+/* Blu un po' più chiaro e uniforme, in linea con le altre pagine */
+body {
+  background: linear-gradient(135deg, #0a1730 0%, #102549 55%, #152c52 100%);
+}
+
+/* Menù mobile: assicurati che stia sopra al wizard */
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+
+.site-header .menu {
+  z-index: 100;
+}
+
+/* Agente OFI sempre flottante in basso a destra */
+.agent-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 95;
+}
+
+.agent-panel {
+  z-index: 96;
+}
+

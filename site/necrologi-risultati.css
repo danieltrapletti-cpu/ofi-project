@@ -1,0 +1,1099 @@
+/* =========================================================
+   NECROLOGI — RISULTATI (OFI)
+   Obiettivo: elegante, istituzionale, "Italian premium"
+   - Card più compatte (meno verticali)
+   - Foto sempre uguali (taglio con cover)
+   - Spaziature più ariose e ordinate
+   - Nome impresa solo testo, oro, in fondo
+   - Cuore: indicatore (non cliccabile)
+   ========================================================= */
+
+:root{
+  --ofi-blue-950:#041A33;
+  --ofi-blue-900:#052441;
+  --ofi-gold:#CAA85A;
+  --ofi-gold-2: rgba(202,168,90,.82);
+  --ofi-ink:#0B1220;
+}
+
+/* =========================
+   LAYOUT / HERO
+   ========================= */
+main.ofi-main{ padding-top: var(--ofi-header-offset, 96px); }
+
+.results-hero{
+  position: relative;
+  padding: 34px 14px 18px;
+  z-index: 0;
+  isolation: isolate;
+}
+
+/* fascia istituzionale blu */
+.results-hero::before{
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0;
+  height: 260px;
+  background:
+    radial-gradient(circle at 22% 8%, rgba(202,168,90,.16), transparent 55%),
+    radial-gradient(circle at 78% 0%, rgba(96,165,250,.14), transparent 60%),
+    linear-gradient(180deg, #062241 0%, #0b2d50 72%, rgba(11,45,80,0) 100%);
+  z-index: 0;
+  pointer-events:none;
+}
+
+.results-hero .panel{
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  border-radius: 22px;
+  border: 1px solid rgba(5,36,65,.10);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(202,168,90,.10), transparent 55%),
+    radial-gradient(circle at 88% 22%, rgba(96,165,250,.10), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.94), rgba(248,250,252,.98));
+  box-shadow: 0 18px 60px rgba(0,0,0,.08);
+  padding: 18px 18px 22px;
+  color: #052441;
+  backdrop-filter: blur(10px);
+}
+
+/* =========================
+   HEADER RISULTATI
+   ========================= */
+.results-toprow{
+  display:flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.results-back{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(5,36,65,.18);
+  padding: 8px 12px;
+  text-decoration:none;
+  color: #052441;
+  background: rgba(5,36,65,.04);
+}
+.results-back:hover{ border-color: rgba(202,168,90,.55); }
+
+.results-title{
+  margin: 10px 0 4px;
+  font-family: "Cinzel", serif;
+  font-weight: 650;
+  font-size: 2.05rem;
+  letter-spacing: .03em;
+}
+
+.results-sub{
+  margin: 0;
+  color: #4a4f57;
+  opacity: .95;
+}
+
+.results-count{ font-weight: 800; opacity: .9; }
+
+/* kicker */
+.results-kicker-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 10px;
+}
+
+.results-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: .76rem;
+  color: rgba(5,36,65,.78);
+}
+.results-kicker .dot{
+  width: 8px; height: 8px; border-radius: 999px;
+  background: rgba(202,168,90,.90);
+  box-shadow: 0 0 0 3px rgba(202,168,90,.14);
+}
+.results-kicker .sep{ opacity:.55; }
+
+.results-seal{
+  width: 34px; height: 34px; border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.35);
+  background: rgba(255,255,255,.65);
+  display:grid; place-items:center;
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+.results-seal img{ width: 22px; height: 22px; object-fit: contain; opacity: .95; }
+
+.results-goldline{
+  height: 1px; width: 100%;
+  margin: 10px 0 6px;
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,.70), transparent);
+}
+
+/* =========================
+   FILTRI
+   ========================= */
+
+.filters-toggle{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:14px 18px;
+  border-radius:14px;
+  border:1px solid rgba(5,36,65,.18);
+  background: rgba(5,36,65,.04);
+  font-weight:700;
+  cursor:pointer;
+}
+.filters-toggle:hover{
+  border-color: rgba(202,168,90,.55);
+}
+
+.results-filters{
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1.2fr .8fr .6fr .6fr;
+  gap: 10px;
+}
+@media (max-width: 860px){
+  .results-filters{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px){
+  .results-filters{ grid-template-columns: 1fr; }
+}
+.results-filters.is-collapsed{ display:none; }
+
+.results-filters input,
+.results-filters select{
+  width:100%;
+  border-radius: 14px;
+  border: 1px solid rgba(5,36,65,.14);
+  background: rgba(255,255,255,.85);
+  padding: 12px 12px;
+  color: #052441;
+  outline: none;
+}
+.results-filters input::placeholder{ color: rgba(74,79,87,.75); }
+.results-filters input:focus,
+.results-filters select:focus{
+  border-color: rgba(202,168,90,.70);
+  box-shadow: 0 0 0 2px rgba(202,168,90,.14);
+}
+
+.results-actions{
+  margin-top: 12px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.results-chip{
+  display:inline-flex;
+  align-items:center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(5,36,65,.14);
+  background: rgba(5,36,65,.04);
+  font-weight: 800;
+}
+.results-chip small{ opacity: .85; font-weight: 700; }
+
+/* =========================
+   WRAP + GRID
+   ========================= */
+.results-wrap{
+  max-width: 1180px;
+  margin: 44px auto 72px;
+  padding: 0 14px;
+}
+
+/* 1 mobile, 2 tablet, 3 desktop */
+.results-grid{
+  display: grid;
+  align-items: stretch;
+  justify-content: center;
+  gap: 48px;
+}
+@media (max-width: 699px){
+  .results-grid{ grid-template-columns: 1fr; gap: 26px; justify-content: stretch; }
+}
+@media (min-width: 700px) and (max-width: 1023px){
+  .results-grid{ grid-template-columns: repeat(2, minmax(0, 330px)); gap: 44px; }
+}
+@media (min-width: 1024px){
+  .results-grid{ grid-template-columns: repeat(3, minmax(0, 320px)); gap: 56px; }
+}
+
+/* =========================
+   CARD NECROLOGIO — PREMIUM
+   ========================= */
+.necro-card{
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,.55);
+  background:
+    radial-gradient(circle at 50% -40px, rgba(202,168,90,.10), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.98));
+  box-shadow: 0 14px 34px rgba(0,0,0,.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.necro-card:hover{
+  transform: translateY(-2px);
+  border-color: rgba(202,168,90,.86);
+  box-shadow: 0 22px 52px rgba(0,0,0,.10);
+}
+
+/* Topcap: spazio sempre uguale */
+.card-topcap{
+  padding: 10px 12px 8px;
+  min-height: 60px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(202,168,90,.18), transparent 60%),
+    linear-gradient(180deg, rgba(5,36,65,.030), rgba(5,36,65,0));
+}
+.card-ornament{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height: 30px;
+}
+.card-ornament img{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,.08));
+  opacity: .98;
+}
+.card-divider{
+  height: 1px;
+  margin: 8px 18px 0;
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,.55), transparent);
+}
+
+/* Foto: compatta, uguale per tutte */
+.card-media{
+  height: 176px;
+  padding: 10px 12px;
+  background: rgba(5,36,65,.045);
+}
+@media (max-width: 520px){
+  .card-media{ height: 168px; }
+}
+.card-photo{
+  width:100%;
+  height:100%;
+  border-radius: 14px;
+  border: 1px solid rgba(202,168,90,.22);
+  box-shadow: 0 12px 26px rgba(0,0,0,.10);
+  object-fit: cover;
+  object-position: center;
+  display:block;
+}
+
+/* Body */
+.card-body{
+  padding: 12px 14px 12px;
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  text-align:center;
+  flex: 1;
+}
+
+/* più compatte (meno verticali) */
+.card-name{
+  margin: 2px 0 0;
+  font-family: "Cinzel", serif;
+  font-weight: 650;
+  letter-spacing: .05em;
+  font-size: 1.02rem;
+  line-height: 1.25;
+  color: #052441;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  min-height: 1.25em;
+}
+
+.card-nick{
+  margin: -2px 0 0;
+  font-family: "Noto Serif", serif;
+  font-style: italic;
+  font-size: .88rem;
+  color: rgba(5,36,65,.72);
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  min-height: 1.15em;
+}
+
+.card-meta{
+  display:flex;
+  flex-direction:column;
+  gap: 5px;
+  align-items:center;
+  justify-content:center;
+  color: rgba(74,79,87,.92);
+  font-weight: 650;
+  font-size: .89rem;
+  min-height: calc(1.25em * 2 + 6px);
+}
+.card-line{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.card-line .sep{ opacity: .55; }
+
+/* Cuore: indicatore (non cliccabile) */
+.card-actions{
+  padding-top: 12px;
+  border-top: 1px solid rgba(5,36,65,.10);
+  display:flex;
+  justify-content:center;
+  margin-top: auto;
+}
+.card-actions.single-reaction{ justify-content:center; }
+
+.react-indicator{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 14px;
+  border-radius:999px;
+  border:1px solid rgba(5,36,65,.14);
+  background: rgba(5,36,65,.03);
+  font-weight:800;
+  letter-spacing:.02em;
+  cursor: default;
+  user-select: none;
+}
+.react-indicator.heart{
+  color: rgba(202,168,90,.96);
+}
+.react-indicator .react-count{
+  font-size:.88rem;
+  opacity:.9;
+}
+
+/* Publisher block */
+.publisher-block{
+  margin-top: 10px;
+  min-height: 56px; /* riserva spazio per 2 righe */
+}
+
+.card-publisher-label{
+  display:block;
+  font-size: .62rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+
+.card-publisher{
+  margin: 6px auto 0;
+  padding: 0;
+  text-align: center;
+
+  font-family: var(--font-editorial, var(--font-display, var(--font-serif, "Cormorant Garamond", "Playfair Display", "Libre Baskerville", Georgia, serif)));
+  font-weight: 650;
+
+  /* più leggibile su 2 righe */
+  font-size: .86rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+
+  /* ✅ mostra tutto (max 2 righe) */
+  white-space: normal;           /* era nowrap */
+  overflow: hidden;              /* serve per il clamp */
+  text-overflow: clip;           /* niente ... */
+  max-width: 94%;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;         /* max 2 righe */
+  line-height: 1.2;
+
+  color: rgba(202,168,90,.98);
+  text-shadow: 0 1px 0 rgba(0,0,0,.45), 0 0 10px rgba(202,168,90,.12);
+}
+
+.publisher-block{
+  margin-top: 10px;
+  min-height: 56px; /* riserva spazio per 2 righe + label */
+}
+
+/* micro accento tricolore discreto */
+.card-publisher::after{
+  content:"";
+  display:block;
+  width: 52px;
+  height: 2px;
+  margin: 8px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #16a34a 0%, #ffffff 50%, #dc2626 100%);
+  opacity: .55;
+}
+
+/* =========================
+   SKELETON
+   ========================= */
+.necro-skel{
+  border-radius:18px;
+  border:1px solid rgba(5,36,65,.10);
+  background: rgba(5,36,65,.03);
+  box-shadow:0 10px 24px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.necro-skel__photo{
+  height: 176px;
+  background: rgba(5,36,65,.06);
+}
+@media (max-width: 520px){
+  .necro-skel__photo{ height: 168px; }
+}
+.necro-skel__body{
+  padding: 12px;
+  display:flex;
+  flex-direction:column;
+  gap: 8px;
+}
+.necro-skel__line{
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(5,36,65,.08);
+}
+.necro-skel__line.w70{ width:70%; }
+.necro-skel__line.w45{ width:45%; }
+.necro-skel__line.w90{ width:90%; }
+.necro-skel__line.w80{ width:80%; }
+
+/* =========================
+   DARK THEME robust
+   ========================= */
+html[data-theme="dark"] .necro-card,
+body[data-theme="dark"] .necro-card,
+html.dark .necro-card,
+body.dark .necro-card,
+.theme-dark .necro-card{
+  background:
+    radial-gradient(circle at 50% -40px, rgba(202,168,90,.12), transparent 62%),
+    linear-gradient(180deg, rgba(6,24,46,.96), rgba(4,18,35,.98)) !important;
+  border-color: rgba(202,168,90,.44) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.42) !important;
+}
+
+html[data-theme="dark"] .card-name,
+body[data-theme="dark"] .card-name,
+html.dark .card-name,
+body.dark .card-name,
+.theme-dark .card-name{
+  color: rgba(255,255,255,.92) !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,.55);
+}
+
+html[data-theme="dark"] .card-nick,
+body[data-theme="dark"] .card-nick,
+html.dark .card-nick,
+body.dark .card-nick,
+.theme-dark .card-nick{
+  color: rgba(226,232,240,.84) !important;
+}
+
+html[data-theme="dark"] .card-meta,
+body[data-theme="dark"] .card-meta,
+html.dark .card-meta,
+body.dark .card-meta,
+.theme-dark .card-meta{
+  color: rgba(226,232,240,.84) !important;
+}
+
+html[data-theme="dark"] .card-actions,
+body[data-theme="dark"] .card-actions,
+html.dark .card-actions,
+body.dark .card-actions,
+.theme-dark .card-actions{
+  border-top-color: rgba(255,255,255,.14) !important;
+}
+
+html[data-theme="dark"] .react-indicator,
+body[data-theme="dark"] .react-indicator,
+html.dark .react-indicator,
+body.dark .react-indicator,
+.theme-dark .react-indicator{
+  border-color: rgba(255,255,255,.18) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+html[data-theme="dark"] .card-divider,
+body[data-theme="dark"] .card-divider,
+html.dark .card-divider,
+body.dark .card-divider,
+.theme-dark .card-divider{
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,.48), transparent) !important;
+}
+
+html[data-theme="dark"] .card-topcap,
+body[data-theme="dark"] .card-topcap,
+html.dark .card-topcap,
+body.dark .card-topcap,
+.theme-dark .card-topcap{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(202,168,90,.16), transparent 62%),
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0)) !important;
+}
+
+html[data-theme="dark"] .card-media,
+body[data-theme="dark"] .card-media,
+html.dark .card-media,
+body.dark .card-media,
+.theme-dark .card-media{
+  background: rgba(255,255,255,.05) !important;
+}
+
+/* =========================================================
+   OFI LUXURY PACK — 2026-01-04
+   - cornice doppia + glow oro
+   - foto "gallery frame"
+   - topcap più premium
+   - cuore come mini-sigillo (non badge)
+   ========================================================= */
+
+/* 1) Card: doppia cornice + depth più elegante */
+.necro-card{
+  position: relative;
+  border: 1px solid rgba(202,168,90,.46);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.20),
+    0 1px 0 rgba(255,255,255,.18) inset;
+}
+
+.necro-card::before{
+  content:"";
+  position:absolute;
+  inset: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(202,168,90,.22);
+  pointer-events:none;
+}
+
+/* micro "foil" oro, super discreto */
+.necro-card::after{
+  content:"";
+  position:absolute;
+  inset: 0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(202,168,90,.12), transparent 40%),
+    radial-gradient(circle at 85% 0%, rgba(202,168,90,.08), transparent 46%),
+    radial-gradient(circle at 55% 110%, rgba(202,168,90,.10), transparent 42%);
+  mix-blend-mode: soft-light;
+  opacity: .9;
+}
+
+/* 2) Hover luxury: glow oro + lift più “soft” */
+.necro-card:hover{
+  transform: translateY(-3px);
+  border-color: rgba(202,168,90,.78);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.26),
+    0 0 0 1px rgba(202,168,90,.20),
+    0 1px 0 rgba(255,255,255,.18) inset;
+}
+
+.necro-card:hover::before{
+  border-color: rgba(202,168,90,.34);
+}
+
+/* 3) Topcap: più “istituzionale” (velluto blu) */
+.card-topcap{
+  background:
+    radial-gradient(circle at 50% 0%, rgba(202,168,90,.20), transparent 60%),
+    linear-gradient(180deg, rgba(4,26,51,.22), rgba(4,26,51,0));
+}
+
+/* 4) Ornamento: leggero “gold pop” */
+.card-ornament img{
+  filter:
+    drop-shadow(0 10px 18px rgba(0,0,0,.22))
+    drop-shadow(0 0 8px rgba(202,168,90,.18));
+}
+
+/* 5) Foto: cornice luxury + vignettatura leggera */
+.card-media{
+  padding: 12px 14px;
+  background:
+    linear-gradient(180deg, rgba(5,36,65,.08), rgba(5,36,65,.03));
+}
+
+.card-photo{
+  border: 1px solid rgba(202,168,90,.30);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.22),
+    0 1px 0 rgba(255,255,255,.18) inset;
+  position: relative;
+}
+
+/* vignetta ultra leggera (effetto “stampa”) */
+.card-media{
+  position: relative;
+}
+.card-media::after{
+  content:"";
+  position:absolute;
+  inset: 12px 14px;
+  border-radius: 14px;
+  pointer-events:none;
+  box-shadow: inset 0 -30px 50px rgba(0,0,0,.18);
+  opacity: .35;
+}
+
+/* 6) Tipografia: nome più “editoriale” */
+.card-name{
+  letter-spacing: .06em;
+  font-size: 1.06rem;
+  text-shadow: 0 1px 0 rgba(255,255,255,.30);
+}
+
+/* nickname più delicato */
+.card-nick{
+  opacity: .92;
+}
+
+/* 7) Cuore = mini-sigillo */
+.card-actions{
+  border-top: 1px solid rgba(202,168,90,.18);
+}
+
+.react-indicator{
+  border: 1px solid rgba(202,168,90,.35);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.18), transparent 55%),
+    linear-gradient(180deg, rgba(202,168,90,.18), rgba(202,168,90,.06));
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.18),
+    0 1px 0 rgba(255,255,255,.18) inset;
+  color: rgba(202,168,90,.98);
+}
+
+.react-indicator i{
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.22));
+}
+
+/* 8) Publisher: 2 righe visibili (come richiesto) + più “lusso” */
+.publisher-block{
+  min-height: 62px; /* riserva per label + 2 righe */
+}
+
+.card-publisher-label{
+  opacity: .60;
+  letter-spacing: .22em;
+}
+
+.card-publisher{
+  /* 2 righe, niente ellissi */
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 94%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.18;
+
+  /* gold più “foil” */
+  color: rgba(202,168,90,.99);
+  text-shadow:
+    0 1px 0 rgba(0,0,0,.55),
+    0 0 14px rgba(202,168,90,.14);
+}
+
+/* tricolore più micro, più elegante */
+.card-publisher::after{
+  width: 44px;
+  opacity: .45;
+}
+
+/* 9) Focus accessibilità: bordo oro pulito */
+.necro-card:focus-visible{
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(202,168,90,.22),
+    0 28px 80px rgba(0,0,0,.26);
+}
+
+/* =========================
+   DARK: luxury coerente
+   ========================= */
+html[data-theme="dark"] .necro-card,
+body[data-theme="dark"] .necro-card,
+html.dark .necro-card,
+body.dark .necro-card,
+.theme-dark .necro-card{
+  box-shadow:
+    0 28px 90px rgba(0,0,0,.60),
+    0 1px 0 rgba(255,255,255,.06) inset !important;
+}
+
+html[data-theme="dark"] .necro-card::before,
+body[data-theme="dark"] .necro-card::before,
+html.dark .necro-card::before,
+body.dark .necro-card::before,
+.theme-dark .necro-card::before{
+  border-color: rgba(202,168,90,.22) !important;
+}
+
+html[data-theme="dark"] .react-indicator,
+body[data-theme="dark"] .react-indicator,
+html.dark .react-indicator,
+body.dark .react-indicator,
+.theme-dark .react-indicator{
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.12), transparent 55%),
+    linear-gradient(180deg, rgba(202,168,90,.16), rgba(202,168,90,.05)) !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.55) !important;
+}
+
+.luxury-grid .necro-card{
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+/* =========================================================
+   PLACEHOLDER FOTO — LUXURY (solo per ROSA OFI)
+   ========================================================= */
+.necro-card.is-placeholder .card-media{
+  background:
+    radial-gradient(circle at 30% 25%, rgba(202,168,90,.18), transparent 55%),
+    radial-gradient(circle at 70% 10%, rgba(96,165,250,.14), transparent 60%),
+    linear-gradient(180deg, rgba(5,36,65,.14), rgba(5,36,65,.05));
+}
+
+.necro-card.is-placeholder .card-photo{
+  object-fit: contain;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(180deg, rgba(4,26,51,.35), rgba(4,26,51,.15));
+  border: 1px solid rgba(202,168,90,.38);
+  box-shadow:
+    0 18px 44px rgba(0,0,0,.26),
+    0 1px 0 rgba(255,255,255,.14) inset;
+  opacity: .96;
+}
+
+/* medaglione OFI in alto a destra */
+.necro-card.is-placeholder .card-media::after{
+  content:"OFI";
+  position:absolute;
+  top: 16px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,.35);
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.18), transparent 55%),
+    linear-gradient(180deg, rgba(202,168,90,.20), rgba(202,168,90,.06));
+  box-shadow: 0 14px 32px rgba(0,0,0,.22);
+  opacity: .90;
+  pointer-events:none;
+
+  display:grid;
+  place-items:center;
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: .74rem;
+  letter-spacing: .08em;
+  color: rgba(202,168,90,.92);
+}
+
+.card-meta{
+  position: relative;
+  padding-bottom: 10px;
+}
+.card-meta::after{
+  content:"";
+  display:block;
+  width: 70%;
+  height: 1px;
+  margin: 10px auto 0;
+  background: linear-gradient(90deg, transparent, rgba(202,168,90,.45), transparent);
+}
+
+.necro-card{
+  transition: transform .35s ease, box-shadow .35s ease;
+}
+
+.necro-card:hover{
+  transform: translateY(-4px);
+  box-shadow:
+    0 22px 55px rgba(0,0,0,.35),
+    0 0 0 1px rgba(202,168,90,.35);
+}
+
+/* =========================================================
+   BADGE "NUOVO" — micro sigillo OFI (entro 72h)
+   ========================================================= */
+.necro-card{ position: relative; }
+
+.neco-badge-new{
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  z-index: 5;
+  pointer-events: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(202,168,90,.38);
+  /* ✅ sfondo “perla” per staccare dal topcap (tema chiaro) */
+  background: rgba(4,18,35,.62) !important; /* blu velluto */
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.18),
+    0 1px 0 rgba(255,255,255,.16) inset;
+
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: .62rem;
+  line-height: 1;
+  color: rgba(202,168,90,.98);
+}
+
+.neco-badge-new i{
+  font-size: .72rem;
+  filter: drop-shadow(0 8px 14px rgba(0,0,0,.20));
+  opacity: .95;
+}
+
+@media (max-width: 520px){
+  .neco-badge-new{
+    top: 16px;
+    right: 16px;
+    padding: 6px 9px;
+    font-size: .60rem;
+  }
+}
+
+/* Dark theme: coerente */
+html[data-theme="dark"] .neco-badge-new,
+body[data-theme="dark"] .neco-badge-new,
+html.dark .neco-badge-new,
+body.dark .neco-badge-new,
+.theme-dark .neco-badge-new{
+  border-color: rgba(202,168,90,.32) !important;
+  background: rgba(4,18,35,.62) !important; /* blu velluto */
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.55),
+    0 1px 0 rgba(255,255,255,.08) inset !important;
+}
+
+/* 🔒 BLOCCO ANTI-ELLISSI (vince anche su /necrologi.css o /ofi.css) */
+.card-publisher{
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  -webkit-line-clamp: 2 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+}
+
+
+
+
+/* =========================================================
+   FIX 2026-01-06
+   1) Badge "PUBBLICATO OGGI / NUOVO" non deve sovrapporsi all'ornamento
+      - forza posizione TOP-RIGHT (alcuni CSS esterni lo centrano)
+      - riserva un filo di spazio a destra nel topcap senza aumentare la card
+   2) Anti "..." (PC): forza clip e 2 righe sul publisher
+   ========================================================= */
+
+/* 1) Badge: forza ancoraggio top-right (vince su eventuali regole esterne) */
+.necro-card .neco-badge-new{
+  left: auto !important;
+  right: 18px !important;
+  top: 18px !important;
+  transform: none !important;
+}
+
+/* su mobile: un pelo più dentro */
+@media (max-width: 520px){
+  .necro-card .neco-badge-new{
+    right: 14px !important;
+    top: 14px !important;
+  }
+}
+
+/* 1b) topcap: "safe area" a destra per evitare collisione visiva con badge */
+.necro-card .card-topcap{
+  padding-right: 96px; /* non cambia altezza, solo area contenuti */
+}
+@media (min-width: 700px){
+  .necro-card .card-topcap{ padding-right: 112px; }
+}
+
+/* 2) Publisher: NO ellissi da CSS (anche se qualche foglio esterno lo impone) */
+.necro-card .card-publisher{
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+
+/* =========================================================
+   FIX ESTETICO 2026-01-06 (REV2)
+   Obiettivo:
+   - Ornamento SEMPRE centrato (mai spostato)
+   - Badge "PUBBLICATO OGGI / NUOVO" senza sovrapporsi all'ornamento
+   - OK anche su desktop (dove i CSS esterni possono interferire)
+   Scelta: NON "riservo spazio a destra" (che sposta il centro),
+           ma creo un filo di spazio VERTICALE nel topcap.
+   ========================================================= */
+
+/* 0) Ornamento sempre centrato, a prescindere da badge */
+.necro-card .card-ornament{
+  justify-content: center !important;
+}
+
+/* 1) Spazio verticale nel topcap (aumenta di poco l’altezza della card) */
+.necro-card .card-topcap{
+  padding-right: 12px !important;    /* annulla la safe-area a destra */
+  min-height: 76px !important;       /* +16px rispetto a 60 (minimo, elegante) */
+  padding-top: 18px !important;      /* spinge l’ornamento più in basso */
+  padding-bottom: 10px !important;
+}
+
+/* 2) Badge resta top-right, ma sale un filo per stare “nel cappello” */
+.necro-card .neco-badge-new{
+  left: auto !important;
+  right: 18px !important;
+  top: 10px !important;
+  transform: none !important;
+}
+
+@media (max-width: 520px){
+  .necro-card .card-topcap{
+    min-height: 72px !important;
+    padding-top: 16px !important;
+  }
+  .necro-card .neco-badge-new{
+    right: 14px !important;
+    top: 8px !important;
+  }
+}
+
+
+/* 🔥 FIX DEFINITIVO: niente ellissi sul nome impresa (vince anche su /necrologi.css o /ofi.css) */
+.results-grid .necro-card .publisher-block .card-publisher{
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  max-width: 94% !important;
+}
+
+/* FIX DEFINITIVO: nome impresa sempre visibile (desktop) */
+.card-publisher{
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* 🔥 FIX DEFINITIVO: nome impresa su 2 righe, niente "..." */
+.results-grid .necro-card .publisher-block .card-publisher{
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  max-width: 94% !important;
+}
+
+/* =========================================================
+   FIX DEFINITIVO (DESKTOP): NIENTE "..." dopo nome impresa
+   - Rimuove clamp (che può generare ellissi su PC)
+   - Limita a 2 righe con taglio "pulito" (senza ellissi)
+   ========================================================= */
+.results-grid .necro-card .publisher-block .card-publisher{
+  display: block !important;
+  white-space: normal !important;
+
+  /* niente ellissi */
+  text-overflow: clip !important;
+
+  /* taglio pulito a 2 righe (senza ...) */
+  line-height: 1.2 !important;
+  max-height: 2.4em !important;     /* 2 righe x 1.2em */
+  overflow: hidden !important;
+
+  /* annulla eventuali clamp */
+  -webkit-line-clamp: unset !important;
+  -webkit-box-orient: unset !important;
+}
+
+/* =========================================================
+   PUBLISHER — VERSIONE CITTADINO
+   Distinta da impresa, più umana/editoriale
+   ========================================================= */
+
+.publisher-block.is-cittadino .card-publisher-label{
+  color: rgba(226,232,240,.85);
+  opacity: .75;
+  letter-spacing: .18em;
+}
+
+.publisher-block.is-cittadino .card-publisher{
+  color: rgba(255,255,255,.88);      /* non oro */
+  font-family: "Noto Serif", serif;  /* più umano */
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: none;              /* nome normale */
+  text-shadow: none;
+}
+
+/* rimuove accento tricolore per i cittadini */
+.publisher-block.is-cittadino .card-publisher::after{
+  display: none;
+}
+

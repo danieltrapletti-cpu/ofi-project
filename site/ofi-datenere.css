@@ -1,0 +1,1799 @@
+
+/* ============
+   OFI · Global (contrasto light/dark raffinato)
+   ============ */
+:root{
+  --blue:#0f2742;
+  --blue-2:#0b1b2f;
+  --blue-3:#173356;
+  --gold:#caa85a;
+  --gold-2:#e2c98f;
+  --text:#0b0e13;
+  --muted:#667085;
+  --bg:#f5f7fb;
+  --surface:#ffffff;
+  --surface-text:#101418;
+}
+
+/* Tema CHIARO coerente: surface chiara, testo scuro */
+body.theme-light{
+  --bg:#ffffff;
+  --text:#101418;
+  --muted:#556070;
+  --surface:#ffffff;
+  --surface-text:#101418;
+  --blue:#102845;
+  --blue-2:#173356;
+}
+
+/* Tema SCURO coerente: surface scura, testo chiaro */
+body.theme-dark{
+  --bg:linear-gradient(180deg, #0b1b2f, #102845);
+  --text:#e9eef6;
+  --muted:#a9b4c4;
+  --surface:#0f2742;      /* scuro */
+  --surface-text:#ffffff; /* chiaro */
+  --blue:#0b1b2f;
+  --blue-2:#071322;
+}
+
+body{
+  font-family:"Noto Serif", Georgia, "Times New Roman", serif;
+  color:var(--text);
+  background:var(--bg);
+}
+
+*{ box-sizing:border-box }
+img{ max-width:100%; display:block }
+
+.container{ width:min(1200px,92%); margin-inline:auto }
+.nowrap{ white-space:nowrap }
+.small{ font-size:.9rem; opacity:.85 }
+.mb-0{ margin-bottom:0 }
+
+.brand{ padding:.5rem 1rem }
+.brand-logo{ height:44px }
+
+.main-nav{ display:flex; align-items:center; gap:.5rem; padding:.5rem 1rem }
+
+/* MENU base + reset per togliere i puntini */
+.menu{
+  display:flex; gap:1rem; align-items:center; margin-left:auto;
+  list-style:none; margin-block:0; padding-left:0;
+}
+.menu li{ list-style:none; margin:0; padding:0 }
+.menu a{ color:var(--text); text-decoration:none; font-weight:800 }
+.menu .btn{ margin-left:.5rem }
+.hamburger{ display:none; background:none; border:0; width:40px; height:40px; position:relative }
+.hamburger span{ position:absolute; left:8px; right:8px; height:2px; background:var(--text); transition:transform .25s, top .25s, opacity .2s }
+.hamburger span:nth-child(1){ top:12px }
+.hamburger span:nth-child(2){ top:19px }
+.hamburger span:nth-child(3){ top:26px }
+.hamburger.active span:nth-child(1){ top:19px; transform:rotate(45deg) }
+.hamburger.active span:nth-child(2){ opacity:0 }
+.hamburger.active span:nth-child(3){ top:19px; transform:rotate(-45deg) }
+.theme-switch{ border:1px solid var(--gold); border-radius:10px; padding:.45rem .6rem; background:transparent; color:var(--gold); font-weight:800 }
+
+/* Callout menu voices */
+.menu-callout{
+  border:1px solid var(--gold);
+  border-radius:999px;
+  padding:.35rem .75rem;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:var(--text);
+  background:linear-gradient(180deg, rgba(202,168,90,.18), rgba(202,168,90,.10));
+}
+.menu-callout:hover{ filter:brightness(1.08) }
+
+/* Hero */
+.hero{ position:relative; min-height:72vh; display:grid; place-items:center; color:#fff }
+.hero-video{ width:100%; height:72vh; object-fit:cover; display:block }
+.hero-overlay{ position:absolute; inset:0; background:linear-gradient(180deg, rgba(15,39,66,.72), rgba(15,39,66,.88)); }
+.hero-content{ position:absolute; inset:0; display:grid; align-content:center; gap:1rem; text-align:center }
+.hero-badge{ width:120px; margin-inline:auto; filter:drop-shadow(0 6px 20px rgba(0,0,0,.25)) }
+@media (max-width:640px){ .hero-badge{ width:86px } }  /* più discreto su mobile */
+.hero h1{ font-size:clamp(2rem, 3.6vw, 3.1rem); line-height:1.12; letter-spacing:.2px }
+.lead{ font-size:1.15rem; max-width:900px; margin-inline:auto; opacity:.98 }
+.cta{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap }
+
+/* Quick access strip */
+.quick-strip{
+  background:linear-gradient(180deg, rgba(202,168,90,.12), rgba(202,168,90,.06));
+  border-top:1px solid rgba(202,168,90,.35);
+  border-bottom:1px solid rgba(0,0,0,.08);
+  padding:14px 0;
+}
+.strip-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem; align-items:stretch }
+.strip-item{
+  display:flex; flex-direction:column; gap:2px;
+  background:var(--surface); color:var(--surface-text);
+  border:1px solid rgba(202,168,90,.45); border-radius:14px;
+  padding:.7rem .9rem; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,.08);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.strip-item:hover{ transform:translateY(-1px); box-shadow:0 14px 36px rgba(0,0,0,.14) }
+.strip-item .kicker{ font-size:.75rem }
+.strip-item strong{ font-size:1.02rem }
+.strip-item em{ font-size:.85rem; opacity:.85 }
+@media (max-width:900px){ .strip-grid{ grid-template-columns:1fr } }
+
+/* Buttons */
+.btn{ --b:2px; display:inline-flex; align-items:center; justify-content:center; padding:.8rem 1.15rem; border-radius:12px; border:var(--b) solid transparent; font-weight:800; text-decoration:none; transition:.18s; }
+.btn-sm{ padding:.6rem .9rem; border-radius:10px; font-weight:800 }
+.btn-primary{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#111 }
+.btn-primary:hover{ filter:brightness(1.05) translateY(-1px) }
+.btn-outline{ border-color:var(--gold); color:var(--surface-text); background:transparent }
+.btn-outline:hover{ background:rgba(0,0,0,.06) }
+.btn-ghost{ border-color:transparent; background:transparent; color:var(--gold) }
+.btn-ghost:hover{ background:rgba(202,168,90,.10) }
+
+/* 🔧 Contrast fix: outline buttons in dark theme keep surface text by default */
+.theme-dark .btn-outline{
+  border-color: var(--gold);
+  color: var(--surface-text);
+  background: transparent;
+}
+.theme-dark .btn-outline:hover{ background:rgba(255,255,255,.10) }
+/* Force white text only when explicit inverse or inside dark bands */
+.theme-dark .btn-outline.inverse,
+.theme-dark .hero .btn-outline,
+.theme-dark .map-wrap .btn-outline,
+.theme-dark .recruit-wrap .btn-outline{
+  border-color:#fff; color:#fff; background:transparent;
+}
+.theme-dark .btn-outline.inverse:hover,
+.theme-dark .hero .btn-outline:hover,
+.theme-dark .map-wrap .btn-outline:hover,
+.theme-dark .recruit-wrap .btn-outline:hover{ background:rgba(255,255,255,.12) }
+
+/* Sections & Cards */
+.section{ padding:72px 0 }
+.section + .section{ padding-top:56px }
+.section-head{ text-align:center; margin-bottom:1.1rem }
+.section h2{ font-size:clamp(1.6rem, 2.6vw, 2.3rem); margin:0 0 .25rem; font-weight:900 }
+.grid{ display:grid; gap:1rem }
+.grid-2{ grid-template-columns: repeat(2, 1fr) }
+.grid-3{ grid-template-columns: repeat(3, 1fr) }
+@media (max-width:900px){ .grid-2, .grid-3{ grid-template-columns:1fr } }
+
+.card{
+  background:var(--surface);
+  color:var(--surface-text);
+  border-radius:18px;
+  border:1px solid rgba(202,168,90,.35);
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  padding:1.1rem 1.2rem;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card:hover{ transform: translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.14); border-color: rgba(202,168,90,.55) }
+.card-highlight{ border-width:2px; box-shadow:0 12px 36px rgba(202,168,90,.18) }
+.card-head{ display:flex; align-items:center; gap:.8rem; margin-bottom:.5rem }
+.icon-xl{ width:48px; height:48px; object-fit:contain }
+
+.pensieri-hero{
+  background:radial-gradient(70% 70% at 30% 0%, rgba(202,168,90,.22), transparent 60%), var(--surface);
+}
+
+/* Map */
+.map-wrap{ background:linear-gradient(180deg, var(--blue-2), var(--blue)); color:#fff }
+.map{ height:60vh; width:100%; border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(0,0,0,.2) }
+.legend{ display:flex; align-items:center; gap:1.2rem; margin:.5rem 0 1rem }
+.dot{ width:14px; height:14px; border-radius:50%; display:inline-block; position:relative }
+.dot::after{ content:""; position:absolute; inset:-8px; border-radius:inherit; border:2px solid currentColor; opacity:.5; animation:pulse 2.4s infinite }
+.dot-impresa{ color:#e6c26b; background:#e6c26b }
+.dot-supporto{ color:#78d0b4; background:#78d0b4 }
+.map-actions{ display:flex; gap:.5rem; justify-content:center; flex-wrap:wrap; margin-bottom:.6rem }
+
+@keyframes pulse{
+  0%{ transform:scale(.7); opacity:.7 }
+  70%{ transform:scale(1.3); opacity:0 }
+  100%{ transform:scale(.7); opacity:0 }
+}
+
+/* Pulse markers on map */
+.marker{
+  width:16px; height:16px; border-radius:50%;
+  box-shadow:0 0 0 4px rgba(0,0,0,.25) inset;
+  position:relative;
+}
+.marker.impresa{ background:#e6c26b }
+.marker.supporto{ background:#78d0b4 }
+.marker::after{
+  content:""; position:absolute; inset:-8px; border-radius:inherit; border:2px solid rgba(255,255,255,.7);
+  animation:pulse 2.4s infinite;
+}
+
+/* Agente OFI */
+.agent-fab{
+  position:fixed; right:18px; bottom:18px; z-index:10030; border:0; background:transparent; padding:0;
+  width:68px; height:68px; border-radius:50%; box-shadow:0 10px 24px rgba(0,0,0,.25);
+  background:radial-gradient(60% 60% at 50% 40%, rgba(202,168,90,.35), rgba(202,168,90,.15));
+  overflow:hidden;
+}
+.agent-fab img{ width:100%; height:100%; object-fit:cover }
+
+.agent-panel{
+  position:fixed; right:18px; bottom:100px; width:min(380px, 92vw); z-index:10020;
+  background:var(--surface); color:var(--surface-text); border-radius:16px;
+  border:1px solid rgba(202,168,90,.4); box-shadow:0 16px 44px rgba(0,0,0,.28);
+  display:flex; flex-direction:column; overflow:hidden;
+  transform:translateY(14px); opacity:0; pointer-events:none; transition:transform .25s ease, opacity .25s ease;
+}
+.agent-panel.open{ transform:translateY(0); opacity:1; pointer-events:auto }
+.agent-top{ display:flex; justify-content:space-between; align-items:center; gap:.8rem; padding:.8rem 1rem; background:linear-gradient(180deg, var(--blue), var(--blue-2)); color:#fff }
+.agent-id{ display:flex; align-items:center; gap:.6rem }
+.agent-id img{ width:38px; height:38px; border-radius:50%; object-fit:cover; box-shadow:0 0 0 2px rgba(202,168,90,.9) }
+.agent-close{ background:transparent; border:0; color:#fff; font-size:1.2rem }
+.agent-chat{ padding:1rem; display:flex; flex-direction:column; gap:.5rem; max-height:44vh; overflow:auto; background:var(--bg) }
+.msg{ max-width:85%; padding:.7rem .9rem; border-radius:14px; font-size:1rem; line-height:1.35 }
+.msg-in{ background:var(--surface); border:1px solid rgba(202,168,90,.35); color:var(--surface-text) }
+.msg-out{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414; align-self:flex-end }
+.msg-typing{ font-style:italic; opacity:.9 }
+.suggest{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.25rem }
+.chip{ border:1px solid rgba(202,168,90,.6); background:var(--surface); border-radius:999px; padding:.35rem .7rem; font-weight:800; color:var(--surface-text); cursor:pointer }
+.chip.active{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414 }
+.agent-form{ display:flex; gap:.5rem; padding:.8rem 1rem; border-top:1px dashed rgba(202,168,90,.5); background:var(--surface) }
+.agent-form input{
+  flex:1; padding:.75rem .9rem; border:1px solid rgba(202,168,90,.45); border-radius:12px; font:inherit;
+  background:var(--surface); color:var(--surface-text);
+}
+.agent-form input::placeholder{ color:var(--muted) }
+.agent-form input:focus{ outline:2px solid var(--gold); outline-offset:2px }
+.agent-note{ padding:0 1rem 1rem }
+
+/* Video */
+.video-tabs{ display:flex; gap:.5rem; margin-bottom:.6rem }
+.tab{ border:1px solid rgba(202,168,90,.6); background:var(--surface); border-radius:999px; padding:.45rem .9rem; font-weight:800; cursor:pointer; color:var(--surface-text) }
+.tab.active{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414 }
+.video-stage .ratio{ position:relative; width:100%; padding-top:56.25%; border-radius:16px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.2) }
+.video-stage iframe, .video-stage video{ position:absolute; inset:0; width:100%; height:100% }
+
+/* Footer */
+.site-footer{ background:var(--blue); color:#fff; padding:48px 0; margin-top:48px }
+.footer-grid{ display:grid; grid-template-columns:1.2fr .8fr 1fr; gap:1rem; align-items:center }
+.footer-logo{ height:46px; margin-bottom:.25rem }
+.f-links{ display:flex; gap:1rem; justify-content:center }
+.f-links a{ color:#fff; text-decoration:none }
+.f-legal{ text-align:right }
+@media (max-width:900px){
+  .footer-grid{ grid-template-columns:1fr }
+  .f-legal{ text-align:left }
+}
+
+/* Utilities */
+.hidden{ display:none !important }
+
+/* Back to top */
+.back-top{
+  position:fixed; right:18px; bottom:94px; width:44px; height:44px; border-radius:50%;
+  border:1px solid rgba(202,168,90,.7); background:linear-gradient(180deg, var(--gold-2), var(--gold));
+  color:#141414; font-weight:900; display:none; align-items:center; justify-content:center; z-index:55;
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
+}
+.back-top.show{ display:flex }
+
+/* Headings polish */
+.section-head h2{ letter-spacing:.2px }
+.kicker{ font-weight:900; letter-spacing:.3px; color:var(--gold); text-transform:uppercase }
+
+/* Reveal on scroll — visibile di default, animato solo con JS */
+.reveal{ opacity:1; transform:none }
+.js .reveal{ opacity:0; transform:translateY(14px); transition:opacity .5s ease, transform .5s ease }
+.reveal.visible{ opacity:1; transform:none }
+
+/* Recruit */
+.recruit-wrap{ background:linear-gradient(180deg, var(--blue), var(--blue-2)); color:#fff; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(0,0,0,.2) }
+.recruit-wrap .section-head p{ opacity:.95 }
+.recruit-badge{ width:84px; height:auto; margin:0 auto 10px; filter:drop-shadow(0 6px 18px rgba(0,0,0,.3)) }
+.recruit-grid{ grid-template-columns: repeat(4, 1fr) }
+@media (max-width:1100px){ .recruit-grid{ grid-template-columns: repeat(2, 1fr) } }
+@media (max-width:680px){ .recruit-grid{ grid-template-columns:1fr } }
+.recruit-card{ background:#ffffff; color:#101418 }
+.recruit-card .btn-ghost{ color:var(--gold) }
+.recruit-trust{ display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; opacity:.95 }
+.recruit-legal{ text-align:center; opacity:.9; margin-top:.4rem }
+
+/* Sezione articoli in home */
+.skeleton-card{ min-height:220px; border-radius:16px; background:linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.18), rgba(255,255,255,.06)); background-size:200% 100%; animation:shimmer 1.2s infinite; }
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.article-card{ background:var(--surface); color:var(--surface-text); border:1px solid rgba(202,168,90,.35); border-radius:16px; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,.06); transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease }
+.article-card:hover{ transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.14); border-color:rgba(202,168,90,.55) }
+.article-card .thumb{ width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:12px; margin-bottom:.6rem; border:1px solid rgba(0,0,0,.08) }
+.article-card h3{ margin:.2rem 0 .2rem; font-size:1.05rem }
+.article-card .kicker{ font-size:.8rem; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:.3px }
+.article-card .actions{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.4rem }
+
+/* Mini loghino Agente OFI nel menù */
+.menu-agent{ margin-left:.5rem; border:1px solid var(--gold); background:transparent; border-radius:999px; padding:.2rem; width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center }
+.menu-agent img{ width:26px; height:26px; border-radius:50% }
+
+@media (min-width:901px){ .hero-badge{ display:none } }
+@media (min-width:901px){ .menu-mobile-head { display:none !important; } }
+
+/* FAQ page polish */
+.faq-wrap details{
+  background: var(--surface);
+  border: 1px solid rgba(202,168,90,.35);
+  border-radius: 12px;
+  margin: .6rem 0;
+  padding: .6rem .8rem;
+}
+.faq-wrap summary{
+  font-weight:800;
+  cursor:pointer;
+  color:var(--gold);
+}
+.page-hero{ background:linear-gradient(180deg, var(--blue), var(--blue-2)); color:#fff; padding:48px 0; border-bottom:1px solid rgba(0,0,0,.22) }
+.page-hero .container h1{ margin:0 0 .3rem }
+
+/* FAQ contrast improvements */
+.faq-wrap details, .faq-wrap details p{ color: var(--surface-text); }
+.faq-wrap details a{ color: var(--gold); text-decoration: underline; }
+
+/* Buttons on dark backgrounds */
+.btn.inverse{ color:#fff; border-color:#fff }
+.btn-outline.inverse{ border-color:#fff; color:#fff }
+.btn-outline.inverse:hover{ background:rgba(255,255,255,.12) }
+
+.map-wrap .section-head h2, .map-wrap .section-head p, .map-wrap .legend{ color:#fff }
+
+/* 🔧 Submenu (desktop): remove hover gap + buffer and keyboard focus */
+.has-sub{ position:relative }
+.has-sub > a::after{ content:''; display:inline-block; margin-left:.3rem }
+.submenu{
+  position:absolute; right:0; top:100%; margin-top:8px;
+  background:var(--surface); color:var(--surface-text);
+  border:1px solid rgba(202,168,90,.35); border-radius:14px; padding:.4rem;
+  display:none; min-width:220px; box-shadow:0 14px 40px rgba(0,0,0,.18); z-index:110;
+}
+.submenu::before{ content:''; position:absolute; left:0; right:0; top:-8px; height:8px } /* hover buffer */
+.submenu a{ color:var(--surface-text); display:block; padding:.55rem .8rem; border-radius:10px }
+.submenu a:hover{ background:rgba(202,168,90,.10) }
+.has-sub.open > .submenu{ display:block }
+@media (max-width:900px){
+  .has-sub > a[aria-haspopup="true"]{ cursor:pointer }
+  .submenu{ position:static; display:none; background:transparent; border:0; box-shadow:none; padding:0; min-width:unset; margin-top:0 }
+  .has-sub.open > .submenu{ display:block }
+  .submenu a{ color:#fff }
+}
+
+/* ==== Articolo (tipografia) ==== */
+:root{ --text-muted: rgba(0,0,0,.6); }
+.theme-dark{ --text-muted: rgba(255,255,255,.7); }
+.article .content p{line-height:1.85}
+.article .content .lead{color:var(--text-muted)}
+
+/* Share toolbar (articolo) */
+.sharebar{ display:flex; gap:.6rem; align-items:center; margin:1rem 0 1.5rem; flex-wrap:wrap }
+
+/* ===== Vision page (emozionale) ===== */
+.vision-hero{
+  position:relative; min-height:78vh;
+  background:
+    radial-gradient(1200px 600px at 70% 15%, rgba(202,168,90,.16), transparent 65%),
+    linear-gradient(180deg, rgba(15,39,66,.75), rgba(15,39,66,.92)),
+    url('images/albero-emozione.png') center/cover no-repeat;
+  display:grid; place-items:center; text-align:center; color:#fff;
+  border-bottom:1px solid rgba(0,0,0,.22);
+}
+.vision-hero::after{
+  content:""; position:absolute; inset:auto 0 0 0; height:120px;
+  background:linear-gradient(180deg, rgba(15,39,66,.0), rgba(15,39,66, .6));
+}
+.vision-hero__panel{
+  position:relative; z-index:1; max-width:980px;
+  padding:2rem 2.2rem; border-radius:18px;
+  background:rgba(16,40,69,.35);
+  border:1px solid rgba(202,168,90,.45);
+  box-shadow:0 18px 60px rgba(0,0,0,.35);
+  backdrop-filter:saturate(130%) blur(6px);
+}
+.vision-hero__panel h1{ font-size:clamp(2.4rem, 5vw, 4rem); margin:.1rem 0 .6rem; letter-spacing:.3px }
+.vision-hero__panel .subtitle{ font-size:1.22rem; opacity:.95 }
+.vision-body p{ font-size:1.15rem; line-height:1.9; margin-bottom:1.05rem }
+.vision-body .lead{ font-size:1.22rem }
+.vision-body strong{ color:var(--gold) }
+.vision-quote{ background:linear-gradient(180deg, var(--blue), var(--blue-2)); color:#fff; padding:68px 0; text-align:center; border-top:1px solid rgba(255,255,255,.08) }
+.vision-quote blockquote{ font-size:1.6rem; font-style:italic; max-width:860px; margin:auto; line-height:1.6 }
+
+/* caret rotation */
+.has-sub > a .caret{ display:inline-block; transition: transform .2s ease; margin-left:.25rem }
+.has-sub.open > a .caret{ transform: rotate(180deg) }
+
+/* Sharebar polish */
+.article .sharebar, .sharebar{ gap:.6rem }
+.theme-dark .copy-btn.btn-ghost{ border-color: rgba(255,255,255,.25); color:#fff }
+
+/* === Citizens area polish (scoped, non-breaking) === */
+.page-hero{
+  background:linear-gradient(180deg, var(--blue), var(--blue-2));
+  color:#fff;
+  padding:28px 0;
+  border-bottom:1px solid rgba(0,0,0,.22);
+}
+.page-hero .container h1{ margin:0 0 .2rem; font-weight:900; letter-spacing:.2px }
+.page-hero .section-sub{ opacity:.95 }
+
+/* Medium card variant (used widely in /cittadini) */
+.card--md{ padding: .9rem 1rem; border-radius:16px }
+.section-cards .card{ box-shadow:0 8px 22px rgba(0,0,0,.12) }
+
+/* Logo images inside cards/kpi/title */
+.logo-img{ height:22px; width:auto; object-fit:contain }
+.kpi img{ height:26px; width:auto }
+.kpi{ display:flex; align-items:center; gap:.6rem; border:1px solid rgba(202,168,90,.35); padding:.7rem .9rem; border-radius:12px; background:var(--surface); color:var(--surface-text) }
+.kpi:hover{ transform:translateY(-1px); box-shadow:0 12px 32px rgba(0,0,0,.12) }
+.kpi .muted{ opacity:.9 }
+
+/* Profile strip + progress sizes */
+.profile-strip{ display:flex; align-items:center; gap:.8rem; border:1px solid rgba(202,168,90,.35); background:var(--surface); color:var(--surface-text); border-radius:14px; padding:.7rem .8rem; margin:.8rem 0 }
+.profile-strip img{ width:56px; height:56px; border-radius:50%; object-fit:cover; border:1px solid rgba(0,0,0,.08) }
+.progress{ height:8px; background:color-mix(in oklab,var(--text),transparent 92%); border-radius:999px; overflow:hidden }
+.progress>span{ background:var(--gold) }
+
+/* Wallet headings a bit smaller across cittadini */
+.big-balance{ font-size:1.8rem; font-weight:800 }
+
+/* Buttons row helper */
+.cta-row{ display:flex; gap:.5rem; flex-wrap:wrap; align-items:center }
+
+/* Input base */
+.input{ height:40px; padding:.45rem .7rem; border-radius:10px; border:1px solid color-mix(in oklab, var(--text), transparent 86%); background:transparent; color:var(--text) }
+
+/* Pills + badges */
+.pill, .badge{ display:inline-flex; align-items:center; gap:.3rem; border:1px solid color-mix(in oklab,var(--text),transparent 80%); border-radius:999px; padding:.18rem .55rem; font-size:.85rem }
+.small-pill{ font-size:.8rem; padding:.12rem .5rem }
+
+/* Reduce oversized imagery inside cards by default */
+.card img{ max-height: 160px }
+@media (min-width: 900px){
+  .card img.lg-only{ max-height: 120px }
+}
+
+/* ---- Helpers specifici per Benvenuto/Login ---- */
+.accent{ color: var(--gold); }
+
+/* 🔧 Login action buttons: prevent overflow on mobile */
+.auth-actions .btn{ min-width:0; white-space:normal; text-wrap:balance }
+@media (max-width:480px){
+  .auth-actions .btn{ padding:.75rem .8rem; font-size:.95rem; line-height:1.1 }
+}
+
+/* (legacy patch removed) */
+
+/* Badge/giorno */
+.badge{ border-color: rgba(255,255,255,.35) }
+
+/* Progress */
+.progress{ height:8px; background:color-mix(in oklab,var(--text),transparent 92%); border-radius:999px; overflow:hidden }
+.progress>span{ display:block; height:100%; background:var(--gold) }
+
+/* Agent panel open/close (per allinearlo a accesso.html) */
+.agent-panel[aria-hidden="true"]{ display:none }
+.agent-panel[aria-hidden="false"], .agent-panel.open{ display:flex }
+
+/* Patch raffinamento dashboard cittadino */
+
+.separator {
+  border: 0;
+  border-top: 1px solid rgba(202,168,90,.3);
+  margin: 2rem 0;
+}
+
+.pensiero-post {
+  background: var(--blue);
+  border: 2px solid var(--gold);
+  color: #fff;
+  position: relative;
+}
+.pensiero-post p { font-family: 'Noto Serif', serif; font-size: 1.2rem; }
+.pensiero-post .social-watermark {
+  position: absolute; bottom:10px; right:10px; opacity:.4;
+}
+.pensiero-post .actions { margin-top:1rem; }
+
+.container.two-col {
+  display:grid; grid-template-columns:1fr 1fr; gap:1rem;
+}
+.container.three-col {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+}
+@media(max-width:900px){
+  .container.two-col, .container.three-col { grid-template-columns:1fr; }
+}
+
+/* Miglior contrasto dark mode */
+body.theme-dark { --muted:#c3cad7; }
+.theme-dark .btn { color:#fff; border-color:rgba(255,255,255,.4); }
+.theme-dark .btn:hover { background:rgba(255,255,255,.08); }
+
+/* Focus-mode patch: usa insieme a ofi.css */
+body{--surface: var(--bg);}
+.small{font-size:.9rem}
+.wow-card .btn{border-color: var(--gold); color: var(--surface-text);}
+.wow-card .btn:hover{background: rgba(202,168,90,.12)}
+.theme-dark .wow-card .btn{color:#fff;border-color:rgba(255,255,255,.45)}
+
+
+
+/* === Dashboard Cittadino — stili coerenti e compatti === */
+
+/* Wrap e titoli */
+.db-wrap{ padding:28px 0 0 }
+.section-title{ font-size:clamp(1.6rem,2.4vw,2.1rem); margin:.3rem 0 .4rem; letter-spacing:.2px }
+
+/* Strip profilo */
+.db-strip{
+  display:flex; align-items:center; gap:.8rem;
+  border:1px solid rgba(202,168,90,.35);
+  background:var(--surface); color:var(--surface-text);
+  border-radius:14px; padding:.7rem .8rem; margin:1rem 0;
+}
+.db-strip img{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:1px solid rgba(0,0,0,.08) }
+
+/* Wallet */
+.db-wallet{
+  display:flex; align-items:center; justify-content:space-between; gap:.8rem;
+  border:1px solid rgba(202,168,90,.35);
+  background:var(--surface); color:var(--surface-text);
+  border-radius:14px; padding:.8rem .9rem; margin:.8rem 0 1.1rem;
+}
+.db-balance{ font-size:1.8rem; font-weight:800; margin-right:.35rem }
+
+/* Pensiero del Giorno */
+.db-pdg{
+  position:relative;
+  border:1px solid rgba(202,168,90,.45);
+  background:linear-gradient(180deg, var(--blue), var(--blue-2));
+  color:#fff;
+  border-radius:16px; padding:1rem 1.1rem; overflow:hidden;
+  box-shadow:0 12px 32px rgba(0,0,0,.25);
+}
+.db-pdg .wm{ position:absolute; right:8px; bottom:8px; width:54px; opacity:.35; pointer-events:none }
+.db-pdg blockquote{ font-size:1.15rem; line-height:1.6; margin:.3rem 0 .4rem; font-family:"Noto Serif",serif }
+
+/* Cards principali */
+.db-cards{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1.1rem 0;
+}
+@media (max-width:1000px){ .db-cards{ grid-template-columns:repeat(2,1fr) } }
+@media (max-width:640px){ .db-cards{ grid-template-columns:1fr } }
+
+.db-card{
+  display:flex; gap:.7rem; align-items:center; text-decoration:none;
+  background:var(--surface); color:var(--surface-text);
+  border:1px solid rgba(202,168,90,.35); border-radius:16px;
+  padding:.8rem .9rem; box-shadow:0 10px 30px rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.db-card:hover{ transform: translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.14); border-color:rgba(202,168,90,.55) }
+.db-card h3{ margin:.1rem 0 .1rem; font-size:1.05rem }
+.db-card p{ margin:0; font-size:.98rem; opacity:.95 }
+.db-card .thumb{ width:72px; height:72px; object-fit:contain; flex:0 0 auto }
+.db-card .btn{ margin-left:auto }
+.db-card.db-card--invite{ grid-column:1 / -1; align-items:flex-start }
+.db-card.db-card--invite .thumb{ width:60px; height:60px }
+
+/* Riduci di default eventuali immagini grandi dentro .db-card (safety) */
+.db-card img{ max-height:90px }
+
+/* Map section in dashboard: riuso mappa globale (già stilata) */
+
+/* ——— CORREZIONE PULSANTI: non sovrascrivere i .btn-primary esistenti ——— */
+.btn:not(.btn-primary){ border-color: var(--gold); color: var(--surface-text); background: transparent }
+.btn:not(.btn-primary):hover{ background: rgba(202,168,90,.10) }
+.btn.solid{ background: linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414; border-color: transparent }
+.btn.btn-ghost{ color: var(--gold) }
+
+/* Dark mode tweaks per dashboard */
+.theme-dark .db-pdg{ color:#fff }
+.theme-dark .db-card{ background:var(--surface); color:var(--surface-text) }
+.theme-dark .db-card .btn{ color:#fff; border-color:rgba(255,255,255,.45) }
+
+
+
+/* === Dashboard/mobile polish & safe‑area === */
+.db-card{ overflow:hidden; align-items:flex-start }
+main{ padding-bottom:calc(84px + env(safe-area-inset-bottom)); } /* evita sovrapposizione con FAB su mobile */
+@supports not (padding: max(0px)) {
+  main{ padding-bottom:96px }
+}
+/* Card copy leggibile su blu scuro delle sezioni */
+.db-pdg .muted, .map-wrap .section-head p{ color: rgba(255,255,255,.92) }
+/* iPhone: evita che la scrollbar mobile copra il bordo destro delle card */
+.db-cards{ padding-right: 4px }
+
+/* Mobile refinements */
+@media (max-width: 480px){
+  .db-card{ padding:.9rem; border-radius:16px }
+  .db-card .thumb{ width:64px; height:64px }
+  .db-card h3{ font-size:1.08rem }
+  .db-card p{ font-size:1rem }
+}
+
+/* === OFI · Bottoni su bande scure (hero, mappa, recruit, page-hero, PDG) === */
+.hero .btn:not(.btn-primary),
+.map-wrap .btn:not(.btn-primary),
+.recruit-wrap .btn:not(.btn-primary),
+.page-hero .btn:not(.btn-primary),
+.db-pdg .btn:not(.btn-primary){
+  color:#fff;
+  border-color:#fff;
+  background:transparent;
+}
+.hero .btn:not(.btn-primary):hover,
+.map-wrap .btn:not(.btn-primary):hover,
+.recruit-wrap .btn:not(.btn-primary):hover,
+.page-hero .btn:not(.btn-primary):hover,
+.db-pdg .btn:not(.btn-primary):hover{
+  background:rgba(255,255,255,.12);
+}
+
+/* Icone dentro i bottoni su bande scure = stesso colore del testo */
+.hero .btn svg, .hero .btn i,
+.map-wrap .btn svg, .map-wrap .btn i,
+.recruit-wrap .btn svg, .recruit-wrap .btn i,
+.page-hero .btn svg, .page-hero .btn i,
+.db-pdg .btn svg, .db-pdg .btn i{
+  color:currentColor; fill:currentColor;
+}
+
+/* Bottoni dentro card chiare in tema scuro: testo scuro + bordo gold */
+.theme-dark .db-card .btn:not(.btn-primary){
+  color: var(--surface-text);
+  border-color: var(--gold);
+  background: transparent;
+}
+.theme-dark .db-card .btn:not(.btn-primary):hover{
+  background: rgba(202,168,90,.10);
+}
+
+/* === Agente OFI · contrasto stabile (light/dark) === */
+.agent-panel{
+  /* palette del componente */
+  --panel-bg: var(--surface);
+  --panel-fg: var(--surface-text);
+  --panel-area: var(--bg);
+  --panel-input-bg: var(--surface);
+  --panel-input-fg: var(--surface-text);
+  --panel-border: rgba(202,168,90,.45);
+}
+.agent-panel{ background:var(--panel-bg); color:var(--panel-fg); }
+.agent-top{ color:#fff; }
+.agent-chat{ background:var(--panel-area); }
+.agent-form input{
+  background:var(--panel-input-bg);
+  color:var(--panel-input-fg);
+  border:1px solid var(--panel-border);
+}
+.chip{ background:var(--surface); color:var(--surface-text); border:1px solid rgba(202,168,90,.6); }
+.chip:hover,.chip:focus{ background:linear-gradient(180deg, var(--gold-2), var(--gold)); color:#141414; }
+
+/* Tema scuro: non affidarti a override globali, ma imposta i token del componente */
+body.theme-dark .agent-panel{
+  --panel-bg: #0f2742;        /* box principale */
+  --panel-fg: #ffffff;
+  --panel-area: #0b1b2f;      /* area messaggi */
+  --panel-input-bg: #102845;  /* campo input */
+  --panel-input-fg: #ffffff;
+  --panel-border: rgba(255,255,255,.35);
+}
+body.theme-dark .chip{ background:#ffffff; color:#101418; border-color:rgba(202,168,90,.7); }
+
+/* === Agente OFI · override finale, indipendente dagli hotfix === */
+.agent-panel{
+  --panel-bg: var(--surface);
+  --panel-fg: var(--surface-text);
+  --panel-area: var(--bg);
+  --panel-input-bg: var(--surface);
+  --panel-input-fg: var(--surface-text);
+  --panel-border: rgba(202,168,90,.45);
+}
+.agent-panel{ background:var(--panel-bg); color:var(--panel-fg); }
+.agent-chat{ background:var(--panel-area); }
+.agent-form input{
+  background:var(--panel-input-bg);
+  color:var(--panel-input-fg);
+  border:1px solid var(--panel-border);
+}
+/* Tema scuro: token dedicati al componente */
+body.theme-dark .agent-panel{
+  --panel-bg:#0f2742; --panel-fg:#fff; --panel-area:#0b1b2f;
+  --panel-input-bg:#102845; --panel-input-fg:#fff; --panel-border:rgba(255,255,255,.35);
+}
+/* Chip dell’Agente (non quelle globali) */
+.agent-panel .chip{
+  background:#ffffff; color:#101418; border:1px solid rgba(202,168,90,.7);
+}
+
+/* Agente OFI – override globale sicuro */
+.agent-panel.open,
+.agent-panel[aria-hidden="false"]{
+  display:flex !important;
+}
+
+/* metti in ofi.css (valide per tutto il sito) */
+.grecaptcha-badge{
+  position: fixed !important;
+  right: 14px !important;
+  bottom: 110px !important; /* alza sopra l'avatar/bubble */
+  z-index: 9999 !important;
+  transform: scale(0.92);   /* leggermente più piccolo */
+}
+
+/* ==== Select accessibile – tema scuro ==== */
+html[data-theme*="dark"] .auth-field select {
+  background-color: #0f1420;          /* fondo scuro coerente */
+  color: #f1f5f9;                      /* testo chiaro */
+  border-color: rgba(202,168,90,.55);  /* oro OFI */
+  appearance: none;                    /* per la freccia custom */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAAA5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right .8rem center;
+  background-size: 18px 18px;
+  padding-right: 2.4rem;               /* spazio per la freccia */
+}
+
+html[data-theme*="dark"] .auth-field select:focus {
+  outline: none;
+  border-color: #d7b66a;
+  box-shadow: 0 0 0 3px rgba(202,168,90,.25);
+}
+
+/* Colori del menu a tendina (supportati su Chrome/Edge/Firefox) */
+html[data-theme*="dark"] .auth-field select option {
+  background-color: #0f1420;
+  color: #f1f5f9;
+}
+
+/* Opzione placeholder (“Seleziona…”) più tenue */
+.auth-field select option[value=""] { color: var(--muted, #94a3b8); }
+
+/* High-contrast per utenti tastiera su Firefox */
+html[data-theme*="dark"] .auth-field select:-moz-focusring {
+  color: transparent; text-shadow: 0 0 0 #f1f5f9;
+}
+
+/* --- FIX SELECT in tema scuro (forza colori + compat Safari iOS) --- */
+html[data-theme*="dark"] .auth-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-color: #0f1420 !important;   /* sfondo scuro forzato */
+  color: #f1f5f9 !important;               /* testo chiaro forzato */
+  -webkit-text-fill-color: #f1f5f9 !important; /* iOS/Safari: testo del select */
+  border-color: rgba(202,168,90,.55) !important;
+  color-scheme: dark;                      /* hint al browser per UI scura */
+  padding-right: 2.4rem;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAAA5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right .8rem center;
+  background-size: 18px 18px;
+}
+
+html[data-theme*="dark"] .auth-field select:focus {
+  outline: none;
+  border-color: #d7b66a !important;
+  box-shadow: 0 0 0 3px rgba(202,168,90,.25);
+}
+
+/* Opzioni del menu (supportate nei browser moderni) */
+html[data-theme*="dark"] .auth-field select option {
+  background-color: #0f1420 !important;
+  color: #f1f5f9 !important;
+  -webkit-text-fill-color: #f1f5f9 !important; /* iOS/Safari */
+}
+
+/* Placeholder “Seleziona…” più tenue */
+.auth-field select option[value=""] { color: var(--muted, #94a3b8); }
+
+/* Nasconde la freccia legacy su IE/vecchi Edge (se mai capita) */
+.auth-field select::-ms-expand { display: none; }
+
+/* Campo chiuso: resta scuro e leggibile */
+html[data-theme*="dark"] .auth-field select {
+  background-color: #0f1420;
+  color: #f1f5f9;
+  border-color: rgba(202,168,90,.55);
+  color-scheme: light; /* 👈 forza la popup di sistema in chiaro */
+}
+
+/* Popup delle opzioni: testo scuro su fondo chiaro */
+html[data-theme*="dark"] #settore option,
+html[data-theme*="dark"] .auth-field select option {
+  background: #ffffff !important;
+  color: #0f1420 !important;
+  -webkit-text-fill-color: #0f1420 !important; /* Safari/iOS */
+}
+
+/* Focus */
+html[data-theme*="dark"] .auth-field select:focus {
+  outline: none;
+  border-color: #d7b66a;
+  box-shadow: 0 0 0 3px rgba(202,168,90,.25);
+}
+
+/* ===== Custom select — stile OFI elegante ===== */
+.custom-select { position: relative; font-size: 15px; }
+
+/* Trigger (campo chiuso) */
+.custom-select .cs-trigger{
+  width:100%;
+  border-radius:14px;
+  padding:12px 44px 12px 14px;
+  border:1px solid rgba(202,168,90,.55);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.06));
+  color: var(--cs-fg,#f1f5f9);
+  display:flex; align-items:center; gap:.5rem;
+  transition: box-shadow .18s ease, border-color .18s ease, transform .06s ease;
+  will-change: box-shadow, border-color;
+}
+.custom-select .cs-trigger:hover{
+  border-color:#d7b66a;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.custom-select .cs-trigger:active{ transform: translateY(1px); }
+
+/* Icona freccia */
+.custom-select .cs-trigger:after{
+  content:"";
+  position:absolute; right:12px; top:50%; width:18px; height:18px; transform:translateY(-50%);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23CAAA5A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-size:18px 18px; background-repeat:no-repeat;
+  opacity:.95;
+}
+.custom-select[aria-expanded="true"] .cs-trigger:after{
+  transform: translateY(-50%) rotate(180deg);
+  transition: transform .18s ease;
+}
+
+/* Popup opzioni */
+.custom-select .cs-options{
+  display:none;
+  position:absolute; z-index:60; left:0; right:0; margin-top:8px;
+  max-height:280px; overflow:auto;
+  border-radius:14px; padding:6px;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(17,24,39,.96), rgba(17,24,39,.98));
+  border:1px solid rgba(202,168,90,.28);
+  box-shadow: 0 18px 40px rgba(0,0,0,.40);
+  animation: cs-pop .14s ease;
+}
+@keyframes cs-pop{ from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none} }
+
+/* Singola opzione */
+.custom-select .cs-option{
+  padding:10px 12px; border-radius:10px; cursor:pointer; outline:none;
+  color:#e5e7eb; background:transparent;
+  display:flex; align-items:center; gap:.6rem;
+}
+.custom-select .cs-option:hover,
+.custom-select .cs-option:focus{
+  background: rgba(255,255,255,.06);
+  color:#ffffff;
+}
+.custom-select .cs-option + .cs-option{ margin-top:2px; }
+
+/* Check sull'opzione selezionata */
+.custom-select .cs-option[aria-selected="true"]{
+  background: rgba(202,168,90,.14);
+  color:#ffffff;
+  position:relative;
+}
+.custom-select .cs-option[aria-selected="true"]::before{
+  content:"";
+  width:18px; height:18px; flex:0 0 18px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  background-size:18px 18px; background-repeat:no-repeat;
+}
+
+/* Scrollbar più fine (Chrome/Edge) */
+.custom-select .cs-options::-webkit-scrollbar{ width:10px }
+.custom-select .cs-options::-webkit-scrollbar-thumb{
+  background: rgba(148,163,184,.45); border-radius:8px; border:2px solid transparent; background-clip: padding-box;
+}
+
+/* Tema CHIARO: palette */
+html:not([data-theme*="dark"]) .custom-select .cs-trigger{
+  color:#0f1420; background: #ffffff;
+  border-color:#d8dee9;
+}
+html:not([data-theme*="dark"]) .custom-select .cs-options{
+  background: #ffffff;
+  border-color:#e5e7eb;
+  box-shadow: 0 18px 38px rgba(16,24,40,.12);
+}
+html:not([data-theme*="dark"]) .custom-select .cs-option{
+  color:#0f1420;
+}
+html:not([data-theme*="dark"]) .custom-select .cs-option:hover,
+html:not([data-theme*="dark"]) .custom-select .cs-option:focus{
+  background: rgba(15,20,32,.06);
+}
+
+/* Nasconde visivamente il select originale ma lo lascia nel form */
+#settore[data-enhanced="1"]{
+  position:absolute !important; inset:auto auto auto -9999px !important;
+  width:1px !important; height:1px !important; overflow:hidden !important;
+}
+
+/* iOS anti-zoom sugli input (mantiene look & spacing) */
+input, select, textarea, .form-control {
+  font-size: 16px !important;
+  line-height: 1.3;
+}
+
+/* Se ti “sballa” leggermente la UI, puoi ridare scala visiva al contenitore */
+@media (max-width: 480px) {
+  .form-wrap { transform: scale(.98); transform-origin: top center; }
+}
+
+.main-nav, .menu{ position: relative; z-index: 8001 !important; overflow: visible !important; }
+.menu .has-sub{ position: relative; z-index: 8002 !important; }
+.menu .submenu{
+  position: absolute !important;
+  top: 100%; left: 0;
+  z-index: 9000 !important;      /* sopra tutto il resto */
+  display: none;
+}
+.has-sub.open > .submenu{ display:block }
+/* Tutti gli hero/overlay restano sotto al menu */
+.hero, .page-hero, .profile-hero, .vision-hero,
+.hero-overlay, .vision-hero::after, .hero-content{
+  position: relative;
+  z-index: 1 !important;
+  overflow: visible !important;
+}
+
+/* ==== SOLID LUXE – Mobile Drawer leggibile (senza blur) ==== */
+:root{
+  --ofi-navy-1: #0e1724;           /* sfondo pannello */
+  --ofi-navy-2: #0a1220;           /* gradiente */
+  --ofi-navy-3: #132235;           /* bottoni neutri */
+  --ofi-text:   #ffffff;           /* testo principale */
+  --ofi-muted:  rgba(255,255,255,.72);
+  --ofi-gold:   #d9b872;           /* oro base */
+  --ofi-gold-2: #e6c782;           /* oro highlight */
+  --headerH:    72px;              /* altezza header sticky */
+}
+
+
+/* Drawer: pannello solido, contrasto alto */
+#menuPanel.menu{
+  position: fixed; left:0; bottom:0;
+  top: calc(env(safe-area-inset-top) + var(--headerH));
+  width: 88vw; max-width: 420px;
+  transform: translateX(-105%);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1);
+  background: linear-gradient(180deg, var(--ofi-navy-1), var(--ofi-navy-2));
+  /* niente backdrop-filter */
+  border-right: 1px solid rgba(217,184,114,.28);
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+  z-index: 3100; overflow:auto; overscroll-behavior: contain;
+  padding: 16px 18px 18px; border-radius: 0 12px 12px 0;
+  color: var(--ofi-text);
+}
+#menuPanel.menu.open{ transform: translateX(0); }
+body.menu-open{ overflow: hidden; }
+
+/* Testata piccola del drawer */
+#menuPanel .menu-head{
+  display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;
+}
+#menuPanel .menu-brand{ display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.3px; }
+#menuPanel .menu-brand img{ width:28px; height:28px; object-fit:contain; }
+#menuPanel .menu-close{
+  display:inline-grid; place-items:center; width:36px; height:36px; border-radius:10px; 
+  border:1px solid rgba(217,184,114,.35); background:#0f1a28; color:#fff;
+  font-size:18px; line-height:1; user-select:none;
+}
+
+/* Link/Buttons: sfondo scuro pieno, bordi sottili, legibilissimo */
+#menuPanel a, #menuPanel button.menu-link{
+  display:block; width:100%; text-align:left;
+  padding:1rem 1.1rem; margin:.38rem 0;
+  border-radius:14px;
+  background: var(--ofi-navy-3);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff; font-weight:700; letter-spacing:.25px;
+  line-height:1.2;
+}
+#menuPanel a:hover, #menuPanel button.menu-link:hover{
+  background:#182b42; border-color: rgba(255,255,255,.18);
+}
+
+/* Bottoni oro principali */
+#menuPanel .btn-gold{
+  background: linear-gradient(180deg, var(--ofi-gold), var(--ofi-gold-2));
+  color:#1a1a1a !important; border:0 !important;
+  box-shadow: 0 6px 18px rgba(233,196,106,.24);
+}
+
+/* Etichette sezione */
+#menuPanel .menu-section{
+  margin:12px 2px 6px; font-size:.9rem; color: var(--ofi-muted);
+  letter-spacing:.4px; font-weight:700;
+}
+
+/* Divider sottile (se lo usi) */
+#menuPanel .menu-divider{
+  height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  margin:10px 0;
+}
+
+/* Accordion “Scopri OFI” – senza trasparenze */
+#menuPanel .menu-acc{
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; margin:.5rem 0; background:#0f1a28;
+}
+#menuPanel .menu-acc-h{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:.9rem 1rem; font-weight:800; color:#fff;
+}
+#menuPanel .menu-caret{ transition: transform .2s ease; }
+#menuPanel .menu-acc[aria-expanded="true"] .menu-caret{ transform: rotate(180deg); }
+#menuPanel .menu-acc-c{ max-height:0; overflow:hidden; transition:max-height .25s ease; }
+#menuPanel .menu-acc[aria-expanded="true"] .menu-acc-c{ max-height: 520px; }
+#menuPanel .menu-acc-c a{ background:#122238; }
+
+/* CTA sticky in fondo: base scura solida */
+#menuPanel .menu-cta{
+  position: sticky; bottom: 0;
+  background: linear-gradient(180deg, rgba(14,23,36,0), rgba(14,23,36,.94) 30%, rgba(14,23,36,1) 60%);
+  padding: 14px 4px 10px; margin-top: 14px;
+}
+#menuPanel .menu-cta .btn-row{ display:grid; grid-template-columns:1fr; gap:10px; }
+
+/* iOS safe areas / motion */
+@supports (padding-top: constant(safe-area-inset-top)){
+  #menuPanel.menu{ top: calc(constant(safe-area-inset-top) + var(--headerH)); }
+  #menuOverlay{ inset: calc(constant(safe-area-inset-top) + var(--headerH)) 0 0 0; }
+}
+@media (prefers-reduced-motion: reduce){
+  #menuPanel.menu{ transition:none; } #menuOverlay{ transition:none; }
+}
+
+/* === NAV: dropdown desktop ancorato a destra del bottone, no overflow === */
+@media (min-width: 901px){
+  .nav { position: relative; z-index: 4000; } /* il tuo wrapper nav */
+  .nav .has-submenu { position: relative; }   /* il li o div che contiene "Scopri OFI" */
+  .nav .submenu-panel{
+    position: absolute;
+    top: 100%;
+    right: 0;               /* ancora la tendina al bordo destro del trigger */
+    left: auto;             /* evita shift a sinistra */
+    max-width: min(92vw, 560px);
+    width: max-content;     /* si adatta al contenuto */
+    transform: none !important;
+    overflow: clip;
+  }
+  /* se il container nav usa trasformazioni, rimuovile: creano "containing block" strani */
+  .nav, .nav * {
+    transform: none; /* se non hai animazioni nel nav, meglio così */
+  }
+  /* il contenitore sopra il nav non deve tagliare la tendina */
+  header, .site-header, .nav-wrap { overflow: visible; }
+}
+
+/* === Accordion mobile: chiusura vera === */
+#menuPanel .menu-acc{ border:1px solid rgba(255,255,255,.12); border-radius:14px; background:#0f1a28; }
+#menuPanel .menu-acc-h{ display:flex; justify-content:space-between; align-items:center; padding:.9rem 1rem; font-weight:800; }
+#menuPanel .menu-caret{ transition: transform .2s ease; }
+#menuPanel .menu-acc-c{ 
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease;
+}
+#menuPanel .menu-acc[aria-expanded="true"] .menu-acc-c{ max-height: 520px; } /* apri */
+#menuPanel .menu-acc[aria-expanded="true"] .menu-caret{ transform: rotate(180deg); }
+
+/* Il gruppo di pulsanti nav può allargarsi oltre il container testuale */
+@media (min-width: 901px){
+  .nav .actions { contain: layout; }          /* evita side effects di layout */
+  .nav .actions { overflow: visible; }        /* niente clipping laterale */
+}
+
+/* ===== OFI NAV — PATCH DEFINITIVA ===== */
+
+/* Z-index di riferimento: header > drawer > overlay > contenuti */
+.site-header{ z-index: 10010 !important; position: sticky; top: 0; }
+
+@media (min-width:901px){
+  /* Desktop: menù inline, nessun drawer/overlay */
+  #menuPanel.menu{
+    position: static !important;
+    transform: none !important;
+    height: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  #menuOverlay{ display:none !important; }
+  .main-nav, .menu { max-width: 100vw; overflow-x: clip; } /* niente sbordo dx */
+}
+
+/* Mobile: drawer a tutta altezza, overlay pieno schermo, no calcoli strani. */
+@media (max-width:900px){
+  :root{ --headerH: 64px; } /* fallback, poi lo settiamo da JS */
+
+  /* Disattiva qualsiasi vecchia regola generica su .menu */
+  .menu{
+    position: static !important;
+    transform: none !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Drawer ufficiale */
+  #menuPanel.menu{
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: min(86vw, 420px) !important;
+    height: 100dvh !important;           /* evita doppio scrollbar */
+    transform: translateX(-100%) !important;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1) !important;
+    background: linear-gradient(180deg, #0e1724, #0a1220) !important;
+    border-right: 1px solid rgba(217,184,114,.28) !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.45) !important;
+    z-index: 10009 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: calc(var(--headerH) + env(safe-area-inset-top)) 18px 18px !important; /* spazio sotto header */
+    border-radius: 0 12px 12px 0 !important;
+  }
+  #menuPanel.menu.open{ transform: translateX(0) !important; display:block !important; }
+
+  /* Overlay pieno schermo, sotto l'header */
+  #menuOverlay{
+    position: fixed !important;
+    top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
+    height: 100dvh !important;
+    background: rgba(0,0,0,.5) !important;
+    z-index: 10008 !important;
+  }
+  body.menu-open #menuOverlay{ display:block !important; }
+
+  /* Il body non scorre quando il drawer è aperto */
+  html.menu-open, body.menu-open{ overflow: hidden !important; }
+
+  /* Submenu dentro drawer */
+  .has-sub > .submenu{
+    position: static !important;
+    background: transparent !important;
+    border: 0 !important; box-shadow: none !important;
+    padding: 0 !important; margin: 0 !important;
+    min-width: unset !important;
+  }
+  .has-sub.open > .submenu{ display:block !important; }
+}
+
+/* Dropdown desktop: allinea a destra e sopra i contenuti */
+@media (min-width:901px){
+  .has-sub{ position: relative !important; }
+  .has-sub > .submenu{
+    position: absolute !important;
+    top: 100% !important;
+    right: 0 !important;
+    min-width: 220px !important;
+    z-index: 10005 !important;
+  }
+  .has-sub.open > .submenu{ display:block }
+}
+
+
+/* Safety: niente scrollbar orizzontale globali */
+html, body { overflow-x: hidden; }
+
+/* --- ONE-SCROLL OWNER: elimina la doppia barra verticale --- */
+html, body { height: auto !important; }     /* niente altezza forzata */
+html { overflow-y: auto !important; }       /* lo scroll vive su <html> */
+body { overflow-y: visible !important; }    /* il body non crea una seconda barra */
+
+/* ==== NAV MOBILE — FIX VISIBILITÀ ==== */
+@media (max-width:900px){
+  /* mostra l’hamburger su mobile */
+  .hamburger{
+    display:inline-grid !important;
+    place-items:center;
+  }
+
+  
+  /* quando JS aggiunge .open, il drawer si vede */
+  #menuPanel.menu.open{
+    display:block !important;
+  }
+}
+
+/* opzionale: su desktop l’hamburger resta nascosto con forza */
+@media (min-width:901px){
+  .hamburger{ display:none !important; }
+}
+
+/* Overlay: visibile quando lo apriamo anche via classe .show */
+#menuOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+  z-index: 10008;
+}
+
+/* Mobile: rendi sempre “renderizzato” il pannello e controlla solo con transform */
+@media (max-width:900px){
+  #menuPanel.menu{ display:block !important; }  /* 👈 SEMPRE visibile nel flow (ma fuori dallo schermo) */
+  #menuPanel.menu.open{ transform: translateX(0) !important; }
+}
+
+/* === NAV MOBILE · polish finale (contrasto + logo compatto) === */
+@media (max-width:900px){
+  /* logo nella barra in alto */
+  .brand-logo{ height: 32px !important; }
+
+  /* testata del drawer (logo + X) */
+  #menuPanel .menu-mobile-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px 6px; margin-bottom: 6px;
+  }
+  #menuPanel .menu-mobile-head img{
+    height: 28px; width:auto; object-fit:contain;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,.25));
+  }
+  #menuPanel .menu-close{
+    display:inline-grid; place-items:center;
+    width:36px; height:36px; border-radius:10px;
+    border:1px solid rgba(217,184,114,.35);
+    background:#0f1a28; color:#fff; font-size:18px; line-height:1;
+  }
+
+  /* link del drawer: leggero boost di luce senza trasparenze */
+  #menuPanel.menu a, #menuPanel.menu button.menu-link{
+    background: #14263c; /* un filo più chiaro rispetto a #0f1a28 */
+    border:1px solid rgba(255,255,255,.16);
+    color:#fff; font-weight:800;
+  }
+  #menuPanel.menu a:hover, #menuPanel.menu button.menu-link:hover{
+    background:#1a3350; border-color: rgba(255,255,255,.22);
+  }
+
+  /* i “callout” in alto (NECROLOGI / PENSIERI) un po’ più “oro” */
+  #menuPanel .menu-callout{
+    background: linear-gradient(180deg, #e6c782, #d9b872);
+    color:#141414 !important; border:0 !important; font-weight:900;
+    box-shadow:0 6px 18px rgba(233,196,106,.22);
+  }
+}
+
+/* overlay: scurisce lo sfondo ma NON il drawer */
+#menuOverlay{ background: rgba(0,0,0,.5) !important; }
+
+/* === NAV MOBILE · lift colore e leggibilità === */
+@media (max-width:900px){
+  /* logo compatto nella testata del drawer */
+  .brand-logo{ height: 28px !important; }
+
+  /* testata (logo + X) */
+  #menuPanel .menu-mobile-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px 6px; margin-bottom: 8px;
+  }
+  #menuPanel .menu-mobile-head img{
+    height: 26px; width:auto; object-fit:contain;
+    filter: drop-shadow(0 2px 10px rgba(0,0,0,.25));
+  }
+  #menuPanel .menu-close{
+    display:inline-grid; place-items:center;
+    width:36px; height:36px; border-radius:10px;
+    border:1px solid rgba(217,184,114,.35);
+    background:#0f1a28; color:#fff; font-size:18px; line-height:1;
+  }
+}
+
+/* overlay: meno scuro */
+#menuOverlay{ background: rgba(0,0,0,.35) !important; }
+
+/* pannello: gradient più chiaro, niente “grigio/nero profondo” */
+#menuPanel.menu{
+  background: radial-gradient(120% 120% at 0% 0%, #1b3b63 0%, #153453 45%, #0f2742 100%) !important;
+}
+
+/* link del drawer: contrasto alto ma più luminosi */
+#menuPanel.menu a,
+#menuPanel.menu button.menu-link{
+  background: #17395e !important;
+  border:1px solid rgba(255,255,255,.16) !important;
+  color:#fff !important; font-weight:800 !important;
+}
+#menuPanel.menu a:hover,
+#menuPanel.menu button.menu-link:hover{
+  background:#1f4776 !important;
+  border-color: rgba(255,255,255,.22) !important;
+}
+
+/* callout dorati (NECROLOGI / PENSIERI) più “wow” */
+#menuPanel .menu-callout{
+  background: linear-gradient(180deg, #e6c782, #d9b872) !important;
+  color:#141414 !important; border:0 !important; font-weight:900 !important;
+  box-shadow:0 6px 18px rgba(233,196,106,.22) !important;
+}
+
+/* caret del trigger quando aperto */
+.has-sub.open > a .caret{ transform: rotate(180deg); display:inline-block; }
+
+/* caret coerente con aria-expanded */
+.has-sub > a .caret{ transition: transform .2s ease; display:inline-block }
+.has-sub > a[aria-expanded="true"] .caret{ transform: rotate(180deg); }
+
+/* ===== NAV UNDERLINE CLEAN (DESKTOP) ===== */
+@media (min-width:901px){
+  .nav--underline .menu > li > a{
+    background: transparent !important;
+    border:0 !important; border-radius:0;
+    padding:.45rem .25rem;
+    color:#fff;
+    position:relative;
+  }
+  .nav--underline .menu > li > a::after{
+    content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background: linear-gradient(90deg, rgba(202,168,90,0), rgba(202,168,90,1), rgba(202,168,90,0));
+    transform: scaleX(0); transform-origin:center; transition: transform .2s ease;
+  }
+  .nav--underline .menu > li > a:hover::after{ transform: scaleX(1); }
+  .nav--underline .menu .menu-callout{
+    background: linear-gradient(180deg, #e6c782, #d9b872);
+    color:#141414; font-weight:900; border:0; border-radius:999px; padding:.5rem .9rem;
+    box-shadow: 0 6px 18px rgba(233,196,106,.22);
+  }
+}
+
+/* NAV CLEAN — elimina pill/blocchi/blu intorno alle voci (tranne i callout oro) */
+@media (min-width:901px){
+  .site-header .menu > li > a:not(.menu-callout):not(.btn){
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
+    padding: .45rem .5rem !important;
+    color: #fff; /* testo chiaro sull'header scuro */
+    position: relative;
+  }
+  /* effetto underline dorata "wow" al passaggio */
+  .site-header .menu > li > a:not(.menu-callout):not(.btn)::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:-6px; height:2px;
+    background: linear-gradient(90deg, rgba(202,168,90,0), rgba(202,168,90,1), rgba(202,168,90,0));
+    transform: scaleX(0); transform-origin:center; transition: transform .2s ease;
+  }
+  .site-header .menu > li > a:not(.menu-callout):not(.btn):hover::after{
+    transform: scaleX(1);
+  }
+
+  /* callout oro: pill pulita, senza bordi blu squadrati */
+  .site-header .menu .menu-callout{
+    background: linear-gradient(180deg, #e6c782, #d9b872) !important;
+    color:#141414 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    padding: .5rem .9rem !important;
+    box-shadow: 0 6px 18px rgba(233,196,106,.22);
+  }
+}
+
+/* === FIX DEFINITIVO DROPDOWN DESKTOP === */
+
+/* 1) il <li> che contiene il submenu deve fare da anchor */
+.has-sub{ position: relative; }
+
+/* 2) il pannello del submenu deve stare sopra a tutto l’header */
+.submenu{
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  min-width: 220px;
+  display: none;
+  background: var(--surface);
+  color: var(--surface-text);
+  border: 1px solid rgba(202,168,90,.35);
+  border-radius: 14px;
+  padding: .4rem;
+  box-shadow: 0 14px 40px rgba(0,0,0,.18);
+  z-index: 10050; /* sopra ai “chips” del menu */
+}
+.has-sub.open > .submenu{ display: block; }
+
+/* 3) assicurati che i contenitori NON taglino il dropdown */
+.site-header,
+.main-nav,
+.menu{ 
+  position: relative;
+  overflow: visible !important;
+  z-index: auto;            /* lascia gestire al submenu */
+}
+
+/* 4) reset del drawer mobile quando siamo su desktop:
+      l’ul #menuPanel torna un normale menu inline  */
+@media (min-width: 901px){
+  #menuPanel.menu{
+    position: static !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: none !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+}
+
+/* HOTFIX: forza l’apertura del dropdown su desktop */
+@media (min-width:901px){
+  .has-sub.open > .submenu{ display:block !important; }
+}
+
+/* =============== OFI · NAV MOBILE — GOLD LUXE v2 =============== */
+/* Obiettivi: pannello più chiaro (no trasparenze), link più brillanti,
+   oro metallico credibile, interazioni morbide e focus accessibile.  */
+
+/* Palette “gold” più luminosa e riflessi */
+:root{
+  --ofi-gold:   #e8c774;      /* base */
+  --ofi-gold-2: #f1d891;      /* highlight */
+  --ofi-gold-3: #caa85a;      /* accento profondo (già presente, di backup) */
+}
+
+/* Drawer: gradiente più chiaro e con “riflesso” */
+@media (max-width:900px){
+  #menuPanel.menu{
+    /* sfondo più luminoso con riflesso diagonale */
+    background:
+      radial-gradient(120% 120% at 0% 0%, #27507f 0%, #1e456e 45%, #143552 100%) !important;
+    border-right: 1px solid rgba(232,199,116,.35) !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.48) !important;
+  }
+
+  /* link principali: “card” blu lucida, testo pieno */
+  #menuPanel.menu a,
+  #menuPanel.menu button.menu-link{
+    background: linear-gradient(180deg, #1a3b5f, #17395c) !important;
+    border:1px solid rgba(255,255,255,.18) !important;
+    color:#fff !important;
+    font-weight:900 !important;
+    letter-spacing:.25px;
+    border-radius:14px;
+    padding:1rem 1.1rem;
+    transition: transform .12s ease, box-shadow .2s ease, background .18s ease, border-color .18s ease;
+    box-shadow: 0 8px 22px rgba(0,0,0,.20);
+  }
+  #menuPanel.menu a:hover,
+  #menuPanel.menu button.menu-link:hover{
+    background: linear-gradient(180deg, #224b78, #1d4370) !important;
+    border-color: rgba(255,255,255,.25) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(0,0,0,.28);
+  }
+  #menuPanel.menu a:active,
+  #menuPanel.menu button.menu-link:active{
+    transform: translateY(0);
+    box-shadow: 0 6px 18px rgba(0,0,0,.22);
+  }
+
+  /* callout dorati (Necrologi / Pensieri): oro metallico con lieve glow */
+  #menuPanel .menu-callout{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)) !important;
+    color:#141414 !important; border:0 !important; font-weight:900 !important;
+    box-shadow: 0 8px 22px rgba(232,199,116,.26) !important;
+    text-transform: uppercase;
+    letter-spacing:.6px;
+  }
+
+  /* etichette/sezioni più leggibili */
+  #menuPanel .menu-section{
+    color: rgba(255,255,255,.85);
+    text-transform: uppercase;
+    letter-spacing:.45px;
+    font-weight:800;
+    margin:14px 4px 6px;
+  }
+
+  /* accordion “Scopri OFI”: pannello solido + caret fluido */
+  #menuPanel .menu-acc{
+    background:#10273f; border:1px solid rgba(255,255,255,.16); border-radius:14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  #menuPanel .menu-acc-h{
+    color:#fff; padding: .95rem 1rem; font-weight:900;
+  }
+  #menuPanel .menu-caret{ transition: transform .2s ease; }
+  #menuPanel .menu-acc[aria-expanded="true"] .menu-caret{ transform: rotate(180deg); }
+  #menuPanel .menu-acc-c{
+    max-height:0; overflow:hidden; transition:max-height .26s ease;
+  }
+  #menuPanel .menu-acc[aria-expanded="true"] .menu-acc-c{ max-height:560px; }
+  #menuPanel .menu-acc-c a{
+    background: linear-gradient(180deg, #173b60, #153a5c) !important;
+  }
+
+  /* CTA footer sticky: “vetrina” con sfumatura e bottone oro */
+  #menuPanel .menu-cta{
+    background: linear-gradient(180deg, rgba(20,53,88,0), rgba(20,53,88,.95) 32%, rgba(20,53,88,1) 60%);
+    padding: 16px 6px 12px;
+  }
+  #menuPanel .menu-cta .btn-gold{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold));
+    color:#1a1a1a !important; border:0 !important;
+    box-shadow: 0 8px 22px rgba(232,199,116,.28);
+    font-weight:900;
+  }
+
+  /* overlay un filo meno scuro per aumentare “brillantezza” del drawer */
+  #menuOverlay{ background: rgba(0,0,0,.32) !important; }
+
+  /* focus ring accessibile (tasti, link dentro il drawer) */
+  #menuPanel.menu a:focus-visible,
+  #menuPanel.menu button.menu-link:focus-visible{
+    outline: 2px solid var(--ofi-gold-2);
+    outline-offset: 2px;
+  }
+
+  /* hamburger più “prestigioso” + stato attivo */
+  .hamburger span{ background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)); }
+  .hamburger.active span{ background: linear-gradient(180deg, var(--ofi-gold), var(--ofi-gold-2)); }
+
+  /* logo più compatto e nitido nella top-bar */
+  .brand-logo{ height: 28px !important; filter: drop-shadow(0 2px 10px rgba(0,0,0,.25)); }
+}
+
+/* Desktop: underline dorata pulita (coerente col mobile gold) */
+@media (min-width:901px){
+  .site-header .menu > li > a:not(.menu-callout):not(.btn){
+    color:#fff !important;
+  }
+  .site-header .menu > li > a:not(.menu-callout):not(.btn)::after{
+    background: linear-gradient(90deg, rgba(232,199,116,0), rgba(232,199,116,1), rgba(232,199,116,0));
+  }
+  .site-header .menu .menu-callout{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)) !important;
+    box-shadow: 0 6px 18px rgba(232,199,116,.22) !important;
+  }
+}
+
+/* ================= OFI · NAV MOBILE — GOLD LUXE v3 (HIGH CONTRAST) ================= */
+:root{
+  --ofi-gold:   #eaca7a;
+  --ofi-gold-2: #f5df9c;
+  --ofi-ink:    #0b1c2e;    /* blu molto scuro per micro-ombre */
+  --ofi-sky:    #2c5f96;    /* blu chiaro per highlight */
+}
+
+@media (max-width:900px){
+  /* Drawer più chiaro e con highlight verticale a destra (effetto “bevel”) */
+  #menuPanel.menu{
+    background:
+      linear-gradient(160deg, #1a3d61 0%, #1b3d60 45%, #173554 100%) !important,
+      #1a3d61 !important;
+    box-shadow:
+      0 18px 42px rgba(0,0,0,.55),
+      inset 0 1px 0 rgba(255,255,255,.05),
+      inset -6px 0 18px rgba(245,223,156,.10);      /* riflesso dorato interno */
+    border-right: 1px solid rgba(245,223,156,.45) !important;
+    padding-bottom: calc(22px + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Overlay un filo più leggero: lascia “respirare” i colori del drawer */
+  #menuOverlay{ background: rgba(0,0,0,.26) !important; }
+
+  /* Close button: dorato, visibile, premium */
+  #menuClose{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)) !important;
+    color:#101010 !important; border:0 !important;
+    box-shadow: 0 6px 16px rgba(234,202,122,.35);
+  }
+
+  /* Voci principali: più luminose + bordo dorato sottile dentro (bead) */
+  #menuPanel.menu a,
+  #menuPanel.menu button.menu-link{
+    background: linear-gradient(180deg, #225481 0%, #1e4a74 100%) !important;
+    color:#fff !important;
+    font-weight: 900 !important;
+    letter-spacing: .28px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(245,223,156,.20),         /* filetto oro interno */
+      0 10px 24px rgba(0,0,0,.26);
+    text-shadow: 0 1px 0 rgba(0,0,0,.25);            /* testo più scolpito */
+    transition: transform .12s ease, box-shadow .2s ease, filter .15s ease;
+  }
+  #menuPanel.menu a:hover,
+  #menuPanel.menu button.menu-link:hover{
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 0 0 1px rgba(245,223,156,.28),
+      0 14px 28px rgba(0,0,0,.32);
+  }
+  #menuPanel.menu a:active,
+  #menuPanel.menu button.menu-link:active{
+    transform: translateY(0);
+    box-shadow:
+      inset 0 0 0 1px rgba(245,223,156,.20),
+      0 8px 20px rgba(0,0,0,.24);
+  }
+
+  /* Sezioni/label più chiare per guidare l’occhio */
+  #menuPanel .menu-section{
+    color: rgba(255,255,255,.92);
+    font-weight: 800;
+    letter-spacing: .48px;
+    margin: 14px 6px 8px;
+    text-shadow: 0 1px 0 rgba(0,0,0,.25);
+  }
+
+  /* Accordion Scopri OFI: pannello ancora più leggibile e contrastato */
+  #menuPanel .menu-acc{
+    background: linear-gradient(180deg, #143655, #11324f) !important;
+    border:1px solid rgba(255,255,255,.18) !important;
+    border-radius:14px;
+    box-shadow:
+      inset 0 0 0 1px rgba(245,223,156,.16),
+      0 8px 22px rgba(0,0,0,.24);
+  }
+  #menuPanel .menu-acc-h{
+    color:#fff; padding:.95rem 1rem; font-weight:900;
+    text-shadow: 0 1px 0 rgba(0,0,0,.25);
+  }
+  #menuPanel .menu-caret{ transition: transform .2s ease, filter .2s; filter: drop-shadow(0 1px 0 rgba(0,0,0,.35)); }
+  #menuPanel .menu-acc[aria-expanded="true"] .menu-caret{ transform: rotate(180deg); }
+
+  /* Contenuto del submenu un tono più chiaro delle voci principali */
+  #menuPanel .menu-acc-c a{
+    background: linear-gradient(180deg, #2a5f96, #235683) !important;
+    border:1px solid rgba(255,255,255,.16) !important;
+    box-shadow:
+      inset 0 0 0 1px rgba(245,223,156,.18),
+      0 8px 18px rgba(0,0,0,.22) !important;
+  }
+
+  /* Callout dorati: più “pop” e leggibilità scura */
+  #menuPanel .menu-callout{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)) !important;
+    color:#101010 !important; border:0 !important;
+    font-weight:900 !important; text-transform:uppercase; letter-spacing:.6px;
+    text-shadow:none;
+    box-shadow: 0 10px 26px rgba(234,202,122,.35) !important;
+  }
+
+  /* Focus ring ben evidente (accessibilità + premium) */
+  #menuPanel.menu a:focus-visible,
+  #menuPanel.menu button.menu-link:focus-visible{
+    outline:2px solid var(--ofi-gold-2); outline-offset:2px;
+  }
+
+  /* Hamburger dorato più definito */
+  .hamburger span{ background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)); }
+  .hamburger.active span{ background: linear-gradient(180deg, var(--ofi-gold), var(--ofi-gold-2)); }
+
+  /* Logo più visibile */
+  .brand-logo{ height: 28px !important; filter: drop-shadow(0 2px 10px rgba(0,0,0,.28)); }
+}
+
+/* Desktop: piccoli ritocchi coerenti (più contrasto sull’hover) */
+@media (min-width:901px){
+  .site-header .menu > li > a:not(.menu-callout):not(.btn){
+    color:#fff !important; text-shadow:0 1px 0 rgba(0,0,0,.25);
+  }
+  .site-header .menu > li > a:not(.menu-callout):not(.btn)::after{
+    background: linear-gradient(90deg, rgba(245,223,156,0), rgba(245,223,156,1), rgba(245,223,156,0));
+  }
+  .site-header .menu .menu-callout{
+    background: linear-gradient(180deg, var(--ofi-gold-2), var(--ofi-gold)) !important;
+    box-shadow: 0 8px 22px rgba(234,202,122,.28) !important;
+  }
+}
+
+/* --- SAFETY: prevenzione click-through sotto il drawer --- */
+body.menu-open #menuOverlay {
+  pointer-events: auto !important;
+}
+#menuPanel.menu {
+  pointer-events: auto !important;
+}
+
+@media (max-width:900px){
+  #menuPanel.menu{
+    will-change: transform;
+    touch-action: pan-y;
+  }
+}
+
+/* Overlay: stato visibile */
+#menuOverlay.show{
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* === FIX DEFINITIVO MENU MOBILE (override finale) === */
+#menuPanel.menu{
+  z-index: 10020 !important; /* sopra l’overlay */
+}
+
+#menuOverlay{
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(0,0,0,.35) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: 10000 !important; /* sotto al pannello */
+  transition: opacity .25s !important;
+}
+
+#menuOverlay.show{
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* === OVERRIDE FINALE — MENU MOBILE/Desktop (unifica comportamenti) === */
+
+/* Lo header sta sopra ai contenuti */
+.site-header{ position:sticky; top:0; z-index: 20000 !important; }
+
+/* Pannello SEMPRE sopra l’overlay */
+#menuPanel.menu{
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: min(86vw, 420px) !important;
+  height: 100dvh !important;
+  transform: translateX(-100%) !important;
+  transition: transform .28s cubic-bezier(.2,.8,.2,1) !important;
+  background: radial-gradient(120% 120% at 0% 0%, #1b3b63 0%, #153453 45%, #0f2742 100%) !important;
+  border-right: 1px solid rgba(217,184,114,.28) !important;
+  box-shadow: 0 10px 28px rgba(0,0,0,.45) !important;
+  padding: calc(var(--headerH,64px) + env(safe-area-inset-top)) 18px 18px !important;
+  border-radius: 0 12px 12px 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  z-index: 20012 !important;                  /* <— SOPRA overlay */
+  display: block !important;                  /* sempre renderizzato, ma fuori schermo */
+}
+#menuPanel.menu.open{ transform: translateX(0) !important; }
+
+/* Overlay: unico stile, sotto al pannello */
+#menuOverlay{
+  position: fixed !important;
+  inset: 0 !important;
+  height: 100dvh !important;
+  background: rgba(0,0,0,.38) !important;     /* UN solo valore */
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity .25s !important;
+  z-index: 20010 !important;                  /* <— SOTTO al pannello */
+  display: block !important;
+}
+body.menu-open #menuOverlay,
+#menuOverlay.show{
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>OFI – Geocodifica imprese non registrate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1630;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 24px;
+    }
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #101b3d;
+      border-radius: 16px;
+      padding: 24px 24px 32px;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    h1 {
+      margin-top: 0;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h1 span.logo {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #f9e7b0, #e0b85a 40%, #b98b2c 80%);
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #101b3d;
+      font-size: 0.9rem;
+    }
+    p.desc {
+      margin-top: 4px;
+      color: #d0d7ff;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+    .alert {
+      margin-top: 16px;
+      background: rgba(255, 193, 7, 0.08);
+      border-left: 3px solid #ffc107;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      color: #ffe49d;
+      border-radius: 8px;
+    }
+    .alert strong {
+      color: #ffd86b;
+    }
+    .panel {
+      margin-top: 24px;
+      background: rgba(10,18,46,0.9);
+      border-radius: 12px;
+      padding: 16px 18px 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .buttons {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 18px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button.primary {
+      background: linear-gradient(135deg, #1a4fff, #5f8dff);
+      color: #fff;
+    }
+    button.secondary {
+      background: rgba(255,255,255,0.06);
+      color: #e0e6ff;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .status {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      color: #cdd4ff;
+    }
+    .status span {
+      font-weight: 600;
+      color: #fff;
+    }
+    .log-box {
+      margin-top: 20px;
+      background: rgba(0,0,0,0.35);
+      border-radius: 10px;
+      padding: 10px 12px;
+      max-height: 260px;
+      overflow: auto;
+      font-size: 0.8rem;
+      line-height: 1.35;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .log-line.ok {
+      color: #8de4b2;
+    }
+    .log-line.warn {
+      color: #ffec8b;
+    }
+    .log-line.err {
+      color: #ff9d9d;
+    }
+    .badges {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      color: #d0d7ff;
+    }
+    .badge-small {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-right: 6px;
+      color: #ffd86b;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>
+      <span class="logo">OFI</span>
+      Geocodifica imprese non registrate
+    </h1>
+    <p class="desc">
+      Questa pagina serve a <strong>aggiungere latitudine e longitudine</strong> alle imprese della collezione
+      <code>imprese_non_registrate</code>, usando l'indirizzo (via, CAP, comune, provincia, nazione) e
+      l'API di geocodifica Mapbox.
+    </p>
+
+    <div class="alert">
+      <strong>ATTENZIONE:</strong> usa questa pagina solo tu (amministratore).
+      Verranno modificati solo i campi <code>lat</code> e <code>lon</code> dei documenti esistenti.
+      Nessuna email viene inviata e nessun'altra collezione viene toccata.
+    </div>
+
+    <div class="panel">
+      <div class="badges">
+        <span class="badge-small">Batch: 25 imprese per volta</span>
+        <span class="badge-small">Solo dove lat è null</span>
+        <span class="badge-small">API: Mapbox Geocoding IT</span>
+      </div>
+
+      <div class="buttons">
+        <button id="btnCount" class="secondary" type="button">Conta imprese da geocodificare</button>
+        <button id="btnRun" class="primary" type="button">Geocodifica prossimo blocco (25)</button>
+      </div>
+
+      <div class="status" id="status">
+        Pronto. Clicca "Conta imprese" per sapere quante mancano.
+      </div>
+
+      <div class="log-box" id="logBox"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      limit,
+      getDocs,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ⚙️ CONFIG FIREBASE (file già creato prima)
+    import { firebaseConfig } from "../js/firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // 🌍 TOKEN MAPBOX (il tuo)
+    const MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";
+
+    // Dimensione del blocco
+    const BATCH_SIZE = 25;
+
+    const btnCount = document.getElementById('btnCount');
+    const btnRun   = document.getElementById('btnRun');
+    const statusEl = document.getElementById('status');
+    const logBox   = document.getElementById('logBox');
+
+    function log(msg, level = 'ok') {
+      const div = document.createElement('div');
+      div.className = 'log-line ' + level;
+      div.textContent = msg;
+      logBox.appendChild(div);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function fullAddress(data) {
+      const parts = [];
+      if (data.indirizzo) parts.push(data.indirizzo);
+      if (data.cap)       parts.push(data.cap);
+      if (data.comune)    parts.push(data.comune);
+      if (data.provincia) parts.push(data.provincia);
+      if (data.regione)   parts.push(data.regione);
+      if (data.nazione)   parts.push(data.nazione);
+      return parts.join(', ');
+    }
+
+    async function geocodeAddress(data) {
+      const address = fullAddress(data);
+      if (!address) {
+        throw new Error('Indirizzo mancante');
+      }
+
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${MAPBOX_TOKEN}&limit=1&country=IT`;
+
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error('HTTP ' + res.status);
+      }
+      const json = await res.json();
+
+      if (!json.features || !json.features.length) {
+        throw new Error('Nessun risultato per: ' + address);
+      }
+
+      const feat = json.features[0];
+      if (!feat.center || feat.center.length < 2) {
+        throw new Error('Risultato senza coordinate per: ' + address);
+      }
+
+      // Mapbox: [lon, lat]
+      const lon = feat.center[0];
+      const lat = feat.center[1];
+
+      return { lat, lon, address };
+    }
+
+    async function countToGeocode() {
+      logBox.innerHTML = '';
+      statusEl.textContent = 'Conteggio in corso...';
+
+      // Piccolo trucco: contiamo a blocchi finché troviamo documenti
+      let total = 0;
+      let found = 0;
+      let cycle = 0;
+
+      // Per non esagerare con le query, limitiamo a 100 cicli max (2500 doc),
+      // ma nel tuo caso hai 3498, quindi lo useremo solo per avere una stima.
+      // Per il conteggio esatto si può usare export da console; qui basta un'idea.
+      const q = query(
+        collection(db, 'imprese_non_registrate'),
+        where('lat', '==', null),
+        limit(500)
+      );
+      const snap = await getDocs(q);
+      found = snap.size;
+      total += found;
+
+      statusEl.innerHTML = `Imprese con lat = null trovate in questo campione: <span>${total}</span>.`;
+      log('Conteggio completato (campione max 500).', 'ok');
+    }
+
+    async function processBatch() {
+      logBox.innerHTML = '';
+      btnRun.disabled = true;
+      btnCount.disabled = true;
+      statusEl.textContent = 'Cerco imprese da geocodificare...';
+
+      const q = query(
+        collection(db, 'imprese_non_registrate'),
+        where('lat', '==', null),
+        limit(BATCH_SIZE)
+      );
+
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        statusEl.innerHTML = 'Non ci sono più imprese con <span>lat = null</span>. Geocodifica completata.';
+        log('Nessun documento da aggiornare.', 'ok');
+        btnRun.disabled = false;
+        btnCount.disabled = false;
+        return;
+      }
+
+      statusEl.innerHTML = `Trovate <span>${snap.size}</span> imprese da geocodificare in questo blocco.`;
+      log(`Inizio geocodifica di ${snap.size} imprese...`, 'ok');
+
+      let okCount = 0;
+      let errCount = 0;
+
+      for (const docSnap of snap.docs) {
+        const data = docSnap.data();
+        const id   = docSnap.id;
+
+        try {
+          const result = await geocodeAddress(data);
+          await updateDoc(docSnap.ref, {
+            lat: result.lat,
+            lon: result.lon
+          });
+          okCount++;
+          log(`OK [${id}] → ${result.lat.toFixed(5)}, ${result.lon.toFixed(5)} (${result.address})`, 'ok');
+        } catch (err) {
+          errCount++;
+          log(`ERRORE [${id}] → ${err.message}`, 'warn');
+          // Lasciamo lat/lon null per poter eventualmente rielaborare in futuro
+        }
+      }
+
+      statusEl.innerHTML =
+        `Blocco completato. <span>${okCount}</span> imprese geocodificate, ` +
+        `<span>${errCount}</span> con errore.`;
+
+      btnRun.disabled = false;
+      btnCount.disabled = false;
+    }
+
+    btnCount.addEventListener('click', () => {
+      countToGeocode().catch(err => {
+        log('Errore nel conteggio: ' + err.message, 'err');
+        statusEl.textContent = 'Errore nel conteggio. Controlla la console.';
+        btnCount.disabled = false;
+      });
+    });
+
+    btnRun.addEventListener('click', () => {
+      processBatch().catch(err => {
+        log('Errore nella geocodifica: ' + err.message, 'err');
+        statusEl.textContent = 'Errore nella geocodifica. Controlla la console.';
+        btnRun.disabled = false;
+        btnCount.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PENSIERI | OFI</title>
+<link href="../style.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&amp;family=Merriweather&amp;family=Lora&amp;family=Georgia&amp;family=Cormorant+Garamond&amp;family=Crimson+Pro&amp;family=EB+Garamond&amp;family=Great+Vibes&amp;family=Cinzel&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Merriweather&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Lora&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Montserrat&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=PT+Serif&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Raleway&amp;display=swap" rel="stylesheet"/>
+<style>
+.post .media img, .post .media video {
+  display: block;
+  margin: 0 auto 1rem;
+  max-height: 400px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
+  background: transparent;
+}
+.tema {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+.tema-chiaro { background: #f8f4ef; color: #222; }
+.tema-scuro { background: #1e1e2f; color: #f2f2f2; }
+.tema-fiori { background: linear-gradient(135deg, #fdf0f5, #f7e4f2); color: #3a0a4d; }
+.tema-tramonto { background: linear-gradient(to right, #f3a183, #9c4d9e); color: white; }
+.tema-serenità { background: linear-gradient(to bottom, #d0e8f2, #f5fafd); color: #2b4c6f; }
+.tema-speranza { background: linear-gradient(to bottom, #e9f6ec, #f9fff9); color: #3b5e3b; }
+.tema-aurora { background: linear-gradient(to bottom, #ffe6f0, #fffaf0); color: #774a60; }
+.tema-ricordo { background: #f5f5f5; color: #444; }
+.tema-luce { background: #fff8e1; color: #5d4037; }
+.tema-notte { background: #111827; color: #f3f4f6; }
+.tema-verde { background: linear-gradient(to bottom, #e2fbe2, #c0eac0); color: #224422; }
+.tema-memoria { background: #f4f4f4; color: #222; }
+.reazione.attiva {
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(207, 163, 73, 0.6);
+  background-color: #ffe9c6;
+  border-radius: 6px;
+}
+</style></head>
+<body style="margin-top: 0; padding-top: 0;">
+<header class="ofi-header">
+<img alt="Logo Pensieri" class="logo-sx effetto-glow" src="../images/pensieri-logo.png"/>
+<h1 class="titolo-pensieri">
+    PENSIERI
+   </h1>
+<a href="../index.html">
+<img alt="Logo OFI" class="logo-dx" src="../images/ofi.png"/>
+</a>
+</header>
+<p class="sottotitolo" style="text-align: center; color: #444; margin-top: 1rem; margin-bottom: 2rem; font-size: 1.2rem; font-style: italic; font-weight: 500;">Quando le parole nascono dal cuore, diventano memoria.</p>
+<div class="copertina" id="bloccoCopertina">
+<div class="contenuto expandable" onclick="modificaFraseCopertina()" style="max-width: 700px; margin: auto; background: rgba(0,0,0,0.5); padding: 2.5rem; border-radius: 1.2rem; cursor: pointer;">
+<blockquote id="fraseCopertina">"Clicca qui per modificare la tua frase preferita"</blockquote>
+<p id="autoreCopertina">— autore</p>
+</div>
+</div>
+<div class="profilo">
+<img class="mediaEspandibile" id="imgProfilo" src="https://www.gravatar.com/avatar/?d=mp"/>
+<h2 id="nomeUtente">Utente OFI</h2>
+<p id="emailLuogoUtente">email@email.com • Località</p>
+</div>
+<div class="container">
+<div id="listaPensieri">Caricamento pensieri...</div>
+</div>
+<footer class="ofi-footer">
+<p>
+    Una sezione del portale OFI – Onoranze Funebri Italia • © 2025
+   </p>
+</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9",
+  storageBucket: "ofi2025-51ba9.appspot.com",
+  messagingSenderId: "345581339212",
+  appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const lista = document.getElementById("listaPensieri");
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    lista.innerHTML = "<p>Devi accedere per vedere i tuoi pensieri.</p>";
+    return;
+  }
+
+  try {
+    const profiloRef = doc(db, "utenti_cittadini", user.uid);
+    const profSnap = await getDoc(profiloRef);
+    if (profSnap.exists()) {
+      const d = profSnap.data();
+      document.getElementById("nomeUtente").textContent = d.nome || "Utente";
+      document.getElementById("emailLuogoUtente").textContent = user.email + " • " + (d.luogo_residenza || "");
+      if (d.foto) document.getElementById("imgProfilo").src = d.foto;
+      if (d.frase_pref) {
+  document.getElementById("fraseCopertina").textContent = `"${d.frase_pref.trim()}"`;
+} else {
+  document.getElementById("fraseCopertina").textContent = "Clicca qui per modificare la tua frase preferita";
+}
+      if (d.autoreCopertina) document.getElementById("autoreCopertina").textContent = "— " + d.autoreCopertina;
+      if (d.coloreSfondo) document.getElementById("bloccoCopertina").style.background = d.coloreSfondo;
+      if (d.sfondoCopertina) document.getElementById("bloccoCopertina").style.backgroundImage = `url('${d.sfondoCopertina}')`;
+    }
+  } catch (e) {
+    console.error("Errore profilo:", e);
+  }
+
+  try {
+    
+        const q = query(collection(db, "pensieri_utente"), where("uid", "==", user.uid), where("attivo", "==", true), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        lista.innerHTML = "";
+        if (snap.empty) {
+          lista.innerHTML = "<p>Non hai ancora scritto pensieri.</p>";
+        } else {
+          snap.forEach((docSnap) => {
+            const p = docSnap.data();
+            const dataObj = p.data?.toDate ? p.data.toDate() : new Date();
+            const dataStr = dataObj.toLocaleDateString("it-IT", { day: '2-digit', month: 'long', year: 'numeric' });
+            const oraStr = dataObj.toLocaleTimeString("it-IT", { hour: '2-digit', minute: '2-digit' });
+            
+            const font = p.font || "merriweather";
+            const tema = p.tema || "chiaro";
+            const luogo = p.luogo || "";
+            const media = p.media ? (p.mediaType === "video" ? `<video class="mediaEspandibile" controls src='${p.media}'></video>` : `<img class="mediaEspandibile" src='${p.media}'/>`) : "";
+            const iconaPrivato = p.visibilita !== "pubblico" ? "🔒 " : "";
+
+            const div = document.createElement("div");
+            div.className = "post";
+              div.dataset.id = docSnap.id;
+            div.dataset.id = docSnap.id;
+            div.innerHTML = `
+              <div class="azioni">
+                <button title="Imposta la visibilità di questo pensiero" style="background:#f0f4ff;border:1px solid #004080;color:#002c5d;font-weight:600;box-shadow:0 0 4px rgba(0,0,0,0.1);" onclick="cambiaVisibilita('${docSnap.id}', '${p.visibilita}')">${p.visibilita === "pubblico" ? "Rendi privato 🔒" : "Rendi pubblico 🌍"}</button>
+                <button class="btn-elimina" title="Elimina pensiero" style="background:#ffe8e8;border:1px solid #a00;color:#a00;font-weight:600;box-shadow:0 0 4px rgba(0,0,0,0.1);" onclick="eliminaPensiero('${docSnap.id}')">Elimina</button>
+              </div>
+              <div class="tema tema-${tema}">
+                <h3 style="font-family: 'Playfair Display', serif; text-align: center;">${iconaPrivato}${p.titolo || "Pensiero"}</h3>
+                ${media ? `<div class="media">${media}</div>` : ""}
+                
+<div class="testo font-${font}" style="font-size: ${p.fontSize || '1rem'}; text-align: ${p.textAlign || 'left'};" style="font-family: var(--font-${font}); font-size: ${p.fontSize || '1rem'}; text-align: ${p.textAlign || 'left'};"  style="margin-top: 1.2rem; padding-top: 0.5rem; font-size: ${p.fontSize || '1rem'};">${p.testo}
+<img class="mediaEspandibile" src="../images/OFI-Social.png" class="firma-rosa" alt="OFI Social"/>
+
+</div>
+
+${p.visibilita === "pubblico" ? `
+  <div class="reazioni flex gap-3 mt-3 text-xl text-gray-700 border-t border-gray-300 pt-2" style="text-align:center; margin-top:1rem;">
+    <button class="reazione" data-reazione="cuore">❤️ <span class="count">0</span></button>
+    <button class="reazione" data-reazione="luce">✨ <span class="count">0</span></button>
+    <button class="reazione" data-reazione="pace">🕊️ <span class="count">0</span></button>
+    <button class="reazione" data-reazione="rosa">🌹 <span class="count">0</span></button>
+  </div>
+` : ""}
+
+
+
+                <button class="espandi-btn">Leggi tutto</button>
+                <div class="meta">🗓️ ${dataStr} — ${oraStr}</div>${luogo ? `<div class="meta">${luogo}</div>` : ""}
+                
+            `;
+            lista.appendChild(div);
+          });
+        }
+  } catch (err) {
+    console.error("Errore pensieri:", err);
+    lista.innerHTML = "<p>Errore nel caricamento.</p>";
+  }
+});
+
+window.cambiaVisibilita = async function(id, stato) {
+  const nuova = stato === "pubblico" ? "privato" : "pubblico";
+  const ref = doc(getFirestore(), "pensieri_utente", id);
+  await updateDoc(ref, { visibilita: nuova });
+  location.reload();
+};
+
+window.eliminaPensiero = async function(id) {
+  if (confirm("Eliminare questo pensiero?")) {
+    const ref = doc(getFirestore(), "pensieri_utente", id);
+    await updateDoc(ref, { attivo: false });
+    location.reload();
+  }
+};
+
+window.modificaFraseCopertina = async function() {
+  const frase = window.prompt("💬 Scrivi qui la tua nuova frase preferita da mostrare in alto nella copertina:");
+  if (frase === null) return;
+
+  const autore = window.prompt("✍️ Inserisci il nome dell'autore (opzionale):");
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const ref = doc(db, "utenti_cittadini", user.uid);
+  const updateData = { frase_pref: frase };
+  if (autore !== null) updateData.autoreCopertina = autore;
+
+  await updateDoc(ref, updateData);
+
+  // ✅ Rilettura sincronizzata
+  const snap = await getDoc(ref);
+if (snap.exists()) {
+  const d = snap.data();
+  const fraseCopertina = d.frase_pref?.trim() || "Clicca qui per modificare la tua frase preferita";
+  document.getElementById("fraseCopertina").textContent = `"${fraseCopertina}"`;
+  document.getElementById("autoreCopertina").textContent = d.autoreCopertina ? "— " + d.autoreCopertina : "";
+}
+};
+
+
+document.addEventListener("click", async function(e) {
+  const btn = e.target.closest(".reazione");
+  if (!btn) return;
+
+  const card = btn.closest(".post");
+  const id = card?.dataset?.id;
+  const tipo = btn.dataset.reazione;
+  const user = auth.currentUser;
+
+  if (!id || !tipo || !user) return;
+
+  const ref = doc(db, "pensieri_reazioni", id + "_" + tipo);
+  const snap = await getDoc(ref);
+  const data = snap.exists() ? snap.data() : { count: 0, utenti: [] };
+
+  if (data.utenti.includes(user.uid)) return;
+
+  data.count += 1;
+  data.utenti.push(user.uid);
+  await setDoc(ref, data);
+
+  btn.querySelector(".count").textContent = data.count;
+});
+
+
+document.querySelectorAll(".espandi").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const post = btn.closest(".testo");
+    post.classList.toggle("espanso");
+    btn.textContent = post.classList.contains("espanso") ? "Riduci" : "Leggi tutto";
+  });
+});
+
+
+
+
+
+function aggiornaFunzionalitaPost() {
+  document.querySelectorAll(".reazione").forEach(btn => {
+    btn.onclick = async () => {
+      const card = btn.closest(".post");
+      const id = card?.dataset?.id;
+      const tipo = btn.dataset.reazione;
+      if (!id || !tipo || !auth.currentUser) return;
+
+      const ref = doc(db, "pensieri_reazioni", id);
+      const snap = await getDoc(ref);
+      const data = snap.exists() ? snap.data() : { utenti: {} };
+
+      const uid = auth.currentUser.uid;
+      const reazioneAttuale = data.utenti[uid];
+
+      if (reazioneAttuale === tipo) {
+        delete data.utenti[uid];
+      } else {
+        data.utenti[uid] = tipo;
+      }
+
+      await 
+      await setDoc(ref, data);
+
+      // Aggiorna classe visiva reazione attiva
+      const allButtons = card.querySelectorAll(".reazione");
+      allButtons.forEach(b => b.classList.remove("attiva"));
+      const nuova = data.utenti[uid];
+      if (nuova) {
+        const active = card.querySelector(`.reazione[data-reazione='${nuova}']`);
+        if (active) active.classList.add("attiva");
+      }
+
+
+      // Aggiorna il conteggio manualmente senza ricaricare
+      const counts = card.querySelectorAll(".reazione");
+      counts.forEach(b => b.querySelector(".count").textContent = "0");
+      Object.values(data.utenti).forEach(tipoReazione => {
+        const target = card.querySelector(`.reazione[data-reazione='${tipoReazione}'] .count`);
+        if (target) target.textContent = parseInt(target.textContent) + 1;
+      });
+    };
+  });
+
+  document.querySelectorAll(".espandi-btn").forEach(btn => {
+    btn.onclick = () => {
+      const post = btn.closest(".post");
+      const testo = post?.querySelector(".testo");
+      if (!testo) return;
+      testo.classList.toggle("espanso");
+      btn.textContent = testo.classList.contains("espanso") ? "Riduci" : "Leggi tutto";
+    };
+  });
+}
+setTimeout(aggiornaFunzionalitaPost, 500);
+
+
+
+// Funzione duplicata rimossa
+ {
+  const uid = auth.currentUser?.uid;
+
+  document.querySelectorAll(".reazione").forEach(btn => {
+    btn.onclick = async () => {
+      const card = btn.closest(".post");
+      const id = card?.dataset?.id;
+      const tipo = btn.dataset.reazione;
+      if (!id || !tipo || !uid) return;
+
+      const ref = doc(db, "pensieri_reazioni", id);
+      const snap = await getDoc(ref);
+      const data = snap.exists() ? snap.data() : { utenti: {} };
+      const reazioneAttuale = data.utenti[uid];
+
+      if (reazioneAttuale === tipo) {
+        delete data.utenti[uid]; // annulla
+      } else {
+        data.utenti[uid] = tipo; // nuova o cambio
+      }
+
+      await setDoc(ref, data);
+
+      // Aggiorna visivamente i conteggi
+      const counts = card.querySelectorAll(".reazione");
+      counts.forEach(b => b.querySelector(".count").textContent = "0");
+      Object.values(data.utenti).forEach(tipoR => {
+        const target = card.querySelector(`.reazione[data-reazione='${tipoR}'] .count`);
+        if (target) target.textContent = parseInt(target.textContent) + 1;
+      });
+    };
+  });
+
+  // Espansione testi
+  document.querySelectorAll(".espandi-btn").forEach(btn => {
+    btn.onclick = () => {
+      const post = btn.closest(".post");
+      const testo = post?.querySelector(".testo");
+      if (!testo) return;
+      testo.classList.toggle("espanso");
+      btn.textContent = testo.classList.contains("espanso") ? "Riduci" : "Leggi tutto";
+    };
+  });
+}
+setTimeout(aggiornaFunzionalitaPost, 1200);
+
+
+// 🔁 LOGICA REAZIONI - Salva e Carica
+function gestisciReazioni(div, docId) {
+  const reazioniRef = doc(db, "pensieri_reazioni", docId);
+
+  // Recupera e mostra
+  getDoc(reazioniRef).then((snap) => {
+    const data = snap.exists() ? snap.data() : { utenti: {} };
+    const utenti = data.utenti || {};
+    const miaReazione = utenti[user.uid];
+
+    // Reset contatori
+    div.querySelectorAll('.reazione').forEach(b => {
+      b.querySelector('.count').textContent = "0";
+      b.classList.remove("attiva");
+    });
+
+    // Conteggio reazioni
+    Object.values(utenti).forEach(tipo => {
+      const el = div.querySelector(`.reazione[data-reazione='${tipo}'] .count`);
+      if (el) el.textContent = parseInt(el.textContent) + 1;
+    });
+
+    // Evidenzia quella selezionata
+    if (miaReazione) {
+      const attiva = div.querySelector(`.reazione[data-reazione='${miaReazione}']`);
+      if (attiva) attiva.classList.add("attiva");
+    }
+  });
+
+  // Click su reazione
+  div.querySelectorAll('.reazione').forEach(btn => {
+    btn.onclick = () => {
+      const tipo = btn.dataset.reazione;
+      setDoc(reazioniRef, {
+        utenti: {
+          [user.uid]: tipo
+        }
+      }, { merge: true }).then(() => gestisciReazioni(div, docId));
+    };
+  });
+}
+</script>
+</body>
+</html>
+<script>
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('mediaEspandibile')) {
+    const overlay = document.createElement('div');
+    overlay.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:#0009;display:flex;align-items:center;justify-content:center;z-index:10000;';
+    const clone = e.target.cloneNode(true);
+    clone.style = 'max-width:90%;max-height:90%;box-shadow:0 0 20px #000;border-radius:12px;';
+    overlay.appendChild(clone);
+    overlay.onclick = () => overlay.remove();
+    document.body.appendChild(overlay);
+  }
+});
+</script>

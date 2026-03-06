@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Benvenuto — OFI</title>
+  <meta name="description" content="Benvenuto in OFI. Da qui puoi accedere alla tua area: Pensieri, Necrologi, Luogo della Memoria e molto altro.">
+  <!-- Font set coerente con index.html -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="icon" href="../images/OFI-Social.png" type="image/png">
+  <style>
+    /* Hero compatto e leggibile, coerente con OFI */
+    .welcome-hero{
+      background:linear-gradient(180deg, var(--blue), var(--blue-2));
+      color:#fff; padding:56px 0 40px; border-bottom:1px solid rgba(0,0,0,.22)
+    }
+    .welcome-inner{display:grid; grid-template-columns: 1.2fr .8fr; gap:1rem; align-items:center}
+    .welcome-hero h1{font-size:clamp(2rem, 3.6vw, 3rem); margin:.2rem 0 .4rem; letter-spacing:.2px}
+    .welcome-hero .lead{opacity:.96}
+    .welcome-hero .cta-row{margin-top:.6rem}
+    .hero-map #mapHero{height:240px; border-radius:14px; border:1px solid rgba(255,255,255,.18)}
+    @media (max-width: 900px){
+      .welcome-inner{grid-template-columns:1fr}
+      .hero-map #mapHero{height:200px}
+    }
+    /* Blocco video di benvenuto */
+    .welcome-video{ padding:24px 0 }
+    .welcome-card{ background:var(--surface); color:var(--surface-text); border:1px solid rgba(202,168,90,.35); border-radius:16px; padding:1rem; box-shadow:0 10px 30px rgba(0,0,0,.06) }
+    .welcome-card .ratio{ position:relative; width:100%; padding-top:56.25%; border-radius:14px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.2) }
+    .welcome-card video, .welcome-card iframe{ position:absolute; inset:0; width:100%; height:100% }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay" hidden></div>
+  <header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="../vision.html">Visione di OFI</a></li>
+          <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="../index.html#pensieri">Pensieri</a></li>
+          <li><a href="../articoli/articoli.html">Articoli</a></li>
+          <li><a href="../index.html#ricordi">Ricordi</a></li>
+          <li><a href="../index.html#mappa">Vicino a te</a></li>
+          <li><a href="../index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="welcome-hero">
+    <div class="container welcome-inner">
+      <div class="hero-copy">
+        <h1>Benvenuto in <span class="accent">OFI</span></h1>
+        <p class="lead">Se è la tua prima volta, ti consigliamo di completare il profilo. Da lì potrai scrivere i tuoi Pensieri, creare necrologi e impostare il tuo Luogo della Memoria.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="dashboard-cittadino.html">Vai alla dashboard</a>
+          <a class="btn btn-outline inverse" href="profilo-cittadino.html">Completa il profilo</a>
+        </div>
+      </div>
+      <div class="hero-map"><div id="mapHero"></div></div>
+    </div>
+  </section>
+
+  <!-- VIDEO DI BENVENUTO (avatar HeyGen) -->
+  <section class="welcome-video">
+    <div class="container">
+      <div class="welcome-card">
+        <div class="video-tabs" role="tablist" aria-label="Seleziona video">
+          <button class="tab active" role="tab" aria-selected="true" data-key="benvenuto">Benvenuto</button>
+          <button class="tab" role="tab" aria-selected="false" data-key="spot">Spot</button>
+        </div>
+        <div class="video-stage" aria-live="polite">
+          <div class="ratio">
+            <!-- Sostituisci 'videos/benvenuto.mp4' con il tuo file HeyGen se diverso -->
+            <video controls preload="metadata" poster="../images/OFI-Social.png">
+              <source src="../videos/benvenuto.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>window.OFI_MAPBOX_TOKEN = "pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg";</script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<script>
+  if (window.mapboxgl) {
+    mapboxgl.accessToken = window.OFI_MAPBOX_TOKEN;
+    const map = new mapboxgl.Map({ container:'mapHero', style:'mapbox://styles/mapbox/streets-v12', center:[12.4964,41.9028], zoom:4.6 });
+    map.addControl(new mapboxgl.NavigationControl({visualizePitch:true}),'top-right');
+  }
+</script>
+
+  <footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="../images/agente-ofi.png" alt="">
+  </button>
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="">
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in">
+        <p>Benvenuto. Vuoi un aiuto veloce per i primi passi? Posso guidarti a completare il profilo o a creare il tuo primo Pensiero.</p>
+      </div>
+      <div class="suggest">
+        <button class="chip" data-q="Come completo il profilo?">Come completo il profilo?</button>
+        <button class="chip" data-q="Come creo un Pensiero?">Come creo un Pensiero?</button>
+        <button class="chip" data-q="Come pubblico un necrologio?">Come pubblico un necrologio?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off" action="#">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda…" aria-label="Scrivi qui la tua domanda">
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Per risposte approfondite ti aprirò la guida dedicata.</div>
+  </section>
+
+<!-- Torna su -->
+<button id="backTop" class="back-top" aria-label="Torna su">↑</button>
+
+<script src="../ofi.js" defer></script>
+
+<!-- Submenu mobile graceful close -->
+<script>
+document.addEventListener('click', function(e){
+  const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+  const menu = document.getElementById('menuPanel');
+  if(trigger){
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const isOpen = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }else if(menu && !menu.contains(e.target)){
+    document.querySelectorAll('.has-sub.open').forEach(li => {
+      li.classList.remove('open');
+      const a = li.querySelector('a[aria-haspopup="true"]');
+      if(a) a.setAttribute('aria-expanded','false');
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto" class="theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>I tuoi Necrologi — OFI</title>
+  <meta name="description" content="Gestisci i tuoi necrologi: creati da te o ricevuti. Apri, cerca e consulta lo storico." />
+
+  <link rel="icon" type="image/png" href="../images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/ofi.css?v=3" />
+  <script defer src="../js/menu.js?v=2"></script>
+  <script defer src="../ofi.js?v=3"></script>
+
+  <style>
+    :root{
+      --pageMax: 1100px;
+      --shadow: 0 10px 28px rgba(0,0,0,.25);
+    }
+    body{
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(255,215,100,.10), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(90,160,255,.10), transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{ max-width: var(--pageMax); margin: 0 auto; padding: 1.2rem 1rem 2.2rem; }
+
+    .hero{
+      margin-top: 1rem;
+      border-radius: 22px;
+      padding: 1.2rem 1.2rem;
+      border: 1px solid rgba(255,255,255,.10);
+      background: linear-gradient(180deg, rgba(15,35,60,.82), rgba(15,35,60,.55));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(600px 260px at 20% 20%, rgba(255,215,100,.12), transparent 60%),
+        radial-gradient(520px 240px at 90% 30%, rgba(255,80,80,.10), transparent 60%);
+      pointer-events:none;
+    }
+    .hero > *{ position:relative; z-index:1; }
+    .hero-top{ display:flex; gap:1rem; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .hero-id{ display:flex; align-items:center; gap:.9rem; }
+    .logo{
+      width:56px; height:56px; border-radius:16px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; }
+    .hero h1{ margin:0; font-size:1.55rem; letter-spacing:.2px; }
+    .hero p{ margin:.25rem 0 0; color: var(--muted); max-width: 70ch; }
+
+    .hero-actions{ display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+    .hero-actions .btn{ white-space:nowrap; }
+
+    .toolbar{
+      margin-top: 1rem;
+      display:flex;
+      gap:.7rem;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .tabs{
+      display:flex; gap:.5rem; flex-wrap:wrap;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+      padding:.35rem;
+      border-radius: 999px;
+    }
+    .tab{
+      border:0;
+      background: transparent;
+      color: var(--text);
+      padding:.55rem .9rem;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor:pointer;
+      display:flex; align-items:center; gap:.45rem;
+      opacity:.86;
+    }
+    .tab[aria-selected="true"]{
+      background: rgba(255,215,100,.16);
+      border:1px solid rgba(255,215,100,.38);
+      opacity:1;
+    }
+    .tab .count{
+      font-size:.85rem;
+      opacity:.9;
+      padding:.18rem .45rem;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+    }
+
+    .search{
+      display:flex; gap:.5rem; align-items:center;
+      min-width: min(520px, 100%);
+      flex: 1 1 320px;
+      justify-content:flex-end;
+    }
+    .search input{
+      width: min(520px, 100%);
+      padding:.75rem .85rem;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      outline:none;
+    }
+    .search input::placeholder{ color: rgba(255,255,255,.55); }
+
+    .grid{
+      margin-top: 1rem;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: .9rem;
+    }
+    @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 640px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      box-shadow: 0 10px 26px rgba(0,0,0,.22);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height: 220px;
+    }
+    .thumb{
+      height: 140px;
+      background: rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; }
+    .thumb .badgeType{
+      position:absolute; left:.7rem; top:.7rem;
+      padding:.35rem .55rem;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size:.8rem;
+      background: rgba(15,35,60,.78);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(6px);
+    }
+
+    .card-body{ padding: .9rem .95rem .85rem; display:flex; flex-direction:column; gap:.35rem; flex:1; }
+    .title{ font-family: "Noto Serif", serif; font-size:1.1rem; margin:0; line-height:1.25; }
+    .meta{ color: var(--muted); font-size:.92rem; display:flex; flex-wrap:wrap; gap:.5rem; }
+    .meta span{ display:inline-flex; gap:.35rem; align-items:center; }
+
+    .card-actions{
+      padding: .85rem .95rem 1rem;
+      display:flex;
+      gap:.5rem;
+      flex-wrap:wrap;
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.10);
+    }
+
+    .btn-mini{
+      padding:.55rem .7rem;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: .92rem;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+    }
+    .btn-mini.primary{
+      border-color: rgba(255,215,100,.45);
+      background: rgba(255,215,100,.14);
+    }
+
+    .empty{
+      margin-top: 1rem;
+      padding: 1.1rem 1rem;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.20);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+
+    /* Tema chiaro: leggibilità alta */
+    body:not(.theme-dark) .hero{
+      background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(245,248,255,.86));
+      border: 1px solid rgba(10,20,40,.10);
+      box-shadow: 0 10px 28px rgba(0,0,0,.10);
+    }
+    body:not(.theme-dark) .hero h1{ color:#0f2340; }
+    body:not(.theme-dark) .hero p{ color:#4b5a6f; }
+
+    body:not(.theme-dark) .tabs{
+      background: rgba(15,35,60,.04);
+      border-color: rgba(15,35,60,.10);
+    }
+    body:not(.theme-dark) .tab{ color:#0f2340; opacity:.9; }
+    body:not(.theme-dark) .tab .count{
+      background: rgba(15,35,60,.06);
+      border-color: rgba(15,35,60,.12);
+    }
+    body:not(.theme-dark) .tab[aria-selected="true"]{
+      background: rgba(255,215,100,.26);
+      border-color: rgba(201,160,58,.55);
+    }
+
+    body:not(.theme-dark) .search input{
+      background: #ffffff;
+      border-color: rgba(15,35,60,.14);
+      color:#0f2340;
+    }
+    body:not(.theme-dark) .search input::placeholder{ color: rgba(15,35,60,.45); }
+
+    body:not(.theme-dark) .card{
+      background: #ffffff;
+      border-color: rgba(15,35,60,.12);
+      box-shadow: 0 10px 26px rgba(0,0,0,.10);
+    }
+    body:not(.theme-dark) .card-actions{
+      background: rgba(15,35,60,.03);
+      border-top-color: rgba(15,35,60,.08);
+    }
+    body:not(.theme-dark) .meta{ color:#516079; }
+    body:not(.theme-dark) .btn-mini{
+      background: rgba(15,35,60,.04);
+      border-color: rgba(15,35,60,.12);
+      color:#0f2340;
+    }
+    body:not(.theme-dark) .btn-mini.primary{
+      background: rgba(255,215,100,.22);
+      border-color: rgba(201,160,58,.55);
+    }
+    body:not(.theme-dark) .empty{
+      background: rgba(255,255,255,.8);
+      border-color: rgba(15,35,60,.18);
+      color:#516079;
+    }
+  
+
+    /* ===== Consegna in attesa (accetta da email) ===== */
+.acceptBox{ margin: 14px 0 18px; }
+.acceptCard{
+  border-radius: 18px;
+  padding: 16px 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(0,0,0,.18);
+}
+body:not(.theme-dark) .acceptCard{
+  border-color: rgba(0,0,0,.10);
+  background: rgba(255,255,255,.82);
+}
+.acceptTitle{ font-weight: 800; font-size: 1.02rem; margin-bottom: 6px; }
+.acceptText{ opacity: .92; line-height: 1.35; }
+.acceptMeta{
+  margin-top: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: .92rem;
+  opacity: .85;
+}
+.acceptActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+
+/* ✅ OFI Primary — Oro istituzionale */
+.btnPrimary{
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(181,143,49,.95);
+  background: linear-gradient(180deg, rgba(226,186,86,.95), rgba(202,160,58,1));
+  color: #0f2340;
+  font-weight: 800;
+  cursor: pointer;
+
+  box-shadow: 0 10px 22px rgba(15,35,64,.18), inset 0 1px 0 rgba(255,255,255,.35);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btnPrimary:hover{
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(15,35,64,.22), inset 0 1px 0 rgba(255,255,255,.40);
+}
+.btnPrimary:active{
+  transform: translateY(0);
+  filter: brightness(.98);
+  box-shadow: 0 8px 16px rgba(15,35,64,.18), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.btnPrimary:focus{ outline: none; }
+.btnPrimary:focus-visible{
+  outline: 3px solid rgba(202,160,58,.35);
+  outline-offset: 2px;
+}
+.btnPrimary:disabled{ opacity:.55; cursor:not-allowed; transform:none; box-shadow:none; filter:none; }
+
+/* Ghost coerente e “istituzionale” */
+.btnGhost{
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: inherit;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+}
+.btnGhost:hover{ transform: translateY(-1px); background: rgba(255,255,255,.10); }
+.btnGhost:active{ transform: translateY(0); background: rgba(255,255,255,.08); }
+body:not(.theme-dark) .btnGhost{
+  border-color: rgba(0,0,0,.12);
+  background: rgba(15,35,64,.04);
+}
+body:not(.theme-dark) .btnGhost:hover{ background: rgba(15,35,64,.06); }
+
+.acceptHint{ margin-top: 10px; font-size: .92rem; opacity: .75; }
+/* ===== Toast OFI (notifica elegante) ===== */
+.toasti{
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 24px));
+  z-index: 9999;
+  pointer-events: none;
+}
+.toasti .toast{
+  pointer-events: auto;
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(15,35,60,.88);
+  box-shadow: 0 18px 40px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+  animation: toastIn .18s ease-out;
+}
+.toasti .icon{
+  width: 30px;
+  height: 30px;
+  border-radius: 12px;
+  display:grid;
+  place-items:center;
+  font-weight: 900;
+  flex: 0 0 auto;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+}
+.toasti .txt{ flex:1; }
+.toasti .title{ font-weight: 900; margin:0; line-height:1.1; }
+.toasti .msg{ margin:.2rem 0 0; opacity:.92; line-height:1.25; }
+
+.toasti .close{
+  border:0;
+  background: transparent;
+  color: inherit;
+  opacity:.75;
+  cursor:pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 10px;
+}
+.toasti .close:hover{ opacity: 1; background: rgba(255,255,255,.06); }
+
+.toasti .toast.ok{
+  border-color: rgba(60,220,140,.35);
+}
+.toasti .toast.ok .icon{
+  border-color: rgba(60,220,140,.45);
+  background: rgba(60,220,140,.16);
+}
+.toasti .toast.err{
+  border-color: rgba(255,110,110,.38);
+}
+.toasti .toast.err .icon{
+  border-color: rgba(255,110,110,.45);
+  background: rgba(255,110,110,.16);
+}
+
+/* tema chiaro */
+body:not(.theme-dark) .toasti .toast{
+  background: rgba(255,255,255,.96);
+  border-color: rgba(10,20,40,.12);
+  box-shadow: 0 16px 36px rgba(0,0,0,.12);
+}
+body:not(.theme-dark) .toasti .close:hover{
+  background: rgba(15,35,60,.06);
+}
+
+@keyframes toastIn{
+  from { transform: translateY(-8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head">
+        <img src="../images/logo-ofi.png" alt="OFI">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="./dashboard-cittadino.html">Dashboard</a></li>
+      <li><a href="./scelta-necrologi.html">Pubblica un necrologio</a></li>
+
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a href="#" id="logoutTop">Esci</a></li>
+    </ul>
+
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- Toast OFI -->
+<div id="toastHost" class="toasti" aria-live="polite" aria-atomic="true"></div>
+
+<main class="wrap">
+
+  <section class="hero" aria-label="I tuoi necrologi">
+    <div class="hero-top">
+      <div class="hero-id">
+        <div class="logo">
+          <img id="userAvatar" src="../images/avatar-uomo.png" alt="Avatar utente">
+        </div>
+        <div>
+          <h1>I tuoi Necrologi</h1>
+          <p class="small">
+            Qui trovi i necrologi che hai pubblicato tu e quelli che ti sono stati consegnati.
+            Da ogni scheda puoi aprire il necrologio e consultarlo quando vuoi.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="./scelta-necrologi.html">+ Pubblica</a>
+        <a class="btn" href="./dashboard-cittadino.html">Torna in dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consegna in attesa (da email) -->
+  <section id="acceptBox" class="acceptBox" hidden aria-label="Consegna in attesa">
+      <div class="acceptCard">
+        <div class="acceptTitle">🎁 Hai una consegna in attesa</div>
+        <div class="acceptText">
+          Un’impresa ti ha inviato un necrologio da custodire nella tua area personale.
+          Per completare l’operazione, conferma qui sotto.
+        </div>
+        <div class="acceptMeta" id="acceptMeta"></div>
+        <div class="acceptActions">
+          <button class="btnPrimary" id="btnAcceptDelivery" type="button">Accetta consegna</button>
+          <button class="btnGhost" id="btnRejectDelivery" type="button">Non ora</button>
+        </div>
+        <div class="acceptHint">La consegna può scadere automaticamente dopo un certo periodo.</div>
+      </div>
+    </section>
+
+
+  <section class="toolbar" aria-label="Filtri">
+    <div class="tabs" role="tablist" aria-label="Seleziona lista">
+      <button class="tab" id="tab-creati" role="tab" aria-selected="true" aria-controls="panel-creati">
+        ✍️ Creati da te <span class="count" id="countCreati">0</span>
+      </button>
+      <button class="tab" id="tab-ricevuti" role="tab" aria-selected="false" aria-controls="panel-ricevuti">
+        📩 Ricevuti <span class="count" id="countRicevuti">0</span>
+      </button>
+    </div>
+
+    <div class="search">
+      <input id="searchBox" type="search" placeholder="Cerca per nome, luogo, data…" autocomplete="off" />
+    </div>
+  </section>
+
+  <section id="panel-creati" role="tabpanel" aria-labelledby="tab-creati">
+    <div id="gridCreati" class="grid" aria-live="polite"></div>
+    <div id="emptyCreati" class="empty" hidden>
+      Nessun necrologio creato da te, per ora.
+    </div>
+  </section>
+
+  <section id="panel-ricevuti" role="tabpanel" aria-labelledby="tab-ricevuti" hidden>
+    <div id="gridRicevuti" class="grid" aria-live="polite"></div>
+    <div id="emptyRicevuti" class="empty" hidden>
+      Nessun necrologio ricevuto, per ora.
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI — Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+      </div>
+      <div class="f-links">
+        <a href="../articoli/articoli.html">Articoli</a>
+        <a href="../faq.html">FAQ</a>
+        <a href="../accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, collection, query, where, orderBy, limit, getDocs
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain:"ofi2025-51ba9.firebaseapp.com",
+    projectId:"ofi2025-51ba9",
+    storageBucket:"ofi2025-51ba9.firebasestorage.app",
+    messagingSenderId:"345581339212",
+    appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  try{ await setPersistence(auth, browserLocalPersistence); }catch(e){ console.warn('Auth persistence non impostata:', e); }
+  const db = getFirestore(app);
+
+  const $ = (id)=>document.getElementById(id);
+
+function showToast(type, title, msg, ms = 3500){
+  const host = document.getElementById('toastHost');
+  if (!host) return;
+
+  const el = document.createElement('div');
+  el.className = `toast ${type === 'ok' ? 'ok' : 'err'}`;
+
+  const icon = type === 'ok' ? '✓' : '!';
+  el.innerHTML = `
+    <div class="icon" aria-hidden="true">${icon}</div>
+    <div class="txt">
+      <p class="title">${esc(title || '')}</p>
+      <p class="msg">${esc(msg || '')}</p>
+    </div>
+    <button class="close" type="button" aria-label="Chiudi">✕</button>
+  `;
+
+  const close = ()=> { el.remove(); };
+  el.querySelector('.close')?.addEventListener('click', close);
+
+  host.appendChild(el);
+
+  window.clearTimeout(el.__t);
+  el.__t = window.setTimeout(close, ms);
+}
+
+  // Logout top
+  // Logout (top)
+document.getElementById('logoutTop')?.addEventListener('click', async (e)=>{
+  e.preventDefault();
+  try{ await signOut(auth); }catch{}
+  window.location.href = '/cittadini/login-cittadino.html';
+});
+
+  // Tabs
+  const tabCreati = $('tab-creati');
+  const tabRicevuti = $('tab-ricevuti');
+  const panelCreati = $('panel-creati');
+  const panelRicevuti = $('panel-ricevuti');
+
+  function setTab(which){
+    const isCreati = which === 'creati';
+    tabCreati.setAttribute('aria-selected', isCreati ? 'true' : 'false');
+    tabRicevuti.setAttribute('aria-selected', !isCreati ? 'true' : 'false');
+    panelCreati.hidden = !isCreati;
+    panelRicevuti.hidden = isCreati;
+  }
+  tabCreati.addEventListener('click', ()=>setTab('creati'));
+  tabRicevuti.addEventListener('click', ()=>setTab('ricevuti'));
+
+  // Render helpers
+  function esc(s=''){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function fmtDate(ts){
+    try{
+      if(!ts) return '';
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      return d.toLocaleDateString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric' });
+    }catch{ return ''; }
+  }
+  function toMillis(ts){
+    try{
+      if(!ts) return 0;
+      if(ts.toDate) return ts.toDate().getTime();
+      const d = new Date(ts);
+      return isNaN(d.getTime()) ? 0 : d.getTime();
+    }catch{ return 0; }
+  }
+
+  function pickNomeCompleto(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    const nome = a.nome || s?.datiPersona?.nome || x.nome || x.nomeDefunto || x.titolo || '';
+    const cognome = a.cognome || s?.datiPersona?.cognome || x.cognome || '';
+    const full = (String(nome||'').trim() + ' ' + String(cognome||'').trim()).trim();
+    return full || 'Necrologio';
+  }
+  function pickLuogo(x){
+    const a = x?.answersSnapshot || {};
+    const g = x?.geoFinale || {};
+    return g.label || a.comuneRigaFinale || a.comuneFunerale || x.comune || x.luogo || '';
+  }
+  function pickData(x){
+    const a = x?.answersSnapshot || {};
+    const s = x?.structuredDataSnapshot || {};
+    // dataNecrologio è stringa "YYYY-MM-DD" nel tuo doc
+    const dn = a.dataNecrologio || s?.chiusura?.dataNecrologio || '';
+    if(dn && /^\d{4}-\d{2}-\d{2}$/.test(dn)){
+      const d = new Date(dn + 'T00:00:00');
+      if(!isNaN(d.getTime())) return fmtDate(d);
+    }
+    return fmtDate(x.publishedAt || x.createdAt || x.updatedAt);
+  }
+  function pickCover(x){
+  return x.photoURL || x.photoDataUrl || x.foto || x.fotoURL || x.coverURL || x.immagine || '';
+}
+
+  function cardHTML(x, kind){
+    const nome = pickNomeCompleto(x);
+    const luogo = pickLuogo(x);
+    const data = pickData(x);
+    const cover = pickCover(x);
+    const id = x.__id;
+
+    const badge = kind === 'ricevuti' ? '📩 Ricevuto' : '✍️ Creato da te';
+    const href = `../necrologio.html?id=${encodeURIComponent(id)}`;
+
+    return `
+      <article class="card" data-q="${esc((nome+' '+luogo+' '+data).toLowerCase())}">
+        <div class="thumb">
+          ${cover ? `<img src="${esc(cover)}" alt="">` : ``}
+          <span class="badgeType">${badge}</span>
+        </div>
+        <div class="card-body">
+          <h3 class="title">${esc(nome)}</h3>
+          <div class="meta">
+            ${luogo ? `<span>📍 ${esc(luogo)}</span>` : ``}
+            ${data ? `<span>🗓️ ${esc(data)}</span>` : ``}
+          </div>
+        </div>
+        <div class="card-actions">
+          <a class="btn-mini primary" href="${href}">↗ Apri</a>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderList(gridEl, emptyEl, list, kind){
+    gridEl.innerHTML = '';
+    if(!list.length){
+      emptyEl.hidden = false;
+      return;
+    }
+    emptyEl.hidden = true;
+    gridEl.innerHTML = list.map(x => cardHTML(x, kind)).join('');
+  }
+
+  function applySearch(){
+    const q = ($('searchBox').value || '').trim().toLowerCase();
+    const activePanel = panelCreati.hidden ? panelRicevuti : panelCreati;
+    activePanel.querySelectorAll('.card').forEach(card=>{
+      const hay = card.getAttribute('data-q') || '';
+      card.style.display = (!q || hay.includes(q)) ? '' : 'none';
+    });
+  }
+  $('searchBox').addEventListener('input', applySearch);
+
+  // Firestore fetch (robusto: se mancano indici, fa fallback)
+  async function safeGetDocs(q1, q2){
+    try{
+      return await getDocs(q1);
+    }catch(e1){
+      console.warn('Query fallita (forse indice mancante). Fallback...', e1);
+      if(q2) return await getDocs(q2);
+      throw e1;
+    }
+  }
+
+  async function load(uid){
+    const COL = 'necrologi_pubblicati';
+
+    // ===== CREATI (compatibilità: publisherUid OR uidCittadino OR uidImpresa) =====
+    const qCreati_pubOrdered = query(collection(db, COL), where('publisherUid','==', uid), orderBy('createdAt','desc'), limit(120));
+    const qCreati_pubFallback = query(collection(db, COL), where('publisherUid','==', uid), limit(120));
+
+    const qCreati_citOrdered = query(collection(db, COL), where('uidCittadino','==', uid), orderBy('createdAt','desc'), limit(120));
+    const qCreati_citFallback = query(collection(db, COL), where('uidCittadino','==', uid), limit(120));
+
+    const qCreati_impOrdered = query(collection(db, COL), where('uidImpresa','==', uid), orderBy('createdAt','desc'), limit(120));
+    const qCreati_impFallback = query(collection(db, COL), where('uidImpresa','==', uid), limit(120));
+
+    // ===== RICEVUTI (subcollection consegnati) =====
+    const ricevutiCol = collection(db, 'utenti_cittadini', uid, 'necrologi_consegnati');
+    const qRicevutiOrdered = query(ricevutiCol, orderBy('deliveredAt','desc'), limit(120));
+    const qRicevutiFallback = query(ricevutiCol, limit(120));
+
+    const [snapC1, snapC2, snapC3, snapR] = await Promise.all([
+      safeGetDocs(qCreati_pubOrdered, qCreati_pubFallback),
+      safeGetDocs(qCreati_citOrdered, qCreati_citFallback),
+      safeGetDocs(qCreati_impOrdered, qCreati_impFallback),
+      safeGetDocs(qRicevutiOrdered, qRicevutiFallback),
+    ]);
+
+    // Merge + dedup creati
+    const mapCreati = new Map();
+    [snapC1, snapC2, snapC3].forEach(snap=>{
+      snap.docs.forEach(d=>{
+        if(!mapCreati.has(d.id)) mapCreati.set(d.id, { __id:d.id, ...d.data() });
+      });
+    });
+    let creati = Array.from(mapCreati.values());
+    creati.sort((a,b)=> (toMillis(b.createdAt)||toMillis(b.publishedAt)) - (toMillis(a.createdAt)||toMillis(a.publishedAt)));
+
+    // Ricevuti: i doc consegnati possono avere necrologioId (consigliato). In fallback uso l'id documento.
+    const ricevutiRefs = snapR.docs.map(d => ({ __id:d.id, ...d.data() }));
+    const ids = ricevutiRefs
+      .map(x => x.necrologioId || x.idNecrologio || x.__id)
+      .filter(Boolean);
+
+    let ricevuti = [];
+    if(ids.length){
+      const chunks = [];
+      for(let i=0;i<ids.length;i+=20) chunks.push(ids.slice(i,i+20));
+
+      const all = [];
+      for(const chunk of chunks){
+        const docs = await Promise.all(chunk.map(async (nid)=>{
+          try{
+            const s = await getDoc(doc(db, COL, nid));
+            return s.exists() ? ({ __id:s.id, ...s.data() }) : null;
+          }catch(e){
+            console.warn('getDoc ricevuto fallito', nid, e);
+            return null;
+          }
+        }));
+        all.push(...docs.filter(Boolean));
+      }
+      ricevuti = all;
+    }
+
+    $('countCreati').textContent = String(creati.length);
+    $('countRicevuti').textContent = String(ricevuti.length);
+
+    renderList($('gridCreati'), $('emptyCreati'), creati, 'creati');
+    renderList($('gridRicevuti'), $('emptyRicevuti'), ricevuti, 'ricevuti');
+
+    applySearch();
+  }
+
+  // Auth gate stabile
+  let __AUTH_READY__ = false;
+  async function waitForUser(maxMs = 5000) {
+    const start = Date.now();
+    while (Date.now() - start < maxMs) {
+      const u = auth.currentUser;
+      if (u) return u;
+      await new Promise(r => setTimeout(r, 250));
+    }
+    return null;
+  }
+
+  onAuthStateChanged(auth, async (user)=>{
+    if (__AUTH_READY__ && !user) return;
+
+    if (!user) user = await waitForUser(5000);
+    if (!user){
+      const r = encodeURIComponent(window.location.pathname + window.location.search);
+// Salva sempre il ritorno (e l'eventuale token) in sessionStorage: non si perde anche se ci sono redirect server-side
+      try{
+        sessionStorage.setItem('ofi_citizen_continue', window.location.pathname + window.location.search);
+        const t = new URLSearchParams(window.location.search).get('accept');
+        if (t) sessionStorage.setItem('ofi_pending_accept', t);
+      }catch(e){}
+
+      // Usa path assoluto: evita errori se la pagina login non è nella stessa cartella
+      window.location.replace(`/cittadini/login-cittadino.html?continue=${r}`);
+      return;
+    }
+    __AUTH_READY__ = true;
+
+    
+    // === Accettazione consegna (da email): ?accept=TOKEN ===
+    const urlParams = new URLSearchParams(window.location.search);
+    const acceptToken = urlParams.get('accept');
+    if (acceptToken){
+      const box = document.getElementById('acceptBox');
+      const meta = document.getElementById('acceptMeta');
+      const btnA = document.getElementById('btnAcceptDelivery');
+      const btnR = document.getElementById('btnRejectDelivery');
+
+      // Mostra box
+      if (box){
+        box.hidden = false;
+        if (meta) meta.textContent = 'Codice consegna: ' + acceptToken.slice(0,8) + '…';
+      }
+
+      // "Non ora" → chiudi box (lascia token nell'URL, così puoi riprovare)
+      if (btnR) btnR.onclick = () => {
+        if (box) box.hidden = true;
+      };
+
+      // Accetta → chiama Netlify Function + aggiorna UI + pulizia URL
+      if (btnA) btnA.onclick = async () => {
+        let oldText = "";
+        try{
+          btnA.disabled = true;
+          oldText = btnA.textContent;
+          btnA.textContent = "Sto completando…";
+
+          const idToken = await user.getIdToken();
+          const resp = await fetch('/.netlify/functions/acceptDelivery', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + idToken
+            },
+            body: JSON.stringify({ token: acceptToken })
+          });
+
+          const data = await resp.json().catch(()=> ({}));
+          if (!resp.ok || !data.ok) throw new Error(data.error || 'Impossibile accettare la consegna.');
+
+          // Pulizia URL (rimuove ?accept=...)
+          urlParams.delete('accept');
+          const newUrl = window.location.pathname + (urlParams.toString() ? ('?' + urlParams.toString()) : '');
+          window.history.replaceState({}, '', newUrl);
+
+          // Pulisci token pendente in sessionStorage (se presente)
+          try{ sessionStorage.removeItem('ofi_pending_accept'); }catch(e){}
+
+          // Chiudi box
+          if (box) box.hidden = true;
+
+          // Vai su "Ricevuti" + ricarica liste
+          setTab('ricevuti');
+          await load(user.uid);
+
+          setTimeout(() => {
+            document.getElementById('panel-ricevuti')?.scrollIntoView({ behavior:'smooth', block:'start' });
+          }, 50);
+
+          showToast('ok', 'Consegna completata', 'Ora trovi il necrologio nella sezione “Ricevuti”.');
+        }catch(e){
+          console.error('acceptDelivery error', e);
+          showToast('err', 'Errore consegna', (e?.message || String(e)));
+        }finally{
+          btnA.textContent = oldText || "Accetta consegna";
+          btnA.disabled = false;
+        }
+      };
+
+    }
+// Avatar da profilo cittadino (se c’è)
+    try{
+      const uSnap = await getDoc(doc(db,'utenti_cittadini', user.uid));
+      if (uSnap.exists()){
+        const u = uSnap.data();
+        if (u.foto) $('userAvatar').src = u.foto;
+      }
+    }catch(e){ console.warn('Profilo cittadino non letto:', e); }
+
+    await load(user.uid);
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>OFI · Dashboard Admin</title>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- PWA manifest + iOS meta -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0f1420">
+  <link rel="apple-touch-icon" href="/images/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- SOLO stili admin -->
+  <link rel="stylesheet" href="ofi-admin.css">
+  <link rel="stylesheet" href="ofi-admin-fix.css">
+</head>
+<body class="is-admin">
+
+<!-- ======= HEADER coerente OFI (versione admin autonoma) ======= -->
+<header class="site-header" role="banner">
+  <div class="brand">
+    <a href="../index.html" aria-label="Torna alla home">
+      <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+
+  <nav class="main-nav" aria-label="Principale">
+    <!-- Hamburger (mobile) -->
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Menu completo (desktop+mobile) -->
+    <ul id="menuPanel" class="menu" role="menu" aria-hidden="true">
+      <li class="menu-mobile-head">
+        <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+      </li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="../vision.html">Visione di OFI</a></li>
+          <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="../index.html#pensieri">Pensieri</a></li>
+          <li><a href="../articoli/articoli.html">Articoli</a></li>
+          <li><a href="../index.html#ricordi">Ricordi</a></li>
+          <li><a href="../index.html#mappa">Vicino a te</a></li>
+          <li><a href="../index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a href="/admin/dashboard-admin.html" aria-current="page">Area Admin</a></li>
+    </ul>
+
+    <!-- Toggle tema (UNICO) -->
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" title="Tema">
+      <span class="mode mode-auto" aria-hidden="true">A</span>
+      <span class="mode mode-light" aria-hidden="true">☀</span>
+      <span class="mode mode-dark" aria-hidden="true">🌙</span>
+    </button>
+  </nav>
+
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<!-- ======= APP ======= -->
+<div class="app" id="appRoot">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" aria-label="Navigazione amministrazione">
+    <div class="sb-head">
+      <img alt="Badge OFI" src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23c9a227'/><stop offset='100%' stop-color='%23f4d56a'/></linearGradient></defs><circle cx='14' cy='14' r='13' fill='url(%23g)' stroke='%238f6c00' stroke-width='2'/><text x='50%' y='54%' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%230d1b2a' font-weight='700'>OFI</text></svg>">
+      <strong>Amministrazione OFI</strong>
+      <button class="sb-close" id="sbClose" aria-label="Chiudi pannello">✕</button>
+    </div>
+
+    <nav class="sb-menu" id="sbMenu">
+      <a class="sb-link active" href="/admin/dashboard-admin.html">🏠 Dashboard</a>
+
+      <div class="sb-cat">📝 Approvazioni</div>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle" aria-expanded="false">Approvazioni ▾</a>
+        <ul class="submenu">
+          <li><a class="sb-link" href="/admin/approvazioni-registrazioni.html">✅ Registrazioni <span class="pill" id="cntRegTot">0</span></a></li>
+          <li><a class="sb-link" href="/admin/approvazioni-preventivi.html">📬 Preventivi <span class="pill" id="cntPrev">0</span></a></li>
+          <li><a class="sb-link" href="/admin/approvazioni-necrologi.html">🕯 Necrologi <span class="pill" id="cntNecro">0</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sb-cat">📚 Registri</div>
+<div class="has-sub">
+  <a href="#" class="sub-toggle" aria-expanded="false">Anagrafiche ▾</a>
+  <ul class="submenu">
+    <li><a class="sb-link" href="/admin/utenti-admin.html">👤 Cittadini <span class="pill" id="cntCitt">0</span></a></li>
+    <li><a class="sb-link" href="/admin/imprese-admin.html">🏢 Imprese <span class="pill" id="cntImprese">0</span></a></li>
+    <li><a class="sb-link" href="/admin/fornitori-admin.html">📦 Fornitori <span class="pill" id="cntForn">0</span></a></li>
+    <li><a class="sb-link" href="/admin/supporto-admin.html">🧑‍💼 Figure di supporto <span class="pill" id="cntSupp">0</span></a></li>
+
+    <!-- NUOVO: storico/gestione preventivi -->
+    <li><a class="sb-link" href="/admin/preventivi-admin.html">📄 Preventivi (gestione)</a></li>
+
+    <li><a class="sb-link" href="/admin/segnalazioni-admin.html">🧠 Segnalazioni</a></li>
+  </ul>
+</div>
+      <div class="sb-cat">✍️ Contenuti</div>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle" aria-expanded="false">Articoli e altro ▾</a>
+        <ul class="submenu">
+          <li><a class="sb-link" href="/admin/articoli-pubblicati-admin.html">📝 Articoli pubblicati</a></li>
+          <li><a class="sb-link" href="/admin/articoli-gestione-admin.html">🗂 Gestione articoli</a></li>
+          <li><a class="sb-link" href="/admin/necrologi-admin.html">🕯 Necrologi (storico)</a></li>
+          <li><a class="sb-link" href="/admin/presentazioni-imprese-admin.html">📣 Presentazioni imprese</a></li>
+        </ul>
+      </div>
+
+      <div class="sb-cat">💳 Economico</div>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle" aria-expanded="false">Amministrazione ▾</a>
+        <ul class="submenu">
+          <li><a class="sb-link" href="/admin/pagamenti-admin.html">💰 Pagamenti</a></li>
+          <li><a class="sb-link" href="/admin/fatture-admin.html">📄 Fatture</a></li>
+        </ul>
+      </div>
+
+      <div class="sb-cat">🛡 Sistema</div>
+      <div class="has-sub">
+        <a href="#" class="sub-toggle" aria-expanded="false">Strumenti ▾</a>
+        <ul class="submenu">
+          <li><a class="sb-link" href="/admin/statistiche-admin.html">📈 Statistiche</a></li>
+          <li><a class="sb-link" href="/admin/log-attivita-admin.html">📊 Log attività</a></li>
+          <li><a class="sb-link" href="/admin/supporto-admin.html">🆘 Supporto admin</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <div id="sbOverlay" class="overlay" hidden></div>
+  <!-- FAB mobile per Sidebar -->
+  <button id="sbFab" class="sb-fab" aria-label="Apri Sidebar">☰</button>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar" role="region" aria-label="Barra superiore">
+      <div class="ident">
+        <div class="hint">Sei autenticato come</div>
+        <div id="adminEmail">—</div>
+      </div>
+      <div class="actions">
+        <img id="adminAvatar" class="avatar" src="../images/logo-ofi.png" alt="Admin"/>
+        <a class="btn-ghost account" href="/admin/login.html"><span>Cambia account</span></a>
+        <button class="btn-ghost" id="btnLogout">Logout</button>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <!-- HERO (ridotto) -->
+      <section class="admin-hero" aria-labelledby="t-hero">
+        <div>
+          <h1 id="t-hero">Benvenuto nella nuova Dashboard Amministrativa</h1>
+          <p class="sub">Priorità: <strong>registrazioni in attesa</strong>, poi <strong>preventivi</strong> e <strong>necrologi</strong>. Ottimizzata per desktop e mobile.</p>
+        </div>
+        <div class="cta">
+          <a class="btn btn-primary" href="/admin/approvazioni-registrazioni.html">Apri approvazioni</a>
+          <a class="btn btn-outline" href="/admin/statistiche-admin.html">Statistiche</a>
+        </div>
+      </section>
+
+      <!-- KPI -->
+      <section class="kpi" aria-label="Indicatori principali">
+        <article class="kpi-card" aria-labelledby="kpi1t">
+          <span class="tag">Registrazioni</span>
+          <h3 id="kpi1t">Registrazioni da approvare</h3>
+          <div class="num" id="kpiReg">—</div>
+          <p class="muted">Cittadini, Imprese, Fornitori, Supporto</p>
+        </article>
+        <article class="kpi-card" aria-labelledby="kpi2t">
+          <span class="tag">Preventivi</span>
+          <h3 id="kpi2t">Preventivi da approvare</h3>
+          <div class="num" id="kpiPrev">—</div>
+          <p class="muted">Richieste in attesa</p>
+        </article>
+        <article class="kpi-card" aria-labelledby="kpi3t">
+          <span class="tag">Necrologi</span>
+          <h3 id="kpi3t">Necrologi da approvare</h3>
+          <div class="num" id="kpiNecro">—</div>
+          <p class="muted">In revisione</p>
+        </article>
+      </section>
+
+      <!-- Scorciatoie -->
+      <section class="grid" aria-label="Scorciatoie">
+        <a class="card" href="/admin/imprese-admin.html"><h3>Imprese</h3><p class="muted">Gestione e revisioni profili</p></a>
+        <a class="card" href="/admin/utenti-admin.html"><h3>Cittadini</h3><p class="muted">Registri e segnalazioni</p></a>
+        <a class="card" href="/admin/fornitori-admin.html"><h3>Fornitori</h3><p class="muted">Anagrafiche e contatti</p></a>
+        <a class="card" href="/admin/preventivi-admin.html"><h3>Preventivi</h3><p class="muted">Storico e gestione completa</p></a>
+      </section>
+
+      <section class="card" style="margin-top:1rem">
+        <h3 class="kicker" style="color:var(--gold)">Note rapide</h3>
+        <p class="muted">I contatori leggono Firestore con <code>stato == "in_attesa"</code>. Mantieni allineati gli alias delle collezioni.</p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<footer class="sr-only">OFI © 2025</footer>
+
+<!-- ======= SCRIPT (menu, tema, sidebar) ======= -->
+<script type="module">
+  const $id = (x)=>document.getElementById(x);
+  const html = document.documentElement;
+
+  /* Menu principale */
+  const menuToggle = $id('menuToggle');
+  const menuPanel  = $id('menuPanel');
+  const menuClose  = $id('menuClose');
+  const menuOverlay= $id('menuOverlay');
+
+  function openMenu(on){
+    menuPanel.classList.toggle('open', on);
+    menuPanel.setAttribute('aria-hidden', on ? 'false' : 'true');
+    menuOverlay.hidden = !on;
+    html.classList.toggle('menu-open', on);
+  }
+  menuToggle?.addEventListener('click', ()=> openMenu(true));
+  menuClose?.addEventListener('click', ()=> openMenu(false));
+  menuOverlay?.addEventListener('click', ()=> openMenu(false));
+
+  // Submenu (desktop+mobile)
+  menuPanel?.querySelectorAll('.has-sub > a').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const li = a.parentElement;
+      const open = !li.classList.contains('open');
+      li.classList.toggle('open', open);
+      a.setAttribute('aria-expanded', open?'true':'false');
+    });
+  });
+
+  // Evidenzia voce corrente (Area Admin)
+  menuPanel?.querySelectorAll('a[href]').forEach(a=>{
+    const here = location.pathname.replace(/\/+$/,'');
+    const href = a.getAttribute('href').replace(/\/+$/,'');
+    if(href && (here.endsWith(href) || here === href)) a.setAttribute('aria-current','page');
+  });
+
+  /* Toggle Tema unico (Auto → Light → Dark) */
+  const themeBtn = $id('themeToggle');
+  const KEY = 'ofi-theme'; // 'auto' | 'light' | 'dark'
+  function applyTheme(v){
+    html.setAttribute('data-theme', v);
+    localStorage.setItem(KEY, v);
+    themeBtn.dataset.mode = v;
+  }
+  function nextTheme(cur){
+    if(cur==='auto') return 'light';
+    if(cur==='light') return 'dark';
+    return 'auto';
+  }
+  applyTheme(localStorage.getItem(KEY) || 'auto');
+  themeBtn?.addEventListener('click', ()=>{
+    const nv = nextTheme(html.getAttribute('data-theme') || 'auto');
+    applyTheme(nv);
+  });
+
+  /* Sidebar */
+  const sidebar   = $id('sidebar');
+  const sbOverlay = $id('sbOverlay');
+  const sbFab     = $id('sbFab');
+
+  function openSidebar(on){
+    sidebar.classList.toggle('open', on);
+    sbOverlay.hidden = !on;
+    html.classList.toggle('sidebar-open', on);
+    document.body.classList.toggle('sidebar-open', on);
+  }
+
+  // CHIP nel menu mobile per aprire la sidebar
+  const addSidebarOpenChip = ()=>{
+    if(window.innerWidth>900) return;
+    const ul = $id('menuPanel');
+    if(!ul || ul.querySelector('[data-open-sidebar]')) return;
+    const li = document.createElement('li');
+    li.innerHTML = `<button class="btn" data-open-sidebar type="button">☰ Sidebar Admin</button>`;
+    ul.appendChild(li);
+    li.querySelector('button').addEventListener('click', ()=>{
+      openMenu(false);
+      openSidebar(true);
+    });
+  };
+  addSidebarOpenChip();
+  window.addEventListener('resize', ()=>{
+    document.querySelector('[data-open-sidebar]')?.closest('li')?.remove();
+    addSidebarOpenChip();
+  });
+
+  $id('sbClose')?.addEventListener('click', ()=> openSidebar(false));
+  sbOverlay?.addEventListener('click', ()=> openSidebar(false));
+  sbFab?.addEventListener('click', ()=> openSidebar(!sidebar.classList.contains('open')));
+
+  /* Apri/chiudi un solo blocco per volta nella sidebar */
+  document.querySelectorAll('.sb-menu .has-sub > .sub-toggle').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const me = btn.closest('.has-sub');
+      const already = me.classList.contains('open');
+      document.querySelectorAll('.sb-menu .has-sub.open').forEach(x=> x.classList.remove('open'));
+      me.classList.toggle('open', !already);
+      btn.setAttribute('aria-expanded', (!already) ? 'true' : 'false');
+    });
+  });
+
+  (function highlightSidebar(){
+    const here = location.pathname.replace(/\/+$/,'');
+    document.querySelectorAll('.sb-link[href]').forEach(a=>{
+      const href = a.getAttribute('href').replace(/\/+$/,'');
+      if(href && (here.endsWith(href) || here === href)) a.classList.add('active');
+    });
+  })();
+</script>
+
+<!-- ======= Firebase v10 (Auth + Firestore + FCM) ======= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onIdTokenChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, query, where, getCountFromServer, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9",
+    storageBucket: "ofi2025-51ba9.firebasestorage.app",
+    messagingSenderId: "345581339212",
+    appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ======== FCM config ========
+  const VAPID_KEY = "BEioYTneXS8N4DSzFRElPmxBIX1-tzK9jjv_tMIUqNsjNP1VWZdcWiGeyeyv91Div8Tyj0HxiMcQpMXMeENxo_s";
+
+  // Stato utente (anche globale per PWA)
+  let currentUser = null;
+  window.currentUser = null;
+
+  function isPWA(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  async function requireAdmin(user){
+    try{
+      const token = await user.getIdTokenResult(true);
+      if(!token?.claims?.admin){
+        await signOut(auth);
+        location.replace('/admin/login.html');
+        return false;
+      }
+      return true;
+    }catch(err){
+      console.error('requireAdmin', err);
+      location.replace('/admin/login.html');
+      return false;
+    }
+  }
+
+  // --- KPI helpers ---
+  const ALIASES = {
+    cittadini: ["utenti_cittadini","utenti_registrati","cittadini_registrati"],
+    imprese:   ["imprese_registrate"],
+    fornitori: ["fornitori_registrati","fornitori"],
+    supporto:  ["figure_supporto","utenti_supporto"],
+    preventivi:["preventivi"],
+    necrologi: ["necrologi"]
+  };
+  async function collectionExists(name){ try{ await getCountFromServer(query(collection(db, name))); return true; }catch{ return false; } }
+  async function firstExistingName(names){ for(const n of names){ if(await collectionExists(n)) return n; } return null; }
+  async function countBy(aliasKey, field="stato", val="in_attesa"){
+    try{
+      const name = await firstExistingName(ALIASES[aliasKey]); if(!name) return 0;
+      const qy = query(collection(db, name), where(field,"==",val));
+      const snap = await getCountFromServer(qy);
+      return snap.data().count || 0;
+    }catch(e){ console.warn('countBy', aliasKey, e); return 0; }
+  }
+  async function refreshCounters(){
+    const [cCitt,cImp,cForn,cSupp] = await Promise.all([
+      countBy("cittadini"), countBy("imprese"),
+      countBy("fornitori"), countBy("supporto")
+    ]);
+    const regTot = cCitt + cImp + cForn + cSupp;
+    const [cPrev, cNecro] = await Promise.all([ countBy("preventivi"), countBy("necrologi") ]);
+
+    const set = (sel,val)=>{ const el=document.querySelector(sel); if(el) el.textContent = (val ?? "0"); };
+    set('#kpiReg', regTot); set('#kpiPrev', cPrev); set('#kpiNecro', cNecro);
+    set('#cntRegTot', regTot); set('#cntPrev', cPrev); set('#cntNecro', cNecro);
+    set('#cntCitt', cCitt); set('#cntImprese', cImp); set('#cntForn', cForn); set('#cntSupp', cSupp);
+  }
+
+  // ===== Notifiche UI + beep (con dedup e policy foreground) =====
+  const getBeep = () => document.getElementById('notifBeep');
+
+  function notifyNow(title, body, url='/admin/dashboard-admin.html'){
+  try{
+    // Mostra SEMPRE il toast interno e basta (niente OS notification dalla pagina)
+    if (typeof window.showToast === 'function') {
+      window.showToast(title || 'OFI – Notifica', body || '', url);
+    }
+    // Beep solo quando la pagina è visibile
+    if (document.visibilityState === 'visible') {
+      const beepEl = getBeep();
+      if (beepEl) {
+        try { if (beepEl.currentTime !== undefined) beepEl.currentTime = 0; beepEl.play?.().catch(()=>{}); } catch{}
+      }
+    }
+  }catch(e){ console.warn('notifyNow', e); }
+}
+
+  // ===== Realtime con unsubscribe e no-burst al primo load =====
+  window._realtimeUnsub = window._realtimeUnsub || [];
+  async function listenRealtime(){
+    // stacca eventuali listener esistenti
+    if (window._realtimeUnsub.length) {
+      window._realtimeUnsub.forEach(u=>{ try{u()}catch{} });
+      window._realtimeUnsub = [];
+    }
+
+    const { query:Q, collection:C, where:W, onSnapshot } =
+      await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+
+    const regCols = [
+      await firstExistingName(ALIASES.cittadini),
+      await firstExistingName(ALIASES.imprese),
+      await firstExistingName(ALIASES.fornitori),
+      await firstExistingName(ALIASES.supporto),
+    ].filter(Boolean);
+    const prevCol = await firstExistingName(ALIASES.preventivi);
+    const necCol  = await firstExistingName(ALIASES.necrologi);
+
+    const SNAP = { reg:0, prev:0, necro:0 };
+
+    const attach = (label, collName, key='reg') => {
+  if (!collName) return;
+
+  let init = true;
+  let previousCount = 0;
+  let lastNotifiedAt = 0;
+
+  const qy = Q(C(db, collName), W('stato', '==', 'in_attesa'));
+  const unsub = onSnapshot(qy, (ss) => {
+    const currentCount = ss.size || 0;
+
+    // Primo caricamento → non notificare
+    if (init) {
+      previousCount = currentCount;
+      init = false;
+      return;
+    }
+
+    // Se aumenta rispetto a prima → notifica 1 volta
+    const increased = currentCount > previousCount;
+    const now = Date.now();
+    const recently = now - lastNotifiedAt < 20000; // 20 sec di pausa
+
+    if (increased && !recently) {
+      const delta = currentCount - previousCount;
+      const title =
+        label === "Registrazioni"
+          ? "Nuova registrazione in attesa"
+          : label === "Preventivi"
+          ? "Nuovo preventivo da approvare"
+          : "Nuovo necrologio da approvare";
+      notifyNow(title, `+${delta} elemento${delta > 1 ? "i" : ""}. Apri la sezione ${label}.`);
+      lastNotifiedAt = now;
+    }
+
+    previousCount = currentCount;
+    SNAP[key] = currentCount;
+    refreshCounters();
+  }, (err) => console.warn("onSnapshot", collName, err));
+
+  window._realtimeUnsub.push(unsub);
+};
+
+
+    regCols.forEach(c => attach('Registrazioni', c, 'reg'));
+    if(prevCol) attach('Preventivi', prevCol, 'prev');
+    if(necCol)  attach('Necrologi',  necCol,  'necro');
+  }
+
+// Pausa/riattiva i listener realtime in base alla visibilità della pagina
+document.addEventListener('visibilitychange', ()=>{
+  try{
+    if (document.visibilityState === 'hidden') {
+      if (window._realtimeUnsub?.length) {
+        window._realtimeUnsub.forEach(u=>{ try{u()}catch{} });
+        window._realtimeUnsub = [];
+      }
+    } else if (document.visibilityState === 'visible' && typeof listenRealtime === 'function') {
+      listenRealtime();
+    }
+  }catch(e){ console.warn('visibilitychange', e); }
+});
+
+// --- Logout esplicito ---
+const btnLogout = document.getElementById('btnLogout');
+btnLogout?.addEventListener('click', async ()=>{
+  try { await signOut(auth); } catch(e) { console.warn(e); }
+  location.replace('/admin/login.html');
+});
+
+// --- "Cambia account" deve fare prima il signOut ---
+const accountLink = document.querySelector('.actions .account');
+accountLink?.addEventListener('click', async (e)=>{
+  e.preventDefault();
+  try { await signOut(auth); } catch(e) {}
+  location.href = '/admin/login.html';
+});
+
+// --- Auto logout dopo inattività ---
+const IDLE_MS = 30 * 60 * 1000; // 30 minuti
+let idleTimer;
+
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(async ()=>{
+    try { await signOut(auth); } catch(e) {}
+    alert('Sessione terminata per inattività.');
+    location.replace('/admin/login.html');
+  }, IDLE_MS);
+}
+
+// eventi che "resettano" l’inattività
+['mousemove','keydown','click','scroll','touchstart','visibilitychange'].forEach(ev=>{
+  window.addEventListener(ev, resetIdleTimer, { passive:true });
+});
+resetIdleTimer();
+
+
+  // ---------- Service Worker: registra UNA sola volta (root scope) ----------
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/firebase-messaging-sw.js?v=3', { scope: '/' })
+    .catch(err => console.error('SW register failed', err));
+}
+
+  // ---------- FCM: genera/salva token + onMessage (foreground) ----------
+  window._fcmBound = window._fcmBound || false;
+  async function setupFCMFor(user){
+    try{
+      if(!(await isSupported())){ console.warn('FCM non supportato su questo browser'); return; }
+
+      // Non chiedere permesso qui (serve gesto utente iOS)
+      if (Notification.permission !== 'granted') {
+        console.warn('Permesso notifiche non ancora concesso: usa "Abilita notifiche".');
+        return;
+      }
+
+      const swReg = await navigator.serviceWorker.ready;
+      const messaging = getMessaging(app);
+
+      // Evita più onMessage
+      if (!window._fcmBound) {
+        onMessage(messaging, (payload)=>{
+          const t = payload?.notification?.title || 'OFI – Notifica';
+          const b = payload?.notification?.body  || '';
+          const link = payload?.data?.link || payload?.data?.click_action || '/admin/dashboard-admin.html';
+          notifyNow(t, b, link);
+        });
+        window._fcmBound = true;
+      }
+
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+      if(!token){ console.warn('Nessun token FCM ottenuto'); return; }
+
+      const uid = user.uid;
+      await setDoc(doc(db, 'admin_notification_tokens', uid), {
+        uid, token, email: user.email || null,
+        updatedAt: serverTimestamp()
+      }, { merge:true });
+
+      console.log('FCM attivo per', user.email);
+    }catch(e){
+      console.error('setupFCMFor', e);
+    }
+  }
+  // esponi per il bottone PWA
+  window.setupFCMFor = setupFCMFor;
+
+  // Auth guard + bootstrap
+  onIdTokenChanged(auth, async (user) => {
+    if (!user) { location.replace('/admin/login.html'); return; }
+    const ok = await requireAdmin(user);
+    if (!ok) return;
+
+    window.currentUser = currentUser = user;
+
+    const mail = user.email || '—';
+    const mailEl = document.getElementById('adminEmail');
+    if (mailEl) mailEl.textContent = mail;
+    if (user.photoURL) {
+      const av = document.getElementById('adminAvatar');
+      if (av){ av.src = user.photoURL; av.alt = mail; }
+    }
+
+    await refreshCounters();
+    await listenRealtime();
+
+    // Tenta FCM solo se già concesso
+    setupFCMFor(user);
+  });
+
+  // PWA: se passi a standalone o torni in focus, ritenta se già concesso
+  const dm = window.matchMedia('(display-mode: standalone)');
+  dm && dm.addEventListener?.('change', (e)=>{ if (e.matches && currentUser && Notification.permission==='granted') setupFCMFor(currentUser); });
+  window.addEventListener('focus', ()=>{ if (isPWA() && currentUser && Notification.permission==='granted') setupFCMFor(currentUser); });
+</script>
+
+<!-- OFI Mini Toast + Audio (singola istanza) -->
+<audio id="notifBeep" preload="auto" src="/assets/beep.mp3"></audio>
+<div id="ofiToast" role="status" aria-live="polite">
+  <div class="t-title">Notifica OFI</div>
+  <div class="t-body">Test</div>
+  <div class="t-actions">
+    <button class="t-btn ghost" id="ofiToastClose">Chiudi</button>
+    <button class="t-btn primary" id="ofiToastOpen">Apri</button>
+  </div>
+</div>
+
+<!-- Script toast (non-module) -->
+<script>
+(function(){
+  const el   = document.getElementById('ofiToast');
+  const beep = document.getElementById('notifBeep');
+  if (!el) return;
+
+  // Sblocco audio su iOS al primo gesto
+  if (beep) {
+    beep.volume = 0.35;
+    const unlock = () => {
+      const p = beep.play();
+      if (p && p.then) p.then(()=>{ beep.pause(); beep.currentTime = 0; }).catch(()=>{});
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('touchstart', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock, { once:true });
+    window.addEventListener('touchstart', unlock, { once:true });
+    window.addEventListener('keydown', unlock, { once:true });
+  }
+
+  const closeBtn = document.getElementById('ofiToastClose');
+  const openBtn  = document.getElementById('ofiToastOpen');
+  let openUrl = null;
+
+  // API globale
+  window.showToast = function(title='Notifica OFI', body='', url=null, autoHideMs=6000){
+    el.querySelector('.t-title').textContent = title || 'Notifica OFI';
+    el.querySelector('.t-body').textContent  = body  || '';
+    openUrl = url;
+    el.classList.add('show');
+
+    try { beep && beep.play && beep.play().catch(()=>{}); } catch(e){}
+
+    clearTimeout(window.__ofiToastTimer);
+    window.__ofiToastTimer = setTimeout(()=> el.classList.remove('show'), autoHideMs);
+  };
+
+  closeBtn?.addEventListener('click', ()=> el.classList.remove('show'));
+  openBtn?.addEventListener('click', ()=> { if (openUrl) location.href = openUrl; el.classList.remove('show'); });
+})();
+</script>
+
+<!-- FAB test: Abilita notifiche PWA (resta visibile per i test) -->
+<button id="enablePush"
+  style="position:fixed;right:.75rem;bottom:.75rem;z-index:9999;
+         padding:.6rem .8rem;border-radius:.6rem;border:0;
+         background:#0f1420;color:#fff;font-weight:700">
+  Abilita notifiche PWA
+</button>
+
+<!-- Listener UNICO per il bottone (gesto utente iOS) -->
+<script type="module">
+  import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+
+  const VAPID_KEY = "BEioYTneXS8N4DSzFRElPmxBIX1-tzK9jjv_tMIUqNsjNP1VWZdcWiGeyeyv91Div8Tyj0HxiMcQpMXMeENxo_s";
+
+  function isPWA(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  document.getElementById('enablePush')?.addEventListener('click', async () => {
+    try {
+      if (!isPWA()) {
+        alert('Apri la versione PWA dall’icona in Home (non da Safari).');
+        return;
+      }
+      if (!(await isSupported())) {
+        alert('Web Push non supportato su questo dispositivo/browser (richiede iOS 16.4+).');
+        return;
+      }
+
+      const cur = Notification.permission; // 'default' | 'granted' | 'denied'
+      if (cur === 'denied') {
+        alert('Notifiche bloccate per questa PWA. Vai su Impostazioni → Safari → Avanzate → Dati siti web e rimuovi il dominio, poi reinstalla la PWA. Se l’app è in Impostazioni → Notifiche, abilita da lì.');
+        return;
+      }
+
+      if (cur === 'default') {
+        const perm = await Notification.requestPermission(); // gesto utente
+        if (perm !== 'granted') { alert('Permesso non concesso.'); return; }
+      }
+
+      // Da qui: permesso concesso
+      const reg = await navigator.serviceWorker.ready; // SW già registrato
+      const messaging = getMessaging();
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+      if (!token) { alert('Nessun token restituito.'); return; }
+
+      if (typeof window.setupFCMFor === 'function' && window.currentUser) {
+        await window.setupFCMFor(window.currentUser); // salva su Firestore + bind onMessage
+      }
+
+      console.log('FCM PWA token:', token);
+      try { await navigator.clipboard.writeText(token); } catch {}
+      alert('Token PWA ottenuto e copiato negli appunti.\nPuoi inviare un test da Firebase Console → Cloud Messaging.');
+    } catch (err) {
+      console.error('enablePush error', err);
+      alert('Errore: ' + (err?.message || err));
+    }
+  });
+</script>
+
+</body>
+</html>

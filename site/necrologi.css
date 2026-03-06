@@ -1,0 +1,1058 @@
+body { font-family: 'Inter', sans-serif; }
+main.ofi-main { padding-top: 5rem; }
+
+/* === Mobile safety: niente tagli / overflow === */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
+
+/* === FIX: evita doppio scrollbar causato da CSS esterni (dashboard) === */
+html, body{
+  height: auto !important;
+  overflow-y: auto !important;
+}
+main.ofi-main{
+  height: auto !important;
+  min-height: calc(100vh - 70px);
+  overflow: visible !important;
+}
+
+/* SEO text (non visibile) */
+.sr-only{
+  position:absolute;
+  left:-9999px;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
+/* HERO NECROLOGI */
+.necro-hero .profile-hero__panel {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.necro-hero .hero-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.necro-hero .hero-subtitle {
+  max-width: 780px;
+  margin: 0.45rem auto 0;
+  opacity: 0.94;
+  line-height: 1.65;
+}
+.necro-tricolor {
+  width: 170px;
+  height: 3px;
+  border-radius: 999px;
+  margin: 1.25rem auto 0;
+  background: linear-gradient(to right, #2e7d32, #ffffff, #c62828);
+  opacity: 0.65;
+}
+
+/* Sezioni */
+.necro-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.15rem 1.1rem 2.2rem;
+}
+@media (max-width: 520px){
+  .necro-section{ padding-left: .9rem; padding-right: .9rem; }
+}
+
+.necro-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.06);
+  padding: 1.25rem 1.25rem 1.35rem;
+  border: 1px solid rgba(5,36,65,0.06);
+  overflow: visible;
+}
+body.theme-dark .necro-card {
+  background: #0b1724;
+  border-color: rgba(202,168,90,0.22);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.42);
+}
+
+.necro-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+@media (max-width: 720px){
+  .necro-card-head{ flex-direction: column; }
+}
+
+.necro-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  color: #052441;
+}
+body.theme-dark .necro-card-title { color: #f5f7fb; }
+
+.necro-card-sub {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+  color: #4a4f57;
+  opacity: 0.95;
+  line-height: 1.55;
+}
+body.theme-dark .necro-card-sub { color: #cfd6e4; }
+
+/* chip discreto (non ripetiamo la frase ovunque) */
+.necro-chip {
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  border-radius: 999px;
+  padding: .38rem .7rem;
+  border: 1px solid rgba(202,168,90,0.35);
+  background: rgba(202,168,90,0.10);
+  color: #052441;
+  font-weight: 800;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+body.theme-dark .necro-chip{
+  color: #eef2fb;
+  border-color: rgba(202,168,90,0.28);
+  background: rgba(202,168,90,0.08);
+}
+.necro-chip .dot{
+  width:7px; height:7px; border-radius:999px;
+  background: rgba(202,168,90,0.95);
+}
+
+/* ===========================
+   INFO ⓘ (hover/tap) — NO details
+   =========================== */
+.info-wrap{
+  position: relative;
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+}
+
+.info-bubble{
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,0.40);
+  background: rgba(202,168,90,0.12);
+  color: #052441;
+  display:grid;
+  place-items:center;
+  font-weight: 900;
+  cursor: pointer;
+  user-select:none;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.info-bubble:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.10);
+}
+body.theme-dark .info-bubble{
+  color: #eef2fb;
+  border-color: rgba(202,168,90,0.30);
+  background: rgba(202,168,90,0.10);
+}
+
+.info-popover{
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: min(360px, calc(100vw - 36px));
+  border-radius: 18px;
+  padding: .85rem .95rem;
+  border: 1px solid rgba(5,36,65,0.10);
+  background: rgba(255,255,255,0.98);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+  color: #22324a;
+  font-size: .92rem;
+  line-height: 1.55;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease;
+  z-index: 30;
+}
+body.theme-dark .info-popover{
+  background: rgba(11,23,36,0.98);
+  border-color: rgba(255,255,255,0.14);
+  box-shadow: 0 22px 60px rgba(0,0,0,0.55);
+  color: #e9eef8;
+}
+.info-popover p{ margin: .35rem 0; }
+.info-popover strong{ font-weight: 900; }
+
+/* Hover desktop */
+@media (hover:hover) and (pointer:fine){
+  .info-wrap:hover .info-popover{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+/* Tap mobile / click */
+.info-wrap.is-open .info-popover{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ===========================
+   MODALITÀ DI RICERCA — TAB PILLS (WOW)
+   =========================== */
+
+/* titolo micro sopra i tab */
+.gesture-intro{
+  margin-top: .45rem;
+  font-size: .92rem;
+  color:#56616e;
+  line-height: 1.5;
+}
+body.theme-dark .gesture-intro{ color:#c5ccd8; }
+
+.mode-tabs-wrap{
+  margin-top: .95rem;
+}
+
+.mode-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap: .6rem;
+  align-items:center;
+}
+
+.mode-tabs-info{
+  margin-left: .15rem;
+}
+
+/* i tab */
+.mode-btn{
+  width:auto !important;
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  padding: .62rem .9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(5,36,65,0.12);
+  background: rgba(5,36,65,0.03);
+  color: #052441;
+  cursor:pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+  min-height: 44px;
+  user-select:none;
+  text-align:left;
+  white-space: nowrap;
+}
+body.theme-dark .mode-btn{
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color:#eef2fb;
+}
+
+.mode-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+  border-color: rgba(202,168,90,0.30);
+}
+body.theme-dark .mode-btn:hover{
+  box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+}
+
+.mode-btn .m-title{
+  font-weight: 900;
+  display:inline-flex;
+  align-items:center;
+  gap:.55rem;
+  letter-spacing: .2px;
+}
+
+.mode-btn .m-sub{
+  font-weight: 700;
+  opacity:.78;
+  font-size: .92rem;
+}
+
+/* selezionato (blu OFI, come vuoi tu) */
+.mode-btn[aria-selected="true"]{
+  border-color: rgba(202,168,90,0.60);
+  background: linear-gradient(90deg, rgba(0,44,93,0.96), rgba(15,60,123,0.96));
+  color:#fff;
+  box-shadow: 0 18px 42px rgba(0,0,0,0.13);
+}
+body.theme-dark .mode-btn[aria-selected="true"]{
+  box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+}
+.mode-btn[aria-selected="true"] .m-sub{
+  opacity:.92;
+}
+
+/* micro caption sotto i tab */
+.mode-caption{
+  margin-top: .55rem;
+  font-size: .92rem;
+  color:#56616e;
+  opacity:.95;
+}
+body.theme-dark .mode-caption{ color:#c5ccd8; }
+
+/* mobile: rendi i tab più compatti e nascondi descrizione per pulizia */
+@media (max-width: 560px){
+  .mode-btn{
+    width:100% !important;
+    justify-content: space-between;
+    white-space: normal;
+  }
+  .mode-btn .m-sub{ display:none; }
+  .mode-tabs-info{ margin-left: 0; }
+}
+
+/* pannelli che appaiono */
+.mode-panel{
+  margin-top: 1.05rem;
+  border-top: 1px dashed rgba(5,36,65,0.14);
+  padding-top: 1rem;
+}
+body.theme-dark .mode-panel{ border-top-color: rgba(255,255,255,0.14); }
+
+.fields-grid{
+  display:grid;
+  grid-template-columns: minmax(0,1.2fr) minmax(0,1fr) minmax(0,.9fr);
+  gap: .7rem;
+  align-items:center;
+}
+@media (max-width: 980px){
+  .fields-grid{ grid-template-columns: 1fr; }
+}
+
+.fields-grid input,
+.fields-grid select {
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid #ccd4e0;
+  padding: 0.66rem 0.95rem;
+  font-size: 0.98rem;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s, transform .15s ease;
+}
+body.theme-dark .fields-grid input,
+body.theme-dark .fields-grid select{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.16);
+  color: #eef2fb;
+}
+.fields-grid input::placeholder{ color: rgba(74,79,87,0.85); }
+body.theme-dark .fields-grid input::placeholder{ color: rgba(207,214,228,0.75); }
+
+.fields-grid input:focus,
+.fields-grid select:focus {
+  border-color: #cfa349;
+  box-shadow: 0 0 0 2px rgba(207, 163, 73, 0.12);
+  outline: none;
+}
+
+.field-emphasis{
+  border-color: rgba(202,168,90,0.55) !important;
+  box-shadow: 0 0 0 2px rgba(207, 163, 73, 0.10) !important;
+  transform: translateY(-1px);
+}
+
+.actions-row{
+  display:flex;
+  gap:.6rem;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+  align-items:center;
+  justify-content: space-between;
+}
+@media (max-width: 980px){
+  .actions-row{ flex-direction: column; align-items: stretch; }
+}
+
+.btn-primary-ofi {
+  border-radius: 999px;
+  border: none;
+  padding: 0.66rem 1.2rem;
+  background: linear-gradient(90deg, #002c5d, #0f3c7b);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.96rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.btn-soft-ofi {
+  border-radius: 999px;
+  border: 1px solid #ccd4e0;
+  background: #f8fafc;
+  padding: 0.64rem 1rem;
+  font-size: 0.94rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+body.theme-dark .btn-soft-ofi {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.18);
+  color: #f5f7fb;
+}
+@media (max-width: 980px){
+  .btn-primary-ofi, .btn-soft-ofi { width: 100%; justify-content: center; }
+}
+
+/* pulsante geo “importante” */
+.btn-geo{
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,0.55);
+  background: linear-gradient(90deg, rgba(207,163,73,0.98), rgba(227,199,122,0.98));
+  padding: 0.9rem 1.05rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  font-weight: 900;
+  color: #052441;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.14);
+  position: relative;
+  overflow: hidden;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  min-width: 260px;
+}
+.btn-geo:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 18px 42px rgba(0,0,0,0.18);
+  filter: saturate(1.02);
+}
+@media (max-width: 980px){
+  .btn-geo{
+    width:100%;
+    min-width: 0;
+  }
+  .btn-geo::after{
+    content:"";
+    position:absolute;
+    inset:-12px;
+    border-radius: 999px;
+    border: 2px solid rgba(207,163,73,0.22);
+    opacity: 1;
+    animation: geoPulse 1.8s ease-in-out infinite;
+    pointer-events:none;
+  }
+}
+@keyframes geoPulse{
+  0%{ transform: scale(.92); opacity: .25; }
+  60%{ transform: scale(1.04); opacity: .06; }
+  100%{ transform: scale(1.08); opacity: 0; }
+}
+body.theme-dark .btn-geo{
+  color:#052441;
+  border-color: rgba(202,168,90,0.55);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+}
+.btn-geo:disabled{
+  opacity: .65;
+  cursor: not-allowed;
+  transform:none;
+  box-shadow:none;
+  filter: grayscale(.25);
+}
+
+.necro-statusline{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .85rem;
+  flex-wrap: wrap;
+}
+.necro-mini{
+  font-size: .92rem;
+  color: #56616e;
+  opacity: .95;
+  flex: 1 1 240px;
+}
+body.theme-dark .necro-mini{ color: #c5ccd8; }
+
+/* === LISTA: layout con foto + testo + badge === */
+.necro-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+.necro-item {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(5,36,65,0.08);
+  padding: 1rem 1.05rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  width: 100%;
+  max-width: 100%;
+}
+.necro-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.07);
+  background: #f6f8fb;
+}
+body.theme-dark .necro-item {
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(202,168,90,0.18);
+}
+body.theme-dark .necro-item:hover {
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+}
+
+.necro-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 0.95rem;
+  min-width: 0;
+}
+.necro-left{
+  display:flex;
+  align-items:center;
+  gap: 0.9rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.necro-avatar{
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  overflow: hidden;
+  flex: 0 0 56px;
+  border: 1px solid rgba(5,36,65,0.10);
+  background: rgba(202,168,90,0.10);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+}
+body.theme-dark .necro-avatar{
+  border-color: rgba(202,168,90,0.22);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+.necro-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+.necro-text{ min-width: 0; }
+.necro-name{
+  font-family: 'Playfair Display', serif;
+  font-size: 1.18rem;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  margin: 0 0 0.2rem;
+  color: #052441;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.theme-dark .necro-name { color: #f5f7fb; }
+
+.necro-meta{
+  font-size: 0.90rem;
+  color: #6c7480;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.theme-dark .necro-meta { color: #c5ccd8; }
+
+.necro-right{
+  display:flex;
+  align-items:center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+  max-width: 46%;
+}
+.necro-badge{
+  font-size: 0.78rem;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid rgba(202,168,90,0.35);
+  background: rgba(202,168,90,0.10);
+  color: #052441;
+  font-weight: 800;
+  white-space: nowrap;
+}
+body.theme-dark .necro-badge{
+  color: #f5f7fb;
+  border-color: rgba(202,168,90,0.28);
+  background: rgba(202,168,90,0.08);
+}
+.necro-badge.soft{
+  border-color: rgba(5,36,65,0.16);
+  background: rgba(5,36,65,0.04);
+  color: #22324a;
+  font-weight: 800;
+}
+body.theme-dark .necro-badge.soft{
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+  color: #eef2fb;
+}
+@media (max-width: 520px){
+  .necro-avatar{ width: 48px; height: 48px; flex-basis: 48px; border-radius: 14px; }
+  .necro-right{ max-width: 55%; }
+}
+
+/* Loader / Empty */
+.necro-empty {
+  padding: 0.9rem 0.2rem 0;
+  font-size: 0.95rem;
+  color: #6c7480;
+  text-align: center;
+}
+body.theme-dark .necro-empty { color: #c5ccd8; }
+
+.necro-footer-note {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #6c7480;
+  padding: 1.2rem 0 0.2rem;
+}
+body.theme-dark .necro-footer-note { color: #c5ccd8; }
+
+/* MAPPA */
+.necro-map-wrap {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(5,36,65,0.08);
+  box-shadow: 0 10px 26px rgba(15,39,66,.09);
+}
+body.theme-dark .necro-map-wrap {
+  border-color: rgba(202,168,90,0.25);
+  box-shadow: 0 14px 34px rgba(0,0,0,.45);
+}
+#map { width: 100%; height: 420px; }
+
+.map-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+  color: #6c7480;
+  margin-top: 0.8rem;
+}
+body.theme-dark .map-hint { color: #c5ccd8; }
+
+
+/* =========================================================
+   MODE BUTTONS: 3 modalità con identità visiva (NO HTML)
+   - barra colore a sinistra
+   - velo colore (anche quando selezionato)
+   - glow coerente col colore
+   - selezionato resta blu OFI (istituzionale)
+   ========================================================= */
+
+.mode-btn{
+  position: relative;
+  overflow: hidden;
+  padding-left: 2.25rem !important; /* spazio per barretta */
+}
+
+/* Barretta colorata */
+.mode-btn::before{
+  content:"";
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform: translateY(-50%);
+  width:8px;
+  height:62%;
+  border-radius:999px;
+  opacity:.95;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06);
+}
+
+/* Velo colorato */
+.mode-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition: opacity .15s ease;
+  pointer-events:none;
+}
+
+/* Icone un filo più evidenti */
+.mode-btn .m-title i{ opacity: .95; }
+
+/* Colori delle 3 modalità */
+#viewNear::before{ background: rgba(46, 125, 50, .95); }
+#viewNear::after{
+  background: radial-gradient(circle at 18% 50%,
+    rgba(46,125,50,.20), transparent 58%);
+}
+
+#viewZona::before{ background: rgba(202, 168, 90, .95); }
+#viewZona::after{
+  background: radial-gradient(circle at 18% 50%,
+    rgba(202,168,90,.18), transparent 58%);
+}
+
+#viewItalia::before{ background: rgba(198, 40, 40, .95); }
+#viewItalia::after{
+  background: radial-gradient(circle at 18% 50%,
+    rgba(198,40,40,.18), transparent 58%);
+}
+
+/* hover/focus: velo visibile */
+.mode-btn:hover::after,
+.mode-btn:focus-visible::after{ opacity: 1; }
+
+/* selezionato: velo SEMPRE visibile (così “capisci” la modalità anche da selezionata) */
+.mode-btn[aria-selected="true"]::after{ opacity: 1; }
+
+/* glow coerente col colore (senza cambiare il blu OFI del selezionato) */
+#viewNear[aria-selected="true"]{
+  box-shadow: 0 18px 44px rgba(46,125,50,.18), 0 18px 44px rgba(0,0,0,.25);
+}
+#viewZona[aria-selected="true"]{
+  box-shadow: 0 18px 44px rgba(202,168,90,.18), 0 18px 44px rgba(0,0,0,.25);
+}
+#viewItalia[aria-selected="true"]{
+  box-shadow: 0 18px 44px rgba(198,40,40,.18), 0 18px 44px rgba(0,0,0,.25);
+}
+
+/* Mobile: più “immediato” e allineato */
+@media (max-width: 560px){
+  .mode-btn{
+    justify-content:flex-start !important;
+    gap:.75rem !important;
+  }
+  .mode-btn .m-title{ font-size: 1.02rem; }
+}
+
+/* =========================================================
+   FIX MOBILE INFO ⓘ: su touch apri una scheda leggibile (no tagli)
+   ========================================================= */
+.ofi-info-modal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+  background: rgba(0,0,0,.38);
+  backdrop-filter: blur(6px);
+}
+.ofi-info-modal.is-open{ display:flex; }
+
+.ofi-info-modal__panel{
+  width: min(560px, 100%);
+  max-height: min(75vh, 560px);
+  overflow: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(11,23,36,0.98);
+  color: #e9eef8;
+  box-shadow: 0 24px 60px rgba(0,0,0,.55);
+  padding: 16px 16px 14px;
+  position: relative;
+}
+body.theme-light .ofi-info-modal__panel{
+  background: rgba(255,255,255,0.98);
+  color: #22324a;
+  border-color: rgba(5,36,65,0.10);
+  box-shadow: 0 20px 50px rgba(0,0,0,.14);
+}
+.ofi-info-modal__close{
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color:#fff;
+  font-size: 20px;
+  line-height: 1;
+}
+body.theme-light .ofi-info-modal__close{
+  border-color: rgba(5,36,65,0.14);
+  background: rgba(5,36,65,0.05);
+  color:#052441;
+}
+.ofi-info-modal__content{
+  padding-right: 44px;
+  font-size: .95rem;
+  line-height: 1.55;
+}
+.ofi-info-modal__content p{ margin: .35rem 0; }
+.ofi-info-modal__content strong{ font-weight: 900; }
+
+@media (max-width: 560px){
+  .ofi-info-modal{ align-items: flex-end; }
+  .ofi-info-modal__panel{
+    border-radius: 18px 18px 0 0;
+    max-height: 70vh;
+  }
+}
+
+/* =========================================================
+   FIX SELECT (tema scuro): dropdown leggibile (regioni)
+   ========================================================= */
+body.theme-dark .fields-grid select{
+  background: #0b1724; /* evita dropdown bianco con testo chiaro */
+  color: #eef2fb;
+  color-scheme: dark;
+}
+body.theme-light .fields-grid select{
+  color-scheme: light;
+}
+body.theme-dark .fields-grid select option{
+  background-color: #0b1724;
+  color: #eef2fb;
+}
+
+
+/* === Dark theme: select/options contrast (fix nomi regioni invisibili) === */
+html[data-theme="dark"] select,
+html[data-theme="dark"] option{
+  color: #e5e7eb;
+  background: #0b1224;
+}
+html[data-theme="dark"] input{
+  color: #e5e7eb;
+}
+
+
+/* === Modale conferma posizione (mobile-safe) === */
+.necro-confirm-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+}
+.necro-confirm-modal.open{ display: grid; place-items: center; padding: 14px; }
+.necro-confirm-backdrop{
+  position:absolute; inset:0;
+  background: rgba(2,6,23,0.72);
+  backdrop-filter: blur(6px);
+}
+.necro-confirm-card{
+  position: relative;
+  width: min(520px, 92vw);
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,0.55);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(202,168,90,0.14), transparent 55%),
+    linear-gradient(180deg, #06122a 0%, #020617 100%);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.75);
+  padding: 16px 16px 14px;
+  color: #f9fafb;
+}
+.necro-confirm-close{
+  position:absolute; top:10px; right:10px;
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.40);
+  background: rgba(15,23,42,0.7);
+  color: #e5e7eb;
+  cursor: pointer;
+}
+.necro-confirm-card h3{
+  margin: 0 0 6px 0;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.necro-confirm-sub{
+  margin: 0 0 10px 0;
+  opacity: .92;
+}
+.necro-confirm-place{
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 10px 0 12px;
+}
+.necro-confirm-actions{
+  display:flex;
+  gap: .7rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.necro-confirm-privacy{
+  margin: 10px 0 0;
+  font-size: .85rem;
+  opacity: .75;
+}
+
+
+/* === Fields grid variants for new flow === */
+.fields-grid--single{
+  grid-template-columns: 1fr !important;
+}
+.fields-grid--two{
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 980px){
+  .fields-grid--two{ grid-template-columns: 1fr; }
+}
+
+
+/* Colore per "Cerca una persona" (blu istituzionale) */
+#viewNome::before{ background: rgba(30, 136, 229, .95); }
+#viewNome::after{
+  background: radial-gradient(circle at 18% 50%,
+    rgba(30,136,229,.18), transparent 58%);
+}
+#viewNome[aria-selected="true"]{
+  box-shadow: 0 18px 44px rgba(30,136,229,.18), 0 18px 44px rgba(0,0,0,.25);
+}
+
+/* ==============================
+   MODE TABS: griglia 2x2 (4 chip)
+   NO scroll, allineate e pulite
+   ============================== */
+
+.mode-tabs{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  align-items: stretch;
+}
+
+/* ogni chip occupa tutta la cella */
+.mode-btn{
+  width: 100% !important;
+  justify-content: flex-start;
+  white-space: normal;       /* permette testo su 2 righe */
+  min-height: 54px;          /* più “corpo” e allineamento */
+}
+
+/* titolo + sottotitolo: gestiamo wrap pulito */
+.mode-btn .m-title{
+  flex-wrap: wrap;
+  line-height: 1.15;
+}
+.mode-btn .m-sub{
+  display: block;
+  margin-left: .15rem;
+  line-height: 1.15;
+}
+
+/* Il pulsante info non deve stare dentro la griglia */
+.mode-tabs-info{
+  grid-column: 1 / -1;       /* va sotto la griglia */
+  justify-self: end;         /* a destra */
+  margin-top: .1rem;
+}
+
+/* Mobile: torna a colonna (come già ti piace) */
+@media (max-width: 560px){
+  .mode-tabs{
+    grid-template-columns: 1fr;
+  }
+  .mode-btn .m-sub{ display:none; } /* come hai già */
+  .mode-tabs-info{
+    grid-column: auto;
+    justify-self: flex-start;
+  }
+}
+
+.necro-statusline {
+  display: none;
+}
+
+/* =========================================================
+   LOADER GEO (overlay) — umano, elegante, non tecnico
+   ========================================================= */
+.ofi-loader{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(2,6,23,0.68);
+  backdrop-filter: blur(7px);
+}
+.ofi-loader.is-open{ display:flex; }
+
+.ofi-loader__card{
+  width: min(520px, 92vw);
+  border-radius: 18px;
+  border: 1px solid rgba(202,168,90,0.55);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(202,168,90,0.14), transparent 55%),
+    linear-gradient(180deg, #06122a 0%, #020617 100%);
+  box-shadow: 0 30px 90px rgba(0,0,0,0.75);
+  padding: 18px 16px 14px;
+  color: #f9fafb;
+  text-align: center;
+}
+
+.ofi-loader__spinner{
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 3px solid rgba(255,255,255,0.14);
+  border-top-color: rgba(202,168,90,0.95);
+  margin: 0 auto 12px;
+  animation: ofiSpin .9s linear infinite;
+}
+@keyframes ofiSpin { to { transform: rotate(360deg); } }
+
+.ofi-loader__title{
+  font-weight: 900;
+  letter-spacing: .02em;
+  margin-bottom: 4px;
+}
+.ofi-loader__text{
+  opacity: .92;
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.ofi-loader__alt{
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.45);
+  background: rgba(15,23,42,0.6);
+  color: #e5e7eb;
+  padding: 10px 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ofi-loader__alt:hover{
+  border-color: rgba(202,168,90,0.55);
+}
+
+/* FIX DEFINITIVO: nome impresa sempre visibile (desktop) */
+.card-publisher{
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+

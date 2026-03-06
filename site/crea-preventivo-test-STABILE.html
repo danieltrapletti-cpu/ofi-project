@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Crea Preventivo Test (Stabile)</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; }
+    input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; }
+    .hidden { display: none; }
+    .card { border: 1px solid #ccc; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 Login Firebase</h2>
+  <div class="card">
+    <input type="email" id="email" placeholder="Email" value="daniel.trapletti@gmail.com" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Accedi</button>
+    <p id="loginStatus"></p>
+  </div>
+
+  <div id="formPreventivo" class="card hidden">
+    <h2>📝 Crea Preventivo di Test</h2>
+    <input type="text" id="nome" placeholder="Nome utente" />
+    <input type="text" id="servizio" placeholder="Tipo di servizio richiesto" />
+    <input type="text" id="luogo" placeholder="Luogo cerimonia" />
+    <input type="email" id="emailImpresa" placeholder="Email impresa destinataria (es. impresa.test@ofi.it)" />
+    <textarea id="note" rows="4" placeholder="Note aggiuntive..."></textarea>
+    <button onclick="inviaPreventivo()">Invia Preventivo</button>
+    <p id="esitoInvio"></p>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025.firebaseapp.com",
+      projectId: "ofi2025",
+      storageBucket: "ofi2025.appspot.com",
+      messagingSenderId: "73024191237",
+      appId: "1:73024191237:web:13cb6c08f0f5940e53f3dc"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(user => {
+          document.getElementById("loginStatus").textContent = "✅ Login effettuato!";
+          document.getElementById("formPreventivo").classList.remove("hidden");
+        })
+        .catch(error => {
+          console.error("Errore login:", error);
+          document.getElementById("loginStatus").textContent = "❌ Errore login: " + error.message;
+        });
+    }
+
+    function inviaPreventivo() {
+      const nome = document.getElementById("nome").value || "Anonimo";
+      const servizio = document.getElementById("servizio").value || "non specificato";
+      const luogo = document.getElementById("luogo").value || "non indicato";
+      const note = document.getElementById("note").value || "";
+      const email = document.getElementById("emailImpresa").value;
+
+      if (!email) {
+        alert("Inserisci l'email dell'impresa destinataria.");
+        return;
+      }
+
+      const data = {
+        nome: nome,
+        servizio: servizio,
+        luogo: luogo,
+        note: note,
+        impresa_destinataria: email,
+        stato: "in_attesa",
+        dataRicezione: new Date().toISOString()
+      };
+
+      console.log("📤 Invio preventivo:", data);
+
+      db.collection("preventivi").add(data).then(() => {
+        document.getElementById("esitoInvio").textContent = "✅ Preventivo salvato con successo.";
+      }).catch((err) => {
+        console.error("❌ Errore salvataggio:", err);
+        document.getElementById("esitoInvio").textContent = "❌ Errore durante il salvataggio.";
+      });
+    }
+  </script>
+</body>
+</html>

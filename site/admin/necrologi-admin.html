@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Necrologi Admin | OFI</title>
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #002c5d;
+      margin-bottom: 1rem;
+    }
+    .filtro-btns {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .filtro-btns button {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      background: #002c5d;
+      color: white;
+      cursor: pointer;
+    }
+    .necrologio-box {
+      background: white;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-left: 5px solid #002b5c;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+      border-radius: 8px;
+    }
+    .necrologio-box h3 {
+      margin: 0 0 0.3rem 0;
+    }
+    .necrologio-box p {
+      margin: 0.2rem 0;
+    }
+    .btn-group {
+      margin-top: 1rem;
+    }
+    .btn-group button {
+      margin-right: 0.5rem;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .approva { background: #28a745; color: white; }
+    .rifiuta { background: #dc3545; color: white; }
+    .elimina { background: #6c757d; color: white; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+    authDomain: "ofi2025-51ba9.firebaseapp.com",
+    projectId: "ofi2025-51ba9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user || user.uid !== "k1yxKXHiWyX5G5k9ZoEbwuNIXa63") {
+      document.body.innerHTML = "<p style='text-align:center; font-size:1.2rem; color:red; margin-top:3rem;'>🔒 Accesso negato. Solo l’amministratore può visualizzare questa pagina.</p>";
+    }
+  });
+</script>
+
+</head>
+<body>
+  <h1>🕯️ Gestione Necrologi</h1>
+  <div class="filtro-btns">
+    <button onclick="filtra('tutti')">Tutti</button>
+    <button onclick="filtra('attesa')">In Attesa</button>
+    <button onclick="filtra('approvato')">Approvati</button>
+    <button onclick="filtra('rifiutato')">Rifiutati</button>
+    <button onclick="filtra('eliminato')">Eliminati</button>
+  </div>
+
+  <div id="lista-necrologi"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let statoFiltro = "tutti";
+
+    function filtra(stato) {
+      statoFiltro = stato;
+      mostraNecrologi();
+    }
+
+    function mostraNecrologi() {
+      const container = document.getElementById("lista-necrologi");
+      container.innerHTML = "⏳ Caricamento...";
+
+      db.collection("necrologi").orderBy("dataInvio", "desc").get().then(snapshot => {
+        const necrologi = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const filtrati = statoFiltro === "tutti" ? necrologi : necrologi.filter(n => n.stato === statoFiltro);
+        if (filtrati.length === 0) {
+          container.innerHTML = "<p style='text-align:center;'>Nessun necrologio trovato.</p>";
+          return;
+        }
+
+        container.innerHTML = filtrati.map(n => `
+          <div class="necrologio-box">
+            <h3>${n.nome}</h3>
+            <p><strong>${n.luogo || "—"}</strong></p>
+            <p>🆔 ${n.id}</p>
+            <p>🕒 Inviato il ${n.dataInvio ? new Date(n.dataInvio.seconds * 1000).toLocaleString() : "—"}</p>
+            <div class="btn-group">
+              <button class="approva" onclick="aggiornaStato('${n.id}', 'approvato')">✔ Approva</button>
+              <button class="rifiuta" onclick="aggiornaStato('${n.id}', 'rifiutato')">✖ Rifiuta</button>
+              <button class="elimina" onclick="aggiornaStato('${n.id}', 'eliminato')">🗑 Elimina</button>
+            </div>
+          </div>
+        `).join("");
+      });
+    }
+
+    function aggiornaStato(id, stato) {
+      db.collection("necrologi").doc(id).update({ stato: stato }).then(mostraNecrologi);
+    }
+
+    document.addEventListener("DOMContentLoaded", mostraNecrologi);
+  </script>
+</body>
+</html>

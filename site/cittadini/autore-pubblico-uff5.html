@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title id="seoTitle">Autore — PENSIERI · OFI</title>
+  <meta id="seoDesc" name="description" content="Vetrina pubblica dell’autore su OFI PENSIERI." />
+  <link rel="canonical" id="linkCanonical" href="" />
+  <meta property="og:title" id="ogTitle" content="Autore — PENSIERI · OFI" />
+  <meta property="og:description" id="ogDesc" content="Vetrina pubblica dell’autore su OFI PENSIERI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" id="ogUrl" content="" />
+  <meta property="og:image" id="ogImage" content="../images/og-ofi-author.png" />
+
+  <!-- Fonts + CSS globale -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;600;700;800&family=Noto+Serif:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../ofi.css">
+  <link rel="stylesheet" href="../ofi-contrast-hotfix.css">
+  <link rel="stylesheet" href="./pensieri-miei.css">
+  <link rel="stylesheet" href="./pensieri-miei.compact.css">
+
+  <style>
+    :root{
+      --gold:#caa85a;
+      --gold-ink: color-mix(in oklab, var(--gold), black 25%);
+      --hero-blue: linear-gradient(135deg, rgba(3,20,40,.96), rgba(4,30,70,.92));
+      --ofi-blue:#0e2a4a;
+      --muted: color-mix(in oklab, #111, #999 55%);
+    }
+
+    /* HERO */
+    .hero{position:relative;min-height:44vh;display:grid;place-items:end center;background:var(--hero-blue);color:#fff;overflow:hidden}
+    .hero .container{z-index:1;text-align:center;padding:48px 1rem 72px}
+    .hero .title{font-family:'Noto Serif',serif;font-weight:700;font-size:clamp(2.1rem,4vw,3.4rem);margin:.35rem 0 0}
+    .hero .username{opacity:.9;margin-top:.35rem}
+
+    /* LAYOUT */
+    .wrap{max-width:1400px;margin:0 auto;padding:24px 1rem 56px}
+    .center{width:min(1120px, 100%); margin:0 auto;}
+
+    /* CARD AUTORE */
+    .author-card{padding:1.15rem;border:1px solid rgba(0,0,0,.08);border-radius:20px;background:var(--surface,#fff);box-shadow:0 8px 26px rgba(0,0,0,.06)}
+    .quote-first{position:relative;margin:.2rem 0 1rem;padding:1rem 1rem 1rem 3rem;border-left:6px solid var(--gold);border-radius:14px;background:linear-gradient(180deg, color-mix(in oklab, var(--gold), transparent 88%), transparent)}
+    .quote-first::before{content:'“';position:absolute;left:.6rem;top:.1rem;font:800 54px/1 'Noto Serif',serif;color:var(--gold-ink)}
+    .quote-first .by{margin-top:.25rem;color:var(--muted)}
+
+    .author-top{display:grid;grid-template-columns:180px 1fr;gap:1.1rem;align-items:center;}
+    @media (max-width:820px){
+      .author-top{display:flex;flex-direction:column;align-items:center;text-align:center}
+    }
+    .avatar{width:180px;height:180px;aspect-ratio:1/1;border-radius:50%;object-fit:cover;display:block;flex:0 0 180px;border:2px solid rgba(202,168,90,.6);box-shadow:0 0 0 8px rgba(202,168,90,.12)}
+    @media (max-width:820px){.avatar{width:140px;height:140px;flex-basis:140px}}
+
+    .contact-fields{display:grid;grid-template-columns:1fr;gap:.6rem}
+    .field{border:1px solid rgba(0,0,0,.08);background:#fff;border-radius:999px;padding:.68rem 1rem;display:flex;align-items:center;gap:.6rem;line-height:1.3}
+    .field .icon{flex:0 0 auto}
+    .field a{color:inherit;text-decoration:none;border-bottom:1px dotted rgba(0,0,0,.25)}
+    .field span,.field a{white-space:normal;overflow-wrap:anywhere}
+
+    .divider{height:1px;background:rgba(0,0,0,.06);margin:1rem 0}
+
+    .unified{display:grid;grid-template-columns:1.2fr 1fr;gap:1rem}
+    @media (max-width:920px){ .unified{grid-template-columns:1fr} }
+    .block h4{margin:.2rem 0 .5rem;font-weight:700;font-family:'Noto Serif',serif}
+    .social-row{display:flex;flex-wrap:wrap;gap:.5rem}
+    .social-link{display:inline-flex;align-items:center;gap:.4rem;border:1px solid rgba(0,0,0,.08);padding:.6rem .9rem;border-radius:12px;text-decoration:none;background:#fff;color:var(--ofi-blue)}
+    .social-link:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}
+    .social-link strong{font-weight:700}
+
+    .tags{display:flex;flex-wrap:wrap;gap:.45rem}
+    .tag{display:inline-block;padding:.52rem .9rem;border-radius:999px;background:rgba(202,168,90,.12);color:#2b2b2b;border:1px solid rgba(202,168,90,.35)}
+
+    /* BOTTONI (scoped: non tocca l'header) */
+    main.wrap .btn, main.wrap .btn-primary, main.wrap .btn-ghost{cursor:pointer}
+    main.wrap .btn-primary{background:var(--ofi-blue);border-color:var(--ofi-blue);color:#fff}
+    main.wrap .btn-primary:hover{filter:brightness(1.05)}
+    main.wrap .btn-ghost{border:1px solid rgba(0,0,0,.1);background:#fff;color:inherit}
+
+    /* LISTA POST */
+    .posts-wrap{margin-top:1rem}
+    .list{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:.9rem}
+    .post{padding:1rem;border-radius:16px;border:1px solid rgba(0,0,0,.08);background:var(--surface,#fff);margin-bottom:.25rem}
+    .post h3{margin:0 0 .25rem;font-size:1.14rem;font-family:'Noto Serif',serif}
+    .post .text{color:#111;opacity:.95}
+    .post .meta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.35rem;color:var(--muted)}
+    .post .thumb{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;margin:.35rem 0 .5rem;border:1px solid rgba(0,0,0,.06)}
+
+    /* Dark mode: testo scuro dentro card bianche */
+    @media (prefers-color-scheme: dark){
+      .author-card{--surface:#fff}
+      .tag{color:#111}
+    }
+
+    /* Agente */
+    .agent-panel{width:360px}
+
+    /* ===== Storia dell’autore — card divider ===== */
+    .ofi-emozione{
+      margin:28px 0 22px; padding:14px 16px; border-left:4px solid #b08d57;
+      background:#fafafc; border-radius:12px;
+    }
+    .ofi-emozione-h{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-weight:600;letter-spacing:.2px;font-family:"Noto Serif",serif;color:#0e2a4a}
+    .ofi-emozione-h img{width:16px;height:16px;opacity:.95}
+    .ofi-emozione p{margin:0;line-height:1.6;font-style:italic;font-family:"EB Garamond",serif;font-size:1.02rem;color:#1a1a1a}
+
+    /* ===== Separatori tra i post ===== */
+    .post-sep{display:flex;align-items:center;justify-content:center;gap:12px;margin:36px 0 28px;color:rgba(0,0,0,.25)}
+    .post-sep .line{height:2px;flex:1;background:linear-gradient(90deg,rgba(0,0,0,0)0%,rgba(0,0,0,.12)12%,rgba(0,0,0,.18)50%,rgba(0,0,0,.12)88%,rgba(0,0,0,0)100%);border-radius:2px}
+    .post-sep .rose{position:relative;width:18px;height:18px;opacity:.9;filter:drop-shadow(0 1px 0 rgba(0,0,0,.05))}
+    .post-sep .rose::before{content:"";position:absolute;inset:-8px;border-radius:999px;background:radial-gradient(circle,rgba(202,168,90,.18),transparent 70%);z-index:-1}
+
+    /* —— Variante MINIMAL: trattini corti —— */
+    .post-sep.minimal .line{flex:0 0 64px}
+    @media (max-width:640px){ .post-sep.minimal .line{flex-basis:42px} }
+
+    /* Dark-friendly */
+    @media (prefers-color-scheme: dark){
+      .post-sep{color:rgba(255,255,255,.35)}
+      .post-sep .line{background:linear-gradient(90deg,rgba(255,255,255,0)0%,rgba(255,255,255,.14)12%,rgba(255,255,255,.18)50%,rgba(255,255,255,.14)88%,rgba(255,255,255,0)100%)}
+      .post-sep .rose{opacity:.95;filter:drop-shadow(0 0 8px rgba(255,255,255,.10))}
+      .post-sep .rose::before{background:radial-gradient(circle,rgba(255,255,255,.10),transparent 70%)}
+      .ofi-emozione{background:color-mix(in oklab,#0a1730 70%, white 30%);border-left-color:#caa85a}
+    }
+  
+    /* HERO RIFLESSIONE (featured) */
+    .hero-riflessione{
+      position:relative; margin:16px auto 0; padding:18px 18px 18px 56px;
+      width:min(920px, 92vw); text-align:left; border-left:6px solid var(--gold);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--gold), transparent 88%), transparent);
+      border-radius:16px; filter:drop-shadow(0 12px 30px rgba(0,0,0,.22));
+      animation: heroFade .65s ease-out both;
+      color: #111;
+    }
+    .hero-quote-mark{
+      position:absolute; left:14px; top:-2px; font:800 64px/1 'Noto Serif',serif; color:var(--gold-ink);
+    }
+    .hero-quote-text{
+      font-family:'EB Garamond', serif; font-size:clamp(1.05rem, 1.8vw, 1.35rem);
+      line-height:1.6; letter-spacing:.2px;
+    }
+    @keyframes heroFade{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)}
+
+/* === HERO RIFLESSIONE leggibile === */
+.hero-riflessione {
+  background: rgba(255,255,255,0.88);
+  color: #111;
+  border-left: 6px solid var(--gold);
+  border-radius: 16px;
+  padding: 22px 22px 22px 58px;
+  max-width: 920px;
+  margin: 20px auto 0;
+}
+.hero-quote-mark { 
+  color: var(--gold); 
+  font-size: 70px; 
+  top: -10px;
+}
+.hero-quote-text { 
+  font-family:'EB Garamond',serif;
+  font-size: 1.35rem;
+  line-height: 1.65;
+}
+
+/* === STORIA AUTORE card === */
+.ofi-emozione {
+  background: #fdfcf9;
+  border-left: 4px solid var(--gold);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 28px 0;
+}
+.ofi-emozione p {
+  font-family:'EB Garamond',serif;
+  font-size: 1.12rem;
+  color:#222;
+  line-height:1.65;
+}
+
+/* === CARD POST uniformi === */
+.post {
+  min-height: 420px; /* uniformità visiva */
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  background: var(--surface,#fff);
+  border:1px solid rgba(0,0,0,.08);
+  border-radius:18px;
+  padding:1.2rem;
+}
+.post .media img, 
+.post .media video {
+  border-radius:12px;
+  margin-bottom:.8rem;
+  max-height:260px;
+  object-fit:cover;
+}
+
+/* === BOTTONI === */
+.actions-row .btn.sharePost {
+  background: var(--gold);
+  color: #0e2a4a;
+  border: none;
+  font-weight:600;
+}
+.actions-row .btn.sharePost:hover {
+  filter: brightness(1.08);
+}
+
+/* === HASHTAG migliorati === */
+.hashtag {
+  color: var(--ofi-blue);
+  margin-right: .35rem;
+  transition:.2s;
+}
+.hashtag:hover {
+  color: var(--gold);
+}
+
+/* === SEPARATORI più ariosi === */
+.post-sep {
+  margin: 48px 0 40px;
+}
+
+  </style>
+
+  <script defer src="../ofi.js"></script>
+</head>
+<body>
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home"><img class="brand-logo" src="../images/logo-ofi.png" alt="OFI"></a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-controls="menuPanel" aria-expanded="false" aria-label="Apri menù"><span></span><span></span><span></span></button>
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head"><img src="../images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="eyebrow">PENSIERI · Autore pubblico</div>
+      <h1 class="title" id="heroName">Autore</h1>
+      <div class="username" id="heroUsername"></div>
+      <div id="heroRiflessione" class="hero-riflessione" hidden>
+        <div class="hero-quote-mark">“</div>
+        <div class="hero-quote-text"></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <!-- CARD AUTORE -->
+    <section class="author-card center" id="authorCard" aria-live="polite">
+      <section id="quoteWrap" class="quote-first" hidden>
+        <div class="text" id="quoteText">—</div>
+        <div class="by" id="quoteBy"></div>
+      </section>
+
+      <div class="author-top">
+        <img id="avatar" class="avatar" src="../images/avatar-uomo.png" alt="Avatar autore">
+        <div class="contact-fields" id="contactFields" aria-label="Contatti principali"></div>
+      </div>
+
+      <div class="divider" role="separator" aria-orientation="horizontal"></div>
+
+      <div class="unified">
+        <div class="block">
+          <h4>Contatti & Social</h4>
+          <div id="socialRow" class="social-row" aria-label="Social"></div>
+        </div>
+        <div class="block">
+          <h4>Parole che guidano</h4>
+          <div id="tags" class="tags" aria-label="Parole chiave"></div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button id="btnShare" class="btn btn-ghost" type="button">Condividi profilo</button>
+      </div>
+    </section>
+
+    <!-- PENSIERI PUBBLICI -->
+    <section class="posts-wrap center">
+      <h2 style="margin:.9rem 0 .6rem">Pensieri pubblici</h2>
+      <div id="posts" class="list" aria-live="polite">
+        <div class="skeleton" style="height:92px"></div>
+        <div class="skeleton" style="height:92px"></div>
+        <div class="skeleton" style="height:92px"></div>
+      </div>
+      <div class="cta"><button id="loadMore" class="btn" type="button" hidden>Carica altri</button></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="f-brand">
+          <img class="footer-logo" src="../images/logo-ofi.png" alt="OFI">
+          <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+          <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro.</p>
+        </div>
+        <div class="f-links">
+          <a href="../articoli/articoli.html">Articoli</a>
+          <a href="../faq.html">FAQ</a>
+          <a href="../accesso.html">Accedi</a>
+        </div>
+        <div class="f-legal small">© 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Agente OFI -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI" aria-expanded="false">
+    <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+  </button>
+  <section id="agentPanel" class="agent-panel" aria-hidden="true" aria-live="polite">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="../images/agente-ofi.png" alt="Agente OFI"/>
+        <div><strong>Agente OFI</strong><br/><small>Qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Questa è una <strong>pagina pubblica</strong>. Qui vedi solo ciò che l’autore ha scelto di condividere.</p></div>
+      <div class="suggest">
+        <button class="chip" data-q="Cos’è un Pensiero pubblico?">Cos’è un Pensiero pubblico?</button>
+        <button class="chip" data-q="Come posso contattare l’autore?">Come posso contattare l’autore?</button>
+        <button class="chip" data-q="Come posso scrivere un mio Pensiero?">Scrivere un mio Pensiero</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" action="#" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi qui la tua domanda" aria-label="Scrivi qui la tua domanda"/>
+      <button class="btn btn-primary">Invia</button>
+    </form>
+    <div class="agent-note small">Nota: i post <strong>privati</strong> restano personali e non appaiono qui.</div>
+  </section>
+
+  <!-- Firebase bootstrap -->
+  <script type="module">
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    if (!getApps().length) {
+      initializeApp({
+        apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+        authDomain:"ofi2025-51ba9.firebaseapp.com",
+        projectId:"ofi2025-51ba9",
+        storageBucket:"ofi2025-51ba9.firebasestorage.app",
+        messagingSenderId:"345581339212",
+        appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+      });
+    }
+  </script>
+
+  <!-- TEMPLATE COMMENTI -->
+  <template id="tpl-comment-thread">
+    <div class="cm-thread" role="region" aria-label="Commenti">
+      <div class="cm-head">
+        <div class="cm-title">Commenti</div>
+        <div class="cm-count">0</div>
+      </div>
+      <form class="cm-form" data-role="comment-form">
+        <input class="cm-input" type="text" placeholder="Scrivi un commento…" aria-label="Scrivi un commento">
+        <button class="cm-send" type="submit">Invia</button>
+      </form>
+      <div class="cm-list" data-role="comment-list"></div>
+      <div class="cm-toggle" data-role="load-more" hidden>Mostra altri</div>
+    </div>
+  </template>
+
+  <template id="tpl-comment-item">
+    <div class="cm-item">
+      <a class="cm-avatar" href="#" aria-hidden="true"><img alt=""></a>
+      <div class="cm-body">
+        <div class="cm-meta">
+          <span class="cm-name"></span>
+          <span class="cm-time"></span>
+        </div>
+        <div class="cm-text"></div>
+        <div class="cm-actions">
+          <div class="cm-reactions">
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">❤️</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">👍</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">🌟</span><span class="cnt">0</span></button>
+          </div>
+          <a class="cm-link" data-act="reply">Rispondi</a>
+          <a class="cm-link" data-act="edit" hidden>Modifica</a>
+          <a class="cm-link" data-act="delete" hidden>Elimina</a>
+          <a class="cm-link" data-act="report">Segnala</a>
+        </div>
+        <div class="cm-replies" data-role="replies">
+          <form class="cm-reply-form" hidden data-role="reply-form">
+            <input class="cm-reply-input" type="text" placeholder="Scrivi una risposta…" aria-label="Scrivi una risposta">
+            <button class="cm-reply-send" type="submit">Invia</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-reply-item">
+    <div class="cm-item">
+      <a class="cm-avatar" href="#" aria-hidden="true"><img alt=""></a>
+      <div class="cm-body">
+        <div class="cm-meta">
+          <span class="cm-name"></span>
+          <span class="cm-time"></span>
+        </div>
+        <div class="cm-text"></div>
+        <div class="cm-actions">
+          <div class="cm-reactions">
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">👍</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">❤️</span><span class="cnt">0</span></button>
+            <button class="cm-react" type="button" aria-pressed="false"><span class="emo">🌟</span><span class="cnt">0</span></button>
+          </div>
+          <a class="cm-link" data-act="edit" hidden>Modifica</a>
+          <a class="cm-link" data-act="delete" hidden>Elimina</a>
+          <a class="cm-link" data-act="report">Segnala</a>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- UI commenti -->
+  <script type="module" src="./pensieri-miei-comments-ui.js"></script>
+
+  <!-- Logica pagina autore -->
+  <script type="module">
+  import { getApp, getApps, initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, query, where, orderBy, limit, getDocs, startAfter, setDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getDocs as _getDocs, collection as _collection, query as _query, where as _where, orderBy as _orderBy, limit as _limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // bootstrap (safety)
+  if (!getApps().length) {
+    initializeApp({
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    });
+  }
+  const app = getApp();
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ------- CONFIG separatore -------
+  const SEP_STYLE = 'minimal'; // 'full' oppure 'minimal'
+
+  // ------- Helpers DOM / UI -------
+  const $ = s => document.querySelector(s);
+  const heroName = $('#heroName');
+  const heroUsername = $('#heroUsername');
+  const avatar   = $('#avatar');
+  const contact  = $('#contactFields');
+  const quoteWrap = $('#quoteWrap');
+  const quoteText = $('#quoteText');
+  const quoteBy   = $('#quoteBy');
+  const socialRow = $('#socialRow');
+  const tagsBox   = $('#tags');
+  const postsBox  = $('#posts');
+  const loadMoreBtn = $('#loadMore');
+  const btnShare = $('#btnShare');
+
+  const heroRif = document.getElementById('heroRiflessione');
+  const heroRifText = heroRif?.querySelector('.hero-quote-text');
+
+  const VIDEO_POSTER_FALLBACK = "../images/video-poster-generic.jpg";
+  const clamp100 = n => Math.max(0, Math.min(100, Math.round(Number(n)||0)));
+  const OFI_W = { cuore:3, luce:2, colomba:5, rosa:4, commento:6 };
+
+  // SEO refs
+  const seoTitle = document.getElementById('seoTitle');
+  const seoDesc  = document.getElementById('seoDesc');
+  const linkCanonical = document.getElementById('linkCanonical');
+  const ogTitle = document.getElementById('ogTitle');
+  const ogDesc  = document.getElementById('ogDesc');
+  const ogUrl   = document.getElementById('ogUrl');
+
+  // Query string
+  const params = new URLSearchParams(location.search);
+  const uidParam = params.get('id') || params.get('uid');
+  const userParam = (params.get('u') || '').replace(/^@/, '');
+
+  // Paginazione post
+  let lastDoc = null; let currentUid = null; const PAGE = 8;
+
+  function setCanonical(url){ if (!url) return; linkCanonical.href = url; ogUrl.content = url; }
+
+  // Share
+  function webShareAnywhere(title, text, url, btn){
+    if (navigator.share) { navigator.share({title, text, url}).catch(()=>{}); return; }
+    navigator.clipboard.writeText(url).then(()=>{ if(btn){ const old = btn.textContent; btn.textContent="Link copiato"; setTimeout(()=>btn.textContent=old, 1400); } }).catch(()=>{});
+  }
+  btnShare.addEventListener('click', ()=>{
+    const url = location.origin + location.pathname + (currentUid ? `?id=${encodeURIComponent(currentUid)}` : location.search);
+    webShareAnywhere(document.title, heroName.textContent.trim(), url, btnShare);
+  });
+
+  function field(icon, html){ const f=document.createElement('div'); f.className='field'; f.innerHTML=`<span class="icon">${icon}</span><span class="val">${html}</span>`; return f; }
+  function escapeHtml(s){return s?.replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) || ''}
+
+  function fmtDate(d){ const dd=new Date(d); return new Intl.DateTimeFormat('it-IT',{dateStyle:'medium', timeStyle:'short'}).format(dd); }
+  function buildMediaNode(p){
+    const url=p?.media||p?.cover_url||""; const type=(p?.mediaType||"").toLowerCase()||(/\.(mp4|webm|ogg)(\?|$)/i.test(url)?"video":"image"); const poster=p?.poster_url||VIDEO_POSTER_FALLBACK;
+    const wrap=document.createElement('div'); wrap.className='media'; wrap.dataset.media=type; if(url) wrap.dataset.src=url; if(type==='video') wrap.dataset.poster=poster;
+    if (url && type==='video'){ wrap.innerHTML=`<video controls playsinline preload="metadata" poster="${poster}" src="${url}"><source src="${url}"></video>`; }
+    else if (url){ wrap.innerHTML=`<img alt="" src="${url}">`; }
+    return wrap;
+  }
+  const clamp100f = n => Math.max(0, Math.min(100, Math.round(Number(n)||0)));
+  function renderLuminaRing(el, pctRaw){ const pct=clamp100f(pctRaw||0); el.style.setProperty('--p', pct); el.querySelector('.pct')?.replaceChildren(String(Math.round(pct))); }
+  function computeCrescita(p){
+    const r=p.reazioni||{}; const hearts=+ (r.cuore||0); const stars=+ (r.luce||0); const doves=+ (r.colomba||0); const roses=+ (r.rosa||0);
+    const comm=+ (p.commenti_count || p.commenti_totali || 0);
+    const eng=hearts*3 + stars*2 + doves*5 + roses*4 + comm*6;
+    const score = 100 * (1 - Math.exp(-(eng)/120));
+    return clamp100f(score);
+  }
+
+  async function hookReactions(root, postId){
+    let me=null; const btns=root.querySelectorAll('.react-btn'); if(!btns.length) return;
+    const rRef=doc(db,"pensieri_reazioni",postId);
+    try{
+      const snap=await getDoc(rRef);
+      if (snap.exists()){
+        const {utenti={},conteggi={}} = snap.data()||{};
+        me = utenti[getAuth().currentUser?.uid||""]||null;
+        ['cuore','luce','colomba','rosa'].forEach(k=>{
+          const cnt=root.querySelector(`.react-btn[data-react="${k}"] .cnt, .react-btn[data-type="${k}"] .cnt`);
+          if (cnt) cnt.textContent=Number(conteggi[k]||0);
+        });
+        if (me){ root.querySelector(`.react-btn[data-react="${me}"], .react-btn[data-type="${me}"]`)?.classList.add('active'); }
+      }
+    }catch(_){}
+    btns.forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const u=getAuth().currentUser; if(!u) return;
+        const type=btn.dataset.react||btn.dataset.type; const prev=me; me=(prev===type)?null:type;
+        btns.forEach(b=> b.classList.toggle('active', (b.dataset.react||b.dataset.type)===me));
+        const getCnt=t=>+ (root.querySelector(`.react-btn[data-react="${t}"] .cnt, .react-btn[data-type="${t}"] .cnt`)?.textContent||0);
+        const setCnt=(t,v)=> root.querySelectorAll(`.react-btn[data-react="${t}"] .cnt, .react-btn[data-type="${t}"] .cnt`).forEach(n=> n.textContent=v);
+        const c={cuore:getCnt("cuore"),luce:getCnt("luce"),colomba:getCnt("colomba"),rosa:getCnt("rosa")};
+        if(prev){ c[prev]=Math.max(0,c[prev]-1); } if(me){ c[me]=(c[me]||0)+1; }
+        Object.keys(c).forEach(k=> setCnt(k,c[k]));
+        try{
+          const snap=await getDoc(rRef); const utenti=(snap.exists()&&snap.data().utenti)?{...snap.data().utenti}:{};
+          if(me){ utenti[u.uid]=me; } else { delete utenti[u.uid]; }
+          await setDoc(rRef,{utenti,conteggi:c,ultimaModifica:serverTimestamp()},{merge:true});
+          await updateDoc(doc(db,"pensieri_utente",postId),{reazioni:c});
+        }catch(e){ console.error(e); }
+      });
+    });
+  }
+
+  // --- Mini toast
+  function toast(msg){
+    const t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0e2a4a;color:#fff;padding:.6rem .9rem;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:99999";
+    document.body.appendChild(t);
+    setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .25s'; setTimeout(()=>t.remove(), 250); }, 1400);
+  }
+
+  // --- Dialog “Segnala”
+  function openReportDialog({title="Segnala", reasons=[]}={}){
+    return new Promise(resolve=>{
+      const overlay=document.createElement('div');
+      overlay.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.35);display:grid;place-items:center;z-index:99998";
+      const panel=document.createElement('div');
+      panel.style.cssText="width:min(520px,92vw);background:var(--surface,#fff);color:var(--surface-text,#111);border-radius:14px;padding:16px;box-shadow:0 20px 40px rgba(0,0,0,.3)";
+      panel.innerHTML=`
+        <h3 style="margin:.2rem 0 .6rem;font-family:'Noto Serif',serif">${title}</h3>
+        <label class="small" style="display:block;margin:.2rem 0 .3rem">Motivo</label>
+        <select id="repReason" class="input" style="width:100%;margin-bottom:.5rem">
+          ${reasons.map(r=>`<option>${r}</option>`).join('')}
+        </select>
+        <label class="small" style="display:block;margin:.2rem 0 .3rem">Dettagli (opzionale)</label>
+        <textarea id="repText" class="input" rows="4" placeholder="Spiega in poche parole…"></textarea>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:.8rem">
+          <button id="repCancel" class="btn btn-ghost" type="button">Annulla</button>
+          <button id="repSend" class="btn btn-primary" type="button">Invia</button>
+        </div>`;
+      overlay.appendChild(panel);
+      document.body.appendChild(overlay);
+      const close = (res)=>{ overlay.remove(); resolve(res||null); };
+      panel.querySelector('#repCancel').addEventListener('click', ()=>close(null));
+      panel.querySelector('#repSend').addEventListener('click', ()=>{
+        const reason = panel.querySelector('#repReason').value || "Altro";
+        const text   = (panel.querySelector('#repText').value||"").trim();
+        close({reason, text});
+      });
+      overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(null); });
+      document.addEventListener('keydown', function onEsc(ev){ if(ev.key==='Escape'){ document.removeEventListener('keydown', onEsc); close(null); } });
+    });
+  }
+
+  // ===== Storia dell’autore =====
+
+  // ===== Riflessione in evidenza (HERO) =====
+  async function loadFeaturedRiflessioneForHero(uid){
+    try{
+      // Post più recente pubblico
+      let s=null;
+      const orders=[['data','desc'],['createdAt','desc'],['ts','desc']];
+      for (const [f,dir] of orders){
+        try{
+          s = await getDocs(query(collection(db,'pensieri_utente'), where('uid','==', uid), where('visibilita','==','pubblico'), orderBy(f,dir), limit(1)));
+          if (s && !s.empty) break;
+        }catch(_){}
+      }
+      if (!s || s.empty) return;
+      const post = s.docs[0];
+      const rifl = await fetchRiflessioneApproved(post.id);
+      if (!rifl?.text) return;
+      if (heroRif && heroRifText){
+        heroRifText.textContent = rifl.text;
+        heroRif.hidden = false;
+      }
+    }catch(_){}
+  }
+
+  
+  async function fetchRiflessioneApproved(postId){
+    const col=_collection(db,`pensieri_utente/${postId}/emozioni_cronaca`);
+    // 1) Nuovo modello: scope/public + state/live (preferito) — usa createdAt per evitare indici mancanti su updatedAt
+    try{
+      const s = await _getDocs(_query(col, _where('scope','==','public'), _where('state','==','live'), _orderBy('createdAt','desc'), _limit(1)));
+      if (!s.empty){
+        const d=s.docs[0].data()||{};
+        const text = String(d.testo || d.text || d.riflessione || '').trim();
+        if (text) return { text, ts: d.createdAt || d.updatedAt || d.ts || null };
+      }
+    }catch(_){/* fallback sotto */}
+
+    // 2) Legacy "status: approved"
+    try{
+      const s2 = await _getDocs(_query(col, _where('status','==','approved'), _orderBy('createdAt','desc'), _limit(1)));
+      if (!s2.empty){
+        const d=s2.docs[0].data()||{};
+        const text = String(d.testo || d.text || d.riflessione || '').trim();
+        if (text) return { text, ts: d.createdAt || d.updatedAt || d.ts || null };
+      }
+    }catch(_){/* fallback sotto */}
+
+    // 3) Ultimi doc e filtro client (nessun indice richiesto)
+    try{
+      const s3 = await _getDocs(_query(col, _orderBy('createdAt','desc'), _limit(3)));
+      for (const docu of s3.docs){
+        const d = docu.data()||{};
+        const ok = ((d.scope==='public' && d.state==='live') || d.status==='approved');
+        const text = String(d.testo || d.text || d.riflessione || '').trim();
+        if (ok && text){ return { text, ts: d.createdAt || d.updatedAt || d.ts || null }; }
+      }
+    }catch(_){}
+
+    return null;
+  }
+  function renderEmozioneDivider(text){
+    if (!text) return document.createTextNode('');
+    const box=document.createElement('div');
+    box.className='ofi-emozione';
+    box.innerHTML=`
+      <div class="ofi-emozione-h">
+        <img src="../images/pensieri-logo.png" alt="Firma Pensieri" />
+        <span>Storia dell’autore</span>
+      </div>
+      <p>${escapeHtml(text)}</p>`;
+    return box;
+  }
+
+  function renderPostSeparator(){
+    const sep=document.createElement('div');
+    sep.className = 'post-sep' + (SEP_STYLE==='minimal' ? ' minimal' : '');
+    sep.innerHTML = `<span class="line" aria-hidden="true"></span>
+      <img class="rose" src="../images/pensieri-logo.png" alt="" aria-hidden="true" />
+      <span class="line" aria-hidden="true"></span>`;
+    return sep;
+  }
+
+  function renderPublicCard(p){
+    const el=document.createElement("article"); el.className="post";
+    const dt=p.data?.toDate ? p.data.toDate() : (p.data || p.created_at?.toDate?.() || p.ts?.toDate?.() || new Date());
+    const luogo=p.luogo?`📍 ${escapeHtml(p.luogo)}`:"";
+    const hashtags=(p.hashtags||[]).map(h=>`<span class="hashtag">#${escapeHtml(h)}</span>`).join("");
+    const growth=computeCrescita(p);
+    const lvl=Number(p.lumina_level ?? p.lumina_livello ?? 0);
+
+    el.innerHTML=`
+      <div class="pensiero-box lv-${lvl}" data-pid="${p.id}" data-owner="${p.uid||''}" data-vis="pubblico">
+        <div class="pensiero-head">
+          <div class="head-left"><span class="badge-vis pubblico">Pubblico</span></div>
+          <div class="lumina-top">
+            <div class="lumina-badge"><span class="dot"></span> Lumina ${lvl}</div>
+            <div class="lumina-ring" data-pct="${growth}">
+              <svg viewBox="0 0 40 40"><circle class="ring-bg" cx="20" cy="20" r="18"></circle><circle class="ring-fg" cx="20" cy="20" r="18"></circle></svg>
+              <span class="pct">${growth}</span>
+            </div>
+          </div>
+        </div>
+        ${p.titolo ? `<h3>${escapeHtml(p.titolo)}</h3>` : ``}
+        ${p.media ? `<div class="media placeholder"></div>` : ``}
+        <div class="testo clamp">${escapeHtml(p.testo||"")}</div>
+        <a class="expand-link" role="button">Mostra tutto</a>
+        <div class="lumina-chips">
+          <span class="lumina-chip">${(p.reazioni?.cuore||0)+(p.reazioni?.luce||0)+(p.reazioni?.colomba||0)+(p.reazioni?.rosa||0)} reazioni</span>
+          <span class="lumina-chip"><span class="cCount">${p.commenti_count||0}</span> commenti</span>
+        </div>
+        <div class="reactions-row">
+          <button class="react-btn" data-react="cuore"><span class="emo">❤️</span> <span class="cnt">${p.reazioni?.cuore||0}</span></button>
+          <button class="react-btn" data-react="luce"><span class="emo">✨</span> <span class="cnt">${p.reazioni?.luce||0}</span></button>
+          <button class="react-btn" data-react="colomba"><span class="emo">🕊️</span> <span class="cnt">${p.reazioni?.colomba||0}</span></button>
+          <button class="react-btn" data-react="rosa"><span class="emo">🌹</span> <span class="cnt">${p.reazioni?.rosa||0}</span></button>
+        </div>
+        <div class="meta">
+          <span>${luogo}</span>
+          <div class="hashtag-row">${hashtags}</div>
+          <div class="small">${fmtDate(dt)}</div>
+        </div>
+        <div class="actions-row">
+          <button class="btn primary openComments" data-toggle-comments>Commenti</button>
+          <button class="btn btn-outline sharePost" data-id="${p.id}">Condividi</button>
+          <button class="btn btn-ghost reportPost" data-id="${p.id}">Segnala</button>
+        </div>
+        <img class="social-watermark" src="../images/OFI-Social.png" alt="OFI Social">
+      </div>`;
+    const ph=el.querySelector(".media.placeholder"); if (ph){ ph.replaceWith(buildMediaNode(p)); }
+    renderLuminaRing(el.querySelector(".lumina-ring"), p.lumina_score ?? p.lumina_progress ?? growth);
+
+    el.querySelector(".expand-link")?.addEventListener("click",(e)=>{
+      const t=el.querySelector(".testo"); const isExp=t.classList.toggle("expanded");
+      e.currentTarget.textContent=isExp?"Riduci":"Mostra tutto"; t.classList.toggle("clamp",!isExp);
+    });
+
+    el.querySelector(".sharePost")?.addEventListener("click",(e)=>{
+      const url=`${location.origin}/pensieri-pubblici.html?id=${p.id}`;
+      webShareAnywhere(p.titolo || "Un Pensiero su OFI", "Condividi questo Pensiero", url, e.currentTarget);
+    });
+
+    // Segnala post pubblico
+    el.querySelector(".reportPost")?.addEventListener("click", async (e)=>{
+      const u = getAuth().currentUser;
+      if (!u) { alert("Per segnalare un post devi accedere."); return; }
+      const report = await openReportDialog({
+        title: "Segnala questo post",
+        reasons: ["Contenuti inappropriati","Spam o truffa","Violazione privacy","Altro"]
+      });
+      if (!report) return; // annullato
+      try{
+        const rid = `${p.id}_${u.uid}`; // 1 segnalazione per utente per post
+        await setDoc(doc(db,"segnalazioni_post", rid), {
+          postId: p.id,
+          postOwner: p.uid || "",
+          postExcerpt: String(p.testo||"").slice(0,240),
+          media: p.media || null,
+          reason: report.reason,
+          text: report.text || "",
+          reporterUid: u.uid,
+          reporterAt: serverTimestamp(),
+          status: "open",
+        }, { merge: true });
+        toast("Grazie. La tua segnalazione è stata inviata.");
+      }catch(err){
+        console.error(err);
+        alert("Non riesco a inviare la segnalazione ora.");
+      }
+    });
+
+    const box=el.querySelector(".pensiero-box");
+    el.querySelector(".openComments")?.addEventListener("click", ()=>{
+      const thread=box.querySelector(".cm-thread");
+      const wrap=box.querySelector(".cm-thread-wrap")||thread?.parentElement;
+      if (!thread) return;
+      const willOpen=thread.hasAttribute('hidden');
+      thread.hidden=!willOpen; box.classList.toggle('is-comments-open', willOpen);
+      if (wrap) wrap.style.display = willOpen ? 'block' : 'none';
+      if (willOpen && !thread.hasAttribute('data-opened')){ thread.setAttribute('data-opened','1'); if(window.Comments&&window.Comments.onOpen) window.Comments.onOpen(box); }
+    });
+    if (window.Comments && window.Comments.mount) window.Comments.mount(box);
+
+    hookReactions(el,p.id);
+    return el;
+  }
+
+  // ====== Autore ======
+  async function loadAuthorByUid(uid){
+    const ref=doc(db,'utenti_cittadini',uid);
+    const snap=await getDoc(ref);
+    if(!snap.exists()) throw new Error('Autore non trovato');
+    const x=snap.data(); currentUid=uid;
+
+    const pieces=[]; if(x.vis_nome&&x.nome) pieces.push(x.nome); if(x.vis_cognome&&x.cognome) pieces.push(x.cognome);
+    const full=pieces.join(' '); const userOk=(x.vis_nome_utente&&x.nome_utente); const nickname=userOk?('@'+x.nome_utente):''; const finalName=full || (userOk?nickname:'Autore');
+    heroName.textContent=finalName; heroUsername.textContent=userOk?nickname:'';
+
+    const baseTitle=`Pensieri di ${finalName} — OFI`; seoTitle.textContent=baseTitle; ogTitle.content=baseTitle;
+
+    if (x.foto) avatar.src=x.foto;
+
+    contact.innerHTML='';
+    if (x.vis_luogo && x.luogo) contact.appendChild(field('📍', escapeHtml(x.luogo)));
+    if (x.vis_email && x.email) contact.appendChild(field('✉️', `<a href="mailto:${escapeHtml(x.email)}">${escapeHtml(x.email)}</a>`));
+
+    const fraseOk=!!x.vis_frase && !!(x.frase && x.frase.trim().length);
+    if (fraseOk){
+      quoteWrap.hidden=false; quoteText.textContent=x.frase;
+      const autOk=!!x.vis_autore && !!(x.autore && x.autore.trim().length);
+      quoteBy.textContent=autOk?('— '+x.autore):'';
+      const d=`“${x.frase}” ${autOk?('— '+x.autore):''}`.trim();
+      seoDesc.setAttribute('content',d); ogDesc.setAttribute('content',d);
+    } else {
+      quoteWrap.hidden=true;
+      seoDesc.setAttribute('content','Vetrina pubblica dell’autore su OFI PENSIERI.');
+      ogDesc.setAttribute('content','Vetrina pubblica dell’autore su OFI PENSIERI.');
+    }
+
+    socialRow.innerHTML='';
+    if (x.vis_social){
+      const add=(label,href,ico)=>{ if(!href) return; const a=document.createElement('a'); a.className='social-link'; a.href=href; a.target='_blank'; a.rel='noopener'; a.innerHTML=`<span class="ico">${ico}</span><strong>${label}</strong>`; socialRow.appendChild(a); };
+      add('Facebook', x.social_facebook, '📘');
+      add('Instagram', x.social_instagram, '📸');
+      add('YouTube', x.social_youtube, '▶️');
+    }
+
+    tagsBox.innerHTML='';
+    if (x.vis_interessi && x.interessi){
+      const list=(Array.isArray(x.interessi)?x.interessi:(x.interessi+"").split(',')).map(s=>s.trim()).filter(Boolean);
+      list.forEach(t=>{ const el=document.createElement('span'); el.className='tag'; el.textContent=t; tagsBox.appendChild(el); });
+    }
+
+    const canonical = userOk ? (location.origin+location.pathname+`?u=${encodeURIComponent(x.nome_utente)}`) : (location.origin+location.pathname+`?id=${encodeURIComponent(currentUid)}`);
+    setCanonical(canonical);
+
+    postsBox.innerHTML=''; lastDoc=null; await loadPosts();
+    await loadFeaturedRiflessioneForHero(currentUid);
+  }
+
+  async function loadAuthor(){
+    try{
+      if (uidParam){ await loadAuthorByUid(uidParam); return; }
+      if (userParam){
+        const q1=query(collection(db,'utenti_cittadini'), where('nome_utente','==', userParam));
+        const s1=await getDocs(q1);
+        if (!s1.empty){ await loadAuthorByUid(s1.docs[0].id); return; }
+      }
+      throw new Error('Autore non specificato');
+    }catch(e){
+      console.error(e);
+      heroName.textContent='Autore non trovato';
+      postsBox.innerHTML=`<div class="empty">Nessun autore trovato. Controlla il link.</div>`;
+    }
+  }
+
+  // ====== POST PUBBLICI (con card "Storia dell’autore" SOPRA al post e separatori puliti) ======
+  async function loadPosts(){
+    if (!currentUid) return;
+
+    // rimuovi eventuali skeleton precedenti e mostra uno nuovo
+    postsBox.querySelectorAll('.skeleton').forEach(el=>el.remove());
+    postsBox.insertAdjacentHTML('beforeend', `<div class="skeleton" style="height:140px"></div>`);
+
+    const tryOrders=[['data','desc'],['ts','desc'],['createdAt','desc']];
+    let s=null;
+    for (const [field,dir] of tryOrders){
+      try{
+        let qBase=query(collection(db,'pensieri_utente'), where('uid','==',currentUid), where('visibilita','==','pubblico'), orderBy(field,dir), limit(PAGE));
+        if (lastDoc) qBase=query(qBase,startAfter(lastDoc));
+        s=await getDocs(qBase); break;
+      }catch(e){}
+    }
+
+    // pulizia skeleton
+    postsBox.querySelectorAll('.skeleton').forEach(el=>el.remove());
+
+    if (!s){ postsBox.innerHTML=`<div class="empty">Impossibile caricare i pensieri ora.</div>`; return; }
+    if (s.empty && !lastDoc){ postsBox.innerHTML=`<div class="empty">Ancora nessun Pensiero pubblico.</div>`; loadMoreBtn.hidden=true; return; }
+
+    const frg=document.createDocumentFragment();
+    const docs=s.docs;
+
+    for (let i=0;i<docs.length;i++){
+      const d=docs[i];
+      const p={ id:d.id, ...d.data() };
+
+      // 1) Storia dell'autore sopra la card (se presente)
+      try{
+        const rifl = await fetchRiflessioneApproved(p.id);
+        if (rifl?.text) frg.appendChild(renderEmozioneDivider(rifl.text));
+      }catch(_){}
+
+      // 2) Card del post
+      frg.appendChild(renderPublicCard(p));
+
+      // 3) Separatore solo tra i post (non dopo l'ultimo)
+      if (i !== docs.length - 1){
+        frg.appendChild(renderPostSeparator());
+      }
+    }
+
+    postsBox.appendChild(frg);
+
+    lastDoc = docs[docs.length-1] || lastDoc;
+    loadMoreBtn.hidden = !(s.size === PAGE);
+  }
+
+  loadMoreBtn.addEventListener('click', loadPosts);
+  onAuthStateChanged(auth, ()=>{});
+  await loadAuthor();
+  </script>
+
+  <!-- Agent OFI: toggle -->
+  <script>
+    (function(){
+      const fab=document.getElementById('agentFab');
+      const panel=document.getElementById('agentPanel');
+      const btnClose=document.getElementById('agentClose');
+      function openAgent(){ panel.setAttribute('aria-hidden','false'); fab?.setAttribute('aria-expanded','true'); }
+      function closeAgent(){ panel.setAttribute('aria-hidden','true'); fab?.setAttribute('aria-expanded','false'); }
+      function toggleAgent(){ (panel.getAttribute('aria-hidden')==='true') ? openAgent() : closeAgent(); }
+      fab?.addEventListener('click', toggleAgent);
+      btnClose?.addEventListener('click', closeAgent);
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAgent(); });
+      const overlay=document.getElementById('menuOverlay'); if (overlay){ overlay.setAttribute('hidden',''); overlay.style.pointerEvents='none'; }
+    })();
+  </script>
+
+  <!-- Override visibilità agente -->
+  <style>
+    #agentPanel[aria-hidden="false"]{
+      display:flex !important; position:fixed !important; right:20px !important; bottom:90px !important; width:360px !important; max-height:70vh !important;
+      flex-direction:column !important; background:var(--surface,#fff) !important; border:1px solid rgba(0,0,0,.1) !important; border-radius:16px !important;
+      box-shadow:0 16px 32px rgba(0,0,0,.28) !important; opacity:1 !important; visibility:visible !important; transform:none !important; pointer-events:auto !important;
+      z-index:2147483647 !important; overflow:hidden !important;
+    }
+    #menuOverlay[hidden]{ display:none !important; pointer-events:none !important; }
+  
+    /* HERO RIFLESSIONE (featured) */
+    .hero-riflessione{
+      position:relative; margin:16px auto 0; padding:18px 18px 18px 56px;
+      width:min(920px, 92vw); text-align:left; border-left:6px solid var(--gold);
+      background:linear-gradient(180deg, color-mix(in oklab, var(--gold), transparent 88%), transparent);
+      border-radius:16px; filter:drop-shadow(0 12px 30px rgba(0,0,0,.22));
+      animation: heroFade .65s ease-out both;
+      color: #111;
+    }
+    .hero-quote-mark{
+      position:absolute; left:14px; top:-2px; font:800 64px/1 'Noto Serif',serif; color:var(--gold-ink);
+    }
+    .hero-quote-text{
+      font-family:'EB Garamond', serif; font-size:clamp(1.05rem, 1.8vw, 1.35rem);
+      line-height:1.6; letter-spacing:.2px;
+    }
+    @keyframes heroFade{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
+
+  </style>
+</body>
+</html>

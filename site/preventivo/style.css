@@ -1,0 +1,350 @@
+/* Reset base */
+body, h1, h2, h3, p, ul {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f8f8f8;
+  color: #002c5d;
+  line-height: 1.6;
+  padding-top: 60px;
+}
+
+/* Header */
+header {
+  text-align: center;
+  background-color: white;
+  padding: 20px 10px;
+}
+
+header .logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header img {
+  max-width: 200px;
+  height: auto;
+}
+
+header h1.brand-name {
+  font-size: 22px;
+  margin-top: 10px;
+  color: #002c5d;
+}
+
+/* Navbar */
+nav {
+  background-color: #002c5d;
+  padding: 10px 0;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 0;
+  margin: 0;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Main */
+main {
+  padding: 20px;
+  text-align: center;
+}
+
+main h1 {
+  color: #002c5d;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+main p {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.btn-red {
+  background-color: #c0392b;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  margin-right: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-blue {
+  background-color: #002c5d;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-red:hover,
+.btn-blue:hover {
+  opacity: 0.8;
+}
+
+#aziende {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 20px;
+}
+
+#map {
+  height: 350px;
+  width: 90%;
+  margin: 30px auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.video-section {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.video-section p {
+  margin-bottom: 10px;
+  font-style: italic;
+  font-size: 17px;
+}
+
+.video-section img {
+  max-width: 250px;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #e6e6e6;
+  margin-top: 40px;
+  color: #002c5d;
+  font-size: 14px;
+}
+
+
+/* Sezione: Scopri come funziona OFI */
+.ofi-cittadini {
+  padding: 3em 1em;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+}
+
+.ofi-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.ofi-text {
+  flex: 1 1 50%;
+}
+
+.ofi-text h2 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+  color: #002d62;
+}
+
+.ofi-text p {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #333;
+}
+
+.ofi-immagine img {
+  max-width: 250px;
+  height: auto;
+}
+
+/* Sezione: Sei un’impresa funebre? */
+.ofi-imprese {
+  background-color: #eaf0f7;
+  padding: 3em 1em;
+  border-top: 1px solid #ccc;
+}
+
+.ofi-imprese-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2em;
+}
+
+.ofi-imprese-text {
+  flex: 1 1 50%;
+}
+
+.ofi-imprese-text h2 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+  color: #0d3d6a;
+}
+
+.ofi-imprese-text p {
+  font-size: 1.1em;
+  color: #333;
+  line-height: 1.5;
+}
+
+.ofi-mappa-img img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.ofi-contatore {
+  font-size: 1.1em;
+  margin-top: 0.5em;
+  text-align: center;
+  color: #0d3d6a;
+}
+
+.funeral-business-section {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+}
+
+.funeral-business-section h2 {
+  font-size: 1.8em;
+  color: #002f5f;
+  margin-bottom: 10px;
+}
+
+.funeral-business-section p {
+  font-size: 1em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.map-italia-stilizzata {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sezione: Imprese Funebri */
+.funeral-business-section {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f9f9f9;
+}
+
+.funeral-business-section h2 {
+  font-size: 1.8em;
+  color: #002f5f;
+  margin-bottom: 10px;
+}
+
+.funeral-business-section p {
+  font-size: 1em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.map-italia-stilizzata {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Miniatura video */
+.video-preview {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.video-preview:hover {
+  transform: scale(1.02);
+}
+
+/* Sezione "Scopri come funziona" */
+.scopri-funzione {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #f9f9f9;
+}
+
+.scopri-funzione h2 {
+  font-size: 24px;
+  color: #002e5d;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.scopri-funzione p {
+  font-size: 18px;
+  color: #002e5d;
+  margin-bottom: 30px;
+}
+
+.scopri-funzione img {
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 20px;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.scopri-funzione a {
+  display: inline-block;
+  font-weight: bold;
+  color: #4b0082;
+  text-decoration: none;
+  margin-top: 10px;
+}
+
+.scopri-funzione a:hover {
+  text-decoration: underline;
+}
+
+
+
+

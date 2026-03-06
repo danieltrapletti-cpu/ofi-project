@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark" class="theme-ofi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Pensiero del giorno — OFI</title>
+  <meta name="description" content="Un pensiero di luce e conforto, ogni giorno da OFI.">
+
+  <link rel="icon" type="image/png" href="/images/OFI-Social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Coerente con la dashboard -->
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@600;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/ofi.css">
+  <script defer src="/js/menu.js"></script>
+  <script defer src="/ofi.js"></script>
+
+  <style>
+    :root{
+      --gold: #caa85a;
+      --gold-soft:#e8d39a;
+      --blue-deep:#071425;
+      --blue-dark:#0b1f39;
+      --ofi-red:#c03a2b;
+      --text:#ffffff;
+      --muted: rgba(255,255,255,.78);
+      --card: rgba(12,30,46,.92);
+      --card-border: rgba(202,168,90,.28);
+      --shadow: rgba(0,0,0,.35);
+    }
+    /* Light theme vars */
+    html[data-theme="light"]{
+      --text:#0c1e2e;
+      --muted: rgba(12,30,46,.8);
+      --card:#f8fafc;
+      --card-border: rgba(12,30,46,.12);
+      --shadow: rgba(0,0,0,.15);
+    }
+
+    body{
+      font-family:"Source Sans 3",system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 50% -20%, rgba(202,168,90,.10), transparent 60%),
+        linear-gradient(180deg, var(--blue-dark), var(--blue-deep));
+      overflow-x:hidden;
+    }
+    html[data-theme="light"] body{
+      background:
+        radial-gradient(1200px 600px at 50% -20%, rgba(202,168,90,.08), transparent 60%),
+        linear-gradient(180deg, #f3f6fb, #eef3f9);
+    }
+
+    /* Layout */
+    main.page{ display:grid; place-items:center; min-height:calc(100vh - 160px); padding: clamp(16px, 5vw, 64px); }
+    .wrap{ width:min(900px, 94vw); text-align:center; animation:fadeIn .7s ease-out both; }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
+
+    .page-title{
+      margin:.5rem 0 1rem; text-transform:uppercase; letter-spacing:.12em;
+      color:var(--gold-soft); font-weight:800; font-size:.92rem;
+    }
+    .intro{
+      font-family:"Noto Serif", serif;
+      font-size: clamp(1.05rem, 1rem + .4vw, 1.25rem);
+      color: var(--muted);
+      margin: 0 0 1.6rem;
+      line-height:1.55;
+    }
+
+    /* Card pensiero */
+    .thought{
+      position:relative; border:1px solid var(--card-border); background:var(--card);
+      border-radius:22px; padding: clamp(16px, 3.5vw, 28px) clamp(14px, 3vw, 22px);
+      box-shadow: 0 18px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
+      overflow:hidden;
+    }
+    .thought::before{
+      content:""; position:absolute; inset:-10% -10% auto -10%; height:60%;
+      background: radial-gradient(600px 260px at 50% 0%, rgba(202,168,90,.18), transparent 70%);
+      pointer-events:none;
+      animation:glow 5s ease-in-out infinite alternate;
+      opacity:.8;
+    }
+    @keyframes glow{ from{opacity:.6; transform:translateY(-6px)} to{opacity:.9; transform:translateY(6px)} }
+
+    .quote{
+      font-family:"Noto Serif", serif;
+      font-weight:600;
+      font-size: clamp(1.35rem, 1.2rem + .8vw, 1.9rem);
+      line-height:1.6;
+      color: var(--gold-soft);
+      text-shadow: 0 0 10px rgba(202,168,90,.22);
+      margin: 0 auto .6rem;
+      max-width: 760px;
+      position:relative;
+      padding-left: 1.4rem;
+    }
+    .quote::before{
+      content:"“"; position:absolute; left:.1rem; top:-.65rem; opacity:.25; font-size: clamp(2.2rem, 2rem + 1.2vw, 3rem);
+      color: var(--gold-soft);
+    }
+    .author{
+      color: var(--gold-soft);
+      font-weight:700;
+      margin: 0 0 1.1rem;
+      min-height: 1.2em;
+    }
+
+    /* CTA area */
+    .cta{
+      display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; justify-content:center;
+    }
+    .btn{
+      appearance:none; border:0; border-radius:999px;
+      padding:.72rem 1.2rem; font-weight:800; letter-spacing:.02em; cursor:pointer;
+      transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+
+    /* “Scopri OFI” primaria (rossa) */
+    .btn-ofi{
+      background: linear-gradient(180deg, #d44a3b, var(--ofi-red));
+      color:#fff; box-shadow: 0 10px 24px rgba(192,58,43,.35);
+    }
+    .btn-ofi:hover{ box-shadow: 0 12px 30px rgba(192,58,43,.45); }
+
+    /* “Condividi” più discreto (oro, ma 90%) */
+    .btn-share{
+      background: linear-gradient(180deg, #e8d39a, var(--gold));
+      color:#102845; box-shadow: 0 10px 24px rgba(202,168,90,.3);
+      padding:.64rem 1.1rem; /* leggermente più piccolo */
+      font-size:.98rem;
+    }
+
+    .status{
+      margin:.75rem 0 0; font-size:.95rem; color:var(--muted);
+      min-height:1.2em;
+    }
+
+    /* Blocco sotto */
+    .after{
+      margin: 1.8rem 0 0; line-height:1.55; color: var(--muted);
+      font-family:"Noto Serif",serif; font-size: clamp(1rem, .95rem + .2vw, 1.1rem);
+    }
+    .after .link{
+      display:inline-block; margin-top:.6rem;
+      text-decoration:none; font-weight:800;
+      color:#fff;
+      background: linear-gradient(180deg, #d44a3b, var(--ofi-red));
+      border-radius:999px; padding:.7rem 1.2rem;
+      box-shadow: 0 10px 24px rgba(192,58,43,.35);
+    }
+    .after .link:hover{ box-shadow:0 12px 30px rgba(192,58,43,.45); }
+
+    /* Header tweak (coerenza con menu.js / ofi.css) */
+    .site-header .theme-switch{ margin-left:.4rem; }
+
+    /* Mobile tuning */
+    @media (max-width: 480px){
+      .intro{ margin-bottom: 1.2rem; }
+      .thought{ padding: 16px 14px; }
+      .quote{ line-height:1.5 }
+      .cta .btn{ width:100%; max-width: 460px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-expanded="false"><span></span><span></span><span></span></button>
+      <ul id="menuPanel" class="menu" role="menu"></ul>
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="page">
+    <div class="wrap">
+      <h2 class="page-title">Pensiero del giorno</h2>
+      <p class="intro">Un piccolo raggio di luce quotidiano, da condividere con chi porta nel cuore un ricordo.</p>
+
+      <section class="thought">
+        <p id="pensieroTxt" class="quote">“Nel ricordo, ogni assenza trova una forma gentile di presenza.”</p>
+        <p id="pensieroAutore" class="author"></p>
+
+        <div class="cta">
+          <!-- CTA principale in rosso -->
+          <a class="btn btn-ofi" href="/index.html" id="ctaScopri">Scopri OFI</a>
+          <!-- Condividi (più piccolo) -->
+          <button id="shareBtn" class="btn btn-share" type="button">✨ Condividi</button>
+        </div>
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <div class="after">
+        Un piccolo gesto di luce può raggiungere qualcuno che ne ha bisogno.<br>
+        <a class="link" href="/index.html">Scopri OFI</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container small center">
+      <p>© 2025 OFI</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ===== Tema: dark di default + toggle, coerente con ofi.js ===== */
+    (function(){
+      const KEY = 'ofi-theme';
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+
+      // on load: rispetta preferenza salvata, altrimenti dark
+      const saved = localStorage.getItem(KEY);
+      if (saved === 'light' || saved === 'dark') {
+        root.setAttribute('data-theme', saved);
+      } else {
+        root.setAttribute('data-theme', 'dark');
+      }
+
+      function dispatchThemeEvent(){
+        try{
+          const ev = new CustomEvent('ofi-theme-changed', { detail: { theme: root.getAttribute('data-theme') }});
+          document.dispatchEvent(ev);
+        }catch{}
+      }
+
+      btn?.addEventListener('click', ()=>{
+        const cur = root.getAttribute('data-theme') || 'dark';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem(KEY, next);
+        dispatchThemeEvent(); // per mappa o altri listener
+      });
+    })();
+
+    /* ===== Pensiero dinamico ===== */
+    const $ = (s,sc=document)=>sc.querySelector(s);
+    const todayISO = (d=new Date())=>d.toISOString().slice(0,10);
+    const dayOfYear = (d)=>{ const s=new Date(d.getFullYear(),0,0); return Math.floor((d-s)/86400000); };
+
+    async function fetchPensieri(){
+      try{
+        const res = await fetch('/data/pensieri_2025.json',{ cache:'no-cache' });
+        if(!res.ok) throw 0; return await res.json();
+      }catch{
+        return [
+          "Nel ricordo, ogni assenza trova una forma gentile di presenza.",
+          "La memoria è una casa: apri le finestre alla luce.",
+          "Il bene donato non svanisce: diventa eredità per chi resta."
+        ];
+      }
+    }
+    function pickText(items,date){
+      const idx=(dayOfYear(date)-1)%items.length;
+      const raw=items[idx];
+      if(typeof raw==='string')return{text:raw,author:''};
+      if(typeof raw==='object')return{text:raw.text||raw.t||'',author:raw.author||raw.a||''};
+      return{text:'Oggi abito il silenzio con gratitudine.',author:''};
+    }
+    function setQuote({text,author}){
+      $('#pensieroTxt').textContent=`“${text}”`;
+      $('#pensieroAutore').textContent=author?`— ${author}`:'';
+    }
+
+    async function initThought(){
+      const items=await fetchPensieri();
+      const d=new Date();
+      const {text,author}=pickText(items,d);
+      setQuote({text,author});
+
+      const shareUrl = `${location.origin}/p/${todayISO(d)}`;
+      $('#shareBtn')?.addEventListener('click', async ()=>{
+        const payload = { title:'Pensiero del giorno — OFI', text, url: shareUrl };
+        try{
+          if (navigator.share){ await navigator.share(payload); }
+          else { window.open(`https://wa.me/?text=${encodeURIComponent(text+' '+shareUrl)}`,'_blank'); }
+          $('#status').textContent = 'Grazie per aver condiviso 💫';
+        }catch{}
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initThought);
+  </script>
+</body>
+</html>

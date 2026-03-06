@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="it" class="faq-page">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ & Regolamento — OFI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ofi.css">
+  <script defer src="ofi.js"></script>
+</head>
+<body class="faq-page">
+<header class="site-header">
+  <div class="brand">
+    <a href="index.html" aria-label="Torna alla home">
+      <img src="images/logo-ofi.png" alt="OFI" class="brand-logo">
+    </a>
+  </div>
+  <nav class="main-nav" aria-label="Principale">
+    <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="menuPanel" class="menu" role="menu">
+      <li class="menu-mobile-head"><img src="images/logo-ofi.png" alt="OFI"><button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li><a class="menu-callout" href="necrologi.html">NECROLOGI</a></li>
+      <li><a class="menu-callout" href="pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+      <li class="menu-divider" aria-hidden="true"></li>
+      <li class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+        <ul class="submenu">
+          <li><a href="vision.html">Visione di OFI</a></li>
+          <li><a href="index.html#cos-e-ofi">Cos'è OFI</a></li>
+          <li><a href="index.html#pensieri">Pensieri</a></li>
+          <li><a href="articoli/articoli.html">Articoli</a></li>
+          <li><a href="index.html#ricordi">Ricordi</a></li>
+          <li><a href="index.html#mappa">Vicino a te</a></li>
+          <li><a href="index.html#video">Video</a></li>
+        </ul>
+      </li>
+      <li><a class="btn btn-primary" href="accesso.html">Accedi / Registrati</a></li>
+    </ul>
+    <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+  </nav>
+  <div id="menuOverlay" class="menu-overlay" hidden></div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>FAQ &amp; Regolamento</h1>
+    <p class="small">Risposte chiare per cittadini, imprese e professionisti.</p>
+  </div>
+</section>
+
+<main class="faq-wrap">
+  <div class="container">
+    <h2 id="cos-e">🧭 Cos’è OFI e come funziona</h2>
+    <details open><summary>Cos’è Onoranze Funebri Italia?</summary>
+      <p>OFI è una piattaforma nazionale che connette cittadini, imprese funebri, figure di supporto e fornitori. Offre trasparenza, affidabilità e strumenti digitali per la gestione del lutto e la memoria.</p>
+    </details>
+    <details><summary>Il portale è gratuito?</summary>
+      <p>L'accesso come cittadino è sempre gratuito. Le imprese possono registrarsi gratuitamente e usufruire di un periodo di prova di 2 mesi.</p>
+    </details>
+
+    <h2 id="cittadini">👤 Per i cittadini</h2>
+    <details><summary>Come invio una richiesta di preventivo?</summary>
+      <p>Compila il modulo nella tua area dopo l’accesso. Le imprese riceveranno la richiesta e ti risponderanno entro i tempi indicati.</p>
+    </details>
+    <details id="necrologi"><summary>Come pubblico un necrologio o un anniversario?</summary>
+      <p>Accedi all’Area Cittadini e scegli “Necrologi &amp; Anniversari”. Segui i passaggi per inserire testo, dati e immagine. Dopo la verifica sarà pubblicato nella sezione pubblica.</p>
+    </details>
+    <details id="pensieri"><summary>Cos’è PENSIERI?</summary>
+      <p>È il luogo sociale di OFI per condividere parole di conforto. Puoi pubblicare pensieri pubblici o privati nella tua area.</p>
+    </details>
+    <details><summary>I miei dati sono al sicuro?</summary>
+      <p>Sì. Utilizziamo infrastrutture Google Firebase e buone pratiche di sicurezza per proteggere le informazioni.</p>
+    </details>
+
+    <h2 id="imprese">🏢 Per le imprese</h2>
+    <details><summary>Come si registra un’impresa?</summary>
+      <p>Vai su <a href="accesso.html#imprese">Accedi / Registrati</a>, sezione “Imprese”, e compila i dati. Avrai una dashboard per completare il profilo.</p>
+    </details>
+    <details><summary>Cos’è il profilo pubblico?</summary>
+      <p>È una pagina visibile ai cittadini: descrizione, sedi, immagini, recapiti e reputazione.</p>
+    </details>
+    <details><summary>Quando ricevo il Certificato di Adesione?</summary>
+      <p>Dopo la registrazione e il completamento del profilo, il sistema genera un PDF scaricabile dalla dashboard.</p>
+    </details>
+    <details><summary>Il Marchio di Affidabilità Nazionale è incluso?</summary>
+      <p>Il Marchio è incluso nell’abbonamento e visibile per tutta la durata attiva. I primi 2 mesi sono gratuiti.</p>
+    </details>
+
+    <h2 id="supporto">🤝 Figure di supporto</h2>
+    <details><summary>Chi rientra tra le figure di supporto?</summary>
+      <p>Psicologi, legali, CAF, mediatori, associazioni. La loro presenza aiuta famiglie e imprese con servizi complementari.</p>
+    </details>
+    <details><summary>Quando sarà disponibile l’accesso?</summary>
+      <p>La sezione è in arrivo. Potrai iscriverti per essere geolocalizzato e contattabile sul territorio.</p>
+    </details>
+
+    <h2 id="fornitori">🏷️ Fornitori</h2>
+    <details><summary>Come funziona la vetrina fornitori?</summary>
+      <p>Permette di presentare prodotti e servizi alle imprese OFI. Con il servizio PLUS potrai attivare promozioni regionali periodiche.</p>
+    </details>
+    <details><summary>Quando sarà attiva?</summary>
+      <p>La sezione fornitori è in arrivo. Gli aggiornamenti saranno comunicati nella pagina di Accesso.</p>
+    </details>
+
+    <h2 id="sicurezza">🔐 Sicurezza e responsabilità</h2>
+    <details><summary>OFI garantisce la qualità dei servizi delle imprese?</summary>
+      <p>OFI garantisce l’esistenza reale e la registrazione delle imprese. Non può rispondere della qualità dei servizi offerti dalle singole realtà.</p>
+    </details>
+
+    <h2 id="abbonamenti">💳 Abbonamenti</h2>
+    <details><summary>Cosa succede dopo i 2 mesi gratuiti?</summary>
+      <p>Il profilo resta visibile; i servizi premium e l’uso del Marchio sono sospesi finché non rinnovi l’abbonamento dalla dashboard.</p>
+    </details>
+
+    <h2 id="legali">📌 Note legali e trasparenza</h2>
+    <details><summary>Il Marchio OFI è una certificazione ufficiale?</summary>
+      <p>No. È un riconoscimento privato interno a OFI, visibile pubblicamente ma senza valore giuridico esterno.</p>
+    </details>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="f-brand">
+        <img class="footer-logo" src="images/logo-ofi.png" alt="OFI">
+        <p class="small">Marchio di Affidabilità Nazionale · OFI</p>
+        <p class="small">OFI – Onoranze Funebri Italia. Un ecosistema nazionale che unisce persone, imprese e professionisti in un luogo sicuro. Vicinanza, chiarezza e strumenti semplici per prendersi cura del ricordo.</p>
+      </div>
+      <div class="f-links">
+        <a href="articoli/articoli.html">Articoli</a>
+        <a href="faq.html">FAQ</a>
+        <a href="accesso.html">Accedi</a>
+      </div>
+      <div class="f-legal small">
+        © 2025 OFI — Onoranze Funebri Italia. Tutti i diritti riservati.
+        <br>Il <strong>Marchio di Affidabilità Nazionale OFI</strong> è un riconoscimento riservato alle imprese aderenti e non sostituisce licenze, autorizzazioni o responsabilità dell’operatore. OFI non risponde per condotte autonome delle imprese.
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <!-- Agente OFI (chat) -->
+  <button id="agentFab" class="agent-fab" aria-label="Apri Agente OFI">
+    <img src="images/agente-ofi.png" alt="Agente OFI" />
+  </button>
+
+  <section id="agentPanel" class="agent-panel" aria-live="polite" aria-hidden="true">
+    <header class="agent-top">
+      <div class="agent-id">
+        <img src="images/agente-ofi.png" alt="" />
+        <div><strong>Agente OFI</strong><br><small>Sono qui per aiutarti</small></div>
+      </div>
+      <button id="agentClose" class="agent-close" aria-label="Chiudi">✕</button>
+    </header>
+    <div id="agentChat" class="agent-chat">
+      <div class="msg msg-in"><p>Ciao! Posso guidarti nella piattaforma, aprire le sezioni giuste e rispondere a dubbi rapidi.</p></div>
+      <div class="suggest" role="list">
+        <button class="chip" role="listitem">Come pubblico un necrologio?</button>
+        <button class="chip" role="listitem">Come funziona PENSIERI?</button>
+        <button class="chip" role="listitem">Come richiedo un preventivo?</button>
+      </div>
+    </div>
+    <form id="agentForm" class="agent-form" autocomplete="off">
+      <input id="agentInput" type="text" placeholder="Scrivi una domanda…" aria-label="Scrivi una domanda">
+      <button class="btn btn-primary" type="submit">Invia</button>
+    </form>
+    <p class="agent-note small">Suggerimento: scrivi parole semplici (es. “necrologio”, “pensieri”, “preventivo”).</p>
+  </section>
+
+
+  <button id="backTop" class="back-top" title="Torna su" aria-label="Torna su">↑</button>
+<script>
+  // Mobile submenu toggle (safe fallback)
+  document.addEventListener('click', function(e){
+    const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+    if(!trigger) return;
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const open = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+</script>
+<script>
+// Mobile submenu toggle + close on second tap / outside
+document.addEventListener('click', function(e){
+  const trigger = e.target.closest('.has-sub > a[aria-haspopup="true"]');
+  const menu = document.getElementById('menuPanel');
+  if(trigger){
+    e.preventDefault();
+    const li = trigger.parentElement;
+    const isOpen = li.classList.toggle('open');
+    trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }else{
+    // click outside submenu: close all
+    if(menu && !menu.contains(e.target)){
+      document.querySelectorAll('.has-sub.open').forEach(li => {
+        li.classList.remove('open');
+        const a = li.querySelector('a[aria-haspopup="true"]');
+        if(a) a.setAttribute('aria-expanded','false');
+      });
+    }
+  }
+});
+</script>
+</body>
+</html>

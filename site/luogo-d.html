@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Luogo della Memoria — OFI</title>
+  <meta name="description" content="Luogo della Memoria OFI: un libro dedicato, sobrio e istituzionale, per visitare e lasciare parole. Visita pubblica e custodia verificabile." />
+
+  <link rel="icon" href="/images/OFI-Social.png" type="image/png">
+  <link rel="stylesheet" href="/ofi.css">
+  <link rel="stylesheet" href="/luogo.css">
+  <script defer src="/ofi.js"></script>
+</head>
+
+<body>
+  
+  <script>
+    // A/B Tema per VISITA (pubblica)
+    // URL: ?theme=auto | dark | light
+    (function(){
+      const p = new URLSearchParams(location.search);
+      const t = (p.get("theme") || "auto").toLowerCase();
+
+      // ripulisci
+      document.body.classList.remove("theme-dark", "theme-light");
+
+      if (t === "dark") {
+        document.body.classList.add("theme-dark");
+        document.documentElement.setAttribute("data-theme","dark");
+        return;
+      }
+      if (t === "light") {
+        document.body.classList.add("theme-light");
+        document.documentElement.setAttribute("data-theme","light");
+        return;
+      }
+
+      // auto: lascia gestire a ofi.js / sistema
+      document.documentElement.setAttribute("data-theme","auto");
+    })();
+  </script>
+<!-- HEADER (coerente) -->
+  <header class="site-header">
+    <div class="brand">
+      <a href="/index.html" aria-label="Torna alla home">
+        <img src="/images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul id="menuPanel" class="menu" role="menu">
+        <li class="menu-mobile-head">
+          <img src="/images/logo-ofi.png" alt="OFI" class="menu-logo">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <li><a class="menu-callout" href="/cittadini/dashboard-cittadino.html">DASHBOARD</a></li>
+        <li><a class="menu-callout" href="/cittadini/luogo-memoria.html">HUB LUOGO</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+
+        <!-- appare solo se custode -->
+        <li id="manageNavItem" hidden><a class="menu-callout" id="manageNavLink" href="#">GESTISCI</a></li>
+
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/faq.html">FAQ</a></li>
+      </ul>
+
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema">◐</button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <main class="ofi-main">
+    <section class="wrap">
+      <div class="topBar" aria-label="Intestazione Luogo">
+        <div class="topId">
+          <div class="eyebrow" id="topEyebrow">Registro Nazionale OFI</div>
+          <h1 class="h1" id="topName">Luogo della Memoria</h1>
+          <p class="sub" id="topSub">Caricamento…</p>
+        </div>
+
+        <div class="chips" id="chips">
+          <span class="chip gold" id="chipScene" hidden>Ambiente</span>
+          <span class="chip" id="chipPlace" hidden>Comune</span>
+          <span class="chip" id="chipMode" hidden>Family</span>
+        </div>
+      </div>
+
+      <!-- LIBRO (CINEMA) -->
+      <div class="bookStage" aria-label="Libro della Memoria">
+        <div class="book cinemaIn idle" id="book" aria-live="polite">
+          <div class="bookBody" aria-hidden="false">
+            <div class="bookShell" aria-hidden="true"></div>
+            <div class="spine" aria-hidden="true"></div>
+            <div class="pageEdge" aria-hidden="true"></div>
+
+            <!-- Pagine (diventano visibili solo quando il libro è aperto) -->
+            <div class="pagesPanel" id="pagesPanel" aria-hidden="false">
+              <div class="page" id="pageLeft">
+                <div class="pageHead">
+                  <div class="pageKicker" id="leftKicker">Indice</div>
+                  <div class="pageNum" id="leftNum">—</div>
+                </div>
+                <div class="pageBody">
+                  <div class="index">
+                    <button class="indexBtn active" id="tabWords" type="button">📜 Pagine</button>
+                    <button class="indexBtn" id="tabAlbum" type="button">🕊 Album</button>
+                    <button class="indexBtn" id="tabInfo" type="button">ℹ️ Nota</button>
+
+                    <div class="indexSmall" id="indexSmall" style="margin-top:.25rem;">
+                      Apri la copertina e sfoglia le pagine. Le parole sono firmate e restano.
+                    </div>
+
+                    <div class="indexSmall" id="accessHint" style="margin-top:.35rem;"></div>
+
+                    <div class="indexSmall" style="margin-top:.55rem;">
+                      <strong style="color:rgba(15,23,42,.86)">Dati essenziali</strong><br>
+                      <span id="metaPerson">—</span><br>
+                      <span id="metaPlace">—</span>
+                    </div>
+
+                    <div style="margin-top:.7rem;">
+                      <a class="btn" href="/cittadini/luogo-memoria.html">HUB</a>
+                      <a class="btn primary" id="btnManage" href="#" hidden>Gestisci</a>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="page" id="pageRight">
+                <div class="pageFlipFx" aria-hidden="true"></div>
+
+                <div class="pageHead">
+                  <div class="pageKicker" id="rightKicker">Pagine del Ricordo</div>
+                  <div class="pageNum" id="rightNum">—</div>
+                </div>
+
+                <div class="pageBody" id="rightBody">
+                  <!-- riempito via JS -->
+                </div>
+
+                <div class="pager" id="pager">
+                  <button class="btn" id="btnPrev" type="button">‹ Indietro</button>
+                  <div class="pagerInfo" id="pagerInfo">—</div>
+                  <button class="btn primary" id="btnNext" type="button">Avanti ›</button>
+                </div>
+              </div>
+
+              <div class="spineShadow" aria-hidden="true"></div>
+            </div>
+
+            <!-- COPERTINA -->
+            <div class="cover" id="cover" role="button" tabindex="0" aria-label="Apri il Libro" aria-expanded="false">
+              <div class="coverFace coverFront">
+                <div class="coverSheen" aria-hidden="true"></div>
+                <div class="coverRim" aria-hidden="true"></div>
+
+                <div class="coverInner">
+                  <div class="coverTop">
+                    <div class="seal">
+                      <img src="/images/rosa.png" alt="" aria-hidden="true">
+                      <span>Registro OFI</span>
+                    </div>
+                    <div class="coverHint" id="coverHint">Libro dedicato — Clicca per aprire</div>
+                  </div>
+
+                  <div class="coverTitle">
+                    <div class="magic" id="coverMagic">IL LUOGO DELLA MEMORIA È NATO</div>
+                    <div class="name" id="coverName">—</div>
+                    <div class="tag" id="coverTag">Un luogo dove il legame continua.</div>
+                    <div class="coverMeta" id="coverMeta">
+                      <span id="coverPlace">—</span><span class="dot">•</span><span id="coverDate">—</span>
+                    </div>
+                  </div>
+
+                  <div class="coverBottom">
+                    <div class="coverBtns">
+                      <button class="btn primary" id="btnOpen" type="button">Apri</button>
+                      <button class="btn secondaryOnly" id="btnLeave" type="button">Lascia una parola</button>
+                      <button class="btn secondaryOnly" id="btnAlbum" type="button">Guarda album</button>
+                    </div>
+
+                    <div class="coverStats" aria-label="Contenuti">
+                      <div class="stat"><div class="statN" id="statAlbum">0</div><div class="statL">Album</div></div>
+                      <div class="stat"><div class="statN" id="statWords">0</div><div class="statL">Pagine</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="coverFace coverBack">
+                <div class="inside">
+                  <div class="insideTitle">Questo è un libro dedicato</div>
+                  <div class="insideText">
+                    La visita è sobria. Nessuna dinamica social.<br>
+                    Le parole sono firmate e restano custodite nel tempo.<br><br>
+                    <strong>OFI</strong> tutela unicità e custodia familiare.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="footerNote">
+        OFI — Luogo della Memoria. Tutela, unicità e custodia familiare. Questo non è un social e non sostituisce documenti ufficiali.
+      </div>
+    </section>
+  </main>
+
+  <!-- Overlay: Album -->
+  <div class="overlay" id="albumOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Album del Luogo">
+      <div class="overlayHead">
+        <div class="overlayTitle">Album</div>
+        <button class="overlayClose" id="btnAlbumClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="gridAlbum" id="albumGrid"></div>
+        <p class="note" id="albumEmpty" style="display:none; margin-top:.8rem;">
+          <strong>Nessun contenuto</strong><br>Il custode non ha ancora caricato foto o video.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay: Accesso riservato -->
+  <div class="overlay" id="lockOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Accesso riservato">
+      <div class="overlayHead">
+        <div class="overlayTitle">Accesso riservato</div>
+        <button class="overlayClose" id="btnLockClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="note" id="lockText">
+          <strong>Questo Luogo è in modalità FAMILY.</strong><br>
+          Per visitarlo devi essere custode ed effettuare l’accesso.
+        </div>
+        <div style="display:flex; gap:.55rem; flex-wrap:wrap; margin-top:.85rem;">
+          <a class="btn primary" href="/cittadini/login-cittadino.html">Accedi</a>
+          <a class="btn" href="/cittadini/luogo-memoria.html">Torna al HUB</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay: Lascia una parola -->
+  <div class="overlay" id="leaveOverlay" aria-hidden="true">
+    <div class="overlayCard" role="dialog" aria-modal="true" aria-label="Lascia una parola">
+      <div class="overlayHead">
+        <div class="overlayTitle">Lascia una parola</div>
+        <button class="overlayClose" id="btnLeaveClose" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="overlayBody">
+        <div class="note" id="leaveHint">
+          <strong>Firma richiesta.</strong><br>
+          Le parole sono pubblicate con nome e cognome visibili, in modo sobrio e verificabile.
+        </div>
+
+        <div style="display:grid; gap:.6rem; margin-top:.85rem;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:.6rem;">
+            <input id="sigNome" class="ofi-input" placeholder="Nome" maxlength="60" style="border-radius:14px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.08); color:#fff; padding:.7rem .85rem;">
+            <input id="sigCognome" class="ofi-input" placeholder="Cognome" maxlength="60" style="border-radius:14px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.08); color:#fff; padding:.7rem .85rem;">
+          </div>
+
+          <textarea id="thoughtText" maxlength="1600" placeholder="Scrivi qualcosa che senti…" style="min-height:120px; resize:vertical; border-radius:14px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.08); color:#fff; padding:.7rem .85rem; line-height:1.55;"></textarea>
+
+          <div style="display:flex; gap:.55rem; flex-wrap:wrap;">
+            <button class="btn primary" id="btnPublish" type="button">Pubblica</button>
+            <a class="btn" id="btnLoginToLeave" href="/cittadini/login-cittadino.html" hidden>Accedi per pubblicare</a>
+          </div>
+
+          <div class="note" id="leaveStatus" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9",
+      storageBucket: "ofi2025-51ba9.firebasestorage.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(location.search);
+    const luogoId = (params.get("id") || "").trim();
+
+    const $ = (id)=>document.getElementById(id);
+
+    /* -------------------------
+       Utils
+    ------------------------- */
+    function safeStr(v){ return String(v ?? "").trim(); }
+
+    function pick(obj, paths, fallback=""){
+      for (const p of paths){
+        const parts = p.split(".");
+        let cur = obj;
+        for (const k of parts){
+          if (!cur || typeof cur !== "object" || !(k in cur)) { cur = null; break; }
+          cur = cur[k];
+        }
+        if (cur !== null && cur !== undefined && String(cur).trim() !== "") return cur;
+      }
+      return fallback;
+    }
+
+    function normalizeDoc(raw){
+      const nome = safeStr(pick(raw, ["person.nome", "nome"]));
+      const cognome = safeStr(pick(raw, ["person.cognome", "cognome"]));
+      const dataMorte = safeStr(pick(raw, ["person.dataMorte", "dataMorte"]));
+
+      const placeLabel = safeStr(pick(raw, ["place.label", "luogo.label", "placeLabel"], ""));
+      const sceneId = safeStr(pick(raw, ["scene.id", "sceneId"], ""));
+      const coverUrl = safeStr(pick(raw, ["cover.photoUrl", "coverUrl", "cover.photoURL"], ""));
+
+      const visibilityMode = safeStr(pick(raw, ["visibility.mode", "visibilita", "visibilityMode"], "family")) || "family";
+      const custody = raw.custody || {};
+      const mainUid = safeStr(pick(raw, ["custody.mainUid", "custodePrincipaleUid"], ""));
+      const coUids = Array.isArray(custody.coUids) ? custody.coUids.map(safeStr).filter(Boolean) : (Array.isArray(raw.coUids) ? raw.coUids.map(safeStr).filter(Boolean) : []);
+
+      return {
+        nome, cognome, dataMorte,
+        placeLabel, sceneId, coverUrl,
+        visibilityMode: (visibilityMode === "pubblico" ? "public" : visibilityMode),
+        mainUid, coUids
+      };
+    }
+
+    function fmtDate(iso){
+      const s = safeStr(iso);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return s || "—";
+      const [y,m,d] = s.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function escapeHtml(str){
+      return String(str||"").replace(/[&<>"']/g, (m)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[m]));
+    }
+
+    function setChip(id, text, cls){
+      const chip = $(id);
+      if (!chip) return;
+      chip.hidden = !text;
+      chip.textContent = text || "";
+      chip.className = "chip" + (cls ? " " + cls : "");
+    }
+
+    /* -------------------------
+       UI: Book open/close (CINEMA)
+       - non auto-apriamo: deve essere "presenza"
+    ------------------------- */
+    const book = $("book");
+    const cover = $("cover");
+    const btnOpen = $("btnOpen");
+
+    function setBookOpen(open){
+      book?.classList.toggle("open", !!open);
+      if (open){
+        book?.classList.remove("idle"); // stop respiro quando aperto
+      } else {
+        book?.classList.add("idle");
+      }
+      cover?.setAttribute("aria-expanded", open ? "true" : "false");
+      const hint = $("coverHint");
+      if (hint) hint.textContent = open ? "Libro aperto — puoi sfogliare" : "Libro dedicato — Clicca per aprire";
+    }
+
+    function toggleBook(){
+      const open = book?.classList.contains("open");
+      setBookOpen(!open);
+    }
+
+    cover?.addEventListener("click", (e)=>{
+      // evita doppio click se premi un bottone sopra la cover
+      if (e.target?.closest?.("button, a")) return;
+      toggleBook();
+    });
+    cover?.addEventListener("keydown", (e)=>{
+      if (e.key === "Enter" || e.key === " "){
+        e.preventDefault();
+        toggleBook();
+      }
+    });
+    btnOpen?.addEventListener("click", (e)=>{ e.stopPropagation(); setBookOpen(true); });
+
+    /* -------------------------
+       UI: Overlays
+    ------------------------- */
+    const albumOverlay = $("albumOverlay");
+    const lockOverlay = $("lockOverlay");
+    const leaveOverlay = $("leaveOverlay");
+
+    function openOverlay(el){
+      if (!el) return;
+      el.classList.add("open");
+      el.setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeOverlay(el){
+      if (!el) return;
+      el.classList.remove("open");
+      el.setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+
+    $("btnAlbum")?.addEventListener("click", (e)=>{ e.stopPropagation(); openOverlay(albumOverlay); });
+    $("tabAlbum")?.addEventListener("click", ()=>openOverlay(albumOverlay));
+    $("btnAlbumClose")?.addEventListener("click", ()=>closeOverlay(albumOverlay));
+    albumOverlay?.addEventListener("click", (e)=>{ if (e.target === albumOverlay) closeOverlay(albumOverlay); });
+
+    $("btnLockClose")?.addEventListener("click", ()=>closeOverlay(lockOverlay));
+    lockOverlay?.addEventListener("click", (e)=>{ if (e.target === lockOverlay) closeOverlay(lockOverlay); });
+
+    $("btnLeave")?.addEventListener("click", (e)=>{ e.stopPropagation(); openOverlay(leaveOverlay); });
+    $("btnLeaveClose")?.addEventListener("click", ()=>closeOverlay(leaveOverlay));
+    leaveOverlay?.addEventListener("click", (e)=>{ if (e.target === leaveOverlay) closeOverlay(leaveOverlay); });
+
+    window.addEventListener("keydown", (e)=>{
+      if (e.key === "Escape"){
+        closeOverlay(albumOverlay);
+        closeOverlay(lockOverlay);
+        closeOverlay(leaveOverlay);
+      }
+    });
+
+    /* -------------------------
+       UI: Tabs (pagina sinistra)
+    ------------------------- */
+    const tabWords = $("tabWords");
+    const tabAlbum = $("tabAlbum");
+    const tabInfo  = $("tabInfo");
+
+    function setActiveTab(which){
+      [tabWords, tabAlbum, tabInfo].forEach(b=>b?.classList.remove("active"));
+      if (which === "words") tabWords?.classList.add("active");
+      if (which === "album") tabAlbum?.classList.add("active");
+      if (which === "info") tabInfo?.classList.add("active");
+    }
+
+    tabWords?.addEventListener("click", ()=>{ setActiveTab("words"); renderPage(state.page); });
+    tabInfo?.addEventListener("click", ()=>{
+      setActiveTab("info");
+      const rb = $("rightBody");
+      rb.innerHTML = `
+        <div class="note">
+          <strong>Nota OFI</strong><br>
+          Questo Luogo è progettato per essere sobrio e verificabile.<br>
+          Nessuna dinamica social, nessun “like”.<br><br>
+          Il custode può caricare foto e video. I visitatori (registrati) possono lasciare parole firmate.
+        </div>
+      `;
+      $("pagerInfo").textContent = "—";
+      $("btnPrev").disabled = true;
+      $("btnNext").disabled = true;
+      $("rightKicker").textContent = "Nota";
+      $("rightNum").textContent = "";
+    });
+
+    /* -------------------------
+       Stato + rendering pagine
+    ------------------------- */
+    const state = {
+      luogo: null,
+      isCustode: false,
+      userUid: null,
+      words: [],   // {authorLabel,text}
+      album: [],   // {type,url,caption}
+      page: 0
+    };
+
+    const SIG_KEY = "ofi_luogo_signature";
+    function loadSig(){
+      try{
+        const s = JSON.parse(localStorage.getItem(SIG_KEY) || "{}");
+        $("sigNome").value = safeStr(s.nome);
+        $("sigCognome").value = safeStr(s.cognome);
+      }catch{}
+    }
+    function saveSig(){
+      const nome = safeStr($("sigNome").value);
+      const cognome = safeStr($("sigCognome").value);
+      localStorage.setItem(SIG_KEY, JSON.stringify({ nome, cognome }));
+      return { nome, cognome };
+    }
+
+    function setTurning(on){
+      const pr = $("pageRight");
+      pr?.classList.toggle("turning", !!on);
+    }
+
+    function renderWordPage(idx){
+      const total = state.words.length;
+      const rb = $("rightBody");
+
+      $("rightKicker").textContent = "Pagine del Ricordo";
+      $("rightNum").textContent = total ? `Pagina ${idx+1}/${total}` : "Pagina 1/1";
+      $("pagerInfo").textContent = total ? `Sfoglia: ${idx+1} di ${total}` : "Nessuna pagina ancora";
+
+      $("btnPrev").disabled = (idx <= 0);
+      $("btnNext").disabled = (idx >= Math.max(0, total-1));
+
+      if (!total){
+        rb.innerHTML = `
+          <div class="emptyPage">
+            Non ci sono ancora parole in questo libro.<br><br>
+            Se lo desideri, puoi lasciare un pensiero: resterà come una pagina dedicata.
+          </div>
+        `;
+        return;
+      }
+
+      const t = state.words[idx];
+      rb.innerHTML = `
+        <div class="thoughtCard">
+          <div class="thMeta">
+            <span>${escapeHtml(t.authorLabel || "—")}</span>
+            <span>Pensiero</span>
+          </div>
+          <p class="thText">${escapeHtml(t.text || "")}</p>
+        </div>
+      `;
+    }
+
+    function renderPage(idx){
+      // se siamo in "info", non sovrascrivere
+      if (tabInfo?.classList.contains("active")) return;
+      renderWordPage(idx);
+    }
+
+    $("btnPrev")?.addEventListener("click", ()=>{
+      if (state.page <= 0) return;
+      setTurning(true);
+      setTimeout(()=>{
+        state.page = Math.max(0, state.page - 1);
+        renderPage(state.page);
+        setTurning(false);
+      }, 260);
+    });
+
+    $("btnNext")?.addEventListener("click", ()=>{
+      const max = Math.max(0, state.words.length - 1);
+      if (state.page >= max) return;
+      setTurning(true);
+      setTimeout(()=>{
+        state.page = Math.min(max, state.page + 1);
+        renderPage(state.page);
+        setTurning(false);
+      }, 260);
+    });
+
+    /* -------------------------
+       Data loading
+    ------------------------- */
+    async function loadAlbum(){
+      const grid = $("albumGrid");
+      const empty = $("albumEmpty");
+      grid.innerHTML = "";
+
+      let count = 0;
+      for (const m of state.album){
+        const tile = document.createElement("div");
+        tile.className = "mediaTile";
+
+        if (m.type === "video"){
+          const v = document.createElement("video");
+          v.src = m.url;
+          v.controls = true;
+          v.preload = "metadata";
+          tile.appendChild(v);
+        } else {
+          const img = document.createElement("img");
+          img.src = m.url;
+          img.alt = m.caption ? m.caption : "Foto";
+          img.loading = "lazy";
+          tile.appendChild(img);
+        }
+
+        if (m.caption){
+          const c = document.createElement("div");
+          c.className = "mediaCap";
+          c.textContent = m.caption;
+          tile.appendChild(c);
+        }
+
+        grid.appendChild(tile);
+        count++;
+      }
+
+      $("statAlbum").textContent = String(count);
+      if (empty) empty.style.display = count ? "none" : "block";
+    }
+
+    async function fetchSubcollections(){
+      // Album
+      const qA = query(collection(db, "luoghi_memoria", luogoId, "album"), orderBy("order","asc"), orderBy("createdAt","desc"), limit(30));
+      const snapA = await getDocs(qA).catch(()=>null);
+      state.album = [];
+      if (snapA && !snapA.empty){
+        snapA.forEach(d=>{
+          const m = d.data() || {};
+          const url = safeStr(m.url);
+          if (!url) return;
+          state.album.push({
+            type: safeStr(m.type || "photo"),
+            url,
+            caption: safeStr(m.caption || "")
+          });
+        });
+      }
+
+      // Pensieri (in visita mostriamo solo public)
+      const qT = query(collection(db, "luoghi_memoria", luogoId, "pensieri"), orderBy("createdAt","desc"), limit(80));
+      const snapT = await getDocs(qT).catch(()=>null);
+      state.words = [];
+      if (snapT && !snapT.empty){
+        snapT.forEach(d=>{
+          const t = d.data() || {};
+          const text = safeStr(t.text);
+          if (!text) return;
+
+          const vis = safeStr(t.visibility || "");
+          if (vis && vis !== "public") return;
+
+          const an = t.author || {};
+          const authorLabel = [safeStr(an.nome), safeStr(an.cognome)].filter(Boolean).join(" ").trim() || "—";
+
+          state.words.push({ authorLabel, text });
+        });
+      }
+
+      $("statWords").textContent = String(state.words.length);
+      await loadAlbum();
+    }
+
+    function setAccessHint(){
+      const hint = $("accessHint");
+      if (!hint) return;
+
+      if (state.luogo?.visibilityMode !== "public"){
+        hint.innerHTML = `<strong style="color:rgba(124,90,0,.95)">FAMILY</strong><br>Questo Luogo è riservato alla famiglia (solo custodi).`;
+        return;
+      }
+
+      if (!state.userUid){
+        hint.innerHTML = `Per lasciare una parola devi essere registrato.<br><span style="color:rgba(51,65,85,.72)">Puoi comunque sfogliare le pagine pubbliche.</span>`;
+      } else {
+        hint.innerHTML = `Se lo desideri, puoi lasciare una parola firmata.<br><span style="color:rgba(51,65,85,.72)">Senza dinamiche social.</span>`;
+      }
+    }
+
+    async function load(){
+      loadSig();
+
+      if (!luogoId){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>ID mancante.</strong><br>Torna al HUB e apri un Luogo valido.`;
+        return;
+      }
+
+      // Auth (non forziamo login in visita pubblica)
+      await new Promise((resolve)=>{
+        const unsub = onAuthStateChanged(auth, (u)=>{
+          state.userUid = u?.uid || null;
+          unsub();
+          resolve();
+        });
+      });
+
+      const snap = await getDoc(doc(db, "luoghi_memoria", luogoId));
+      if (!snap.exists()){
+        openOverlay(lockOverlay);
+        $("lockText").innerHTML = `<strong>Questo Luogo non esiste</strong><br>Oppure non è più disponibile.`;
+        return;
+      }
+
+      state.luogo = normalizeDoc(snap.data() || {});
+      state.isCustode = !!(state.userUid && (state.userUid === state.luogo.mainUid || state.luogo.coUids.includes(state.userUid)));
+
+      const displayName = [state.luogo.nome, state.luogo.cognome].filter(Boolean).join(" ").trim() || "Luogo della Memoria";
+      const date = fmtDate(state.luogo.dataMorte);
+      const place = state.luogo.placeLabel || "Luogo non specificato";
+
+      // Top + cover
+      $("topName").textContent = displayName;
+      $("topSub").textContent = `${date} · ${place}`;
+
+      $("coverName").textContent = displayName;
+      $("coverPlace").textContent = place;
+      $("coverDate").textContent = date;
+
+      // chips
+      setChip("chipScene", state.luogo.sceneId ? `Ambiente: ${state.luogo.sceneId.replaceAll("_"," ")}` : "", "gold");
+      setChip("chipPlace", state.luogo.placeLabel ? `${state.luogo.placeLabel}` : "", "");
+      setChip("chipMode", state.luogo.visibilityMode === "public" ? "Pubblico" : "Family", state.luogo.visibilityMode === "public" ? "gold" : "");
+
+      // meta
+      $("metaPerson").textContent = `${displayName} — ${date}`;
+      $("metaPlace").textContent = state.luogo.placeLabel ? `Luogo: ${state.luogo.placeLabel}` : "Luogo: —";
+
+      // gestione se custode
+      if (state.isCustode){
+        const manageUrl = `/cittadini/luogo-manage.html?id=${encodeURIComponent(luogoId)}`;
+        $("btnManage").hidden = false;
+        $("btnManage").href = manageUrl;
+        $("manageNavItem").hidden = false;
+        $("manageNavLink").href = manageUrl;
+      }
+
+      // regola accesso
+      if (state.luogo.visibilityMode !== "public" && !state.isCustode){
+        openOverlay(lockOverlay);
+        setAccessHint();
+        return;
+      }
+
+      // carica contenuti (ma NON apriamo il libro automaticamente)
+      await fetchSubcollections();
+      setAccessHint();
+      setActiveTab("words");
+      state.page = 0;
+      renderPage(0);
+
+      // cinema: assicurati che resti chiuso all'ingresso
+      setBookOpen(false);
+
+      // dopo l'ingresso, riprende "respiro"
+      setTimeout(()=> book?.classList.add("idle"), 1050);
+    }
+
+    /* -------------------------
+       Pubblica pensiero (visita)
+    ------------------------- */
+    const btnPublish = $("btnPublish");
+    const btnLoginToLeave = $("btnLoginToLeave");
+    const leaveStatus = $("leaveStatus");
+
+    function setLeaveStatus(ok, msg){
+      leaveStatus.style.display = "block";
+      leaveStatus.className = "note";
+      leaveStatus.innerHTML = ok
+        ? `<strong>Pubblicato.</strong><br>${escapeHtml(msg||"")}`
+        : `<strong>Attenzione.</strong><br>${escapeHtml(msg||"")}`;
+    }
+
+    async function publishThought(){
+      leaveStatus.style.display = "none";
+
+      // regola: per pubblicare devi essere loggato
+      if (!state.userUid){
+        btnLoginToLeave.hidden = false;
+        setLeaveStatus(false, "Per pubblicare devi accedere come cittadino.");
+        return;
+      }
+
+      // se luogo non è pubblico, non si pubblica in visita
+      if (state.luogo?.visibilityMode !== "public"){
+        setLeaveStatus(false, "Questo Luogo è in modalità FAMILY.");
+        return;
+      }
+
+      const sig = saveSig();
+      if (!sig.nome || !sig.cognome){
+        setLeaveStatus(false, "Inserisci Nome e Cognome (firma).");
+        return;
+      }
+
+      const text = safeStr($("thoughtText").value);
+      if (!text){
+        setLeaveStatus(false, "Scrivi un pensiero.");
+        return;
+      }
+
+      try{
+        btnPublish.disabled = true;
+        await addDoc(collection(db, "luoghi_memoria", luogoId, "pensieri"), {
+          text,
+          visibility: "public",
+          author: { nome: sig.nome, cognome: sig.cognome, uid: state.userUid },
+          createdAt: serverTimestamp()
+        });
+
+        $("thoughtText").value = "";
+        setLeaveStatus(true, "La tua parola è diventata una pagina del libro.");
+
+        // refresh pagine
+        await fetchSubcollections();
+        state.page = 0;
+        setActiveTab("words");
+        renderPage(0);
+      }catch(e){
+        console.error(e);
+        setLeaveStatus(false, "Errore pubblicazione. Riprova tra poco.");
+      }finally{
+        btnPublish.disabled = false;
+      }
+    }
+
+    btnPublish?.addEventListener("click", publishThought);
+
+    // se utente non loggato, mostra CTA login nel pannello "lascia una parola"
+    onAuthStateChanged(auth, (u)=>{
+      const logged = !!u;
+      btnLoginToLeave.hidden = logged;
+    });
+
+    load().catch((e)=>{
+      console.error(e);
+      openOverlay(lockOverlay);
+      $("lockText").innerHTML = `<strong>Errore nel caricamento.</strong><br>Riprova tra poco.`;
+    });
+  </script>
+
+  <script src="/js/menu.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Selezione Imprese – OFI</title>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"/>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js">
+function toggleMenu(show) {
+  const nav = document.querySelector('#ofi-nav ul');
+  const btnOpen = document.getElementById('ofi-menu-toggle');
+  const btnClose = document.getElementById('ofi-menu-close');
+
+  if (show) {
+    nav.classList.add('show');
+    btnOpen.classList.add('hidden');
+    btnClose.classList.remove('hidden');
+  } else {
+    nav.classList.remove('show');
+    btnOpen.classList.remove('hidden');
+    btnClose.classList.add('hidden');
+  }
+}
+
+</script>
+<link href="../style.css" rel="stylesheet"/>
+<style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      color: #002c5d;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-top: 2rem;
+    }
+    #mappa {
+      width: 90%;
+      height: 300px;
+      margin: 2rem auto;
+      border-radius: 10px;
+    }
+    .card-impresa {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin: 2rem auto;
+      padding: 1rem;
+      max-width: 1000px;
+      transition: all 0.3s ease;
+    }
+    .card-impresa:hover {
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+    .btn-prosegui {
+      display: block;
+      margin: 3rem auto;
+      padding: 1rem 2.5rem;
+      background: #003366;
+      color: white;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .checkbox-custom {
+      display: none;
+    }
+    .badge {
+      background: #cfa349;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin: 6px 0;
+    }
+    #ofi-menu-toggle,
+    #ofi-menu-close {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      #ofi-menu-toggle,
+      #ofi-menu-close {
+        display: block;
+      }
+    }
+  
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style>
+<style>
+.card-copertina {
+  height: 140px;
+  background-size: cover;
+  background-position: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.badge.base { background-color: #2e7d32; color: white; }
+.badge.presente { background-color: #6e6e6e; color: white; }
+.badge.certificata { background-color: #007BFF; color: white; }
+.badge.top { background-color: #cfa349; color: white; }
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.stelle {
+  color: #ffcc00;
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.stelle {
+  margin-top: 4px;
+  color: #ffcc00;
+  font-size: 16px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.id-ofi {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.id-ofi {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style>
+<style>
+.sigillo-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  z-index: 10;
+}
+.sigillo-badge img {
+  width: 36px;
+  height: auto;
+}
+.sigillo-badge:hover {
+  background: #fff3d1;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style>
+<style>.card-impresa { position: relative; }
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>
+.valutazione-testo {
+  color: #666;
+  font-size: 13px;
+  margin-left: 4px;
+}
+<style>
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style><style>.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style></head>
+<body>
+<!-- Header -->
+<header id="ofi-header">
+<a href="../index.html">
+<img alt="Onoranze Funebri Italia" src="../images/logo-ofi.png"/>
+</a>
+</header>
+<nav id="ofi-nav">
+<button id="ofi-menu-toggle" onclick="toggleMenu(true)">☰ Menu</button>
+<button class="hidden" id="ofi-menu-close" onclick="toggleMenu(false)">✖ Chiudi</button>
+<ul>
+<li><a href="preventivo.html">Richiedi Preventivo</a></li>
+<li><a href="../necrologi.html">Necrologi</a></li>
+<li><a href="#">Info Utili</a></li>
+<li><a href="../imprese/registrazione-imprese.html">Registrati</a></li>
+<li><a href="../imprese/login.html">Accedi</a></li>
+</ul>
+</nav>
+<h1>Imprese selezionate vicino a te</h1>
+<div id="mappa"></div>
+<div id="imprese-container"></div>
+<button class="btn-prosegui" id="prosegui">✍️ Compila il modulo di richiesta</button>
+<div style="text-align: center; margin: 2rem auto 4rem; font-size: 1rem;">
+<p>❌ Non vuoi inviare la richiesta a queste imprese?</p>
+<a href="ricerca-comune-manuale.html" style="display: inline-block; padding: 10px 18px; background-color: #f1f1f1; color: #002c5d; text-decoration: none; border-radius: 10px; font-weight: 600;">👉 Passa alla selezione manuale</a>
+</div>
+<!-- Footer -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+  authDomain: "ofi2025-51ba9.firebaseapp.com",
+  projectId: "ofi2025-51ba9",
+  storageBucket: "ofi2025-51ba9.appspot.com",
+  messagingSenderId: "345581339212",
+  appId: "1:345581339212:web:f0b8bc241945691c876ae9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const params = new URLSearchParams(window.location.search);
+const userLat = parseFloat(params.get('lat'));
+const userLon = parseFloat(params.get('lon'));
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZHQ4MiIsImEiOiJjbWFtem4xN2Ewbmx4Mm1zZHgzaGRhbXZzIn0.RwNWi1alAkO61qgd3AjEsg';
+const map = new mapboxgl.Map({
+  container: 'mappa',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [userLon, userLat],
+  zoom: 10
+});
+
+new mapboxgl.Marker({ color: '#cfa349' })
+  .setLngLat([userLon, userLat])
+  .addTo(map);
+
+const container = document.getElementById('imprese-container');
+let impreseSelezionate = [];
+
+function distanzaKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLon/2)**2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+async function caricaImprese() {
+  const snap = await getDocs(collection(db, 'imprese_demo'));
+  let tutte = [];
+  snap.forEach(doc => {
+    const d = doc.data();
+    if (!d.lat || !d.lon) return;
+    d.distanza = distanzaKm(userLat, userLon, d.lat, d.lon);
+    tutte.push(d);
+  });
+  tutte.sort((a, b) => a.distanza - b.distanza);
+  impreseSelezionate = tutte.slice(0, 5);
+  mostraCard(impreseSelezionate);
+}
+
+function mostraCard(imprese) {
+  imprese.forEach(imp => {
+    const card = document.createElement('div');
+    card.className = 'card-impresa';
+    
+let badgeLabel = '';
+switch (imp.badge) {
+  case 'base': badgeLabel = 'Partner Attivo'; break;
+  case 'presente': badgeLabel = 'Presente su OFI'; break;
+  case 'certificata': badgeLabel = 'Certificata'; break;
+  case 'top': badgeLabel = 'Top Partner'; break;
+}
+const badgeHtml = badgeLabel ? `<span class="badge ${imp.badge}">${badgeLabel}</span>` : '';
+
+    let copertina = '';
+switch (imp.badge) {
+  case 'base': copertina = `style="background-image:url('../images/base-copertina.png')"`; break;
+  case 'presente': copertina = `style="background-image:url('../images/presente-copertina.png')"`; break;
+  case 'certificata': copertina = `style="background-image:url('../images/certificate-copertina.png')"`; break;
+  case 'top': copertina = `style="background-image:url('../images/top-copertina.png')"`; break;
+  default: copertina = `style="background-color:#eee"`; break;
+}
+
+
+            let stelleHtml = '';
+            if (imp.stelleAttuali && imp.stelleAttuali > 0) {
+              const stelle = Math.min(5, Math.round(imp.stelleAttuali));
+              stelleHtml = `<div class="stelle" title="${stelle} stelle">` + '★'.repeat(stelle) + '☆'.repeat(5 - stelle) + '</div>';
+            }
+
+            
+let codiceImpresa = imp.id_ofi ? `<small class='id-ofi'>${imp.id_ofi}</small>` : '';
+
+            
+let sigilloHtml = '';
+let logo = imp.logo ? imp.logo : 'rosa.png';
+if (imp.sigillo === true && imp.tipoAbbonamento) {
+  sigilloHtml = `<a href="../preventivo/marchio.html" class="sigillo-badge">
+    <img src="../images/sigillo-ofi.png" alt="Sigillo OFI"/>
+    <span>Marchio di Affidabilità Nazionale</span>
+  </a>`;
+}
+
+            
+let descrizione = imp.descrizione ? `<div class='card-descrizione'>${imp.descrizione.length > 200 ? imp.descrizione.substring(0, 200) + '…' : imp.descrizione}</div>` : '';
+let socialHtml = `
+  ${imp.facebook ? `<a href="${imp.facebook}" target="_blank" aria-label="Facebook"><img src="../images/facebook.svg" width="20"/></a>` : ''}
+  ${imp.instagram ? `<a href="${imp.instagram}" target="_blank" aria-label="Instagram"><img src="../images/instagram.svg" width="20"/></a>` : ''}
+  ${imp.youtube ? `<a href="${imp.youtube}" target="_blank" aria-label="YouTube"><img src="../images/youtube.svg" width="20"/></a>` : ''}
+`;
+let bottoneProfilo = imp.profiloCompleto === true ? `<a href="../profilo.html?id=${imp.email}" class="btn-profilo">🔎 Visualizza profilo</a>` : '';
+
+card.innerHTML = `<div class='card-copertina' ${copertina}></div>` + `
+  <div class="card-header" style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+    <img src="../images/${imp.logo ? imp.logo : 'rosa.png'}" class="card-logo" alt="Logo ${imp.nomeImpresa || 'Impresa'}"/>
+    <div>
+      <h3 style="margin:0">${imp.nomeImpresa || imp.nome || 'Impresa'}</h3>
+      <p style="margin:2px 0">${imp.comune || ''} • ${Math.round(imp.distanza)} km</p>
+      ${badgeHtml}
+      ${codiceImpresa}
+      ${stelleHtml ? `<div class="valutazione-container">${stelleHtml}<span class='valutazione-testo'>Valutazione</span></div>` : ''}
+    </div>
+  </div>
+  
+  <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top: 10px;">
+    <small>${imp.id_ofi || ''}</small>
+    <div>${sigilloHtml}</div>
+  </div>
+            
+  <div class="checkbox-custom">
+    <input type="checkbox" checked value="${imp.email}" data-nome="${imp.nomeImpresa || imp.nome || 'Impresa'}" />
+  ${descrizione}${bottoneProfilo}<div class='card-footer' style='display:flex; justify-content:space-between; align-items:center; margin-top:10px;'><small>${imp.id_ofi || ''}</small><div>${sigilloHtml}${socialHtml}</div></div><div class='checkbox-custom'><input type='checkbox' checked value='${imp.email}' data-nome='${imp.nomeImpresa || imp.nome || 'Impresa'}' /></div>`;
+    container.appendChild(card);
+    new mapboxgl.Marker({ color: '#002c5d' })
+      .setLngLat([imp.lon, imp.lat])
+      .setPopup(new mapboxgl.Popup().setText(imp.nome))
+      .addTo(map);
+  });
+}
+
+caricaImprese();
+
+document.getElementById('prosegui').onclick = () => {
+  const selezionate = impreseSelezionate.map(imp => ({ email: imp.email, nomeImpresa: imp.nomeImpresa || imp.nome || 'Impresa' }));
+  localStorage.setItem('impreseSelezionate', JSON.stringify(selezionate));
+  window.location.href = 'richiedi-preventivo.html?modalita=automatica';
+};
+
+function toggleMenu(show) {
+  const nav = document.querySelector('#ofi-nav ul');
+  const btnOpen = document.getElementById('ofi-menu-toggle');
+  const btnClose = document.getElementById('ofi-menu-close');
+
+  if (show) {
+    nav.classList.add('show');
+    btnOpen.classList.add('hidden');
+    btnClose.classList.remove('hidden');
+  } else {
+    nav.classList.remove('show');
+    btnOpen.classList.remove('hidden');
+    btnClose.classList.add('hidden');
+  }
+}
+
+</script>
+<script>
+  function toggleMenu(show) {
+    const nav = document.querySelector('#ofi-nav ul');
+    const btnOpen = document.getElementById('ofi-menu-toggle');
+    const btnClose = document.getElementById('ofi-menu-close');
+    if (show) {
+      nav.classList.add('show');
+      btnOpen.classList.add('hidden');
+      btnClose.classList.remove('hidden');
+    } else {
+      nav.classList.remove('show');
+      btnOpen.classList.remove('hidden');
+      btnClose.classList.add('hidden');
+    }
+  }
+
+function toggleMenu(show) {
+  const nav = document.querySelector('#ofi-nav ul');
+  const btnOpen = document.getElementById('ofi-menu-toggle');
+  const btnClose = document.getElementById('ofi-menu-close');
+
+  if (show) {
+    nav.classList.add('show');
+    btnOpen.classList.add('hidden');
+    btnClose.classList.remove('hidden');
+  } else {
+    nav.classList.remove('show');
+    btnOpen.classList.remove('hidden');
+    btnClose.classList.add('hidden');
+  }
+}
+
+</script>
+<style>
+  #ofi-footer {
+    background-color: #002c5d;
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  #ofi-footer a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: underline;
+  }
+
+  #ofi-footer a:hover {
+    text-decoration: none;
+  }
+
+  #ofi-footer p {
+    margin-bottom: 1rem;
+  }
+
+  #ofi-footer .footer-links {
+    margin-top: 1rem;
+  }
+
+.logo-impresa {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-right: 12px;
+}
+
+
+/* MENU MOBILE */
+#ofi-menu-toggle, #ofi-menu-close {
+  display: none;
+  background-color: #002c5d;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  text-align: right;
+  box-sizing: border-box;
+}
+@media (max-width: 768px) {
+  #ofi-nav ul {
+    flex-direction: column;
+    gap: 10px;
+    display: none;
+  }
+  #ofi-nav ul.show {
+    display: flex;
+  }
+  #ofi-menu-toggle,
+  #ofi-menu-close {
+    display: block;
+  }
+  #ofi-menu-toggle.hidden,
+  #ofi-menu-close.hidden {
+    display: none;
+  }
+  #ofi-nav a {
+    font-size: 18px;
+    padding: 8px 0;
+  }
+}
+/* LOGO */
+.card-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+}
+/* SIGILLO */
+.sigillo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  text-decoration: none;
+  background: #fffaf2;
+  border: 1px solid #cfa349;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  color: #cfa349;
+  font-weight: bold;
+  position: static;
+  z-index: auto;
+}
+/* VALUTAZIONE */
+.valutazione-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+</style>
+<footer id="ofi-footer">
+<div style="max-width: 1000px; margin: auto;">
+<p>
+      © 2025 Onoranze Funebri Italia – Tutti i diritti riservati<br/>
+      Portale nazionale per il supporto al cittadino e la valorizzazione delle imprese funebri
+    </p>
+<div class="footer-links">
+<a href="privacy.html">Privacy</a>
+<a href="contatti.html">Contatti</a>
+<a href="faq.html">FAQ</a>
+</div>
+</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pagamenti Ricevuti | Admin OFI</title>
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+      color: #002c5d;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #002c5d;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background: #002c5d;
+      color: white;
+    }
+    .msg {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>💳 Pagamenti Ricevuti</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Email Impresa</th>
+        <th>Importo (€)</th>
+        <th>Data Pagamento</th>
+        <th>Metodo</th>
+      </tr>
+    </thead>
+    <tbody id="tabellaPagamenti">
+      <tr><td colspan="4" style="text-align:center;">⏳ Caricamento...</td></tr>
+    </tbody>
+  </table>
+  <p class="msg" id="msgError"></p>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain: "ofi2025-51ba9.firebaseapp.com",
+      projectId: "ofi2025-51ba9"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const tbody = document.getElementById("tabellaPagamenti");
+    const msg = document.getElementById("msgError");
+
+    db.collection("pagamenti").orderBy("timestamp", "desc").get().then(snapshot => {
+      tbody.innerHTML = "";
+      if (snapshot.empty) {
+        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Nessun pagamento trovato.</td></tr>";
+        return;
+      }
+      snapshot.forEach(doc => {
+        const p = doc.data();
+        const data = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleString() : "—";
+        const row = `
+          <tr>
+            <td>${p.email_impresa || "—"}</td>
+            <td>${p.importo?.toFixed(2) || "—"}</td>
+            <td>${data}</td>
+            <td>${p.metodo || "—"}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }).catch(e => {
+      msg.textContent = "Errore nel caricamento pagamenti: " + e.message;
+    });
+  </script>
+</body>
+</html>

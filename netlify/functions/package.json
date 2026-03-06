@@ -1,0 +1,9 @@
+{
+  "name": "netlify-functions",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "firebase-admin": "^13.4.0",
+    "@resvg/resvg-js": "^2.6.1"
+  }
+}

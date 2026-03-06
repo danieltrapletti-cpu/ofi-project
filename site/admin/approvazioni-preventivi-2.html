@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>OFI · Approvazioni – Preventivi</title>
+  <meta name="robots" content="noindex,nofollow"/>
+
+  <!-- Font coerenti con dashboard -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500;700;800&family=Noto+Serif:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <!-- PWA manifest + iOS meta (come dashboard) -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0f1420">
+  <link rel="apple-touch-icon" href="/images/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Stili ADMIN unificati -->
+  <link rel="stylesheet" href="ofi-admin.css">
+  <link rel="stylesheet" href="ofi-admin-fix.css">
+
+  <style>
+    /* ——— Layout contenuto principale coerente con dashboard ——— */
+    .wrap{max-width:1100px;margin:0 auto;padding:1.25rem}
+    h1.section-title{font-weight:900;letter-spacing:.2px;font-size:clamp(1.6rem,2.4vw,2.4rem);display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+    .count-badge{display:inline-block;min-width:22px;padding:0 .45rem;line-height:22px;border-radius:999px;background:var(--gold);color:#111;font-size:.75rem;font-weight:900}
+    .section-sub{opacity:.9;margin:.2rem 0 1rem}
+
+    /* Toolbar sticky sotto header */
+    .toolbar{
+      position:sticky; top:var(--headerH); z-index:1500;
+      display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;
+      margin:.6rem 0 1rem; background:var(--surface);
+      padding:.5rem .2rem; border-bottom:1px solid var(--border)
+    }
+    .search{flex:1;min-width:220px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);padding:.55rem .8rem}
+    .kpi{display:flex;gap:.45rem;flex-wrap:wrap;margin-left:auto}
+    .kpi .pill{border:1px solid rgba(202,168,90,.35);border-radius:999px;padding:.22rem .6rem;font-weight:800;background:var(--surface);color:var(--text);font-size:.8rem}
+
+    .list{display:grid;gap:1rem}
+    .card{border:1px solid rgba(202,168,90,.35);background:var(--surface);color:var(--text);border-radius:16px;padding:1rem;box-shadow:0 12px 32px rgba(0,0,0,.06);outline:0}
+    .card:focus-visible{box-shadow:0 0 0 3px rgba(202,168,90,.55), 0 12px 32px rgba(0,0,0,.08)}
+    .row{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center}
+    .title{font-weight:900;font-size:1.05rem}
+    .meta{font-size:.92rem;color:var(--muted)}
+    .meta-row{margin-top:.45rem;display:flex;gap:.4rem;flex-wrap:wrap}
+    .pill{display:inline-flex;align-items:center;gap:.3rem;border:1px solid rgba(202,168,90,.35);border-radius:999px;padding:.14rem .6rem;font-size:.8rem;background:var(--surface);color:var(--text)}
+    .grid-spec{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:.6rem;font-size:.93rem}
+    .grid-spec .kv strong{font-weight:900;margin-right:.25rem}
+    .multiline{white-space:pre-wrap;line-height:1.35}
+
+    :root{--green:#16a34a;--green-2:#15803d;--red:#dc2626;--red-2:#b91c1c}
+    .actions{display:flex;gap:.6rem}
+    .btn-approve,.btn-reject{display:inline-flex;align-items:center;gap:.4rem;font-weight:900;border:0;border-radius:12px;padding:.62rem .95rem;line-height:1;cursor:pointer;color:#fff;box-shadow:0 10px 28px rgba(0,0,0,.12);transition:transform .08s,filter .12s}
+    .btn-approve{background:var(--green)} .btn-approve:hover{background:var(--green-2)}
+    .btn-reject{background:var(--red)} .btn-reject:hover{background:var(--red-2)}
+    .btn-approve:active,.btn-reject:active{transform:scale(.98)}
+    .btn-busy{position:relative}
+    .btn-busy::after{content:"";width:14px;height:14px;border:2px solid rgba(255,255,255,.6);border-right-color:transparent;border-radius:50%;display:inline-block;animation:spin .7s linear infinite;margin-left:.25rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    .empty{padding:1rem;border:1px dashed var(--border);border-radius:12px;text-align:center;color:var(--muted)}
+    .skeleton{border-radius:14px;position:relative;overflow:hidden;height:130px;border:1px solid var(--border)}
+    .skeleton::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimmer 1.2s infinite}
+    @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+    @media (max-width:860px){
+      .wrap{padding:1rem .9rem}
+      h1.section-title{font-size:clamp(1.4rem,5.5vw,2rem)}
+      .toolbar{gap:.5rem}
+      .search{min-width:100%}
+      .row{grid-template-columns:1fr;gap:.8rem}
+      .actions{justify-content:flex-start;flex-wrap:wrap}
+    }
+  </style>
+</head>
+
+<body class="is-admin">
+
+  <!-- ======= HEADER come dashboard ======= -->
+  <header class="site-header" role="banner">
+    <div class="brand">
+      <a href="../index.html" aria-label="Torna alla home">
+        <img src="../images/logo-ofi.png" alt="OFI" class="brand-logo">
+      </a>
+    </div>
+
+    <nav class="main-nav" aria-label="Principale">
+      <!-- Hamburger (mobile) -->
+      <button id="menuToggle" class="hamburger" aria-label="Apri menù" aria-controls="menuPanel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Menu completo (desktop+mobile) -->
+      <ul id="menuPanel" class="menu" role="menu" aria-hidden="true">
+        <li class="menu-mobile-head">
+          <button id="menuClose" class="menu-close" aria-label="Chiudi menù">✕</button>
+        </li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a class="menu-callout" href="../necrologi.html">NECROLOGI</a></li>
+        <li><a class="menu-callout" href="../pensieri-pubblici.html">PENSIERI PUBBLICI</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li class="has-sub">
+          <a href="#" aria-haspopup="true" aria-expanded="false">Scopri OFI <span class="caret">▾</span></a>
+          <ul class="submenu">
+            <li><a href="../vision.html">Visione di OFI</a></li>
+            <li><a href="../index.html#cos-e-ofi">Cos'è OFI</a></li>
+            <li><a href="../index.html#pensieri">Pensieri</a></li>
+            <li><a href="../articoli/articoli.html">Articoli</a></li>
+            <li><a href="../index.html#ricordi">Ricordi</a></li>
+            <li><a href="../index.html#mappa">Vicino a te</a></li>
+            <li><a href="../index.html#video">Video</a></li>
+          </ul>
+        </li>
+        <li><a class="btn btn-primary" href="../accesso.html">Accedi / Registrati</a></li>
+        <li class="menu-divider" aria-hidden="true"></li>
+        <li><a href="/admin/dashboard-admin.html">Area Admin</a></li>
+      </ul>
+
+      <!-- Toggle tema (UNICO) -->
+      <button id="themeToggle" class="theme-switch" aria-label="Cambia tema" title="Tema">
+        <span class="mode mode-auto" aria-hidden="true">A</span>
+        <span class="mode mode-light" aria-hidden="true">☀</span>
+        <span class="mode mode-dark" aria-hidden="true">🌙</span>
+      </button>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay" hidden></div>
+  </header>
+
+  <!-- ======= APP LAYOUT con SIDEBAR come in dashboard ======= -->
+  <div class="app" id="appRoot">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar" aria-label="Navigazione amministrazione">
+      <div class="sb-head">
+        <img alt="Badge OFI" src="data:image/svg+xml;utf8,<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='%23c9a227'/><stop offset='100%' stop-color='%23f4d56a'/></linearGradient></defs><circle cx='14' cy='14' r='13' fill='url(%23g)' stroke='%238f6c00' stroke-width='2'/><text x='50%' y='54%' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%230d1b2a' font-weight='700'>OFI</text></svg>">
+        <strong>Amministrazione OFI</strong>
+        <button class="sb-close" id="sbClose" aria-label="Chiudi pannello">✕</button>
+      </div>
+
+      <nav class="sb-menu" id="sbMenu">
+        <a class="sb-link" href="/admin/dashboard-admin.html">🏠 Dashboard</a>
+
+        <div class="sb-cat">📝 Approvazioni</div>
+        <div class="has-sub open">
+          <a href="#" class="sub-toggle" aria-expanded="true">Approvazioni ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/approvazioni-registrazioni.html">✅ Registrazioni <span class="pill" id="cntRegTot">0</span></a></li>
+            <li><a class="sb-link active" href="/admin/approvazioni-preventivi.html">📬 Preventivi <span class="pill" id="cntPrev">0</span></a></li>
+            <li><a class="sb-link" href="/admin/approvazioni-necrologi.html">🕯 Necrologi <span class="pill" id="cntNecro">0</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">📚 Registri</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Anagrafiche ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/utenti-admin.html">👤 Cittadini <span class="pill" id="cntCitt">0</span></a></li>
+            <li><a class="sb-link" href="/admin/imprese-admin.html">🏢 Imprese <span class="pill" id="cntImprese">0</span></a></li>
+            <li><a class="sb-link" href="/admin/fornitori-admin.html">📦 Fornitori <span class="pill" id="cntForn">0</span></a></li>
+            <li><a class="sb-link" href="/admin/supporto-admin.html">🧑‍💼 Figure di supporto <span class="pill" id="cntSupp">0</span></a></li>
+            <li><a class="sb-link" href="/admin/segnalazioni-admin.html">🧠 Segnalazioni</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">✍️ Contenuti</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Articoli e altro ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/articoli-pubblicati-admin.html">📝 Articoli pubblicati</a></li>
+            <li><a class="sb-link" href="/admin/articoli-gestione-admin.html">🗂 Gestione articoli</a></li>
+            <li><a class="sb-link" href="/admin/necrologi-admin.html">🕯 Necrologi (storico)</a></li>
+            <li><a class="sb-link" href="/admin/presentazioni-imprese-admin.html">📣 Presentazioni imprese</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">💳 Economico</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Amministrazione ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/pagamenti-admin.html">💰 Pagamenti</a></li>
+            <li><a class="sb-link" href="/admin/fatture-admin.html">📄 Fatture</a></li>
+          </ul>
+        </div>
+
+        <div class="sb-cat">🛡 Sistema</div>
+        <div class="has-sub">
+          <a href="#" class="sub-toggle" aria-expanded="false">Strumenti ▾</a>
+          <ul class="submenu">
+            <li><a class="sb-link" href="/admin/statistiche-admin.html">📈 Statistiche</a></li>
+            <li><a class="sb-link" href="/admin/log-attivita-admin.html">📊 Log attività</a></li>
+            <li><a class="sb-link" href="/admin/supporto-admin.html">🆘 Supporto admin</a></li>
+          </ul>
+        </div>
+      </nav>
+    </aside>
+
+    <div id="sbOverlay" class="overlay" hidden></div>
+    <button id="sbFab" class="sb-fab" aria-label="Apri Sidebar">☰</button>
+
+    <!-- ======= MAIN ======= -->
+    <main class="main">
+      <!-- Topbar coerente -->
+      <div class="topbar" role="region" aria-label="Barra superiore">
+        <div class="ident">
+          <div class="hint">Sei autenticato come</div>
+          <div id="adminEmail">—</div>
+        </div>
+        <div class="actions">
+          <img id="adminAvatar" class="avatar" src="../images/logo-ofi.png" alt="Admin"/>
+          <a class="btn-ghost account" href="/admin/login.html"><span>Cambia account</span></a>
+          <button class="btn-ghost" id="btnLogout">Logout</button>
+        </div>
+      </div>
+
+      <div class="wrap">
+        <h1 class="section-title">
+          Approvazioni · Preventivi
+          <span class="count-badge" id="count">0</span>
+        </h1>
+        <p class="section-sub">
+          Qui vedi <strong>solo</strong> i preventivi con <strong>stato: in_attesa</strong>. Dopo l’approvazione li gestisci in <em>Preventivi (gestione)</em>.
+        </p>
+
+        <div class="toolbar" role="region" aria-label="Filtri e KPI">
+          <input id="search" class="search" type="search" placeholder="Cerca per nome, email, comune o ID…" />
+          <div class="kpi">
+            <span class="pill" id="kTot">Tot: 0</span>
+            <span class="pill" id="kAtt">In attesa: 0</span>
+          </div>
+        </div>
+
+        <div id="list" class="list" aria-live="polite"></div>
+
+        <p class="meta" style="margin-top:1rem">
+          Suggerimento: dopo l’approvazione li trovi nella pagina
+          <a href="/admin/preventivi-admin.html">Preventivi (gestione)</a>.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="sr-only">OFI © 2025</footer>
+
+  <!-- ======= Script: menu + tema + SIDEBAR (uguali alla dashboard) ======= -->
+  <script type="module">
+    const $id = (x)=>document.getElementById(x);
+    const html = document.documentElement;
+
+    /* Menu principale */
+    const menuToggle = $id('menuToggle');
+    const menuPanel  = $id('menuPanel');
+    const menuClose  = $id('menuClose');
+    const menuOverlay= $id('menuOverlay');
+
+    function openMenu(on){
+      menuPanel.classList.toggle('open', on);
+      menuPanel.setAttribute('aria-hidden', on ? 'false' : 'true');
+      menuOverlay.hidden = !on;
+      html.classList.toggle('menu-open', on);
+    }
+    menuToggle?.addEventListener('click', ()=> openMenu(true));
+    menuClose?.addEventListener('click', ()=> openMenu(false));
+    menuOverlay?.addEventListener('click', ()=> openMenu(false));
+
+    // Submenu (desktop+mobile)
+    menuPanel?.querySelectorAll('.has-sub > a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const li = a.parentElement;
+        const open = !li.classList.contains('open');
+        li.classList.toggle('open', open);
+        a.setAttribute('aria-expanded', open?'true':'false');
+      });
+    });
+
+    // Evidenzia voce corrente (Area Admin)
+    menuPanel?.querySelectorAll('a[href]').forEach(a=>{
+      const here = location.pathname.replace(/\/+$/,'');
+      const href = a.getAttribute('href').replace(/\/+$/,'');
+      if(href && (here.endsWith(href) || here === href)) a.setAttribute('aria-current','page');
+    });
+
+    /* Toggle Tema unico (Auto → Light → Dark) */
+    const themeBtn = $id('themeToggle');
+    const KEY = 'ofi-theme'; // 'auto' | 'light' | 'dark'
+    function applyTheme(v){ html.setAttribute('data-theme', v); localStorage.setItem(KEY, v); themeBtn.dataset.mode = v; }
+    function nextTheme(cur){ if(cur==='auto') return 'light'; if(cur==='light') return 'dark'; return 'auto'; }
+    applyTheme(localStorage.getItem(KEY) || 'auto');
+    themeBtn?.addEventListener('click', ()=> applyTheme(nextTheme(html.getAttribute('data-theme') || 'auto')));
+
+    /* ===== Sidebar ===== */
+    const sidebar   = $id('sidebar');
+    const sbOverlay = $id('sbOverlay');
+    const sbFab     = $id('sbFab');
+
+    function openSidebar(on){
+      sidebar.classList.toggle('open', on);
+      sbOverlay.hidden = !on;
+      html.classList.toggle('sidebar-open', on);
+      document.body.classList.toggle('sidebar-open', on);
+    }
+    $id('sbClose')?.addEventListener('click', ()=> openSidebar(false));
+    sbOverlay?.addEventListener('click', ()=> openSidebar(false));
+    sbFab?.addEventListener('click', ()=> openSidebar(!sidebar.classList.contains('open')));
+
+    // CHIP nel menu mobile per aprire la sidebar
+    const addSidebarOpenChip = ()=>{
+      if(window.innerWidth>900) return;
+      const ul = $id('menuPanel');
+      if(!ul || ul.querySelector('[data-open-sidebar]')) return;
+      const li = document.createElement('li');
+      li.innerHTML = `<button class="btn" data-open-sidebar type="button">☰ Sidebar Admin</button>`;
+      ul.appendChild(li);
+      li.querySelector('button').addEventListener('click', ()=>{
+        openMenu(false);
+        openSidebar(true);
+      });
+    };
+    addSidebarOpenChip();
+    window.addEventListener('resize', ()=>{
+      document.querySelector('[data-open-sidebar]')?.closest('li')?.remove();
+      addSidebarOpenChip();
+    });
+
+    // Apri/chiudi un solo blocco per volta nella sidebar
+    document.querySelectorAll('.sb-menu .has-sub > .sub-toggle').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const me = btn.closest('.has-sub');
+        const already = me.classList.contains('open');
+        document.querySelectorAll('.sb-menu .has-sub.open').forEach(x=> x.classList.remove('open'));
+        me.classList.toggle('open', !already);
+        btn.setAttribute('aria-expanded', (!already) ? 'true' : 'false');
+      });
+    });
+
+    // Evidenzia attivi nella sidebar
+    (function highlightSidebar(){
+      const here = location.pathname.replace(/\/+$/,'');
+      document.querySelectorAll('.sb-link[href]').forEach(a=>{
+        const href = a.getAttribute('href').replace(/\/+$/,'');
+        if(href && (here.endsWith(href) || here === href)) a.classList.add('active');
+      });
+    })();
+  </script>
+
+  <!-- ======= Firebase v10 (modular) ======= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onIdTokenChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey:"AIzaSyAy0UMiRscG-F1B9YxT7gHHyxLBOwOo2vs",
+      authDomain:"ofi2025-51ba9.firebaseapp.com",
+      projectId:"ofi2025-51ba9",
+      storageBucket:"ofi2025-51ba9.firebasestorage.app",
+      messagingSenderId:"345581339212",
+      appId:"1:345581339212:web:f0b8bc241945691c876ae9"
+    };
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    /* Utils minimi */
+    const $ = (s)=>document.querySelector(s);
+    function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+    function skeleton(n=4){const f=document.createDocumentFragment();for(let i=0;i<n;i++){const d=document.createElement('div');d.className='skeleton';f.appendChild(d)}return f}
+    function fmtDate(val){
+      if(!val) return "—";
+      try{
+        if(typeof val.toDate==='function') return val.toDate().toLocaleString('it-IT');
+        if(val && typeof val==='object' && 'seconds' in val) return new Date(val.seconds*1000).toLocaleString('it-IT');
+        if(typeof val==='number') return new Date(val).toLocaleString('it-IT');
+        const t=Date.parse(val); if(!Number.isNaN(t)) return new Date(t).toLocaleString('it-IT');
+        return String(val);
+      }catch{ return "—"; }
+    }
+    function in7Days(from=new Date()){
+      const d=new Date(from); d.setDate(d.getDate()+7); return d;
+    }
+
+    /* Aliases + contatori dinamici per sidebar (versione leggera con getDocs) */
+    const ALIASES = {
+      imprese:   ["imprese_registrate"],
+      cittadini: ["utenti_cittadini","utenti_registrati","cittadini_registrati"],
+      fornitori: ["fornitori_registrati","fornitori"],
+      supporto:  ["figure_supporto","utenti_supporto"],
+      preventivi:["preventivi"],
+      necrologi: ["necrologi"]
+    };
+    async function collectionExists(name){ try{ await getDocs(query(collection(db, name), limit(1))); return true; }catch{ return false; } }
+    async function firstExistingName(names){ for(const n of names){ if(await collectionExists(n)) return n; } return null; }
+    async function countWaiting(col){ try{ const snap = await getDocs(query(collection(db,col), where("stato","==","in_attesa"))); return snap.size||0; }catch{ return 0; } }
+    async function refreshCounters(){
+      const [cCitt,cImp,cForn,cSupp] = await Promise.all([
+        (async ()=>{ const n=await firstExistingName(ALIASES.cittadini); return n?await countWaiting(n):0; })(),
+        (async ()=>{ const n=await firstExistingName(ALIASES.imprese);   return n?await countWaiting(n):0; })(),
+        (async ()=>{ const n=await firstExistingName(ALIASES.fornitori); return n?await countWaiting(n):0; })(),
+        (async ()=>{ const n=await firstExistingName(ALIASES.supporto);  return n?await countWaiting(n):0; })(),
+      ]);
+      const regTot = cCitt + cImp + cForn + cSupp;
+      const cPrev  = await (async ()=>{ const n=await firstExistingName(ALIASES.preventivi); return n?await countWaiting(n):0; })();
+      const cNecro = await (async ()=>{ const n=await firstExistingName(ALIASES.necrologi);  return n?await countWaiting(n):0; })();
+
+      const set = (sel,val)=>{ const el=document.querySelector(sel); if(el) el.textContent = (val ?? "0"); };
+      set('#cntRegTot', regTot); set('#cntPrev', cPrev); set('#cntNecro', cNecro);
+      set('#cntCitt', cCitt); set('#cntImprese', cImp); set('#cntForn', cForn); set('#cntSupp', cSupp);
+    }
+
+    /* ====== LOGICA PAGINA PREVENTIVI ====== */
+    let CURRENT_ROWS=[];
+    let FOCUS_INDEX=0;
+
+    function setKPI(rowsAll){
+      const kTot=rowsAll.length;
+      const kAtt=rowsAll.filter(r=>(r.stato||'in_attesa')==='in_attesa').length;
+      $('#kTot').textContent=`Tot: ${kTot}`;
+      $('#kAtt').textContent=`In attesa: ${kAtt}`;
+      $('#count').textContent=String(kAtt);
+    }
+    function ensureFocus(){
+      const cards=[...document.querySelectorAll('.card')];
+      if(cards.length===0) return;
+      FOCUS_INDEX = Math.max(0, Math.min(FOCUS_INDEX, cards.length-1));
+      cards[FOCUS_INDEX].focus();
+    }
+
+    function render(rows){
+      const list=$('#list'); list.innerHTML="";
+      if(rows.length===0){ list.innerHTML=`<div class="empty">Nessun preventivo in attesa.</div>`; $('#count').textContent='0'; return; }
+
+      rows
+        .sort((a,b)=>{ // più recenti per dataRicezione in alto
+          const ta=(a.dataRicezione?.seconds||Date.parse(a.dataRicezione)||0);
+          const tb=(b.dataRicezione?.seconds||Date.parse(b.dataRicezione)||0);
+          return (tb - ta);
+        })
+        .forEach((d,i)=>{
+          const id = d.id;
+          const richiedente = d.nomeCognome || d.nome || "—";
+          const email = d.email || "—";
+          const tel = d.telefono || "—";
+          const comune = [d.comune||"", d.provincia?`(${d.provincia})`:""].join(" ").trim() || "—";
+          const ricevuto = fmtDate(d.dataRicezione);
+          const note = d.note || "";
+
+          const card=document.createElement('div');
+          card.className="card";
+          card.tabIndex=0;
+          card.innerHTML=`
+            <div class="row">
+              <div>
+                <div class="title">Preventivo · ${id}</div>
+                <div class="meta">${richiedente} · ${email} · ${tel}</div>
+                <div class="meta-row">
+                  <span class="pill">stato: in_attesa</span>
+                  <span class="pill">ricevuto: ${ricevuto}</span>
+                  <span class="pill">luogo: ${comune}</span>
+                </div>
+                ${note ? `<div class="grid-spec"><div class="kv multiline"><strong>Note</strong>${note}</div></div>` : ""}
+              </div>
+              <div class="actions" aria-label="Azioni">
+                <button class="btn-approve" title="Approva">Approva</button>
+                <button class="btn-reject"  title="Rifiuta">Rifiuta</button>
+              </div>
+            </div>
+          `;
+
+          const setBusy = (el,v)=>{ el.classList.toggle('btn-busy', !!v); el.disabled = !!v; };
+
+          async function doApprove(){
+            if(!confirm(`Approvare il preventivo ${id}? Verrà impostata la scadenza a 7 giorni.`)) return;
+            const aBtn=card.querySelector('.btn-approve'); setBusy(aBtn,true);
+            try{
+              const ref=doc(db, "preventivi", id);
+              await updateDoc(ref,{
+                stato:"approvato",
+                dataApprovazione: serverTimestamp(),
+                dataScadenza: in7Days().toISOString()
+              });
+
+              // (Opzionale) invio email via Netlify Function se già configurata:
+              // try{
+              //   await fetch("/.netlify/functions/sendPreventivo", {
+              //     method:"POST", headers:{ "Content-Type":"application/json" },
+              //     body: JSON.stringify({ preventivoId:id })
+              //   });
+              // }catch(e){ console.warn("Invio email non riuscito:", e); }
+
+              card.remove(); toast("Preventivo approvato ✅");
+              if(!list.children.length) list.innerHTML=`<div class="empty">Nessun preventivo in attesa.</div>`;
+              $('#count').textContent=String(Math.max(0, Number($('#count').textContent)-1));
+              refreshCounters();
+            }catch(e){ alert("Errore approvazione: "+e.message); }
+            finally{ setBusy(aBtn,false); }
+          }
+          async function doReject(){
+            if(!confirm(`Rifiutare il preventivo ${id}?`)) return;
+            const rBtn=card.querySelector('.btn-reject'); setBusy(rBtn,true);
+            try{
+              const ref=doc(db, "preventivi", id);
+              await updateDoc(ref,{
+                stato:"rifiutato",
+                dataRifiuto: serverTimestamp()
+              });
+              card.remove(); toast("Preventivo rifiutato ❌");
+              if(!list.children.length) list.innerHTML=`<div class="empty">Nessun preventivo in attesa.</div>`;
+              $('#count').textContent=String(Math.max(0, Number($('#count').textContent)-1));
+              refreshCounters();
+            }catch(e){ alert("Errore rifiuto: "+e.message); }
+            finally{ setBusy(rBtn,false); }
+          }
+
+          card.querySelector('.btn-approve').addEventListener('click', doApprove);
+          card.querySelector('.btn-reject').addEventListener('click', doReject);
+          card.addEventListener('keydown', (ev)=>{
+            if(ev.key==='a' || ev.key==='A'){ ev.preventDefault(); doApprove(); }
+            if(ev.key==='r' || ev.key==='R'){ ev.preventDefault(); doReject(); }
+          });
+
+          list.appendChild(card);
+          if(i===0) ensureFocus();
+        });
+    }
+
+    async function loadPreventivi(){
+      const list=$('#list'); list.innerHTML=""; list.appendChild(skeleton(4));
+
+      const colName = await firstExistingName(ALIASES.preventivi);
+      if(!colName){ list.innerHTML=`<div class="empty">Collezione “preventivi” non trovata.</div>`; $('#count').textContent='0'; setKPI([]); return; }
+
+      const qy=query(collection(db,colName), where("stato","==","in_attesa"), orderBy("dataRicezione","desc"));
+      const snap=await getDocs(qy);
+      const rows=[]; snap.forEach(d=>rows.push({id:d.id,_colName:colName,...d.data()}));
+
+      CURRENT_ROWS=rows;
+      setKPI(rows);
+      applyFilter();
+      refreshCounters();
+    }
+
+    function applyFilter(){
+      const term=($('#search').value||"").trim().toLowerCase();
+      if(!term){ render(CURRENT_ROWS); return; }
+      const filtered=CURRENT_ROWS.filter(r=>{
+        const id=(r.id||"").toLowerCase();
+        const nome=(r.nomeCognome||r.nome||"").toLowerCase();
+        const email=(r.email||"").toLowerCase();
+        const tel=(r.telefono||"").toLowerCase();
+        const comune=(r.comune||"").toLowerCase();
+        const prov=(r.provincia||"").toLowerCase();
+        const note=(r.note||"").toLowerCase();
+        return [id,nome,email,tel,comune,prov,note].some(x=>x.includes(term));
+      });
+      render(filtered);
+    }
+    let _t=null; document.getElementById('search').addEventListener('input',()=>{ clearTimeout(_t); _t=setTimeout(applyFilter,120); });
+
+    // Navigazione con frecce
+    window.addEventListener('keydown',(e)=>{
+      const cards=[...document.querySelectorAll('.card')];
+      if(cards.length===0) return;
+      if(e.key==='ArrowDown'){ e.preventDefault(); FOCUS_INDEX=Math.min(cards.length-1, FOCUS_INDEX+1); ensureFocus(); }
+      if(e.key==='ArrowUp'){ e.preventDefault(); FOCUS_INDEX=Math.max(0, FOCUS_INDEX-1); ensureFocus(); }
+    });
+
+    /* ====== Auth guard + bootstrap ====== */
+    async function requireAdmin(user){
+      const token=await user.getIdTokenResult(true);
+      if(!token?.claims?.admin){ await signOut(auth); location.replace("/admin/login.html"); return false; }
+      return true;
+    }
+
+    // Logout esplicito
+    document.getElementById('btnLogout')?.addEventListener('click', async ()=>{
+      try{ await signOut(auth); }finally{ location.replace('/admin/login.html'); }
+    });
+
+    onIdTokenChanged(auth, async (user)=>{
+      if(!user){ location.replace("/admin/login.html"); return; }
+      const ok=await requireAdmin(user); if(!ok) return;
+
+      const mail = user.email || "—";
+      const mailEl = document.getElementById('adminEmail'); if (mailEl) mailEl.textContent = mail;
+      if (user.photoURL) {
+        const av = document.getElementById('adminAvatar');
+        if (av){ av.src = user.photoURL; av.alt = mail; }
+      }
+
+      await loadPreventivi();
+    });
+  </script>
+</body>
+</html>
