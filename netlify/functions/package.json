@@ -4,6 +4,7 @@
   "type": "commonjs",
   "dependencies": {
     "firebase-admin": "^13.4.0",
-    "@resvg/resvg-js": "^2.6.1"
+    "@resvg/resvg-js": "^2.6.1",
+    "stripe": "^20.4.0"
   }
 }
